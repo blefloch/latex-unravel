@@ -1,0 +1,23 @@
+\input l3docstrip.tex
+\askforoverwritefalse
+
+\preamble
+
+Do not distribute a modified version of this file.
+
+Communicate any suggestions for changing this package
+to Bruno Le Floch (blflatex@gmail.com).
+
+\endpreamble
+% stop docstrip adding \endinput
+\postamble
+\endpostamble
+
+\keepsilent
+
+% the package
+\generate{%
+  \file{unravel.sty}       {\from{unravel.dtx}    {package}}%
+}
+
+\endbatchfile
