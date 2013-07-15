@@ -22,7 +22,7 @@
 % \fi
 %
 % \title{The \textsf{unravel} package: \\
-%   explore TeX code step by step\thanks{This
+%   watching TeX digest tokens\thanks{This
 %     file has version number 0.0a, last revised 2013/07/14.}}
 % \author{Bruno Le Floch}
 % \date{2013/07/14}
@@ -50,18 +50,733 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\RequirePackage{expl3}[2012/12/21]
+\RequirePackage{expl3}[2013/07/01]
+\RequirePackage{xtl}[2013/07/14]
 \ProvidesExplPackage
-  {unravel} {2013/07/14} {0.0a} {Explore TeX code step by step}
+  {unravel} {2013/07/14} {0.0a} {Watching TeX digest tokens}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 %<@@=unravel>
 %    \end{macrocode}
 %
-% \subsection{Helpers}
+% \subsection{Variables}
+%
+% \begin{variable}{\g_@@_input_xtl}
+%   The user input, in various stages of expansion.
+%    \begin{macrocode}
+\xtl_new:N \g_@@_input_xtl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\g_@@_output_xtl}
+%   Material that is ``typeset'' or otherwise sent further down \TeX{}'s
+%   digestion.
+%    \begin{macrocode}
+\xtl_new:N \g_@@_output_xtl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_head_xtl, \l_@@_head_tl, \l_@@_head_meaning_tl}
+%   First token in the input, as an extended token list (general case)
+%   or as a token list whenever this is possible.  Also, its meaning.
+%    \begin{macrocode}
+\xtl_new:N \l_@@_head_xtl
+\tl_new:N  \l_@@_head_tl
+\tl_new:N  \l_@@_head_meaning_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_head_i_xtl, \l_@@_head_ii_xtl}
+%   Extended token lists used when the first few tokens need to be inspected.
+%    \begin{macrocode}
+\xtl_new:N \l_@@_head_i_xtl
+\xtl_new:N \l_@@_head_ii_xtl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\g_@@_step_int}
+%   Current expansion step.
+%    \begin{macrocode}
+\int_new:N \g_@@_step_int
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_action_tl}
+%   String that characterizes which action to perform, depending on the
+%   meaning of the first token in the token list.
+%    \begin{macrocode}
+\tl_new:N \l_@@_action_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_action_text_tl}
+%   Text describing the action, displayed at each step.
+%    \begin{macrocode}
+\tl_new:N \l_@@_action_text_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}
+%   {
+%     \l_@@_if_nesting_int,
+%     \l_@@_if_case_int,
+%     \l_@@_if_a_int,
+%     \l_@@_if_b_int
+%   }
+%    \begin{macrocode}
+\int_new:N \l_@@_if_nesting_int
+\int_new:N \l_@@_if_case_int
+\int_new:N \l_@@_if_a_int
+\int_new:N \l_@@_if_b_int
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_cmp_tl}
+%   Comparison operator (for \tn{ifnum} or \tn{ifdim}).
+%    \begin{macrocode}
+\tl_new:N \l_@@_cmp_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% \subsection{Variants and helper functions}
+%
+% Variants that we need.
+%    \begin{macrocode}
+\cs_generate_variant:Nn \tl_if_head_is_space:nTF { o }
+\cs_if_exist:NF \exp_last_unbraced:NNn
+  { \cs_new_eq:NN \exp_last_unbraced:NNn \use:nnn }
+\cs_generate_variant:Nn \exp_last_unbraced:NNn { NNv }
+\cs_generate_variant:Nn \xtl_gput_left:Nn { Nx , NV }
+\cs_generate_variant:Nn \xtl_gput_right:Nn { Nx }
+\cs_generate_variant:Nn \tl_if_head_is_N_type:nTF { V }
+\cs_generate_variant:Nn \tl_if_head_is_space:nT { V }
+%    \end{macrocode}
+%
+% \begin{macro}[EXP]{\@@_cs_case:Nnn}
+%   Currently, \texttt{expl3} does not provide a case statement for the
+%   meaning of control sequences.  However, \cs{tl_case:Nnn} in fact
+%   does precisely this.
+%    \begin{macrocode}
+\cs_new_eq:NN \@@_cs_case:Nnn \tl_case:Nnn
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_tl_pop_reg:NN}
+% \begin{macro}[aux]{\@@_pop_reg_aux:w}
+%   Retrieve an integer from a token list.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tl_pop_reg:NN #1#2
+  {
+    \cs_set_protected_nopar:Npn \@@_pop_reg_aux:w
+      {
+        \tex_edef:D #1
+          { \etex_unexpanded:D \exp_after:wN { \if_false: } } \fi:
+      }
+    \tex_afterassignment:D \@@_pop_reg_aux:w
+    \if_false: { { \fi: #2 = #1 } }
+  }
+\cs_new_protected_nopar:Npn \@@_pop_reg_aux:w { }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_tl_get_nsp:NN}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tl_get_nsp:NN #1#2
+  {
+    \tl_if_head_is_N_type:VTF #1
+      {
+        \exp_last_unbraced:Nx \token_if_expandable:NTF { \tl_head:N #1 }
+          {
+            \tl_set:Nx #1 { \exp_args:NV \exp_not:o #1 }
+            \@@_tl_get_nsp:NN #1 #2
+          }
+          {
+            \tl_set:Nx #2 { \tl_head:N #1 }
+            \tl_set:Nx #1 { \tl_tail:N #1 }
+          }
+      }
+      {
+        \tl_if_head_is_space:VT #1
+          {
+            \tl_set:Nf #1 {#1}
+            \@@_tl_get_nsp:NN #1 #2
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Main command}
+%
+% \begin{macro}{\unravel}
+%   Simply call an underlying internal command.
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel #1 { \@@_unravel:n {#1} }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_unravel:n}
+%   Welcome the user, then initialize the input, output and step.  Until
+%   the input is exhausted, print the current status and do one step.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_unravel:n #1
+  {
+    \@@_print_welcome:
+    \xtl_gset:Nn  \g_@@_input_xtl {#1}
+    \tl_gclear:N \g_@@_output_tl
+    \int_gzero:N \g_@@_step_int
+    \bool_until_do:nn
+      { \xtl_if_empty_p:N \g_@@_input_xtl }
+      {
+        \@@_print_state:
+        \@@_step:
+      }
+    \@@_print_outcome:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_step:}
+%   Find the |action|, give a default value to the |action_text|, and
+%   perform the action if the corresponding command |do_|\meta{action}
+%   exists.  If that command does not exist, complain, remove the
+%   offending first token of the input and place it in the output.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_step:
+  {
+    \int_gincr:N \g_@@_step_int
+    \@@_get_action:NN \g_@@_input_xtl \l_@@_action_tl
+    \tl_set_eq:NN \l_@@_action_text_tl \l_@@_action_tl
+    \cs_if_exist_use:cF { @@_do_ \tl_use:N \l_@@_action_tl : }
+      {
+        \msg_error:nnx { unravel } { unknown-action }
+          { \l_@@_action_tl }
+        \xtl_gpop_left:N \g_@@_input_xtl
+        \xtl_gconcat:NNN \g_@@_output_xtl \g_@@_output_xtl \l_@@_head_xtl
+      }
+    \@@_print_action:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Printing}
+%
+% Let us start with the procedure which prints to the terminal: this
+% will help me test the code while I'm writing it.
+%
+%^^A Not implemented yet: non-hash-doubling version.
+%
+% \subsubsection{Printing proper}
+%
+% \begin{macro}[int]{\@@_print:n, \@@_print:x}
+%    \begin{macrocode}
+\cs_new_eq:NN \@@_print:n \iow_term:n
+\cs_generate_variant:Nn \@@_print:n { x }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_message:nn}
+%   The message to be printed should come already detokenized, as~|#2|.
+%   It will be wrapped to 80 characters per line, with~|#1| before each
+%   line.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_print_message:nn #1 #2
+  { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_print:n }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Various messages}
+%
+% \begin{macro}[int]{\@@_print_welcome:}
+%   Welcoming message.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_print_welcome:
+  {
+    \@@_print_message:nn { }
+      {
+        \\
+        ========~ Welcome~ to~ the~ unravel~ package~ ========\\
+        \iow_indent:n
+          {
+            "<|"~ denotes~ the~ output~ to~ TeX's~ stomach. \\
+            "|>"~ denotes~ tokens~ that~ we~ will~ act~ on. \\
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_state:}
+%   We want to print both \cs{g_@@_input_xtl} and \cs{g_@@_output_xtl}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_print_state:
+  {
+    \@@_print:n { }
+    \@@_print_message:nn { <| ~ } { \xtl_to_str:N \g_@@_output_xtl }
+    \@@_print:n { }
+    \@@_print_message:nn { |> ~ } { \xtl_to_str:N \g_@@_input_xtl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_action:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_print_action:
+  {
+    \@@_print_message:nn { }
+      {
+        \\
+        Step~ \int_use:N \g_@@_step_int \
+        =====~ \tl_to_str:N \l_@@_action_text_tl .
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_outcome:}
+%   Final message.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_print_outcome:
+  {
+    \@@_print:n { }
+    \@@_print_message:nn { <| ~ } { \xtl_to_str:N \g_@@_output_xtl }
+    \@@_print_message:nn { }
+      { \\ Step~ \int_use:N \g_@@_step_int \ was~ the~last! }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_next:}
+%   When we read the head of the token list \cs{g_@@_input_tl},
+%   in Section~\ref{sec:head} %^^A todo
+% \end{macro}
+%
+% \subsection{Examining the head}
+% \label{sec:head}
+%
+% The user input is stored at all times in \cs{g_@@_input_xtl}.  One
+% step is either to expand the leading token of \cs{g_@@_input_xtl} if
+% it is expandable, or to perform one assignment, or enter a group,
+% \emph{etc.}  In order to do that, we first have to carefully examine
+% the leading token of \cs{g_@@_input_xtl}.
+%
+% Possible values of the action:
+% \begin{itemize}
+% \item |empty|
+% \item |macro| if the token is a macro,
+% \item |ifnum| or other expandable primitives,
+% \item |def| or other non-expandable primitives,
+% \item |toks_alt|, |char"_alt| or other ``registers'', followed by
+%   |_alt| to distinguish it from the corresponding primitive.
+% \item |begin_alt|, |end_alt|, |math_alt|, |alignment_alt|,
+%   |macro_alt|, |superscript_alt|, |subscript_alt|, |blank_alt|,
+%   |the_alt| for character tokens, both letters and others becoming
+%   |the_alt|.
+% \end{itemize}
+%
+% \begin{macro}[int]{\@@_get_action:NN}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_action:NN #1#2
+  {
+    \xtl_if_empty:NTF #1
+      { \tl_set:Nn #2 { empty } }
+      {
+        \xtl_get_left:NN #1 \l_@@_head_xtl
+        \xtl_if_tl:NTF \l_@@_head_xtl
+          {
+            \tl_set:Nx \l_@@_head_tl { \xtl_head:N \l_@@_head_xtl }
+            \tl_if_head_is_space:oTF \l_@@_head_tl
+              { \tl_set:Nn #2 { blank_alt } }
+              {
+                \exp_after:wN \@@_get_action_normal:NN
+                  \l_@@_head_tl #2
+              }
+          }
+          {
+            \xtl_if_head_is_group_end:NTF \l_@@_head_xtl
+              { \tl_set:Nn #2 { end_alt } }
+              { \tl_set:Nn #2 { begin_alt } }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]
+%   {\@@_get_action_normal:NN, \@@_get_action_normal:nNN}
+% \begin{macro}[aux]
+%   {\@@_first_word:w, \@@_strip_hex:w, \@@_strip_hex_end:w}
+%   We still need to analyse the meaning of the head token to determine
+%   if it is a primitive, if it is expandable, \emph{etc.}  This macro
+%   sets the token list variable~|#2| to one of
+%   \begin{itemize}
+%   \item |macro| if the token is a macro,
+%   \item |ifnum| or other expandable primitives,
+%   \item |def| or other non-expandable primitives,
+%   \item |toks_alt|, |char"_alt| or other ``registers'', followed by
+%     |_alt| to distinguish it from the corresponding primitive.
+%   \item |begin_alt|, |end_alt|, |math_alt|, |alignment_alt|,
+%     |macro_alt|, |superscript_alt|, |subscript_alt|, |blank_alt|,
+%     |the_alt| for character tokens, both letters and others becoming
+%     |the_alt|.
+%   \end{itemize}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_action_normal:NN #1#2
+  {
+    \tl_set:Nx \l_@@_head_meaning_tl { \token_to_meaning:N #1 }
+    \exp_args:Nx \@@_get_action_normal:nNN
+      { \exp_after:wN \cs_to_str:N \l_@@_head_meaning_tl } #1 #2
+  }
+\cs_new_protected:Npn \@@_get_action_normal:nNN #1#2#3
+  {
+    \tl_set:Nx #3
+      {
+        \token_if_expandable:NTF #2
+          {
+            \token_if_macro:NTF #2
+              { macro }
+              {#1}
+          }
+          {
+            \token_if_cs:NTF #2
+              {
+                \str_if_eq_x:nnTF {#1} { \@@_strip_hex:w #1 @ }
+                  {#1}
+                  { \@@_strip_hex:w #1 @ _alt }
+              }
+              {
+                \exp_after:wN \@@_first_word:w
+                  \l_@@_head_meaning_tl \q_stop
+                _alt
+              }
+          }
+      }
+  }
+\cs_new:Npn \@@_first_word:w #1 ~ #2 \q_stop {#1}
+\cs_new:Npn \@@_strip_hex:w #1
+  {
+    \if_int_compare:w `#1 < `G ~ %
+      \if_int_compare:w `#1 > `/ ~ %
+        \if_charcode:w #1 @
+          \exp_after:wN \@@_strip_hex_end:w
+        \fi:
+        \use_i_ii:nnn
+      \fi:
+    \fi:
+    #1
+    \@@_strip_hex:w
+  }
+\cs_new:Npn \@@_strip_hex_end:w #1#2 @ #3 {#2}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Actions}
+%
+% \subsubsection{Character tokens}
+%
+% \begin{macro}[int]{\@@_do_the_alt:}
+% \begin{macro}[aux]{\@@_do_the_aux:w}
+%   ^^A todo: get right catcode.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_the_alt:
+  {
+    \tl_set_eq:NN \l_@@_action_text_tl \l_@@_head_meaning_tl
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \xtl_gput_right:Nx \g_@@_output_xtl
+      { \exp_after:wN \@@_do_the_aux:w \l_@@_head_meaning_tl }
+  }
+\cs_new:Npn \@@_do_the_aux:w #1 ~ #2 ~ { }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Assignments}
+%
+% \begin{macro}[int]{\@@_do_def:}
+% \begin{macro}[aux]{\@@_do_def_extra_begin:, \@@_do_def_extra_end:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_def:
+  {
+    \tl_set:Nx \l_@@_action_text_tl { Assignment:~ \tl_to_str:N \l_@@_head_tl }
+    \tl_set:Nx \l_@@_tmpa_tl
+      { \xtl_left_text:NF \g_@@_input_xtl { } }
+    \tl_if_empty:NTF \l_@@_tmpa_tl
+      {
+        \int_compare:nNnTF
+          { \xtl_extra_end:N \g_@@_input_xtl } > \c_zero
+          { \@@_do_def_extra_end: }
+          { \@@_do_def_extra_begin: }
+      }
+      {
+        \xtl_gpop_left_text:N \g_@@_input_xtl
+        \tl_use:N \l_@@_tmpa_tl
+      }
+  }
+\cs_new_protected_nopar:Npn \@@_do_def_extra_end:
+  {
+    \tl_set:Nx \l_@@_tmpa_tl
+      { \xtl_left_tl:N \g_@@_input_xtl }
+    \xtl_gpop_left_tl:N \g_@@_input_xtl
+    \xtl_gpop_left:N \g_@@_input_xtl
+    % ^^A Error on purpose.
+    \if_false: { \fi: \tl_use:N \l_@@_tmpa_tl }
+  }
+\cs_new_protected_nopar:Npn \@@_do_def_extra_begin:
+  {
+    \msg_error:nn { unravel } { runaway-def }
+    \xtl_gclear:N \g_@@_input_xtl
+  }
+\cs_set_eq:NN \@@_do_gdef: \@@_do_def:
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{One step of expansion}
+%
+% \begin{macro}[int]{\@@_do_one_expansion:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_one_expansion:
+  {
+    \tl_set:Nx \l_@@_tmpa_tl { \xtl_left_tl:N \g_@@_input_xtl }
+    \xtl_gpop_left_tl:N \g_@@_input_xtl
+    \xtl_gput_left:Nx \g_@@_input_xtl
+     { \exp_args:NV \exp_not:o \l_@@_tmpa_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_macro:}
+%   Macros are simply expanded once.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_macro:
+  {
+    \tl_set:Nx \l_@@_action_text_tl { Macro:~ \tl_to_str:N \l_@@_head_tl }
+    \@@_do_one_expansion:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_csname:, \@@_do_expandafter:}
+%    \begin{macrocode}
+\cs_new_eq:NN \@@_do_csname: \@@_do_one_expansion:
+\cs_new_eq:NN \@@_do_expandafter: \@@_do_one_expansion:
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Conditionals}
+%
+% \begin{macro}[int]{\@@_if:n, \@@_if_true:, \@@_if_false:}
+% \begin{macro}[aux]{\@@_if_loop:, \@@_if_loop_token:N}
+%   ^^A todo: look at tex.web: this does not catch \iffalse\else\else\fi.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_if:n #1
+  {
+    \int_set:Nn \l_@@_if_case_int {#1}
+    \if_case:w \c_zero
+    \int_compare:nNnF \l_@@_if_case_int = \c_zero
+      {
+        \int_zero:N \l_@@_if_nesting_int
+        \@@_if_loop:
+      }
+  }
+\cs_new_protected_nopar:Npn \@@_if_true:
+  {
+    \tl_put_right:Nx \l_@@_action_text_tl { ~ : ~ true }
+    \@@_if:n \c_zero
+  }
+\cs_new_protected_nopar:Npn \@@_if_false:
+  {
+    \tl_put_right:Nx \l_@@_action_text_tl { ~ : ~ false }
+    \@@_if:n \c_minus_one
+  }
+\cs_new_protected_nopar:Npn \@@_if_loop:
+  {
+    \xtl_if_head_is_N_type:NTF \g_@@_input_xtl
+      {
+        \tl_set:Nx \l_@@_tmpa_tl { \xtl_head:N \g_@@_input_xtl }
+        \xtl_gpop_left:N \g_@@_input_xtl
+        \tl_if_eq:NNTF \l_@@_tmpa_tl \c_space_tl
+          { \@@_if_loop: }
+          { \exp_after:wN \@@_if_loop_token:N \l_@@_tmpa_tl }
+      }
+      {
+        \xtl_if_empty:NTF \g_@@_input_tl
+          { \msg_error:nn { unravel } { runaway-if } }
+          {
+            \xtl_gpop_left:N \g_@@_input_xtl
+            \@@_if_loop:
+          }
+      }
+  }
+\cs_new_protected:Npn \@@_if_loop_token:N #1
+  {
+    \@@_cs_case:Nnn #1
+      {
+        \else:
+          { \int_compare:nNnF \l_@@_if_nesting_int = \c_zero { \@@_if_loop: } }
+        \or:
+          {
+            \int_compare:nNnTF \l_@@_if_nesting_int = \c_zero
+              {
+                \int_decr:N \l_@@_if_case_int
+                \int_compare:nNnF \l_@@_if_case_int = \c_zero { \@@_if_loop: }
+              }
+              { \@@_if_loop: }
+          }
+        \fi:
+          {
+            \int_compare:nNnTF \l_@@_if_nesting_int = \c_zero
+              { \fi: }
+              {
+                \int_decr:N \l_@@_if_nesting_int
+                \@@_if_loop:
+              }
+          }
+      }
+      {
+        \if_false: #1 \fi: \use_none:nnn \fi:
+        \int_incr:N \l_@@_if_nesting_int
+        \@@_if_loop:
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_iftrue:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_iftrue:
+  {
+    \tl_set:Nx \l_@@_action_text_tl { Compare:~ \iow_char:N \\ iftrue }
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \@@_if_true:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_iffalse:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_iffalse:
+  {
+    \tl_set:Nx \l_@@_action_text_tl { Compare:~ \iow_char:N \\ iffalse }
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \@@_if_false:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_else:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_else:
+  {
+    \tl_set:Nx \l_@@_action_text_tl { Compare:~ \iow_char:N \\ else }
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \@@_if:n { \c_minus_one }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_or:}
+%   ^^A todo: this is wrong!! Takes the else branch in all cases.
+%    \begin{macrocode}
+ % \cs_new_protected_nopar:Npn \@@_do_or:
+ %   {
+ %     \tl_set:Nx \l_@@_action_text_tl { Compare:~ \iow_char:N \\ or }
+ %     \xtl_gpop_left:N \g_@@_input_xtl
+ %     \@@_if:n { \c_minus_one }
+ %   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_ifx:}
+% \begin{macro}[aux, EXP]{\@@_do_ifx_aux:w}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_ifx:
+  {
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \xtl_gpop_left:NN \g_@@_input_xtl \l_@@_head_i_xtl
+    \xtl_if_empty:NTF \g_@@_input_xtl
+      {
+        \msg_error:nn { unravel } { runaway-if }
+      }
+      {
+        \xtl_gpop_left:NN \g_@@_input_xtl \l_@@_head_ii_xtl
+        \tl_set:Nx \l_@@_action_text_tl
+          {
+            Compare:~ \iow_char:N \\ ifx
+            \c_space_tl \xtl_to_str:N \l_@@_head_i_xtl
+            \c_space_tl \xtl_to_str:N \l_@@_head_ii_xtl
+          }
+        \xtl_head_do:NN \l_@@_head_ii_xtl \@@_do_ifx_aux:w
+          \exp_after:wN \@@_if_true:
+        \else:
+          \exp_after:wN \@@_if_false:
+        \fi:
+      }
+  }
+\cs_new_nopar:Npn \@@_do_ifx_aux:w
+  { \xtl_head_do:NN \l_@@_head_i_xtl \if_meaning:w }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_ifcase:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_ifcase:
+  {
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \tl_set:Nx \l_@@_tmpa_tl { \xtl_left_tl:N \g_@@_input_xtl }
+    \@@_tl_pop_reg:NN \l_@@_tmpa_tl \l_@@_if_case_int
+    \tl_set:Nx \l_@@_action_text_tl
+      { Compare:~ \iow_char:N \\ ifcase ~ \int_use:N \l_@@_if_case_int }
+    \xtl_gpop_left_tl:N \g_@@_input_xtl
+    \xtl_gput_left:NV \g_@@_input_xtl \l_@@_tmpa_tl
+    \@@_if:n { \l_@@_if_case_int }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_do_ifnum:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_ifnum:
+  {
+    \xtl_gpop_left:N \g_@@_input_xtl
+    \tl_set:Nx \l_@@_tmpa_tl { \xtl_left_tl:N \g_@@_input_xtl }
+    \@@_tl_pop_reg:NN \l_@@_tmpa_tl \l_@@_if_a_int
+    \tl_clear:N \l_@@_cmp_tl
+    \@@_tl_get_nsp:NN \l_@@_tmpa_tl \l_@@_cmp_tl
+    \str_case:onn { \l_@@_cmp_tl }
+      { { < } { }   { = } { }   { > } { } }
+      {
+        \msg_error:nn { unravel } { missing-cmp }
+        \tl_put_left:NV \l_@@_tmpa_tl \l_@@_cmp_tl
+        \tl_set:Nn \l_@@_cmp_tl { = }
+      }
+    \@@_tl_pop_reg:NN \l_@@_tmpa_tl \l_@@_if_b_int
+    \xtl_gpop_left_tl:N \g_@@_input_xtl
+    \xtl_gput_left:NV \g_@@_input_xtl \l_@@_tmpa_tl
+    \tl_set:Nx \l_@@_action_text_tl
+      {
+        Compare:~ \iow_char:N \\ ifnum
+        \c_space_tl \int_use:N \l_@@_if_a_int
+        \c_space_tl \tl_use:N \l_@@_cmp_tl
+        \c_space_tl \int_use:N \l_@@_if_b_int
+      }
+    \int_compare:nNnTF \l_@@_if_a_int \l_@@_cmp_tl \l_@@_if_b_int
+      { \@@_if_true: } { \@@_if_false: }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsection{Messages}
+%
+%    \begin{macrocode}
+\msg_new:nnn { unravel } { unknown-action }
+  { Internal~error:~the~action~'#1'~is~not~known. }
+%    \end{macrocode}
 %
 %    \begin{macrocode}
 %</package>
