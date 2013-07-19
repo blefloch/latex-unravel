@@ -208,6 +208,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[int]{\@@_strip_escape:w}
+% \begin{macro}[aux]{\@@_strip_escape_aux:N, \@@_strip_escape_aux:w}
+%   This is based on the 2013-07-19 (and earlier) version of
+%   \cs{cs_to_str:N}.  There are three cases.  If the escape character
+%   is printable, the charcode test is false, and
+%   \cs{@@_strip_escape_aux:N} removes one character.  If the escape
+%   character is a space, the charcode test is true, and if there is no
+%   escape charcter, the test is unfinished after |\token_to_str:N \ |.
+%   In both of those cases, \cs{@@_strip_escape_aux:w} inserts
+%   |-\__int_value:w \fi: \c_zero|.  If the escape character was a
+%   space, the test was true, and \cs{__int_value:w} converts
+%   \cs{c_zero} to~|0|, hence the leading roman numeral expansion
+%   removes a space from what follows (it is important that what follows
+%   cannot start with a digit).  Otherwise, the test takes~|-| as its
+%   second operand, is false, and the roman numeral expansion only sees
+%   \cs{c_zero}, thus does not remove anything from what follows.
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_strip_escape:w
+  {
+    \tex_romannumeral:D
+      \if_charcode:w \token_to_str:N \ \@@_strip_escape_aux:w \fi:
+      \@@_strip_escape_aux:N
+  }
+\cs_new:Npn \@@_strip_escape_aux:N #1 { \c_zero }
+\cs_new:Npn \@@_strip_escape_aux:w #1#2
+  { - \__int_value:w #1 \c_zero }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 % \subsection{Main command}
 %
 % \begin{macro}{\unravel}
@@ -427,7 +457,7 @@
   {
     \tl_set:Nx \l_@@_head_meaning_tl { \token_to_meaning:N #1 }
     \exp_args:Nx \@@_get_action_normal:nNN
-      { \exp_after:wN \cs_to_str:N \l_@@_head_meaning_tl } #1 #2
+      { \exp_after:wN \@@_strip_escape:w \l_@@_head_meaning_tl } #1 #2
   }
 \cs_new_protected:Npn \@@_get_action_normal:nNN #1#2#3
   {
