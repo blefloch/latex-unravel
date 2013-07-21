@@ -2694,7 +2694,7 @@
                 \int_gset_eq:NN \g_@@_noise_int \c_minus_one
                 \int_gzero:N \g_@@_nonstop_int
               }
-            { x } { \@@_exit:w }
+            { x } { \group_end: \@@_exit:w }
             { X } { \tex_batchmode:D \tex_end:D }
             { s } { \@@_prompt_scan_int:nn {#1} \@@_prompt_silent_steps:n }
             { o } { \@@_prompt_scan_int:nn {#1} { \int_gset:Nn \g_@@_noise_int } }
