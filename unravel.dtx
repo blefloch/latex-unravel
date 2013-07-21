@@ -62,29 +62,23 @@
 %
 % \subsection{Variables}
 %
+% \subsection{User interaction}
+%
 % \begin{variable}
-%   {
-%     \c_@@_plus_tl, \c_@@_minus_tl, \c_@@_times_tl, \c_@@_over_tl,
-%     \c_@@_lq_tl, \c_@@_rq_tl, \c_@@_dq_tl, \c_@@_lp_tl, \c_@@_rp_tl
-%   }
+%   {\g_@@_prompt_ior, \g_@@_prompt_before_tl, \l_@@_prompt_tmpa_int}
 %    \begin{macrocode}
-\tl_const:Nn \c_@@_plus_tl { + }
-\tl_const:Nn \c_@@_minus_tl { - }
-\tl_const:Nn \c_@@_times_tl { * }
-\tl_const:Nn \c_@@_over_tl { / }
-\tl_const:Nn \c_@@_lq_tl { ` }
-\tl_const:Nn \c_@@_rq_tl { ' }
-\tl_const:Nn \c_@@_dq_tl { " }
-\tl_const:Nn \c_@@_lp_tl { ( }
-\tl_const:Nn \c_@@_rp_tl { ) }
+\ior_new:N \g_@@_prompt_ior
+\tl_new:N  \g_@@_prompt_before_tl
+\int_new:N \l_@@_prompt_tmpa_int
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_tmpa_tl, \l_@@_tmpb_xtl}
-%   Temporary storage.
+% \begin{variable}{\g_@@_nonstop_int, \g_@@_noise_int}
+%   The number of prompts to skip.
 %    \begin{macrocode}
-\tl_new:N \l_@@_tmpa_tl
-\xtl_new:N \l_@@_tmpb_xtl
+\int_new:N \g_@@_nonstop_int
+\int_new:N \g_@@_noise_int
+\int_gset_eq:NN \g_@@_noise_int \c_one
 %    \end{macrocode}
 % \end{variable}
 %
@@ -94,6 +88,22 @@
 \bool_new:N \l_@@_debug_bool
 %    \end{macrocode}
 % \end{variable}
+%
+% \begin{variable}{\g_@@_step_int}
+%   Current expansion step.
+%    \begin{macrocode}
+\int_new:N \g_@@_step_int
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_action_text_tl}
+%   Text describing the action, displayed at each step.
+%    \begin{macrocode}
+\tl_new:N \l_@@_action_text_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% \subsubsection{Working with tokens}
 %
 % \begin{variable}{\g_@@_input_xtl}
 %   The user input, in various stages of expansion.
@@ -147,25 +157,31 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_head_i_xtl, \l_@@_head_ii_xtl}
-%   Extended token lists used when the first few tokens need to be inspected.
+% \begin{variable}{\l_@@_tmpa_tl, \l_@@_tmpb_xtl}
+%   Temporary storage.
 %    \begin{macrocode}
-\xtl_new:N \l_@@_head_i_xtl
-\xtl_new:N \l_@@_head_ii_xtl
+\tl_new:N \l_@@_tmpa_tl
+\xtl_new:N \l_@@_tmpb_xtl
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\g_@@_step_int}
-%   Current expansion step.
-%    \begin{macrocode}
-\int_new:N \g_@@_step_int
-%    \end{macrocode}
-% \end{variable}
+% \subsubsection{Numbers and conditionals}
 %
-% \begin{variable}{\l_@@_action_text_tl}
-%   Text describing the action, displayed at each step.
+% \begin{variable}
+%   {
+%     \c_@@_plus_tl, \c_@@_minus_tl, \c_@@_times_tl, \c_@@_over_tl,
+%     \c_@@_lq_tl, \c_@@_rq_tl, \c_@@_dq_tl, \c_@@_lp_tl, \c_@@_rp_tl
+%   }
 %    \begin{macrocode}
-\tl_new:N \l_@@_action_text_tl
+\tl_const:Nn \c_@@_plus_tl { + }
+\tl_const:Nn \c_@@_minus_tl { - }
+\tl_const:Nn \c_@@_times_tl { * }
+\tl_const:Nn \c_@@_over_tl { / }
+\tl_const:Nn \c_@@_lq_tl { ` }
+\tl_const:Nn \c_@@_rq_tl { ' }
+\tl_const:Nn \c_@@_dq_tl { " }
+\tl_const:Nn \c_@@_lp_tl { ( }
+\tl_const:Nn \c_@@_rp_tl { ) }
 %    \end{macrocode}
 % \end{variable}
 %
@@ -182,31 +198,9 @@
 % \end{variable}
 % \end{variable}
 %
-% \begin{macro}[int]{\@@_result:TF}
-%    \begin{macrocode}
-\cs_new_eq:NN \@@_result:TF \use_i:nn
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{variable}
-%   {
-%     \l_@@_if_nesting_int,
-%     \l_@@_if_case_int,
-%     \l_@@_if_a_int,
-%     \l_@@_if_b_int
-%   }
+% \begin{variable}{\l_@@_if_nesting_int}
 %    \begin{macrocode}
 \int_new:N \l_@@_if_nesting_int
-\int_new:N \l_@@_if_case_int
-\int_new:N \l_@@_if_a_int
-\int_new:N \l_@@_if_b_int
-%    \end{macrocode}
-% \end{variable}
-%
-% \begin{variable}{\l_@@_cmp_tl}
-%   Comparison operator (for \tn{ifnum} or \tn{ifdim}).
-%    \begin{macrocode}
-\tl_new:N \l_@@_cmp_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -224,6 +218,7 @@
 \cs_generate_variant:Nn \tl_if_head_is_N_type:nTF { V }
 \cs_generate_variant:Nn \tl_if_head_is_space:nT { V }
 \cs_generate_variant:Nn \tl_if_in:nnF { nV }
+\cs_generate_variant:Nn \ior_get_str:NN { Nc }
 %    \end{macrocode}
 %
 % \begin{macro}[EXP]{\@@_cs_case:Nnn}
@@ -252,34 +247,6 @@
 \cs_new_protected_nopar:Npn \@@_pop_reg_aux:w { }
 %    \end{macrocode}
 % \end{macro}
-% \end{macro}
-%
-% ^^A todo: remove?
-% \begin{macro}[int]{\@@_tl_get_nsp:NN}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_tl_get_nsp:NN #1#2
-  {
-    \tl_if_head_is_N_type:VTF #1
-      {
-        \exp_last_unbraced:Nx \@@_token_if_expandable:NTF { \tl_head:N #1 }
-          {
-            \tl_set:Nx #1 { \exp_args:NV \exp_not:o #1 }
-            \@@_tl_get_nsp:NN #1 #2
-          }
-          {
-            \tl_set:Nx #2 { \tl_head:N #1 }
-            \tl_set:Nx #1 { \tl_tail:N #1 }
-          }
-      }
-      {
-        \tl_if_head_is_space:VT #1
-          {
-            \tl_set:Nf #1 {#1}
-            \@@_tl_get_nsp:NN #1 #2
-          }
-      }
-  }
-%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_strip_escape:w}
@@ -369,6 +336,7 @@
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_tl
     \tl_put_right:Nn \l_@@_prev_input_tl {#1}
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_tl
+    \@@_print_action:x { \tl_to_str:n {#1} }
   }
 \cs_generate_variant:Nn \@@_prev_input_right:n { V , x }
 \cs_new_protected:Npn \@@_prev_input_xtl_right:N #1
@@ -376,8 +344,7 @@
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_xtl
     \xtl_concat:NNN \l_@@_prev_input_xtl \l_@@_prev_input_xtl #1
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_xtl
-    \bool_if:NT \l_@@_debug_bool
-      { \iow_term:x { \xtl_to_str:N \l_@@_prev_input_xtl } }
+    \@@_print_xtl_action:N \l_@@_prev_input_xtl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -393,6 +360,14 @@
       \prg_return_true:
     \fi:
   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int,EXP]{\@@_exit:w, \@@_exit_point:}
+%   Jump to the very end of this instance of \cs{unravel}.
+%    \begin{macrocode}
+\cs_new_eq:NN \@@_exit_point: \prg_do_nothing:
+\cs_new_protected:Npn \@@_exit:w #1 \@@_exit_point: { }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1413,6 +1388,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[int]{\@@_back_input_tl_o:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_back_input_tl_o:
+  {
+    \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
+    \xtl_gput_left:No \g_@@_input_xtl { \l_@@_tmpa_tl }
+    \@@_print_done:x
+      { \tl_to_str:N \l_@@_head_tl ~ = ~ \tl_to_str:N \l_@@_tmpa_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[int]{\@@_expand:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_expand:
@@ -1506,7 +1493,7 @@
         \int_compare:nNnT
           \l_@@_head_cmd_int = { \@@_tex_use:n { end-group_char } }
           {
-            \msg_error:nn { unravel  } { runaway-def }
+            \msg_error:nn { unravel  } { missing-lbrace }
             \@@_insert_group_begin:
           }
       }
@@ -1580,6 +1567,7 @@
               \l_@@_head_cmd_int = { \@@_tex_use:n { the } }
               {
                 \seq_gput_right:NV \l_@@_prev_input_seq \l_@@_head_tl
+                \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
                 \@@_get_x_next:
                 \@@_scan_something_internal:n { 5 }
                 \seq_gpop_right:NN \l_@@_prev_input_seq \l_@@_head_tl
@@ -1619,7 +1607,7 @@
 %   \item |tok_val=5| token lists.
 %   \end{itemize}
 %   Scans something internal, and places it to the right of the last
-%   item of \cs{@@_prev_input_right:n}.
+%   item of \cs{g_@@_prev_input_seq}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_something_internal:n #1
   {
@@ -1690,7 +1678,9 @@
 \cs_new_eq:NN \@@_scan_something_def_font:n
   \@@_scan_something_toks_register:n
 \cs_new_protected:Npn \@@_scan_something_assign_int:n #1
-  { \@@_prev_input_right:V \l_@@_head_tl }
+  {
+    \@@_prev_input_right:V \l_@@_head_tl
+  }
 \tl_map_inline:nn
   {
     { assign_dimen } { assign_glue } { assign_mu_glue } { set_aux }
@@ -1937,6 +1927,7 @@
         \msg_error:nnx { unravel } { unknown-cmd }
           { \int_use:N \l_@@_head_cmd_int }
         \xtl_gconcat:NNN \g_@@_output_xtl \g_@@_output_xtl \l_@@_head_xtl
+        \@@_print_action:
       }
   }
 %    \end{macrocode}
@@ -1981,9 +1972,11 @@
     \@@_print_action:x { \xtl_to_str:N \l_@@_head_xtl }
     \@@_expand:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_xtl
-    \@@_print_done:x { done: ~ \xtl_to_str:N \l_@@_head_xtl }
+    \tl_set:Nx \l_@@_action_text_tl
+      { back_input: ~ \xtl_to_str:N \l_@@_head_xtl }
     \xtl_pop_left:N \l_@@_head_xtl
     \@@_back_input:
+    \@@_print_action:
   }
 %    \end{macrocode}
 %
@@ -1994,10 +1987,9 @@
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
     \@@_csname_loop:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \tl_put_right:NV \l_@@_tmpa_tl \l_@@_head_tl
-    \exp_args:NNV \xtl_gput_left:No \g_@@_input_xtl \l_@@_tmpa_tl
-    \@@_print_done:x { done: ~ \tl_to_str:N \l_@@_tmpa_tl }
+    \@@_prev_input_right:V \l_@@_head_tl
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_back_input_tl_o:
   }
 \cs_new_protected_nopar:Npn \@@_csname_loop:
   {
@@ -2012,9 +2004,7 @@
           }
       }
       {
-        \@@_prev_input_right:x
-          { \@@_token_to_char:N \l_@@_head_token }
-        \@@_print_action:x { \token_to_meaning:N \l_@@_head_token }
+        \@@_prev_input_right:x { \@@_token_to_char:N \l_@@_head_token }
         \@@_csname_loop:
       }
   }
@@ -2057,9 +2047,8 @@
         { 31 } \@@_scan_pdfximagebbox:
       }
       { }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \exp_args:NNV \xtl_gput_left:No \g_@@_input_xtl \l_@@_tmpa_tl
-    \@@_print_done:x { done: ~ \tl_to_str:N \l_@@_tmpa_tl }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_back_input_tl_o:
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdfstrcmp:
   {
@@ -2096,31 +2085,26 @@
     \@@_print_action:
     \@@_get_x_next:
     \@@_scan_something_internal:n { 5 }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \exp_args:NNV \xtl_gput_left:No \g_@@_input_xtl \l_@@_tmpa_tl
-    \@@_print_done:x { done: ~ \tl_to_str:N \l_@@_tmpa_tl }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_back_input_tl_o:
   }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_new_tex_cmd:nn { top_bot_mark }
-  {
-    \exp_args:NNV \xtl_gput_left:No \g_@@_input_xtl \l_@@_head_tl
-    \@@_print_action:
-  }
+\@@_new_tex_cmd:nn { top_bot_mark } { \@@_back_input_tl_o: }
 %    \end{macrocode}
 %
-% Macros are simply expanded once.
+% ^^A todo: suppress back_input_tl_o output for macros?
+%
+% Macros are simply expanded once.  They can only involve tokens until
+% the first unmatched begin-group or the first unmatched end-group,
+% \emph{i.e.}, the longest balanced prefix of \cs{g_@@_input_xtl}.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { call }
   {
-    \tl_set:Nx \l_@@_action_text_tl { Macro:~ \tl_to_str:N \l_@@_head_tl }
-    \tl_set:Nx \l_@@_tmpa_tl
-      { \exp_not:V \l_@@_head_tl \xtl_left_tl:N \g_@@_input_xtl }
+    \tl_put_right:Nx \l_@@_head_tl { \xtl_left_tl:N \g_@@_input_xtl }
     \xtl_gpop_left_tl:N \g_@@_input_xtl
-    \xtl_gput_left:Nx \g_@@_input_xtl
-     { \exp_args:NV \exp_not:o \l_@@_tmpa_tl }
-    \@@_print_action:
+    \@@_back_input_tl_o:
   }
 %    \end{macrocode}
 %
@@ -2264,40 +2248,49 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cond_aux:n #1
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_print_action:
+    % ^^A todo: \unless 'is_unless:=(cur_chr>=32); this_if:=cur_chr mod 32'
     \int_case:nnn \l_@@_head_char_int
       {
-        {  0 } { \@@_test_two_chars: } % if
-        {  1 } { \@@_test_two_chars: } % ifcat
-        {  2 } { \@@_test_two_vals:N \@@_scan_int: } % ifnum
-        {  3 } { \@@_test_two_vals:N \@@_scan_normal_dimen: } % ifdim
-        {  4 } { \@@_scan_int: } % ifodd
-        % {  5 } { } % ifvmode
-        % {  6 } { } % ifhmode
-        % {  7 } { } % ifmmode
-        % {  8 } { } % ifinner
-        {  9 } { \@@_scan_int: } % ifvoid
-        { 10 } { \@@_scan_int: } % ifhbox
-        { 11 } { \@@_scan_int: } % ifvbox
-        { 12 } { \@@_test_ifx: } % ifx
-        { 13 } { \@@_scan_int: } % ifeof
-        % { 14 } { } % iftrue
-        % { 15 } { } % iffalse
-        { 16 } { \@@_test_case:n {#1} } % ifcase
-        { 17 } { \@@_test_ifdefined: } % ifdefined
-        { 18 } { \@@_test_ifcsname: } % ifcsname
-        { 19 } { \@@_scan_font_ident: \@@_scan_int: } % iffontchar
+        { 16 } { \@@_test_case:n {#1} }
+        { 21 } { \@@_test_pdfprimitive:n {#1} } % ^^A todo
       }
-      { }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_show:N \l_@@_head_tl
-    \l_@@_head_tl \scan_stop:
-      \exp_after:wN \@@_cond_true:n
-    \else:
-      \exp_after:wN \@@_cond_false:n
-    \fi:
-    {#1}
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:
+        \int_case:nnn \l_@@_head_char_int
+          {
+            {  0 } { \@@_test_two_chars: } % if
+            {  1 } { \@@_test_two_chars: } % ifcat
+            {  2 } { \@@_test_two_vals:N \@@_scan_int: } % ifnum
+            {  3 } { \@@_test_two_vals:N \@@_scan_normal_dimen: } % ifdim
+            {  4 } { \@@_scan_int: } % ifodd
+            % {  5 } { } % ifvmode
+            % {  6 } { } % ifhmode
+            % {  7 } { } % ifmmode
+            % {  8 } { } % ifinner
+            {  9 } { \@@_scan_int: } % ifvoid
+            { 10 } { \@@_scan_int: } % ifhbox
+            { 11 } { \@@_scan_int: } % ifvbox
+            { 12 } { \@@_test_ifx: } % ifx
+            { 13 } { \@@_scan_int: } % ifeof
+            % { 14 } { } % iftrue
+            % { 15 } { } % iffalse
+            { 17 } { \@@_test_ifdefined: } % ifdefined
+            { 18 } { \@@_test_ifcsname: } % ifcsname
+            { 19 } { \@@_scan_font_ident: \@@_scan_int: } % iffontchar
+            % { 20 } { } % ifincsname % ^^A ?
+            { 22 } { \@@_test_two_vals:N \@@_scan_int: } % ifpdfabsnum
+            { 23 } { \@@_test_two_vals:N \@@_scan_normal_dimen: } % ifpdfabsdim
+          }
+          { }
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \l_@@_head_tl \scan_stop:
+          \exp_after:wN \@@_cond_true:n
+        \else:
+          \exp_after:wN \@@_cond_false:n
+        \fi:
+        {#1}
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2307,7 +2300,7 @@
 \cs_new_protected:Npn \@@_cond_true:n #1
   {
     \@@_change_if_limit:nn { 3 } {#1} % wait for else/fi
-    \@@_print_done:x { \tl_to_str:N \l_@@_head_tl = true }
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl = true }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2317,9 +2310,9 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cond_false:n #1
   {
-    \@@_print_done:x { \tl_to_str:N \l_@@_head_tl = false }
     \@@_cond_false_loop:n {#1}
     \@@_cond_false_common:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl = false } % ^^A ?
   }
 \cs_new_protected:Npn \@@_cond_false_loop:n #1
   {
@@ -2343,7 +2336,6 @@
     \int_compare:nNnTF \l_@@_head_char_int = { 2 }
       { \@@_cond_pop: }
       { \int_gset:Nn \g_@@_if_limit_int { 2 } } % wait for fi
-    % \@@_print_action:x { false }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2403,6 +2395,7 @@
             \xtl_to_str:N \l_@@_head_xtl
             \xtl_to_str:N \l_@@_tmpb_xtl
           }
+        % ^^A todo: cleanup
         \xtl_head_do:NN \l_@@_tmpb_xtl \@@_test_ifx_aux:w
           \seq_gput_right:Nn \g_@@_prev_input_seq { \use:c { if_true: } }
         \else:
@@ -2419,12 +2412,15 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_case:n #1
   {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \bool_if:NT \l_@@_debug_bool { \iow_term:n { {\ifcase level~#1} } }
     \@@_scan_int:
     \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \exp_args:Nx \@@_test_case_aux:nn { \tl_tail:N \l_@@_head_tl } {#1}
+    \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
+    \exp_args:No \@@_test_case_aux:nn { \l_@@_head_tl } {#1} % ^^A does text_case_aux use prev_input_seq?
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \seq_gput_right:Nn \g_@@_prev_input_seq
-      { \if_true: \exp_after:wN \use_none:n \else: }
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 \cs_new_protected:Npn \@@_test_case_aux:nn #1#2
   {
@@ -2439,14 +2435,12 @@
                 \exp_args:Nf \@@_test_case_aux:nn
                   { \int_eval:n { #1 - 1 } } {#2}
               }
-              { \@@_test_false_common: }
+              { \@@_cond_false_common: }
           }
           {
             \token_if_eq_meaning:NNT \l_@@_head_token \fi:
-              {
-                \@@_cond_pop:
-                \@@_test_case_aux:nn {#1} {#2}
-              }
+              { \@@_cond_pop: }
+            \@@_test_case_aux:nn {#1} {#2}
           }
       }
   }
@@ -2483,7 +2477,6 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_ifcsname:
   {
-    \@@_print_action:
     \@@_csname_loop:
     \@@_prev_input_right:V \l_@@_head_tl
   }
@@ -2524,6 +2517,8 @@
 %
 % ^^A Not implemented yet: non-hash-doubling version.
 %
+% \subsubsection{Print}
+%
 % Let us start with the procedure which prints to the terminal: this
 % will help me test the code while I'm writing it.
 %
@@ -2549,70 +2544,33 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state:
   {
-    \xtl_if_empty:NF \g_@@_output_xtl
+    \int_compare:nNnT \g_@@_noise_int > \c_zero
       {
-        \@@_print_message:nn { <| ~ } { \xtl_to_str:N \g_@@_output_xtl }
-        \@@_print:n { }
-      }
-    \seq_if_empty:NF \g_@@_prev_input_seq
-      {
-        \@@_print_message:nn { || ~ }
-          { \seq_map_function:NN \g_@@_prev_input_seq \@@_to_str:n }
-        \@@_print:n { }
-      }
-    \@@_print_message:nn { |> ~ } { \xtl_to_str:N \g_@@_input_xtl }
-    \@@_print:n { }
-    \bool_if:NT \l_@@_debug_bool
-      {
-        \tl_set:Nx \l_@@_tmpa_tl
-          { \exp_args:NV \@@_if_from_if_limit:n \g_@@_if_limit_int }
-        \tl_map_inline:Nn \g_@@_if_limit_tl
+        \xtl_if_empty:NF \g_@@_output_xtl
           {
-            \tl_put_left:Nx \l_@@_tmpa_tl
-              { \@@_if_from_if_limit:n {##1} }
+            \@@_print_message:nn { <| ~ } { \xtl_to_str:N \g_@@_output_xtl }
+            \@@_print:n { }
           }
-        \tl_put_right:Nx \l_@@_tmpa_tl
+        \seq_if_empty:NF \g_@@_prev_input_seq
           {
-            \seq_map_function:NN \g_@@_prev_input_seq \@@_to_str:n
-            \xtl_to_str:N \g_@@_input_xtl
+            \@@_print_message:nn { || ~ }
+              { \seq_map_function:NN \g_@@_prev_input_seq \@@_to_str:n }
+            \@@_print:n { }
           }
-        \msg_term:n { \exp_not:V \l_@@_tmpa_tl }
-        \tl_set_rescan:Nno \l_@@_tmpa_tl { } \l_@@_tmpa_tl
-        \msg_term:n { \l_@@_tmpa_tl }
-        \int_compare:nNnT \etex_currentiflevel:D > \c_one { \BOOM }
+        \@@_print_message:nn { |> ~ } { \xtl_to_str:N \g_@@_input_xtl }
+        \@@_print:n { }
+        \xtl_if_empty:NF \g_@@_input_xtl
+          {
+            \@@_print_message:nn { }
+              {
+                \xtl_head_do:NN \g_@@_input_xtl \token_to_str:N
+                = \xtl_head_do:NN \g_@@_input_xtl \token_to_meaning:N
+              }
+            \@@_print:n { }
+          }
       }
-    % \@@_print_message:nn { }
-    %   {
-    %     \xtl_head_do:NN \g_@@_input_xtl \token_to_str:N
-    %     = \xtl_head_do:NN \g_@@_input_xtl \token_to_meaning:N
-    %   }
-    % \@@_print:n { }
+    \@@_prompt:
   }
-\cs_new:Npn \@@_if_from_if_limit:n #1
-  {
-    \int_case:nnn {#1}
-      {
-        { 2 } { \exp_not:n { \if_false: \else: } }
-        { 3 } { \exp_not:n { \if_true: } }
-        { 4 } { \exp_not:n { \if_case:w \c_zero } }
-      }
-      { }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_print_done:n, \@@_print_done:x}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_print_done:n #1
-  {
-    \int_gincr:N \g_@@_step_int
-    \@@_print_message:nn { }
-      {
-        Step~ \int_use:N \g_@@_step_int \
-        =====~ \tl_to_str:n {#1} .
-      }
-  }
-\cs_generate_variant:Nn \@@_print_done:n { x }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2636,6 +2594,35 @@
     \@@_print_action:
   }
 \cs_generate_variant:Nn \@@_print_action:n { x }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_xtl_action:N}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_print_xtl_action:N #1
+  {
+    \@@_print_action:x
+      {
+        \xtl_head_do:NN #1 \token_to_str:N : ~
+        \xtl_head_do:NN #1 \token_to_meaning:N
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_print_done:n, \@@_print_done:x}
+%    \begin{macrocode}
+ % \cs_new_protected:Npn \@@_print_done:n #1
+ %   {
+ %     \int_gincr:N \g_@@_step_int
+ %     \@@_print_message:nn { }
+ %       {
+ %         Step~ \int_use:N \g_@@_step_int \
+ %         =====~ \tl_to_str:n {#1} .
+ %       }
+ %   }
+ \cs_new_eq:NN \@@_print_done:n \@@_print_action:n
+\cs_generate_variant:Nn \@@_print_done:n { x }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2668,7 +2655,78 @@
     \@@_print:n { }
     \@@_print_message:nn { <| ~ } { \xtl_to_str:N \g_@@_output_xtl }
     \@@_print_message:nn { }
-      { \\ Step~ \int_use:N \g_@@_step_int \ was~ the~last! }
+      { \\ Step~ \int_use:N \g_@@_step_int \ was~ the~last! \\\\\\ }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Prompt}
+%
+% \begin{macro}[int]{\@@_prompt:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_prompt:
+  {
+    \int_gdecr:N \g_@@_nonstop_int
+    \int_compare:nNnF \g_@@_nonstop_int > \c_zero
+      {
+        \group_begin:
+          \int_set_eq:NN \tex_escapechar:D \c_minus_one
+          \int_set_eq:NN \tex_endlinechar:D \c_minus_one
+          \tl_use:N \g_@@_prompt_before_tl
+          \tl_gclear:N \g_@@_prompt_before_tl
+          \@@_prompt_aux:
+        \group_end:
+      }
+  }
+\cs_new_protected_nopar:Npn \@@_prompt_aux:
+  {
+    \ior_get_str:Nc \g_@@_prompt_ior { Your~input }
+    \exp_args:Nv \@@_prompt_treat:n { Your~input }
+  }
+\cs_new_protected:Npn \@@_prompt_treat:n #1
+  {
+    \tl_if_empty:nF {#1}
+      {
+        \exp_args:Nx \str_case:nnn { \tl_head:n {#1} }
+          {
+            { q }
+              {
+                \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+                \int_gzero:N \g_@@_nonstop_int
+              }
+            { x } { \@@_exit:w }
+            { X } { \tex_batchmode:D \tex_end:D }
+            { s } { \@@_prompt_scan_int:nn {#1} \@@_prompt_silent_steps:n }
+            { o } { \@@_prompt_scan_int:nn {#1} { \int_gset:Nn \g_@@_noise_int } }
+          }
+          { \@@_prompt_help: }
+      }
+  }
+\cs_new_protected:Npn \@@_prompt_scan_int:nn #1
+  {
+    \tex_afterassignment:D \@@_prompt_scan_int_after:wn
+    \l_@@_prompt_tmpa_int = 0 \use_none:n #1 \scan_stop:
+  }
+\cs_new_protected:Npn \@@_prompt_scan_int_after:wn #1 \scan_stop: #2
+  {
+    #2 \l_@@_prompt_tmpa_int
+    \tl_if_blank:nF {#1} { \@@_prompt_treat:n {#1} }
+  }
+\cs_new_protected:Npn \@@_prompt_help:
+  {
+    \@@_print:n { "q":~semi-quiet }
+    \@@_print:n { "x":~exit~this~instance~of~unravel }
+    \@@_print:n { "X":~try~harder~to~exit }
+    \@@_print:n { "s<num>":~do~<num>~steps~silently }
+    \@@_print:n { "o<num>":~0~=>~only~log~not~online,~1~=>~both,~-1~=>~neither.}
+    \@@_prompt_aux:
+  }
+\cs_new_protected:Npn \@@_prompt_silent_steps:n #1
+  {
+    \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+    \tl_gset:Nn \g_@@_prompt_before_tl
+      { \int_gset_eq:NN \g_@@_noise_int \c_one }
+    \int_gset:Nn \g_@@_nonstop_int {#1}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2705,6 +2763,7 @@
     \tl_gclear:N \g_@@_if_limit_tl
     \int_gzero:N \g_@@_if_limit_int
     \int_gzero:N \g_@@_if_depth_int
+    \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
     \@@_print_welcome:
     \bool_until_do:nn
       { \xtl_if_empty_p:N \g_@@_input_xtl } { \@@_step: }
@@ -2713,6 +2772,7 @@
     \tl_if_empty:NF \g_@@_if_limit_tl { \BOOM }
     \int_compare:nNnF \g_@@_if_limit_int = \c_zero { \BOOM }
     \int_compare:nNnF \g_@@_if_depth_int = \c_zero { \BOOM }
+    \@@_exit_point:
   }
 %    \end{macrocode}
 % \end{macro}
