@@ -1652,9 +1652,9 @@
       {
         \token_if_eq_catcode:NNF \l_@@_head_token \c_space_token
           { \@@_back_input: }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_xtl
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
         \seq_gput_right:Nx \g_@@_prev_input_seq
-          { \xtl_to_str:N \l_@@_tmpb_xtl }
+          { \gtl_to_str:N \l_@@_tmpb_gtl }
         \prg_return_true:
       }
     \str_if_eq_x:nnTF
