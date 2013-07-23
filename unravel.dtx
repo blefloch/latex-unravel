@@ -1669,6 +1669,7 @@
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_scan_toks_to_str:NN}
+%   ^^A todo: hash doubling is wrong?
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks_to_str:NN #1#2
   {
@@ -2178,12 +2179,12 @@
 % \subsubsection{Characters}
 %
 %    \begin{macrocode}
-\@@_new_tex_cmd:nn { relax }
+\@@_new_tex_cmd:nn { relax }                                % 0
   { \@@_print_action: }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_new_tex_cmd:nn { begin-group_char }
+\@@_new_tex_cmd:nn { begin-group_char }                     % 1
   {
     \gtl_gconcat:NNN \g_@@_output_gtl
       \g_@@_output_gtl \c_group_begin_gtl
@@ -2193,7 +2194,7 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_new_tex_cmd:nn { end-group_char }
+\@@_new_tex_cmd:nn { end-group_char }                       % 2
   {
     \gtl_gconcat:NNN \g_@@_output_gtl
       \g_@@_output_gtl \c_group_end_gtl
@@ -2203,7 +2204,7 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_new_tex_cmd:nn { blank_char }
+\@@_new_tex_cmd:nn { blank_char }                           % 10
   {
     \gtl_gput_right:Nn \g_@@_output_gtl { ~ }
     \@@_print_action:
@@ -2212,14 +2213,14 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\@@_new_tex_cmd:nn { the_char }
+\@@_new_tex_cmd:nn { the_char }                             % 11
   {
     \gtl_gput_right:Nx \g_@@_output_gtl
       { \@@_token_to_char:N \l_@@_head_token }
     \@@_print_action:
     \l_@@_head_token
   }
-\@@_new_eq_tex_cmd:nn { other_char } { the_char }
+\@@_new_eq_tex_cmd:nn { other_char } { the_char }           % 12
 %    \end{macrocode}
 %
 % \subsubsection{More}
@@ -2235,6 +2236,31 @@
         \gtl_to_str:N \l_@@_head_gtl
       }
     \gtl_gset_eq:NN \g_@@_after_assignment_gtl \l_@@_head_gtl
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { message }                              % 58
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl
+  }
+%    \end{macrocode}
+%
+% Extensions are implemented in a later section.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { extension }                            % 59
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_extension_operands:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \tl_use:N \l_@@_head_tl
+    % ^^A todo \@@_print_action: ?
   }
 %    \end{macrocode}
 %
@@ -2823,6 +2849,7 @@
                 \@@_back_input:
                 \gtl_gput_left:Nx \g_@@_input_gtl
                   { \if_int_compare:w 0 = 0 \fi: }
+                \@@_print_action:
               }
           }
           { \msg_error:nn { unravel } { extra-fi-or-else } }
@@ -2831,6 +2858,8 @@
   }
 \cs_new_protected_nopar:Npn \@@_fi_or_else_loop:
   {
+    % ^^A todo: in this print_action the token itself is missing.
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl :~skipped }
     \int_compare:nNnTF \l_@@_head_char_int = \c_two
       { \@@_cond_pop: }
       {
@@ -2839,6 +2868,399 @@
       }
   }
 %    \end{macrocode}
+%
+% \subsubsection{Extensions}
+%
+% ^^A todo: make \@@_skip_optional_equals: store in prev_input.
+%
+% \begin{macro}[int]{\@@_scan_extension_operands:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_extension_operands:
+  {
+    \int_case:nnn \l_@@_head_char_int
+      {
+        { 0 } % openout
+          {
+            \@@_scan_int:
+            \@@_skip_optional_equals:
+            \@@_scan_file_name:
+          }
+        { 1 } % write
+          {
+            \@@_scan_int:
+            \@@_scan_toks:NN \c_false_bool \c_false_bool
+          }
+        { 2 } % closeout
+          { \@@_scan_int: }
+        { 3 } % special
+          { \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool }
+        { 4 } % immediate
+          { \@@_scan_immediate_operands: }
+        { 5 } % setlanguage
+          {
+            \mode_if_horizontal:TF
+              { \@@_scan_int: }
+              { \msg_error:nn { unravel } { invalid-mode } }
+          }
+        { 6 } % pdfliteral
+          {
+            \@@_scan_keyword:nnF { direct } { DIRECT }
+              { \@@_scan_keyword:nn { page } { PAGE } }
+            \@@_scan_pdf_ext_toks:
+          }
+        { 7 } % pdfobj
+          {
+            \@@_scan_keyword:nnTF { reserveobjnum } { RESERVEOBJNUM }
+              { \@@_skip_optional_space: }
+              {
+                \@@_scan_keyword:nnF { useobjnum } { USEOBJNUM }
+                  { \@@_scan_int: }
+                \@@_scan_keyword:nnT { stream } { STREAM }
+                  {
+                    \@@_scan_keyword:nnT { attr } { ATTR }
+                      { \@@_scan_pdf_ext_toks: }
+                  }
+                \@@_scan_keyword:nn { file } { FILE }
+                \@@_scan_pdf_ext_toks:
+              }
+          }
+        { 8 } % pdfrefobj
+          { \@@_scan_int: }
+        { 9 } % pdfxform
+          {
+            \@@_scan_keyword:nnT { attr } { ATTR }
+              { \@@_scan_pdf_ext_toks: }
+            \@@_scan_keyword:nnTF { resources } { RESOURCES }
+              { \@@_scan_pdf_ext_toks: }
+            \@@_scan_int:
+          }
+        { 10 } % pdfrefxform
+          { \@@_scan_int: }
+        { 11 } % pdfximage
+          { \@@_scan_image: }
+        { 12 } % pdfrefximage
+          { \@@_scan_int: }
+        { 13 } % pdfannot
+          {
+            \@@_scan_keyword:nnTF { reserveobjnum } { RESERVEOBJNUM }
+              { \@@_scan_optional_space: }
+              {
+                \@@_scan_keyword:nnT { useobjnum } { USEOBJNUM }
+                  { \@@_scan_int: }
+                \@@_scan_alt_rule:
+                \@@_scan_pdf_ext_toks:
+              }
+          }
+        { 14 } % pdfstartlink
+          {
+            \mode_if_vertical:TF
+              { \msg_error:nn { unravel } { invalid-mode } }
+              {
+                \@@_scan_rule_attr:
+                \@@_scan_action:
+              }
+          }
+        { 15 } % pdfendlink
+          {
+            \mode_if_vertical:T
+              { \msg_error:nn { unravel } { invalid-mode } }
+          }
+        { 16 } % pdfoutline
+          {
+            \@@_scan_keyword:nnT { attr } { ATTR }
+              { \@@_scan_pdf_ext_toks: }
+            \@@_scan_action:
+            \@@_scan_keyword:nnT { count } { COUNT } { \@@_scan_int: }
+            \@@_scan_pdf_ext_toks:
+          }
+        { 17 } % pdfdest
+          { \@@_scan_pdfdest_operands: }
+        { 18 } % pdfthread
+          { \@@_scan_rule_attr: \@@_scan_thread_id: }
+        { 19 } % pdfstartthread
+          { \@@_scan_rule_attr: \@@_scan_thread_id: }
+        { 20 } % pdfendthread
+          { }
+        { 21 } % pdfsavepos
+          { }
+        { 22 } % pdfinfo
+          { \@@_scan_pdf_ext_toks: }
+        { 23 } % pdfcatalog
+          {
+            \@@_scan_pdf_ext_toks:
+            \@@_scan_keyword:nn { openaction } { OPENACTION }
+              { \@@_scan_action: }
+          }
+        { 24 } % pdfnames
+          { \@@_scan_pdf_ext_toks: }
+        { 25 } % pdffontattr
+          {
+            \@@_scan_font_ident:
+            \@@_scan_pdf_ext_toks:
+          }
+        { 26 } % pdfincludechars
+          {
+            \@@_scan_font_ident:
+            \@@_scan_pdf_ext_toks:
+          }
+        { 27 } % pdfmapfile
+          { \@@_scan_pdf_ext_toks: }
+        { 28 } % pdfmapline
+          { \@@_scan_pdf_ext_toks: }
+        { 29 } % pdftrailer
+          { \@@_scan_pdf_ext_toks: }
+        { 30 } % pdfresettimer
+          { }
+        { 31 } % pdffontexpand
+          {
+            \@@_scan_font_ident:
+            \@@_scan_optional_equals:
+            \@@_scan_int:
+            \@@_scan_int:
+            \@@_scan_int:
+            \@@_scan_keyword:nnT { autoexpand } { AUTOEXPAND }
+              { \@@_skip_optional_space: }
+          }
+        { 32 } % pdfsetrandomseed
+          { \@@_scan_int: }
+        { 33 } % pdfsnaprefpoint
+          { }
+        { 34 } % pdfsnapy
+          { \@@_scan_normal_glue: }
+        { 35 } % pdfsnapycomp
+          { \@@_scan_int: }
+        { 36 } % pdfglyphtounicode
+          {
+            \@@_scan_pdf_ext_toks:
+            \@@_scan_pdf_ext_toks:
+          }
+        { 37 } % pdfcolorstack
+          { \@@_scan_pdfcolorstack_operands: }
+        { 38 } % pdfsetmatrix
+          { \@@_scan_pdf_ext_toks: }
+        { 39 } % pdfsave
+          { }
+        { 40 } % pdfrestore
+          { }
+        { 41 } % pdfnobuiltintounicode
+          { \@@_scan_font_ident: }
+      }
+      { } % no other cases.
+  }
+%    \end{macrocode}
+%
+% \begin{macro}[aux]{\@@_scan_pdfcolorstack_operands:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_pdfcolorstack_operands:
+  {
+    \@@_scan_int:
+    \@@_scan_keyword:nnF { set } { SET }
+      {
+        \@@_scan_keyword:nnF { push } { PUSH }
+          {
+            \@@_scan_keyword:nnF { pop } { POP }
+              {
+                \@@_scan_keyword:nnF { current } { CURRENT }
+                  {
+                    \msg_error:nn { unravel }
+                      { color-stack-action-missing }
+                  }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_rule_attr:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_rule_attr:
+  {
+    \@@_scan_alt_rule:
+    \@@_scan_keyword:nnT { attr } { ATTR }
+      { \@@_scan_pdf_ext_toks: }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_scan_action:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_action:
+  {
+    \@@_scan_keyword:nnTF { user } { USER }
+      { \@@_scan_pdf_ext_toks: }
+      {
+        \@@_scan_keyword:nnF { goto } { GOTO }
+          {
+            \@@_scan_keyword:nnF { thread } { THREAD }
+              { \msg_error:nn { unravel } { action-type-missing } }
+          }
+      }
+    \@@_scan_keyword:nnT { file } { FILE }
+      { \@@_scan_pdf_ext_toks: }
+    \@@_scan_keyword:nnTF { page } { PAGE }
+      {
+        \@@_scan_int:
+        \@@_scan_pdf_ext_toks:
+      }
+      {
+        \@@_scan_keyword:nnTF { name } { NAME }
+          { \@@_scan_pdf_ext_toks: }
+          {
+            \@@_scan_keyword:nnTF { num } { NUM }
+              { \@@_scan_int: }
+              { \msg_error:nn { unravel } { identifier-type-missing } }
+          }
+      }
+    \@@_scan_keyword:nnTF { newwindow } { NEWWINDOW }
+      { \@@_skip_optional_space: }
+      {
+        \@@_scan_keyword:nnT { nonewwindow } { NONEWWINDOW }
+          { \@@_skip_optional_space: }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_alt_rule:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_alt_rule:
+  {
+    \@@_scan_keyword:nnTF { width } { WIDTH }
+      {
+        \@@_scan_normal_dimen:
+        \@@_scan_alt_rule:
+      }
+      {
+        \@@_scan_keyword:nnTF { height } { HEIGHT }
+          {
+            \@@_scan_normal_dimen:
+            \@@_scan_alt_rule:
+          }
+          {
+            \@@_scan_keyword:nnT { depth } { DEPTH }
+              {
+                \@@_scan_normal_dimen:
+                \@@_scan_alt_rule:
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_image:}
+%   Used by \tn{pdfximage}.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_image:
+  {
+    \@@_scan_rule_attr:
+    \@@_scan_keyword:nnTF { named } { NAMED }
+      { \@@_scan_pdf_ext_toks: }
+      {
+        \@@_scan_keyword:nnT { page } { PAGE }
+          { \@@_scan_int: }
+      }
+    \@@_scan_keyword:nnT { colorspace } { COLORSPACE }
+      { \@@_scan_int: }
+    \@@_scan_pdf_ext_toks:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_scan_immediate_operands:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_immediate_operands:
+  {
+    \@@_get_x_next:
+    \int_compare:nNnTF
+      \l_@@_head_cmd_int = { \@@_tex_use:n { extension } }
+      {
+        \int_compare:nNnTF
+          \l_@@_head_char_int < { 3 } % openout, write, closeout
+          { \@@_scan_immediate_operands_aux: }
+          {
+            \int_case:nnn \l_@@_head_char_int
+              {
+                { 7 } { \@@_scan_extension_operands_aux: } % pdfobj
+                { 9 } { \@@_scan_extension_operands_aux: } % pdfxform
+                { 11 } { \@@_scan_extension_operands_aux: } % pdfximage
+              }
+              { \@@_scan_immediate_operands_bad: }
+          }
+      }
+      { \@@_scan_immediate_operands_bad: }
+  }
+\cs_new_protected_nopar:Npn \@@_scan_immediate_operands_aux:
+  {
+    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_scan_extension_operands:
+  }
+\cs_new_protected_nopar:Npn \@@_scan_immediate_operands_bad:
+  {
+    \@@_back_input:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl ignored }
+    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+  }
+
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_pdfdest_operands:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_pdfdest_operands:
+  {
+    \@@_scan_keyword:nnTF { num } { NUM }
+      { \@@_scan_int: }
+      {
+        \@@_scan_keyword:nnTF { name } { NAME }
+          { \@@_scan_pdf_ext_toks: }
+          { \msg_error:nn { unravel } { identifier-type-missing } }
+      }
+    \@@_scan_keyword:nnTF { xyz } { XYZ }
+      {
+        \@@_scan_keyword:nnT { zoom } { ZOOM }
+          { \@@_scan_int: }
+      }
+      {
+        \@@_scan_keyword:nnF { fitbh } { FITBH }
+          {
+            \@@_scan_keyword:nnF { fitbv } { FITBV }
+              {
+                \@@_scan_keyword:nnF { fitb } { FITB }
+                  {
+                    \@@_scan_keyword:nnF { fith } { FITH }
+                      {
+                        \@@_scan_keyword:nnF { fitv } { FITV }
+                          {
+                            \@@_scan_keyword:nnTF
+                              { fitr } { FITR }
+                              {
+                                \@@_skip_optional_space:
+                                \@@_scan_alt_rule:
+                                \use_none:n
+                              }
+                              {
+                                \@@_scan_keyword:nnF
+                                  { fit } { FIT }
+                                  {
+                                    \msg_error:nn { unravel }
+                                      {
+                                        destination-type-missing
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+    \@@_skip_optional_space:
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsubsection{Assignments}
 %
@@ -3528,10 +3950,9 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_outcome:
   {
-    \int_set_eq:NN \g_@@_nonstop_int \c_two
-    \@@_print_state:
-    \@@_print_message:nn { }
-      { \\ Step~ \int_use:N \g_@@_step_int \ was~ the~last! \\\\\\ }
+    % \int_set_eq:NN \g_@@_nonstop_int \c_two
+    % \@@_print_state:
+    \@@_print_message:nn { } { [=====~The~end!~=====] \\ }
   }
 %    \end{macrocode}
 % \end{macro}
