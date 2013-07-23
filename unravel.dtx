@@ -223,10 +223,16 @@
 % \end{macro}
 %
 % \begin{variable}
-%   {\g_@@_set_box_allowed_bool, \g_@@_name_in_progress_bool}
-%   Global booleans, keeping track of whether \tn{setbox} is currently
-%   allowed, and of whether \tn{input} should expand.
+%   {
+%     \g_@@_after_assignment_gtl,
+%     \g_@@_set_box_allowed_bool,
+%     \g_@@_name_in_progress_bool
+%   }
+%   Global variables keeping track of the state of \TeX{}.  Token to
+%   insert after the next assignment.  Is \tn{setbox} currently allowed?
+%   Should \tn{input} expand?
 %    \begin{macrocode}
+\gtl_new:N \g_@@_after_assignment_gtl
 \bool_new:N \g_@@_set_box_allowed_bool
 \bool_new:N \g_@@_name_in_progress_bool
 %    \end{macrocode}
@@ -299,25 +305,6 @@
 %    \begin{macrocode}
 \cs_new_eq:NN \@@_cs_case:Nnn \tl_case:Nnn
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\@@_tl_pop_reg:NN}
-% \begin{macro}[aux]{\@@_pop_reg_aux:w}
-%   Retrieve an integer from a token list.
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_tl_pop_reg:NN #1#2
-  {
-    \cs_set_protected_nopar:Npn \@@_pop_reg_aux:w
-      {
-        \tex_edef:D #1
-          { \etex_unexpanded:D \exp_after:wN { \if_false: } } \fi:
-      }
-    \tex_afterassignment:D \@@_pop_reg_aux:w
-    \if_false: { { \fi: #2 = #1 } }
-  }
-\cs_new_protected_nopar:Npn \@@_pop_reg_aux:w { }
-%    \end{macrocode}
-% \end{macro}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_strip_escape:w}
@@ -2157,7 +2144,7 @@
   {
     \tl_set:Nx \l_@@_action_text_tl
       {
-        \tl_to_str:N \l_@@_head_tl ~
+        \tl_to_str:N \l_@@_head_tl
         = ~ \token_to_meaning:N \l_@@_head_token
       }
     \bool_if:NT \l_@@_debug_bool
@@ -2236,6 +2223,20 @@
 %    \end{macrocode}
 %
 % \subsubsection{More}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { after_assignment }                     % 40
+  {
+    \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
+    \@@_get_next:
+    \@@_print_action:x
+      {
+        Afterassignment:~\tl_to_str:N \l_@@_tmpa_tl
+        \gtl_to_str:N \l_@@_head_gtl
+      }
+    \gtl_gset_eq:NN \g_@@_after_assignment_gtl \l_@@_head_gtl
+  }
+%    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { begin_group }                          % 61
@@ -2434,11 +2435,6 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { call }
   {
-    \tl_set:Nx \l_@@_action_text_tl
-      {
-        \tl_to_str:N \l_@@_head_tl
-        = ~ \token_to_meaning:N \l_@@_head_token
-      }
     \tl_put_right:Nx \l_@@_head_tl { \gtl_left_tl:N \g_@@_input_gtl }
     \gtl_gpop_left_tl:N \g_@@_input_gtl
     \exp_args:NNV \gtl_gput_left:No \g_@@_input_gtl \l_@@_head_tl
@@ -2885,15 +2881,34 @@
               { \tl_to_str:N \l_@@_tmpa_tl }
               { \tl_to_str:N l_@@_head_tl }
             \@@_back_input:
+            \@@_omit_after_assignment:w
           }
       }
     % ^^A todo: Discard non-\global prefixes if they are irrelevant
     % ^^A todo: Adjust for the setting of \globaldefs
     \cs_if_exist_use:cF { @@_prefixed_ \int_use:N \l_@@_head_cmd_int : }
-      { \msg_error:nn { unravel } { not-implemented } }
-    % ^^A todo: \@@_insert_afterassignment:
+      {
+        \msg_error:nn { unravel } { not-implemented }
+        \@@_omit_after_assignment:w
+      }
+    \@@_after_assignment:
   }
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_after_assignment:}
+% \begin{macro}[aux]{\@@_omit_after_assignment:w}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_after_assignment:
+  {
+    \gtl_gconcat:NNN \g_@@_input_gtl
+      \g_@@_after_assignment_gtl \g_@@_input_gtl
+    \gtl_gclear:N \g_@@_after_assignment_gtl
+  }
+\cs_new_protected_nopar:Npn \@@_omit_after_assignment:w
+    #1 \@@_after_assignment: { }
+%    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_prefixed_new:nn}
@@ -3171,6 +3186,7 @@
       {
         \msg_error:nn { unravel } { improper-setbox }
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_omit_after_assignment:w
       }
   }
 %    \end{macrocode}
@@ -3202,6 +3218,7 @@
     % new_letterspaced_font(a);
     \msg_error:nn { unravel } { not-implemented }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_omit_after_assignment:w
   }
 \@@_prefixed_new:nn { pdf_copy_font }                       % 102
   {
@@ -3209,6 +3226,7 @@
     % make_font_copy(a);
     \msg_error:nn { unravel } { not-implemented }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_omit_after_assignment:w
   }
 %    \end{macrocode}
 %
@@ -3225,7 +3243,8 @@
 %   \begin{macrocode}
 \cs_new_protected:Npn \@@_do_operation:N #1
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_print_action:
     \@@_get_x_next:
     \int_compare:nNnTF
       \l_@@_head_cmd_int > { \@@_tex_use:n { assign_mu_glue } }
@@ -3253,7 +3272,7 @@
   {
     \msg_error:nn { unravel } { after-advance }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    % Also no afterassignment token.
+    \@@_omit_after_assignment:w
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3264,14 +3283,18 @@
   { \exp_args:NNV \@@_do_register_aux:Nn #1 \l_@@_head_char_int }
 \cs_new_protected:Npn \@@_do_register_aux:Nn #1#2
   {
-    \int_compare:nNnT { \tl_tail:n {#2} } = \c_zero
+    \int_compare:nNnTF { \tl_tail:n {#2} } = \c_zero
       {
         \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
-        \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+        \@@_print_action:
         \@@_scan_int:
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_right_silent:V \l_@@_head_tl
       }
-    \@@_prev_input_right:V \l_@@_head_tl
+      {
+        \@@_prev_input_right_silent:V \l_@@_head_tl
+        \@@_print_action:
+      }
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
     \exp_args:NNf \@@_do_register_set:Nn #1
       { \int_eval:n { #2 / 1 000 000 } }
@@ -3284,8 +3307,14 @@
 \cs_new_protected:Npn \@@_do_register_set:Nn #1#2
   {
     \int_compare:nNnTF {#1} = \c_zero
-      { \@@_skip_optional_equals: } % truly register command
-      { \@@_scan_keyword:nn { by } { BY } } % \advance, \multiply, \divide
+      { % truly register command
+        \@@_skip_optional_equals:
+        \@@_prev_input_right_silent:n { = }
+      }
+      { % \advance, \multiply, \divide
+        \@@_scan_keyword:nnF { by } { BY }
+          { \@@_prev_input_right_silent:n { by } }
+      }
     \int_compare:nNnTF {#1} < \c_two
       {
         \int_case:nnn {#2}
@@ -3307,7 +3336,6 @@
 % ^^A todo: implement \@@_scan_normal_dimen:
 % ^^A todo: implement \@@_scan_normal_glue:
 % ^^A todo: implement \@@_scan_mu_glue:
-% ^^A todo: implement afterassignment.
 %
 % The following is used for instance when making accents.
 %    \begin{macrocode}
@@ -3450,14 +3478,17 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_assigned_token:
   {
+    \@@_after_assignment: % ^^A todo: simplify
     \@@_print_action:x
       {
         Set~ \exp_after:wN \token_to_str:N \l_@@_defined_tl
         = \exp_after:wN \token_to_meaning:N \l_@@_defined_tl
       }
+    \@@_omit_after_assignment:w
   }
 \cs_new_protected_nopar:Npn \@@_print_assigned_register:
   {
+    \@@_after_assignment: % ^^A todo: simplify
     \@@_print_action:x
       {
         Set~ \exp_after:wN \token_to_str:N \l_@@_defined_tl
@@ -3465,6 +3496,7 @@
           { ( \exp_after:wN \token_to_meaning:N \l_@@_defined_tl ) }
         = \exp_after:wN \tex_the:D \l_@@_defined_tl
       }
+    \@@_omit_after_assignment:w
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3603,13 +3635,15 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_unravel:n #1
   {
+    \int_gzero:N  \g_@@_step_int
     \gtl_gset:Nn  \g_@@_input_gtl {#1}
     \gtl_gclear:N \g_@@_output_gtl
-    \int_gzero:N \g_@@_step_int
-    \tl_gclear:N \g_@@_if_limit_tl
-    \int_gzero:N \g_@@_if_limit_int
-    \int_gzero:N \g_@@_if_depth_int
-    \bool_gset_true:N \g_@@_set_box_allowed_bool
+    \tl_gclear:N  \g_@@_if_limit_tl
+    \int_gzero:N  \g_@@_if_limit_int
+    \int_gzero:N  \g_@@_if_depth_int
+    \gtl_gclear:N \g_@@_after_assignment_gtl
+    \bool_gset_true:N  \g_@@_set_box_allowed_bool
+    \bool_gset_false:N \g_@@_name_in_progress_bool
     \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
     \@@_print_welcome:
     \bool_until_do:nn
