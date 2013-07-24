@@ -296,6 +296,7 @@
 \cs_generate_variant:Nn \tl_if_in:nnF { nV }
 \cs_generate_variant:Nn \tl_if_eq:nnT { V }
 \cs_generate_variant:Nn \ior_get_str:NN { Nc }
+\cs_generate_variant:Nn \tl_if_in:NnTF { No }
 %    \end{macrocode}
 %
 % \begin{macro}[EXP]{\@@_cs_case:Nnn}
@@ -428,8 +429,12 @@
 % \end{macro}
 %
 % \begin{macro}[int,EXP,pTF]{\@@_token_if_expandable:N}
+%   We need to cook up our own version of \cs{token_if_expandable:NTF}
+%   because the \texttt{expl3} one does not think that |undefined| is
+%   expandable.
 %    \begin{macrocode}
-\prg_new_conditional:Npnn \@@_token_if_expandable:N #1 { p , T ,  F , TF }
+\prg_new_conditional:Npnn \@@_token_if_expandable:N #1
+  { p , T ,  F , TF }
   {
     \exp_after:wN \if_meaning:w \exp_not:N #1 #1
       \prg_return_false:
@@ -1251,14 +1256,25 @@
 %
 % \subsection{Get next token}
 %
+% We define here two functions which fetch the next token in the token list.
+% \begin{itemize}
+% \item \cs{@@_get_next:} sets \cs{l_@@_head_gtl}, \cs{l_@@_head_token},
+%   and if possible \cs{l_@@_head_tl} (otherwise it is cleared).
+% \item \cs{@@_get_token:} additionally sets \cs{l_@@_head_cmd_int} and
+%   \cs{l_@@_head_char_int}.
+% \end{itemize}
+% The latter is based on \cs{@@_set_cmd:} which derives the
+% \cs{l_@@_head_cmd_int} and \cs{l_@@_head_char_int} from
+% \cs{l_@@_head_token}.
+%
 % \begin{macro}[int]{\@@_get_next:}
-%   Remove the first token in \cs{g_@@_input_gtl}, and store it in
-%   \cs{l_@@_head_gtl}.  If it is not an explicit begin-group/end-group
-%   character token, store it in \cs{l_@@_head_tl} too.  Set
-%   \cs{l_@@_head_token} equal in meaning to it.  Store its command code
-%   in \cs{l_@@_head_cmd_int} and its character code in
-%   \cs{l_@@_head_char_int}.  If there is in fact nothing left,
-%   forcefully stop working.
+% \begin{macro}[aux]{\@@_get_next_aux:w}
+%   If the \cs{g_@@_input_gtl} is empty, forcefully exit.  Otherwise,
+%   remove the first token in \cs{g_@@_input_gtl}, and store it in
+%   \cs{l_@@_head_gtl}.  Set \cs{l_@@_head_token} equal in meaning to
+%   that first token.  Then set \cs{l_@@_head_tl} to contain the token,
+%   unless it is a begin-group or end-group character, in which case
+%   this token list is emptied.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_get_next:
   {
@@ -1266,70 +1282,71 @@
       { \@@_exit:w }
       {
         \gtl_gpop_left:NN \g_@@_input_gtl \l_@@_head_gtl
-        \gtl_if_tl:NTF \l_@@_head_gtl
-          { \@@_get_next_aux_tl: }
-          { \@@_get_next_aux_special: }
+        \gtl_head_do:NN \l_@@_head_gtl \@@_get_next_aux:w
+        \tl_set:Nx \l_@@_head_tl
+          { \gtl_if_tl:NT \l_@@_head_gtl { \gtl_head:N \l_@@_head_gtl } }
       }
+  }
+\cs_new_protected_nopar:Npn \@@_get_next_aux:w
+  { \cs_set_eq:NN \l_@@_head_token }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_get_token:}
+%   Call \cs{@@_get_next:} to set \cs{l_@@_head_gtl}, \cs{l_@@_head_tl}
+%   and \cs{l_@@_head_token}, then call \cs{@@_set_cmd:} to set
+%   \cs{l_@@_head_cmd_int} and \cs{l_@@_head_char_int}.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_get_token:
+  {
+    \@@_get_next:
+    \@@_set_cmd:
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_next_aux_special:}
-%   The \texttt{gtl} is already set.  Since its token does not form a
-%   valid token list, set the \texttt{tl} to be empty.  The token is
-%   either a begin-group or an end-group token, the command is
-%   |begin-group_char| or |end-group_char|, and the character code is a
-%   left or right brace.
+% \begin{macro}[int]{\@@_set_cmd:}
+%   After the call to \cs{@@_get_next:}, we find the command code
+%   \cs{l_@@_head_cmd_int} and the character code
+%   \cs{l_@@_head_char_int}, based only on \cs{l_@@_head_token}.  First
+%   set \cs{l_@@_head_meaning_tl} from the \tn{meaning} of the first
+%   token.  If the corresponding primitive exists, use the information
+%   to set the two integers.  If the token is expandable, it can either
+%   be a macro or be a primitive that we somehow do not know
+%   (\emph{e.g.}, an expandable \XeTeX{} or \LuaTeX{} primitive
+%   perhaps).  Otherwise, it can be a control sequence or a character.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_special:
+\cs_new_protected_nopar:Npn \@@_set_cmd:
   {
-    \tl_clear:N \l_@@_head_tl
-    \gtl_if_eq:NNTF \l_@@_head_gtl \c_group_begin_gtl
-      {
-        \cs_set_eq:NN \l_@@_head_token \c_group_begin_token
-        \int_set:Nn \l_@@_head_cmd_int
-          { \@@_tex_use:n { begin-group_char } }
-        \int_set:Nn \l_@@_head_char_int { `\{ }
-      }
-      {
-        \cs_set_eq:NN \l_@@_head_token \c_group_end_token
-        \int_set:Nn \l_@@_head_cmd_int
-          { \@@_tex_use:n { end-group_char } }
-        \int_set:Nn \l_@@_head_char_int { `\} }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[aux]{\@@_get_next_aux_tl:}
-%   The \texttt{gtl} is already set and we can store it as a
-%   \texttt{tl}.  Then copy the token as \cs{l_@@_head_token}.
-%    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_tl:
-  {
-    \tl_set:Nx \l_@@_head_tl { \gtl_head:N \l_@@_head_gtl }
-    \exp_last_unbraced:NNo \cs_set_eq:NN \l_@@_head_token \l_@@_head_tl
-    \@@_get_next_aux_meaning:
-    \@@_get_tex_primitive:oF \l_@@_head_meaning_tl
+    \@@_set_cmd_aux_meaning:
+    \@@_set_cmd_aux_primitive:oF { \l_@@_head_meaning_tl }
       {
         \@@_token_if_expandable:NTF \l_@@_head_token
           {
             \token_if_macro:NTF \l_@@_head_token
-              { \@@_get_next_aux_macro: }
-              { \@@_get_next_aux_unknown: }
+              { \@@_set_cmd_aux_macro: }
+              { \@@_set_cmd_aux_unknown: }
           }
           {
             \token_if_cs:NTF \l_@@_head_token
-              {
-                \tl_if_in:NnTF \l_@@_head_meaning_tl { " }
-                  { \@@_get_next_aux_given: }
-                  { \@@_get_next_aux_reg: }
-              }
-              { \@@_get_next_aux_char: }
+              { \@@_set_cmd_aux_cs: }
+              { \@@_set_cmd_aux_char: }
           }
       }
   }
-\cs_new_protected_nopar:Npn \@@_get_next_aux_meaning:
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_set_cmd_aux_meaning:}
+% \begin{macro}[aux,EXP]{\@@_set_cmd_aux_meaning:w}
+%   Remove the leading escape character (\cs{@@_strip_escape:w} takes
+%   care of special cases there) from the \tn{meaning} of the first
+%   token, then remove anything after the first~|:|, which is present
+%   for macros, for marks, and for that character too.  For any
+%   primitive except \tn{nullfont}, this leaves the primitive's name.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_set_cmd_aux_meaning:
   {
     \tl_set:Nx \l_@@_head_meaning_tl
       {
@@ -1339,22 +1356,50 @@
       }
     \tl_set:Nx \l_@@_head_meaning_tl
       {
-        \exp_after:wN \@@_get_next_aux_meaning:w
+        \exp_after:wN \@@_set_cmd_aux_meaning:w
           \l_@@_head_meaning_tl \q_stop
       }
   }
 \use:x
   {
-    \cs_new:Npn \exp_not:N \@@_get_next_aux_meaning:w
+    \cs_new:Npn \exp_not:N \@@_set_cmd_aux_meaning:w
       ##1 \token_to_str:N : ##2 \exp_not:N \q_stop {##1}
   }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_next_aux_macro:}
-%   The token had better be a macro.
+% \begin{macro}[aux]
+%   {\@@_set_cmd_aux_primitive:nF, \@@_set_cmd_aux_primitive:oF}
+% \begin{macro}[aux]{\@@_set_cmd_aux_primitive:nn}
+%   Test if there is any information about the given (cleaned-up)
+%   \tn{meaning}.  If there is, use that as the command and character
+%   integers.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_macro:
+\cs_new_protected:Npn \@@_set_cmd_aux_primitive:nF #1
+  {
+    \cs_if_exist:cTF { c_@@_tex_#1_tl }
+      {
+        \exp_last_unbraced:Nv \@@_set_cmd_aux_primitive:nn
+          { c_@@_tex_#1_tl }
+      }
+  }
+\cs_generate_variant:Nn \@@_set_cmd_aux_primitive:nF { o }
+\cs_new_protected:Npn \@@_set_cmd_aux_primitive:nn #1#2
+  {
+    \int_set:Nn \l_@@_head_cmd_int {#1}
+    \int_set:Nn \l_@@_head_char_int {#2}
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% ^^A todo: should we worry about call vs long_call etc.?
+% \begin{macro}[aux]{\@@_set_cmd_aux_macro:}
+%   The token is a macro.  For now we do not test if the macro is
+%   long/outer.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_set_cmd_aux_macro:
   {
     \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { call } }
     \int_zero:N \l_@@_head_char_int
@@ -1362,141 +1407,125 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_next_aux_unknown:}
+% \begin{macro}[aux]{\@@_set_cmd_aux_unknown:}
+%   Complain about an unknown primitive, and consider it as if it were
+%   \tn{relax}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_unknown:
+\cs_new_protected_nopar:Npn \@@_set_cmd_aux_unknown:
   {
-    \int_zero:N \l_@@_head_cmd_int
-    \int_zero:N \l_@@_head_char_int
+    \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
+      \c_@@_tex_relax_tl
     \msg_error:nnx { unravel } { unknown-primitive }
       { \l_@@_head_meaning_tl }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: '\firstmark' and friends
-% ^^A todo: 'select font ...'
-%
-% \begin{macro}[aux]{\@@_get_next_aux_given:, \@@_get_next_aux_given:w}
+% \begin{macro}[aux]{\@@_set_cmd_aux_cs:}
+%   If the \tn{meaning} contains \verb*|elect font|, the control
+%   sequence is \tn{nullfont} or similar (note that we do not search for
+%   \verb*|select font|, as the code to trim the escape character from
+%   the meaning may have removed the leading~|s|).  Otherwise, we expect
+%   the \tn{meaning} to be \tn{char} or \tn{mathchar} followed by
+%   |"|~and an uppercase hexadecimal number, or one of \tn{count},
+%   \tn{dimen}, \tn{skip}, \tn{muskip} or \tn{toks} followed by a
+%   decimal number.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_given:
+\cs_new_protected_nopar:Npn \@@_set_cmd_aux_cs:
   {
-    \exp_after:wN \@@_get_next_aux_given:w
-      \l_@@_head_meaning_tl \q_stop
-  }
-\cs_new_protected:Npn \@@_get_next_aux_given:w #1 " #2 \q_stop
-  {
-    \int_set:Nn \l_@@_head_cmd_int
+    \tl_if_in:NoTF \l_@@_head_meaning_tl
+      { \tl_to_str:n { elect~font } }
       {
-        \str_case:nnn {#1}
-          {
-            { char }     { \@@_tex_use:n { char_given } }
-            { mathchar } { \@@_tex_use:n { math_given } }
-          }
-          { 0 }
+        \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
+          \c_@@_tex_nullfont_tl
       }
-    \int_set:Nn \l_@@_head_char_int { " #2 }
+      { \@@_set_cmd_aux_numeric: }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_next_aux_reg:, \@@_get_next_aux_reg:w}
-% \begin{macro}[aux,rEXP]{\@@_get_next_aux_reg:N}
+% \begin{macro}[aux]
+%   {
+%     \@@_set_cmd_aux_numeric:,
+%     \@@_set_cmd_aux_numeric:w,
+%     \@@_set_cmd_aux_given:n
+%   }
+% \begin{macro}[aux,rEXP]{\@@_set_cmd_aux_numeric:N}
+%   Insert \cs{q_mark} before the first non-letter (in fact, anything
+%   less than~|A|) in the \tn{meaning} by looping one character at a
+%   time (skipping spaces, but there should be none).  We expect the
+%   first part to be |char| or~|mathchar|, or one of |count|, |dimen|,
+%   |skip|, |muskip|, or |toks|.  In the first two cases, the command is
+%   |char_given| or |math_given|.  It is otherwise identical to the
+%   corresponding primitive (\tn{count} \emph{etc.}).  We then keep
+%   track of the associated number (part after \cs{q_mark}) in
+%   \cs{l_@@_head_char_int}.  For unknown non-expandable primitives,
+%   assuming that their meaning consists solely of letters, the
+%   \cs{q_mark} is inserted at their end, and is followed by~|+0|, so
+%   nothing breaks.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_reg:
+\cs_new_protected_nopar:Npn \@@_set_cmd_aux_numeric:
   {
     \tl_set:Nx \l_@@_tmpa_tl
       {
-        \exp_after:wN \@@_get_next_aux_reg:N \l_@@_head_meaning_tl
-        \scan_stop: 0
+        \exp_after:wN \@@_set_cmd_aux_numeric:N
+          \l_@@_head_meaning_tl + 0
       }
-    \exp_after:wN \@@_get_next_aux_reg:w \l_@@_tmpa_tl \q_stop
+    \exp_after:wN \@@_set_cmd_aux_numeric:w \l_@@_tmpa_tl \q_stop
   }
-\cs_new:Npn \@@_get_next_aux_reg:N #1
+\cs_new:Npn \@@_set_cmd_aux_numeric:N #1
   {
-    \if_int_compare:w \c_nine < 1 \exp_not:N #1 \exp_stop_f:
-      \scan_stop: #1
-    \else:
-      #1
-      \exp_after:wN \@@_get_next_aux_reg:N
+    \if_int_compare:w `#1 < `A \exp_stop_f:
+      \exp_not:N \q_mark
+      \exp_after:wN \use_i:nn
     \fi:
+    #1 \@@_set_cmd_aux_numeric:N
   }
-\cs_new_protected:Npn \@@_get_next_aux_reg:w
-    #1 \scan_stop: #2 \scan_stop: #3 \q_stop
+\cs_new_protected:Npn \@@_set_cmd_aux_numeric:w #1 \q_mark #2 \q_stop
   {
-    \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { register } }
-    \int_set:Nn \l_@@_head_char_int { #2 + 100 000 }
     \str_case:nnn {#1}
       {
-        { count  } { \int_add:Nn \l_@@_head_char_int { 1 000 000 } }
-        { dimen  } { \int_add:Nn \l_@@_head_char_int { 2 000 000 } }
-        { skip   } { \int_add:Nn \l_@@_head_char_int { 3 000 000 } }
-        { muskip } { \int_add:Nn \l_@@_head_char_int { 4 000 000 } }
-        { toks }
-          {
-            \int_set:Nn \l_@@_head_cmd_int
-              { \@@_tex_use:n { toks_register } }
-          }
+        { char }     { \@@_set_cmd_aux_given:n { char_given } }
+        { mathchar } { \@@_set_cmd_aux_given:n { math_given } }
       }
       {
-        \int_zero:N \l_@@_head_cmd_int
-        \msg_error:nn { unravel } { unknown-register }
+        \@@_set_cmd_aux_primitive:nF {#1}
+          { \@@_set_cmd_aux_unknown: }
+        \int_add:Nn \l_@@_head_char_int { 100 000 }
       }
-    \tl_if_empty:nT {#2} { \msg_error:nnx { unravel } { internal } { get-next } }
+    \int_add:Nn \l_@@_head_char_int {#2}
+  }
+\cs_new_protected:Npn \@@_set_cmd_aux_given:n #1
+  {
+    \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n {#1} }
+    \int_zero:N \l_@@_head_char_int
   }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_next_aux_char:}
-% \begin{macro}[aux,EXP]{\@@_get_next_aux_char:w}
+% \begin{macro}[aux]{\@@_set_cmd_aux_char:}
+% \begin{macro}[aux]{\@@_set_cmd_aux_char:w}
+%   At this point, the \tn{meaning} token list has been shortened by the
+%   code meant to remove the escape character.  We thus set it again to
+%   the \tn{meaning} of the leading token.  The command is then the
+%   first word (delimited by a space) of the \tn{meaning}, followed by
+%   |_char|, except for category other, where we use |other_char|.  For
+%   the character code, there is a need to expand
+%   \cs{@@_token_to_char:N} before placing~|`|.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_aux_char:
+\cs_new_protected_nopar:Npn \@@_set_cmd_aux_char:
   {
     \tl_set:Nx \l_@@_head_meaning_tl
       { \token_to_meaning:N \l_@@_head_token }
-    \int_set:Nn \l_@@_head_cmd_int
-      {
-        \exp_args:Nf \@@_tex_use:n
-          {
-            \token_if_eq_catcode:NNTF
-              \l_@@_head_token \c_catcode_other_token
-              { other }
-              {
-                \exp_after:wN \@@_get_next_aux_char:w
-                \l_@@_head_meaning_tl \q_stop
-              }
-            _char
-          }
-      }
-    \tl_set:Nx \l_@@_tmpa_tl { ` \@@_token_to_char:N \l_@@_head_token }
-    \int_set:Nn \l_@@_head_char_int { \l_@@_tmpa_tl }
+    \token_if_eq_catcode:NNT \l_@@_head_token \c_catcode_other_token
+      { \tl_set:Nn \l_@@_head_meaning_tl { other~ } }
+    \exp_after:wN \@@_set_cmd_aux_char:w \l_@@_head_meaning_tl \q_stop
+    \exp_args:NNx \int_set:Nn \l_@@_head_char_int
+      { ` \@@_token_to_char:N \l_@@_head_token }
   }
-\cs_new:Npn \@@_get_next_aux_char:w #1 ~ #2 \q_stop {#1}
-%    \end{macrocode}
-% \end{macro}
-% \end{macro}
-%
-% \begin{macro}[aux,EXP,pTF]
-%   {\@@_get_tex_primitive:n,\@@_get_tex_primitive:o}
-% \begin{macro}[aux]{\@@_get_tex_primitive_aux:nn}
-%    \begin{macrocode}
-\prg_new_protected_conditional:Npnn \@@_get_tex_primitive:n #1 { F }
-  {
-    \cs_if_exist:cTF { c_@@_tex_#1_tl }
-      {
-        \exp_last_unbraced:Nv \@@_get_tex_primitive_aux:nn
-          { c_@@_tex_#1_tl }
-        \prg_return_true:
-      }
-      { \prg_return_false: }
-  }
-\cs_generate_variant:Nn \@@_get_tex_primitive:nF { o }
-\cs_new_protected:Npn \@@_get_tex_primitive_aux:nn #1#2
-  {
-    \int_set:Nn \l_@@_head_cmd_int {#1}
-    \int_set:Nn \l_@@_head_char_int {#2}
-  }
+\cs_new_protected:Npn \@@_set_cmd_aux_char:w #1 ~ #2 \q_stop
+  { \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { #1_char } } }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -1515,9 +1544,9 @@
 \cs_new_protected_nopar:Npn \@@_back_input_tl_o:
   {
     \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
-    \gtl_gput_left:No \g_@@_input_gtl { \l_@@_tmpa_tl }
+    \gtl_gput_left:NV \g_@@_input_gtl \l_@@_tmpa_tl
     \@@_print_done:x
-      { \tl_to_str:N \l_@@_head_tl ~ = ~ \tl_to_str:N \l_@@_tmpa_tl }
+      { \tl_to_str:N \l_@@_head_tl = \tl_to_str:N \l_@@_tmpa_tl }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -1528,19 +1557,21 @@
   {
     \@@_get_next:
     \@@_token_if_expandable:NTF \l_@@_head_token
-      { \@@_do_step: }
+      { \@@_set_cmd: \@@_do_step: }
       { \@@_back_input: }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_get_x_next:}
+%   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_get_x_next:
   {
     \@@_get_next:
     \@@_token_if_expandable:NT \l_@@_head_token
       {
+        \@@_set_cmd:
         \@@_do_step:
         \@@_get_x_next:
       }
@@ -1549,6 +1580,7 @@
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_get_x_non_blank:}
+%   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_get_x_non_blank:
   {
@@ -1560,6 +1592,7 @@
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_get_x_non_relax:}
+%   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_get_x_non_relax:
   {
@@ -1743,7 +1776,7 @@
     \bool_if:NTF #1
       {
         \@@_print_gtl_action:N \l_@@_head_gtl
-        \@@_scan_group_aux:Nnn \@@_get_next_expanding: { 1 }
+        \@@_scan_group_aux:Nnn \@@_get_token_expanding: { 1 }
           { \@@_print_gtl_action:N \l_@@_head_gtl }
       }
       { \@@_scan_group_aux:Nnn \@@_get_next: { 1 } { } }
@@ -1773,11 +1806,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_next_expanding:}
+% \begin{macro}[aux]{\@@_get_token_expanding:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next_expanding:
+\cs_new_protected_nopar:Npn \@@_get_token_expanding:
   {
-    \@@_get_next:
+    \@@_get_token:
     \int_compare:nNnT \l_@@_head_cmd_int = { \@@_tex_use:n { call } }
       {
         \token_if_protected_macro:NT \l_@@_head_token
@@ -1806,11 +1839,11 @@
             \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
             \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
             \@@_print_gtl_action:N \l_@@_tmpb_gtl
-            \@@_get_next_expanding:
+            \@@_get_token_expanding:
           }
           {
             \@@_do_step:
-            \@@_get_next_expanding:
+            \@@_get_token_expanding:
           }
       }
   }
@@ -1834,6 +1867,7 @@
  % ^^A todo: redo: use \cs_if_exist_use:cF
 \cs_new_protected:Npn \@@_scan_something_internal:n #1
   {
+    \@@_set_cmd:
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
     \int_case:nnn \l_@@_head_cmd_int
@@ -2060,6 +2094,7 @@
 \cs_new_protected_nopar:Npn \@@_scan_int:
   {
     \@@_scan_signs:
+    \@@_set_cmd:
     \int_compare:nNnTF
       \l_@@_head_cmd_int < { \@@_tex_use:n { min_internal } }
       { \@@_scan_int_char: }
@@ -2131,7 +2166,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_step:
   {
-    \@@_get_next:
+    \@@_get_token:
     \@@_do_step:
   }
 %    \end{macrocode}
@@ -2230,12 +2265,12 @@
   {
     \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
     \@@_get_next:
+    \gtl_gset_eq:NN \g_@@_after_assignment_gtl \l_@@_head_gtl
     \@@_print_action:x
       {
         Afterassignment:~\tl_to_str:N \l_@@_tmpa_tl
         \gtl_to_str:N \l_@@_head_gtl
       }
-    \gtl_gset_eq:NN \g_@@_after_assignment_gtl \l_@@_head_gtl
   }
 %    \end{macrocode}
 %
@@ -2676,21 +2711,21 @@
     \@@_pass_text:
     \int_compare:nNnTF \g_@@_if_depth_int = {#1}
       {
-        \int_compare:nNnT \l_@@_head_char_int = { 4 }
+        \token_if_eq_meaning:NNT \l_@@_head_token \or:
           {
             \msg_error:nn { unravel } { extra-or }
             \@@_cond_false_loop:n {#1}
           }
       }
       {
-        \int_compare:nNnT \l_@@_head_char_int = { 2 } % fi
+        \token_if_eq_meaning:NNT \l_@@_head_token \fi:
           { \@@_cond_pop: }
         \@@_cond_false_loop:n {#1}
       }
   }
 \cs_new_protected_nopar:Npn \@@_cond_false_common:
   {
-    \int_compare:nNnTF \l_@@_head_char_int = { 2 }
+    \token_if_eq_meaning:NNTF \l_@@_head_token \fi:
       { \@@_cond_pop: }
       { \int_gset:Nn \g_@@_if_limit_int { 2 } } % wait for fi
   }
@@ -2854,17 +2889,23 @@
           }
           { \msg_error:nn { unravel } { extra-fi-or-else } }
       }
-      { \@@_fi_or_else_loop: }
+      {
+        \exp_args:Nx \@@_fi_or_else_loop:n
+          { \tl_to_str:N \l_@@_head_tl }
+      }
   }
-\cs_new_protected_nopar:Npn \@@_fi_or_else_loop:
+\cs_new_protected:Npn \@@_fi_or_else_loop:n #1
   {
     % ^^A todo: in this print_action the token itself is missing.
-    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl :~skipped }
     \int_compare:nNnTF \l_@@_head_char_int = \c_two
-      { \@@_cond_pop: }
+      {
+        \@@_print_action:x { #1 =>~skipped~to~\tl_to_str:N \l_@@_head_tl }
+        \@@_cond_pop:
+      }
       {
         \@@_pass_text:
-        \@@_fi_or_else_loop:
+        \@@_set_cmd:
+        \@@_fi_or_else_loop:n {#1}
       }
   }
 %    \end{macrocode}
@@ -3174,6 +3215,7 @@
 \cs_new_protected_nopar:Npn \@@_scan_immediate_operands:
   {
     \@@_get_x_next:
+    \@@_set_cmd:
     \int_compare:nNnTF
       \l_@@_head_cmd_int = { \@@_tex_use:n { extension } }
       {
@@ -3296,6 +3338,7 @@
       {
         \@@_prev_input_right:V \l_@@_head_tl
         \@@_get_x_non_relax:
+        \@@_set_cmd:
         \int_compare:nNnF \l_@@_head_cmd_int
           > { \@@_tex_use:n { max_non_prefixed_command } }
           {
@@ -3411,6 +3454,7 @@
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
     \@@_skip_optional_equals:
     \@@_get_x_non_relax:
+    \@@_set_cmd:
     \int_compare:nNnTF
       \l_@@_head_cmd_int = { \@@_tex_use:n { toks_register } }
       {
@@ -3520,19 +3564,16 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
-    \int_compare:nNnTF \l_@@_head_char_int = \c_zero
+    \token_if_eq_meaning:NNTF \l_@@_head_token \tex_let:D
       { % |let|
         \@@_scan_r_token:
         \@@_get_next:
         \bool_while_do:nn
           { \token_if_eq_catcode_p:NN \l_@@_head_token \c_space_token }
           { \@@_get_next: }
-        \tl_if_eq:NNT \l_@@_head_tl \c_@@_eq_tl
-          {
-            \@@_get_next:
-            \token_if_eq_catcode:NNT \l_@@_head_token \c_space_token
-              { \@@_get_next: }
-          }
+        \tl_if_eq:NNT \l_@@_head_tl \c_@@_eq_tl { \@@_get_next: }
+        \token_if_eq_catcode:NNT \l_@@_head_token \c_space_token
+          { \@@_get_next: }
       }
       { % |futurelet|
         \@@_scan_r_token:
@@ -3669,6 +3710,7 @@
     \@@_prev_input_right_silent:V \l_@@_head_tl
     \@@_print_action:
     \@@_get_x_next:
+    \@@_set_cmd:
     \int_compare:nNnTF
       \l_@@_head_cmd_int > { \@@_tex_use:n { assign_mu_glue } }
       {
@@ -3765,6 +3807,7 @@
 \cs_new_protected_nopar:Npn \@@_do_assignments:
   {
     \@@_get_x_non_relax:
+    \@@_set_cmd:
     \int_compare:nNnT
       \l_@@_head_cmd_int > { \@@_tex_use:n { max_non_prefixed_command } }
       {
