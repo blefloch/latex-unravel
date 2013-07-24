@@ -2034,6 +2034,82 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[aux]{\@@_scan_expr:N}
+% \begin{macro}[aux]{\@@_scan_expr_aux:NN, \@@_scan_factor:N}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_expr:N #1
+  { \@@_scan_expr_aux:NN #1 \c_false_bool }
+\cs_new_protected:Npn \@@_scan_expr_aux:NN #1#2
+  {
+    \@@_get_x_non_blank:
+    \@@_scan_factor:N #1
+    \@@_scan_expr_op:NN #1#2
+  }
+\cs_new_protected:Npn \@@_scan_expr_op:NN #1#2
+  {
+    \@@_get_x_non_blank:
+    \tl_case:Nnn \l_@@_head_tl
+      {
+        \c_@@_plus_tl
+          {
+            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_scan_expr_aux:NN #1#2
+          }
+        \c_@@_minus_tl
+          {
+            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_scan_expr_aux:NN #1#2
+          }
+        \c_@@_times_tl
+          {
+            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_get_x_non_blank:
+            \@@_scan_factor:N \@@_scan_int:
+            \@@_scan_expr_op:NN #1#2
+          }
+        \c_@@_over_tl
+          {
+            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_get_x_non_blank:
+            \@@_scan_factor:N \@@_scan_int:
+            \@@_scan_expr_op:NN #1#2
+          }
+        \c_@@_rp_tl
+          {
+            \bool_if:NTF #2
+              { \@@_prev_input_right:V \l_@@_head_tl }
+              { \@@_back_input: }
+          }
+      }
+      {
+        \bool_if:NTF #2
+          {
+            \msg_error:nn { unravel } { missing-rparen }
+            \@@_back_input:
+            \@@_prev_input_right:V \c_@@_rp_tl
+          }
+          {
+            \token_if_eq_meaning:NNF \l_@@_head_token \scan_stop:
+              { \@@_back_input: }
+          }
+      }
+  }
+\cs_new_protected:Npn \@@_scan_factor:N #1
+  {
+    \tl_if_eq:NNTF \l_@@_head_tl \c_@@_lp_tl
+      {
+        \@@_prev_input_right:V \l_@@_head_tl
+        \@@_scan_expr_aux:NN #1 \c_true_bool
+      }
+      {
+        \@@_back_input:
+        #1
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 %
 %
 %
@@ -2180,7 +2256,7 @@
     \@@_scan_group:N #2
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
     \gtl_if_tl:NF \l_@@_tmpb_gtl
-      { \msg_error:nnx { unravel } { internal } { unbalanced-scan-toks } }
+      { \msg_error:nnx { unravel } { internal } { scantoks-balance } }
     \@@_prev_input_right_silent:x { \gtl_left_tl:N \l_@@_tmpb_gtl }
   }
 \cs_new_protected_nopar:Npn \@@_scan_param:
@@ -2243,24 +2319,24 @@
 \cs_new_protected_nopar:Npn \@@_get_token_expanding:
   {
     \@@_get_token:
-    \@@_token_if_macro:NT \l_@@_head_token
-      {
-        \token_if_protected_macro:NT \l_@@_head_token
-          { \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { relax } } }
-        \token_if_protected_long_macro:NT \l_@@_head_token
-          { \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { relax } } }
-      }
+    \token_if_protected_macro:NT \l_@@_head_token
+      { \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { relax } } }
+    \token_if_protected_long_macro:NT \l_@@_head_token
+      { \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { relax } } }
     \int_compare:nNnT
       \l_@@_head_cmd_int > { \@@_tex_use:n { max_command } }
       {
         \int_compare:nNnTF
           \l_@@_head_cmd_int = { \@@_tex_use:n { the } }
           {
-            % ^^A todo: implement unexpanded, detokenize.
             \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
             \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
-            \@@_get_x_next:
-            \@@_scan_something_internal:n { 5 }
+            \int_if_odd:nTF \l_@@_head_char_int
+              { \@@_scan_general_text: } % \unexpanded, \detokenize
+              {
+                \@@_get_x_next:
+                \@@_scan_something_internal:n { 5 }
+              }
             \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
             \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
             \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
@@ -2276,80 +2352,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_expr:N}
-% \begin{macro}[aux]{\@@_scan_expr_aux:NN, \@@_scan_factor:N}
+% \begin{macro}[aux]{\@@_scan_general text:}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_expr:N #1
-  { \@@_scan_expr_aux:NN #1 \c_false_bool }
-\cs_new_protected:Npn \@@_scan_expr_aux:NN #1#2
+\cs_new_protected_nopar:Npn \@@_scan_general_text:
   {
-    \@@_get_x_non_blank:
-    \@@_scan_factor:N #1
-    \@@_scan_expr_op:NN #1#2
-  }
-\cs_new_protected:Npn \@@_scan_expr_op:NN #1#2
-  {
-    \@@_get_x_non_blank:
-    \tl_case:Nnn \l_@@_head_tl
-      {
-        \c_@@_plus_tl
-          {
-            \@@_prev_input_right:V \l_@@_head_tl
-            \@@_scan_expr_aux:NN #1#2
-          }
-        \c_@@_minus_tl
-          {
-            \@@_prev_input_right:V \l_@@_head_tl
-            \@@_scan_expr_aux:NN #1#2
-          }
-        \c_@@_times_tl
-          {
-            \@@_prev_input_right:V \l_@@_head_tl
-            \@@_get_x_non_blank:
-            \@@_scan_factor:N \@@_scan_int:
-            \@@_scan_expr_op:NN #1#2
-          }
-        \c_@@_over_tl
-          {
-            \@@_prev_input_right:V \l_@@_head_tl
-            \@@_get_x_non_blank:
-            \@@_scan_factor:N \@@_scan_int:
-            \@@_scan_expr_op:NN #1#2
-          }
-        \c_@@_rp_tl
-          {
-            \bool_if:NTF #2
-              { \@@_prev_input_right:V \l_@@_head_tl }
-              { \@@_back_input: }
-          }
-      }
-      {
-        \bool_if:NTF #2
-          {
-            \msg_error:nn { unravel } { missing-rparen }
-            \@@_back_input:
-            \@@_prev_input_right:V \c_@@_rp_tl
-          }
-          {
-            \token_if_eq_meaning:NNF \l_@@_head_token \scan_stop:
-              { \@@_back_input: }
-          }
-      }
-  }
-\cs_new_protected:Npn \@@_scan_factor:N #1
-  {
-    \tl_if_eq:NNTF \l_@@_head_tl \c_@@_lp_tl
-      {
-        \@@_prev_input_right:V \l_@@_head_tl
-        \@@_scan_expr_aux:NN #1 \c_true_bool
-      }
-      {
-        \@@_back_input:
-        #1
-      }
+    \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
+    \@@_scan_left_brace:
+    \@@_scan_group:N \c_false_bool
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
+    \gtl_if_tl:NF \l_@@_tmpb_gtl
+      { \msg_error:nnx { unravel } { internal } { text-balance } }
+    \@@_prev_input_right_silent:x { \gtl_left_tl:N \l_@@_tmpb_gtl }
   }
 %    \end{macrocode}
-% \end{macro}
 % \end{macro}
 %
 % ^^A todo: catch runaway expand/get_x_next.
@@ -2616,8 +2631,12 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
-    \@@_get_x_next:
-    \@@_scan_something_internal:n { 5 }
+    \int_if_odd:nTF \l_@@_head_char_int
+      { \@@_scan_general_text: } % \unexpanded, \detokenize
+      {
+        \@@_get_x_next:
+        \@@_scan_something_internal:n { 5 }
+      }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_back_input_tl_o:
   }
