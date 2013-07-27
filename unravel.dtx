@@ -339,6 +339,19 @@
 %    \end{macrocode}
 % \end{variable}
 %
+% \subsubsection{Boxes and groups}
+%
+% \begin{variable}{\l_@@_leaders_box_seq}
+%   A stack of letters: the first token in the token list is |h|~if the
+%   innermost explicit box (created with \tn{vtop}, \tn{vbox}, or
+%   \tn{hbox}) appears in a horizontal (or math) mode leaders
+%   construction; it is |v|~if the innermost explicit box appears in a
+%   vertical mode leaders construction; it is |Z|~otherwise.
+%    \begin{macrocode}
+\seq_new:N \l_@@_leaders_box_seq
+%    \end{macrocode}
+% \end{variable}
+%
 % \subsubsection{Constants}
 %
 % \begin{variable}{\c_@@_frozen_relax_gtl}
@@ -352,6 +365,7 @@
 %
 % Variants that we need.
 %    \begin{macrocode}
+\cs_generate_variant:Nn \tl_to_str:n { o }
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
 \cs_generate_variant:Nn \tl_if_head_is_space:nTF { o }
 \cs_if_exist:NF \exp_last_unbraced:NNn
@@ -396,12 +410,12 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[EXP]{\@@_cs_case:NnTF}
+% \begin{macro}[EXP]{\@@_cs_case:NnF}
 %   Currently, \texttt{expl3} does not provide a case statement for the
-%   meaning of control sequences.  However, \cs{tl_case:NnTF} in fact
+%   meaning of control sequences.  However, \cs{tl_case:NnF} in fact
 %   does precisely this.
 %    \begin{macrocode}
-\cs_new_eq:NN \@@_cs_case:NnTF \tl_case:NnTF
+\cs_new_eq:NN \@@_cs_case:NnF \tl_case:NnF
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2806,6 +2820,274 @@
 %
 % ^^A todo: catch runaway expand/get_x_next.
 %
+% \begin{macro}[aux]{\@@_scan_alt_rule:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_alt_rule:
+  {
+    \@@_scan_keyword:nTF { wWiIdDtThH }
+      {
+        \@@_scan_normal_dimen:
+        \@@_scan_alt_rule:
+      }
+      {
+        \@@_scan_keyword:nTF { hHeEiIgGhHtT }
+          {
+            \@@_scan_normal_dimen:
+            \@@_scan_alt_rule:
+          }
+          {
+            \@@_scan_keyword:nT { dDeEpPtThH }
+              {
+                \@@_scan_normal_dimen:
+                \@@_scan_alt_rule:
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_spec:}
+%   Some \TeX{} primitives accept the keywords |to| and |spread|,
+%   followed by a dimension.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_spec:
+  {
+    \@@_scan_keyword:nTF { tT oO } { \@@_scan_normal_dimen: }
+      {
+        \@@_scan_keyword:nT { sS pP rR eE aA dD }
+          { \@@_scan_normal_dimen: }
+      }
+    \@@_scan_left_brace:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Working with boxes}
+%
+% \begin{macro}[aux]{\@@_do_box:N}
+%   When this procedure is called, the last item in
+%   \cs{g_@@_prev_input_seq} is
+%   \begin{itemize}
+%   \item empty if the box is meant to be put in the input stream,
+%   \item \tn{setbox}\meta{int} if it is meant to be stored somewhere,
+%   \item \tn{moveright}\meta{dim}, \tn{moveleft}\meta{dim},
+%     \tn{lower}\meta{dim}, \tn{raise}\meta{dim} if it is meant to be
+%     shifted,
+%   \item \tn{leaders} or \tn{cleaders} or \tn{xleaders}, in which case
+%     the argument is \cs{c_true_bool} (otherwise \cs{c_false_bool}).
+%   \end{itemize}
+%   If a |make_box| command follows, we fetch the operands.  If leaders
+%   are followed by a rule, then this is also ok.  In all other cases,
+%   call \cs{@@_do_box_error:} to clean up.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_do_box:N #1
+  {
+    \@@_get_x_non_relax:
+    \@@_set_cmd:
+    \int_compare:nNnTF
+      \l_@@_head_cmd_int = { \@@_tex_use:n { make_box } }
+      { \@@_do_begin_box:N #1 }
+      {
+        \bool_if:NTF #1
+          {
+            \@@_cs_case:NnF \l_@@_head_token
+              {
+                \tex_hrule:D { \@@_do_leaders_rule: }
+                \tex_vrule:D { \@@_do_leaders_rule: }
+              }
+              { \@@_do_box_error: }
+          }
+          { \@@_do_box_error: }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_do_box_error:}
+%   Put the (non-|make_box|) command back into the input and complain.
+%   Then recover by throwing away the action (last item of
+%   \cs{g_@@_prev_input_seq}), and, if the action was a \tn{setbox}
+%   construction, also remove the prefixes, but for some reason, leave
+%   the after assignment token (this appears to be what \TeX{} does).
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_box_error:
+  {
+    \@@_back_input:
+    \msg_error:nn { unravel } { missing-box }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_if_head_eq_meaning:VNT \l_@@_tmpa_tl \tex_setbox:D
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
+        % \@@_omit_after_assignment:w
+      }
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_do_begin_box:N}
+%   We have just found a |make_box| command and placed it into the last
+%   item of \cs{g_@@_prev_input_seq}.  If it is ``simple''
+%   (\tn{box}\meta{int}, \tn{copy}\meta{int}, \tn{lastbox},
+%   \tn{vsplit}\meta{int} \texttt{to} \meta{dim}) then we grab its
+%   operands, then call \cs{@@_do_simple_box:N} to finish up.  If it is
+%   \tn{vtop} or \tn{vbox} or \tn{hbox}, we need to work harder.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_do_begin_box:N #1
+  {
+    \@@_prev_input_right:V \l_@@_head_tl
+    \int_case:nnTF \l_@@_head_char_int
+      {
+        { 0 } { \@@_scan_int: } % box
+        { 1 } { \@@_scan_int: } % copy
+        { 2 } { } % lastbox
+        { 3 } % vsplit
+          {
+            \@@_scan_int:
+            \@@_scan_keyword:nF { tT oO }
+              {
+                \msg_error:nn { unravel } { missing-to }
+                \@@_prev_input_right:n { to }
+              }
+            \@@_scan_normal_dimen:
+          }
+      }
+      { \@@_do_simple_box:N #1 }
+      { \@@_do_box_explicit:N #1 }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_do_simple_box:N}
+%   For leaders, we need to fetch a glue.  In all cases, retrieve the
+%   box construction (such as |\raise3pt\vsplit7to5em|).  For
+%   \tn{setbox}, retrieve the prefixes too.  Finally, let \TeX{} run the
+%   code and print what we have done.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_do_simple_box:N #1
+  {
+    \bool_if:NTF #1 { \@@_do_leaders_fetch_skip: }
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \tl_if_head_eq_meaning:VNT \l_@@_tmpa_tl \tex_setbox:D
+          {
+            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+            \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
+          }
+        \tl_use:N \l_@@_head_tl \scan_stop:
+        \gtl_put_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_do_leaders_fetch_skip:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_leaders_fetch_skip:
+  {
+    \@@_get_x_non_relax:
+    \@@_set_cmd:
+    \int_compare:nNnTF \l_@@_head_cmd_int
+      = { \@@_tex_use:n { \mode_if_vertical:TF { vskip } { hskip } } }
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
+        \@@_do_append_glue:
+      }
+      {
+        \@@_back_input:
+        \msg_error:nn { unravel } { improper-leaders }
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% ^^A todo: less intrusive hooking into \everyhbox/\everyvbox?
+% \begin{macro}[aux]{\@@_do_box_explicit:N}
+%   At this point, the last item in \cs{g_@@_prev_input_seq} is
+%   typically |\setbox0\hbox| or |\raise 3pt\hbox|.  Scan for keywords
+%   |to| and |spread| and a left brace.  Install a hook in
+%   \tn{everyhbox} or \tn{everyvbox} (whichever \TeX{} is going to
+%   insert in the box).  We then retrieve all the material that led to
+%   the current box into \cs{l_@@_head_tl} in order to print it, then
+%   let \TeX{} perform the box operation (here we need to provide the
+%   begin-group token, as it was scanned but not placed in
+%   \cs{g_@@_prev_input_seq}).  \TeX{} inserts \tn{everyhbox} or
+%   \tn{everyvbox} just after the begin-group token, and the hook we did
+%   is such that all that material is collected and put into the input
+%   that we will study.  Once more, for |\setbox| we first retrieve
+%   prefixes.  We must remember to find a glue for leaders, and for this
+%   we use a stack of booleans: the top is true if the innermost box is
+%   part of leaders.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_do_box_explicit:N #1
+  {
+    \token_if_eq_meaning:NNTF \l_@@_head_token \tex_hbox:D
+      { \@@_box_hook:N \tex_everyhbox:D }
+      { \@@_box_hook:N \tex_everyvbox:D }
+      % ^^A todo: TeX calls |normal_paragraph| here.
+    \@@_scan_spec:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_if_head_eq_meaning:VNT \l_@@_tmpa_tl \tex_setbox:D
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
+      }
+    \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
+    \seq_push:Nx \l_@@_leaders_box_seq
+      { \bool_if:NTF #1 { \mode_if_vertical:TF { v } { h } } { Z } }
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \gtl_gconcat:NNN \g_@@_output_gtl
+      \g_@@_output_gtl \c_group_begin_gtl
+    \tl_use:N \l_@@_head_tl \c_group_begin_token \@@_box_hook_end:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_box_hook:N}
+% \begin{macro}[aux]{\@@_box_hook:w, \@@_box_hook_end:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_box_hook:N #1
+  {
+    \tl_set:NV \l_@@_tmpa_tl #1
+    \exp_args:Nx #1
+      { \exp_not:n { \@@_box_hook:w \prg_do_nothing: } \exp_not:V #1 }
+    \cs_gset_protected:Npn \@@_box_hook:w ##1 \@@_box_hook_end:
+      {
+        \exp_args:No #1 {##1}
+        \cs_gset_eq:NN \@@_box_hook:w \prg_do_nothing:
+        \@@_print_action:
+        \gtl_gput_left:No \g_@@_input_gtl {##1}
+        \@@_set_action_text:x
+          { \token_to_meaning:N #1 \tl_to_str:o {##1} }
+        \tl_if_empty:oF {##1} { \@@_print_action: }
+      }
+  }
+\cs_new_eq:NN \@@_box_hook:w \prg_do_nothing:
+\cs_new_eq:NN \@@_box_hook_end: \prg_do_nothing:
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_do_leaders_rule:}
+%   After finding a |vrule| or |hrule| command and looking for |depth|,
+%   |heigh| and |width| keywords, we are in the same situation as after
+%   finding a box.  Fetch the required skip accordingly.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_leaders_rule:
+  {
+    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_scan_alt_rule:
+    \@@_do_leaders_fetch_skip:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Paragraphs}
 %
 % \begin{macro}[int,TF]{\@@_charcode_if_safe:n}
@@ -2814,9 +3096,10 @@
   {
     \bool_if:nTF
       {
-        \int_compare_p:n { `0 <= #1 <= `9 }
-        || \int_compare_p:n { `A <= #1 <= `Z }
-        || \int_compare_p:n { `a <= #1 <= `z }
+        \int_compare_p:n { #1 = `! }
+        || \int_compare_p:n { `' <= #1 <= `[ }
+        || \int_compare_p:n { #1 = `] }
+        || \int_compare_p:n { ` ` <= #1 <= `z }
       }
       { \prg_return_true: }
       { \prg_return_false: }
@@ -2937,6 +3220,170 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{Groups}
+%
+% ^^A todo: implement \@@_end_align_group:
+% ^^A todo: implement \@@_end_no_align_group:
+% ^^A todo: implement \@@_end_output_group:
+% ^^A todo: implement \@@_end_math_group:
+% ^^A todo: implement \@@_end_disc_group:
+% ^^A todo: implement \@@_end_math_choice_group:
+%
+% \begin{macro}[aux]{\@@_handle_left_brace:}
+%   When an end-group character is sensed, the result depends on the
+%   current group type.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_handle_left_brace:
+  {
+    \int_case:nnF \etex_currentgrouptype:D
+      {
+        { 1 } { \@@_end_simple_group: } % simple_group
+        { 2 } { \@@_end_box_group: } % hbox_group
+        { 3 } { \@@_end_box_group: } % adjusted_hbox_group
+        { 4 } { \@@_end_graf: \@@_end_box_group: } % vbox_group
+        { 5 } { \@@_end_graf: \@@_end_box_group: } % vtop_group
+        { 6 } { \@@_end_align_group: } % align_group
+        { 7 } { \@@_end_graf: \@@_end_no_align_group: } % no_align_group
+        { 8 } { \@@_end_output_group: } % output_group
+        { 9 } { \@@_end_math_group: } % math_group
+        { 10 } { \@@_end_disc_group: } % disc_group
+        { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert_group
+        { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter_group
+        { 13 } { \@@_end_math_choice_group: } % math_choice_group
+      }
+      { % bottom_level, semi_simple_group, math_shift_group, math_left_group
+        \@@_back_input:
+        \l_@@_head_token
+        \@@_print_action:
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_end_simple_group:}
+%   This command is used to simply end a group, when there are no
+%   specific operations to perform.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_end_simple_group:
+  {
+    \l_@@_head_token
+    \gtl_gconcat:NNN \g_@@_output_gtl
+      \g_@@_output_gtl \c_group_end_gtl
+    \@@_print_action:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_end_box_group:}
+%   The end of an explicit box (generated by \tn{vtop}, \tn{vbox}, or
+%   \tn{hbox}) can either be simple, or can mean that we need to find a
+%   skip for a \tn{leaders}/\tn{cleaders}/\tn{xleaders} construction.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_end_box_group:
+  {
+    \seq_pop:NN \l_@@_leaders_box_seq \l_@@_tmpa_tl
+    \str_if_eq_x:nnTF \l_@@_tmpa_tl { Z }
+      { \@@_end_simple_group: }
+      {
+        \@@_get_x_non_relax:
+        \@@_set_cmd:
+        \int_compare:nNnTF \l_@@_head_cmd_int
+          = { \@@_tex_use:n { \l_@@_tmpa_tl skip } }
+          {
+            \tl_put_left:Nn \l_@@_head_tl { \c_group_end_token }
+            \@@_do_append_glue:
+          }
+          {
+            \@@_back_input:
+            \c_group_end_token \group_begin: \group_end:
+            \@@_print_action:
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_off_save:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_off_save:
+  {
+    \int_compare:nNnTF \etex_currentgrouptype:D = { 0 }
+      { % bottom-level
+        \msg_error:nnx { unravel } { extra-close }
+          { \token_to_meaning:N \l_@@_head_token }
+      }
+      {
+        \@@_back_input:
+        \int_case:nnF \etex_currentgrouptype:D
+          {
+            { 14 } % semi_simple_group
+              { \gtl_set:Nn \l_@@_head_gtl { \group_end: } }
+            { 15 } % math_shift_group
+              { \gtl_set:Nn \l_@@_head_gtl { $ } } % $
+            { 16 } % math_left_group
+              { \gtl_set:Nn \l_@@_head_gtl { \tex_right:D . } }
+          }
+          { \gtl_set_eq:NN \l_@@_head_gtl \c_group_end_gtl }
+        \@@_back_input:
+        \msg_error:nnx { unravel } { off-save }
+          { \gtl_to_str:N \l_@@_head_gtl }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Modes}
+% ^^A todo: implement \aftergroup and things happening at end-group
+% ^^A todo: implement \@@_after_math:
+% ^^A todo: implement \@@_goto_inner_math:
+% ^^A todo: implement \@@_goto_display_math:
+% ^^A todo: implement \@@_scan_math:
+%
+% \begin{macro}[int]
+%   {\@@_mode_math:n, \@@_mode_non_math:n, \@@_mode_vertical:n}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_mode_math:n #1
+  { \mode_if_math:TF {#1} { \@@_insert_dollar_error: } }
+\cs_new_protected:Npn \@@_mode_non_math:n #1
+  { \mode_if_math:TF { \@@_insert_dollar_error: } {#1} }
+\cs_new_protected:Npn \@@_mode_vertical:n #1
+  {
+    \mode_if_math:TF
+      { \@@_insert_dollar_error: }
+      { \mode_if_horizontal:TF { \@@_head_for_vmode: } {#1} }
+  }
+\cs_new_protected:Npn \@@_mode_non_vertical:n #1
+  {
+    \mode_if_vertical:TF
+      { \@@_back_input: \@@_new_graf:N \c_true_bool }
+      {#1}
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_head_for_vmode:}
+%   See \TeX{}'s |head_for_vmode|.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_head_for_vmode:
+  {
+    \mode_if_inner:TF
+      {
+        \token_if_eq_meaning:NNTF \l_@@_head_token \tex_hrule:D
+          {
+            \msg_error:nn { unravel } { hrule-bad-mode }
+            \@@_print_action:
+          }
+          { \@@_off_save: }
+      }
+      {
+        \@@_back_input:
+        \gtl_set:Nn \l_@@_head_gtl { \par }
+        \@@_back_input:
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{One step}
 %
 % \begin{macro}[int]{\@@_do_step:}
@@ -2963,40 +3410,10 @@
 % \end{macro}
 %
 % \subsection{Commands}
-% ^^A todo: implement \aftergroup and things happening at end-group
-% ^^A todo: implement \@@_off_save:
-% ^^A todo: implement \@@_after_math:
-% ^^A todo: implement \@@_goto_inner_math:
-% ^^A todo: implement \@@_goto_display_math:
-% ^^A todo: implement \@@_scan_math:
-% ^^A todo: implement \@@_head_for_vmode:
-% ^^A todo: implement \@@_scan_box:
 %
 % We will implement commands in order of their command codes (some of
 % the more elaborate commands call auxiliaries defined in other
 % sections).
-%
-% \begin{macro}[int]
-%   {\@@_mode_math:n, \@@_mode_non_math:n, \@@_mode_vertical:n}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_mode_math:n #1
-  { \mode_if_math:TF {#1} { \@@_insert_dollar_error: } }
-\cs_new_protected:Npn \@@_mode_non_math:n #1
-  { \mode_if_math:TF { \@@_insert_dollar_error: } {#1} }
-\cs_new_protected:Npn \@@_mode_vertical:n #1
-  {
-    \mode_if_math:TF
-      { \@@_insert_dollar_error: }
-      { \mode_if_horizontal:TF { \@@_head_for_vmode: } {#1} }
-  }
-\cs_new_protected:Npn \@@_mode_non_vertical:n #1
-  {
-    \mode_if_vertical:TF
-      { \@@_back_input: \@@_new_graf:N \c_true_bool }
-      {#1}
-  }
-%    \end{macrocode}
-% \end{macro}
 %
 % \subsubsection{Characters}
 %
@@ -3042,18 +3459,9 @@
   }
 %    \end{macrocode}
 %
-% End-group characters are sent to the output and performed, as
-% begin-group characters.  Importantly, since \cs{l_@@_head_tl} and
-% others are local, we call \cs{l_@@_head_token} after
-% \cs{@@_print_action:}.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { end-group_char }                       % 2
-  {
-    \gtl_gconcat:NNN \g_@@_output_gtl
-      \g_@@_output_gtl \c_group_end_gtl
-    \@@_print_action:
-    \l_@@_head_token
-  }
+  { \@@_handle_left_brace: }
 %    \end{macrocode}
 %
 % Math shift characters quit vertical mode, and start math mode.
@@ -3107,7 +3515,8 @@
     \@@_print_action:
     \@@_scan_math:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 %
@@ -3186,8 +3595,8 @@
         \@@_print_action:
         \@@_scan_int:
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \tl_use:N \l_@@_head_tl \scan_stop:
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
-        \tl_use:N \l_@@_head_tl
       }
   }
 %    \end{macrocode}
@@ -3207,6 +3616,17 @@
 % \item |un_hbox=23| for \tn{unhbox} and \tn{unhcopy}.
 % \item |unvbox=24| for \tn{unvbox}, \tn{unvcopy}, \tn{pagediscards},
 %   and \tn{splitdiscards}.
+% \item |remove_item=25| for \tn{unpenalty}~(12), \tn{unkern}~(11),
+%   \tn{unskip}~(10).
+% \item |hskip=26| for \tn{hfil}, \tn{hfill}, \tn{hss}, \tn{hfilneg},
+%   \tn{hskip}.
+% \item |vskip=27| for \tn{vfil}, \tn{vfill}, \tn{vss}, \tn{vfilneg},
+%   \tn{vskip}.
+% \item |mskip=28| for \tn{mskip}~(5).
+% \item |kern=29| for \tn{kern}~(1).
+% \item |mkern=30| for \tn{mkern}~(99).
+% \item |leader_ship=31| for \tn{shipout}~(99), \tn{leaders}~(100),
+%   \tn{cleaders}~(101), \tn{xleaders}~(102).
 % \end{itemize}
 %
 % \tn{char} leaves vertical mode, then scans an integer operand, then
@@ -3266,41 +3686,35 @@
 %
 % We now implement the primitives \tn{show}, \tn{showbox}, \tn{showthe},
 % \tn{showlists}, \tn{showgroups}, \tn{showtokens} and \tn{showifs}.
-% Those with no operand are first sent to \TeX{} before calling
-% \cs{@@_print_action:}.  Those with operands print first, then scan
-% their operands, then are sent to \TeX{}, and print again the action.
-% The case of \tn{show} is a bit special, as its operand is a single
-% token, which cannot easily be put into the \cs{g_@@_prev_input_seq} in
-% general.  Since no expansion can occur, simply grab the token, show
-% it, then print the action just done.
+% Those with no operand are sent to \TeX{} after printing the action.
+% Those with operands print first, then scan their operands, then are
+% sent to \TeX{}.  The case of \tn{show} is a bit special, as its
+% operand is a single token, which cannot easily be put into the
+% \cs{g_@@_prev_input_seq} in general.  Since no expansion can occur,
+% simply grab the token and show it.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { xray }                                 % 19
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
     \int_case:nnTF \l_@@_head_char_int
       {
-        { 1 } { \@@_print_action: \@@_scan_int: } % showbox
-        { 2 } % showthe
-          { \@@_print_action: \@@_scan_something_internal:n { 5 } }
+        { 1 } { \@@_scan_int: } % showbox
+        { 2 } { \@@_scan_something_internal:n { 5 } } % showthe
         { 3 } { } % showlists
         { 4 } { } % showgroups
         { 5 } % showtokens
-          {
-            \@@_print_action:
-            \@@_scan_toks:NN \c_false_bool \c_false_bool
-          }
+          { \@@_scan_toks:NN \c_false_bool \c_false_bool }
         { 6 } { } % showifs
       }
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-        \tl_use:N \l_@@_head_tl
-        \@@_print_action:
+        \tl_use:N \l_@@_head_tl \scan_stop:
       }
       { % show
         \@@_get_next:
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl
-        \@@_print_action:
       }
   }
 %    \end{macrocode}
@@ -3309,10 +3723,13 @@
 %   \tn{vsplit}, \tn{vtop}, \tn{vbox}, and \tn{hbox}~(106).
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { make_box }                             % 20
-  { \@@_begin_box:n { 0 } }
+  {
+    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_back_input:
+    \@@_do_box:N \c_false_bool
+  }
 %    \end{macrocode}
 %
-% ^^A todo: implement \@@_begin_box:n
 % ^^A todo: implement \@@_forbidden_case:
 %
 % \begin{macro}[aux]{\@@_do_move:}
@@ -3324,10 +3741,7 @@
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
     \@@_scan_normal_dimen:
-    \@@_scan_box:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl
-    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_do_box:N \c_false_bool
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3352,7 +3766,7 @@
     \@@_print_action:
     \@@_scan_int:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
@@ -3379,6 +3793,99 @@
   }
 %    \end{macrocode}
 %
+% |remove_item=25| for \tn{unpenalty}~(12), \tn{unkern}~(11),
+% \tn{unskip}~(10).  Those commands only act on \TeX{}'s box/glue data
+% structures, which \pkg{unravel} does not (and cannot) care about.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { remove_item }                          % 25
+  { \l_@@_head_token \@@_print_action: }
+%    \end{macrocode}
+%
+% \begin{macro}[aux]{\@@_do_append_glue:}
+%   For \tn{hfil}, \tn{hfill}, \tn{hss}, \tn{hfilneg} and their vertical
+%   analogs, simply call the primitive then print the action.  For
+%   \tn{hskip}, \tn{vskip} and \tn{mskip}, read a normal glue or a mu
+%   glue (\cs{l_@@_head_char_int} is $4$ or~$5$), then call the
+%   primitive with that operand, and print the whole thing as an action.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_append_glue:
+  {
+    \int_compare:nNnTF \l_@@_head_char_int < { 4 }
+      { \tl_use:N \l_@@_head_tl \@@_print_action: }
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:
+        \exp_args:Nf \@@_scan_glue:n
+          { \int_eval:n { \l_@@_head_char_int - 2 } }
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \tl_use:N \l_@@_head_tl \scan_stop:
+        \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% |hskip=26| for \tn{hfil}, \tn{hfill}, \tn{hss}, \tn{hfilneg},
+% \tn{hskip}.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { hskip }                                % 26
+  { \@@_mode_non_vertical:n { \@@_do_append_glue: } }
+%    \end{macrocode}
+%
+% |vskip=27| for \tn{vfil}, \tn{vfill}, \tn{vss}, \tn{vfilneg},
+% \tn{vskip}.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { vskip }                                % 27
+  { \@@_mode_vertical:n { \@@_do_append_glue: } }
+%    \end{macrocode}
+%
+% |mskip=28| for \tn{mskip}~(5).
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { mskip }                                % 28
+  { \@@_mode_math:n { \@@_do_append_glue: } }
+%    \end{macrocode}
+%
+% \begin{macro}[aux]{\@@_do_append_kern:}
+%   See \cs{@@_do_append_glue:}.  This function is used for the
+%   primitives \tn{kern} and \tn{mkern} only.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_append_kern:
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \token_if_eq_meaning:NNTF \l_@@_head_token \tex_kern:D
+      { \@@_scan_dimen:NN \c_true_bool \c_false_bool }
+      { \@@_scan_dimen:NN \c_false_bool \c_false_bool }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% |kern=29| for \tn{kern}~(1).
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { kern }                                 % 29
+  { \@@_do_append_kern: }
+%    \end{macrocode}
+%
+% |mkern=30| for \tn{mkern}~(99).
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { mkern }                                % 30
+  { \@@_mode_math:n { \@@_do_append_kern: } }
+%    \end{macrocode}
+%
+% |leader_ship=31| for \tn{shipout}~(99), \tn{leaders}~(100),
+% \tn{cleaders}~(101), \tn{xleaders}~(102).
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { leader_ship }                          % 31
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_do_box:N \c_true_bool
+  }
+%    \end{macrocode}
+%
 % \subsubsection{More}
 %
 %    \begin{macrocode}
@@ -3391,9 +3898,9 @@
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
     \@@_scan_alt_rule:
-    \@@_print_action:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 %
@@ -3455,6 +3962,7 @@
     \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_use:N \l_@@_head_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 %
@@ -3466,7 +3974,7 @@
     \@@_print_action:
     \@@_scan_extension_operands:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
@@ -3484,8 +3992,8 @@
       }
       { \@@_scan_int: }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
-    \tl_use:N \l_@@_head_tl
   }
 %    \end{macrocode}
 %
@@ -3759,33 +4267,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_alt_rule:}
-%    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_alt_rule:
-  {
-    \@@_scan_keyword:nTF { wWiIdDtThH }
-      {
-        \@@_scan_normal_dimen:
-        \@@_scan_alt_rule:
-      }
-      {
-        \@@_scan_keyword:nTF { hHeEiIgGhHtT }
-          {
-            \@@_scan_normal_dimen:
-            \@@_scan_alt_rule:
-          }
-          {
-            \@@_scan_keyword:nT { dDeEpPtThH }
-              {
-                \@@_scan_normal_dimen:
-                \@@_scan_alt_rule:
-              }
-          }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}[aux]{\@@_scan_image:}
 %   Used by \tn{pdfximage}.
 %    \begin{macrocode}
@@ -3992,7 +4473,7 @@
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     #1
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_assigned_token:
   }
 %    \end{macrocode}
@@ -4004,7 +4485,7 @@
 \cs_new_protected_nopar:Npn \@@_assign_register:
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_assigned_register:
   }
 %    \end{macrocode}
@@ -4136,7 +4617,7 @@
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
     \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
     \@@_print_action:
   }
@@ -4222,7 +4703,11 @@
     \@@_prev_input_right:V \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_int:
-    \@@_scan_keyword:n { tToO }
+    \@@_scan_keyword:nF { tToO }
+      {
+        \msg_error:nn { unravel } { missing-to }
+        \@@_prev_input_right:n { to }
+      }
     \@@_scan_r_token:
     \@@_assign_token:n { }
   }
@@ -4258,13 +4743,15 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { set_box }                             % 98
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
     \@@_scan_int:
     \@@_scan_optional_equals:
     \bool_if:NTF \g_@@_set_box_allowed_bool
-      { \@@_scan_box: }
+      { \@@_do_box:N \c_false_bool }
       {
         \msg_error:nn { unravel } { improper-setbox }
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \@@_omit_after_assignment:w
       }
@@ -4282,12 +4769,14 @@
   }
 %    \end{macrocode}
 %
+% ^^A todo: the implementation of |set_interaction| looks fishy
 %    \begin{macrocode}
 \@@_prefixed_new:nn { set_interaction }                     % 100
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
     \tl_put_right:NV \l_@@_head_tl \l_@@_tmpa_tl
-    \tl_use:N \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 %
@@ -5416,10 +5905,10 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_outcome:
   {
-    \int_gset_eq:NN \g_@@_max_input_int \c_max_int
-    \int_gset_eq:NN \g_@@_max_prev_int \c_max_int
-    \int_gset_eq:NN \g_@@_max_output_int \c_max_int
-    \@@_print_state:
+    % \int_gset_eq:NN \g_@@_max_input_int \c_max_int
+    % \int_gset_eq:NN \g_@@_max_prev_int \c_max_int
+    % \int_gset_eq:NN \g_@@_max_output_int \c_max_int
+    % \@@_print_state:
     \@@_print_message:nn { } { [=====~The~end!~=====] \\ }
   }
 %    \end{macrocode}
