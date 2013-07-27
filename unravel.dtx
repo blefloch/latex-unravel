@@ -104,6 +104,9 @@
 %   characters are converted to tokens.  Similarly, the argument of
 %   \tn{scantokens} is converted to the new category code r\'egime in
 %   one go, and the result must be balanced.
+% \item \tn{endinput} is ignored, as it is not possible to implement it
+%   in a way similar to \TeX{}'s, and as it is most often used at the
+%   very end of files, in a redundant way.
 % \item Alignments (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit},
 %   \tn{span}, \tn{cr}, \tn{crcr},~|&|) are not implemented.
 % \item Math mode is not implemented, but might be.
@@ -431,6 +434,7 @@
     \group_begin:
       \etex_everyeof:D \exp_after:wN { \token_to_str:N @ @ #1 }
       #2
+      \tl_gclear:N #1
       \str_if_eq_x:nnF
         { \token_to_meaning:N \tex_input:D }
         { \token_to_str:N \input }
@@ -5422,13 +5426,14 @@
 % \end{macro}
 %
 % ^^A todo: document that this often fails.
+% ^^A todo: better \endinput?  Document current behaviour (ignored).
 % \begin{macro}[aux]{\@@_scantokens:, \@@_input:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { input }                       % 106
   {
     \int_case:nnF \l_@@_head_char_int
       {
-        { 1 } { \l_@@_head_token \@@_print_action: } % \endinput
+        { 1 } { \@@_print_action: } % \endinput
         { 2 } { \@@_scantokens: } % \scantokens
       }
       { % 0=\input
