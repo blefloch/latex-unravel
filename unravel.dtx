@@ -1757,8 +1757,6 @@
 %
 % \subsection{Expand next token}
 %
-% ^^A todo: insert frozen endtemplate somewhere.
-%
 % \begin{macro}[int]{\@@_expand:}
 %   This is similar to \cs{@@_do_step:}, but operates on expandable
 %   tokens rather than (non-expandable) commands.  We mimick \TeX{}'s
@@ -1791,15 +1789,12 @@
       {
         \cs_if_exist_use:cF
           { @@_expandable_ \int_use:N \l_@@_head_cmd_int : }
-          { \BOOM }
+          { \msg_error:nnx { unravel } { internal } { expandable } }
       }
       {
-        \msg_error:nnxxx { unravel } { unknown-expandable }
-          { \tl_use:N \l_@@_head_meaning_tl }
-          { \tl_to_str:N \l_@@_head_tl }
-          { \token_to_meaning:N \l_@@_head_token }
-        \gtl_gconcat:NNN \g_@@_output_gtl
-          \g_@@_output_gtl \l_@@_head_gtl
+        \msg_error:nnx { unravel } { unknown-primitive }
+          { \l_@@_head_meaning_tl }
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_print_action:
       }
   }
@@ -3420,15 +3415,7 @@
     \bool_if:NT \l_@@_debug_bool
       { \iow_term:x { Cmd:~\int_use:N \l_@@_head_cmd_int } }
     \cs_if_exist_use:cF { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
-      {
-        \msg_error:nnxxx { unravel } { unknown-cmd }
-          { \int_use:N \l_@@_head_cmd_int }
-          { \tl_to_str:N \l_@@_head_tl }
-          { \token_to_meaning:N \l_@@_head_token }
-        \gtl_gconcat:NNN \g_@@_output_gtl
-          \g_@@_output_gtl \l_@@_head_gtl
-        \@@_print_action:
-      }
+      { \msg_error:nnx { unravel } { internal } { unknown-command } }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -5280,11 +5267,9 @@
 %   \tn{splitfirstmark}, \tn{splitbotmark}, \tn{topmarks},
 %   \tn{firstmarks}, \tn{botmarks}, \tn{splitfirstmarks}, and
 %   \tn{splitbotmarks}.
-% \item |call=113| for macro calls.
-% \item |end_template=117| for \TeX{}'s end template ``thing''.
+% \item |call=113| for macro calls, implemented by \cs{@@_macro_call:}.
+% \item |end_template=117| for \TeX{}'s end template.
 % \end{itemize}
-% The following are not implemented: \tn{pdfprimitive},
-% |end_template=117|.
 %
 % Let \TeX{} trigger an error.
 %    \begin{macrocode}
@@ -5365,9 +5350,7 @@
       }
   }
 \cs_new_protected_nopar:Npn \@@_pdfprimitive:
-  {
-    \BOOM % ^^A todo: not implemented.
-  }
+  { \msg_error:nnx { unravel } { not-implemented } { pdfprimitive } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -5547,6 +5530,15 @@
 \@@_new_tex_expandable:nn { top_bot_mark }                  % 112
   { \@@_back_input_tl_o: }
 %    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_expandable:nn { end_template }                  % 117
+  {
+    \msg_error:nn { unravel } { not-implemented } { end-template }
+    \@@_back_input_tl_o:
+  }
+%    \end{macrocode}
+%
 %
 % \subsubsection{Conditionals}
 %
@@ -6392,8 +6384,6 @@
 %    \begin{macrocode}
 \msg_new:nnn { unravel } { unknown-primitive }
   { Internal~error:~the~primitive~'#1'~is~not~known. }
-\msg_new:nnn { unravel } { unknown-cmd }
-  { Internal~error:~the~command~'#1'~is~not~known. }
 \msg_new:nnn { unravel } { extra-fi-or-else }
   { Extra~fi,~or,~or~else. }
 \msg_new:nnn { unravel } { missing-lbrace }
