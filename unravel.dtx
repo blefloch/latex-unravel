@@ -95,6 +95,22 @@
 % \end{document}
 % \end{verbatim}
 %
+% \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
+% \label{sec:differences}
+%
+% \begin{itemize}
+% \item For \pkg{unravel}, category codes are fixed when a file is read,
+%   while \TeX{} only fixes category codes when the corresponding
+%   characters are converted to tokens.  Similarly, the argument of
+%   \tn{scantokens} is converted to the new category code r\'egime in
+%   one go, and the result must be balanced.
+% \item Alignments (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit},
+%   \tn{span}, \tn{cr}, \tn{crcr},~|&|) are not implemented.
+% \item Math mode is not implemented, but might be.
+% \item Negative signs and glue probably mix in wrong ways (this is a
+%   bug).
+% \end{itemize}
+%
 % \subsection{Future perhaps}
 %
 % Allow users to change the settings.
@@ -2070,6 +2086,7 @@
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_scan_something_internal:n}
+% \begin{macro}[aux]{\@@_scan_something_aux:nwn}
 %   Receives an (explicit) \enquote{level} argument:
 %   \begin{itemize}
 %   \item |int_val=0| for integer values;
@@ -2082,7 +2099,7 @@
 %   Scans something internal, and places its value, converted to the
 %   given level, to the right of the last item of
 %   \cs{g_@@_prev_input_seq}, then sets \cs{g_@@_val_level_int} to the
-%   found level (before conversion, so this may be higher than
+%   found level (level before conversion, so this may be higher than
 %   requested).  Get in one go the information about what level is
 %   produced by the given token once it has received all its operands
 %   (head of \cs{l_@@_tmpa_tl}), and about what to do to find those
@@ -2107,27 +2124,34 @@
     \@@_set_cmd:
     \@@_set_action_text:
     \tl_set:Nf \l_@@_tmpa_tl { \@@_thing_case: }
-    \int_gset:Nn \g_@@_val_level_int { \tl_head:N \l_@@_tmpa_tl }
-    \int_compare:nNnTF { ( #1 + \c_two ) / \c_four }
-      < { ( \g_@@_val_level_int + \c_two ) / \c_four }
+    \exp_after:wN \@@_scan_something_aux:nwn
+      \l_@@_tmpa_tl \q_stop {#1}
+  }
+\cs_new_protected:Npn \@@_scan_something_aux:nwn #1#2 \q_stop #3
+  {
+    \int_compare:nNnTF
+      { ( #1 + \c_two ) / \c_four } > { ( #3 + \c_two ) / \c_four }
       { \tl_clear:N \l_@@_head_tl }
       {
-        \tl_if_single:NF \l_@@_tmpa_tl
+        \tl_if_empty:nF {#2}
           {
             \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
             \@@_print_action:
-            \tl_tail:N \l_@@_tmpa_tl
+            #2
             \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
           }
       }
-    \tl_set:Nx \l_@@_tmpa_tl { \@@_thing_use:nN {#1} \l_@@_head_tl }
+    \tl_set:Nx \l_@@_tmpa_tl
+      { \@@_thing_use:nnN {#1} {#3} \l_@@_head_tl }
     \@@_prev_input_right_silent:V \l_@@_tmpa_tl
     \@@_set_action_text:
     \@@_set_action_text:x
       { \g_@@_action_text_str = ~ \tl_to_str:N \l_@@_tmpa_tl }
-    \int_compare:nNnF {#1} > { 3 } { \@@_print_action: }
+    \int_compare:nNnF {#3} > { 3 } { \@@_print_action: }
+    \int_gset:Nn \g_@@_val_level_int {#1}
   }
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %
 % \begin{macro}[aux, EXP]
@@ -2223,14 +2247,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux,EXP]{\@@_thing_use:nN}
+% \begin{macro}[aux,EXP]{\@@_thing_use:nnN}
 %   Given a level~|#1|, call a function to convert the token list~|#2|
 %   to the correct level.  This step may trigger \TeX{} errors, which
 %   should precisely match the expected ones.
 %    \begin{macrocode}
-\cs_new:Npn \@@_thing_use:nN #1
+\cs_new:Npn \@@_thing_use:nnN #1#2
   {
-    \int_case:nnF { \int_min:nn { \g_@@_val_level_int } {#1} }
+    \int_case:nnF { \int_min:nn {#1} {#2} }
       {
         { 0 } \int_eval:n
         { 1 } \dim_eval:n
@@ -2620,7 +2644,7 @@
             \int_case:nnF \g_@@_val_level_int
               {
                 { 0 } { \@@_scan_dimen:NN #2 \c_false_bool }
-                { 1 } { \bool_if:NT #2 { \msg_error: } }
+                { 1 } { \bool_if:NT #2 { \msg_error: } } % ^^A todo: ??
               }
               {
                 \int_compare:nNnF \g_@@_val_level_int = {#1}
@@ -3515,9 +3539,15 @@
     \@@_print_action:
     \@@_scan_math:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { endv }                                 % 9
+  { \msg_error:nn { unravel } { not-implemented } { alignments } }
 %    \end{macrocode}
 %
 % Blank spaces are ignored in vertical and math modes in the same way as
@@ -3573,7 +3603,7 @@
     \@@_mode_vertical:n
       {
         \mode_if_inner:TF
-          { \msg_error:nn { unravel } { end-in-inner-vmode } }
+          { \@@_forbidden_case: }
           {
             % ^^A todo: unless its_all_over
             \@@_back_input:
@@ -3888,6 +3918,8 @@
 %
 % \subsubsection{From $32$ to $47$}
 %
+% ^^A todo: implement \@@_begin_insert_or_adjust:
+%
 % \begin{itemize}
 % \item |halign=32|
 % \item |valign=33|
@@ -3908,6 +3940,15 @@
 % \end{itemize}
 %
 %    \begin{macrocode}
+\@@_new_tex_cmd:nn { halign }                               % 32
+  { \msg_fatal:nnx { unravel } { not-implemented } { halign } }
+\@@_new_tex_cmd:nn { valign }                               % 33
+  { \msg_fatal:nnx { unravel } { not-implemented } { valign } }
+\@@_new_tex_cmd:nn { no_align }                             % 34
+  { \msg_fatal:nnx { unravel } { not-implemented } { noalign } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \@@_new_tex_cmd:nn { vrule }                                % 35
   { \@@_mode_non_vertical:n { \@@_do_rule: } }
 \@@_new_tex_cmd:nn { hrule }                                % 36
@@ -3924,6 +3965,30 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\@@_new_tex_cmd:nn { insert }                               % 37
+  { \@@_begin_insert_or_adjust: }
+\@@_new_tex_cmd:nn { vadjust }                              % 38
+  {
+    \mode_if_vertical:TF
+      { \@@_forbidden_case: } { \@@_begin_insert_or_adjust: }
+  }
+%    \end{macrocode}
+%
+% ^^A todo: implement the internal \pdfprimitive business.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { ignore_spaces }                        % 39
+  {
+    \token_if_eq_meaning:NNTF \l_@@_head_token \tex_ignorespaces:D
+      {
+        \@@_get_x_non_blank:
+        \@@_set_cmd:
+        \@@_do_step:
+      }
+      { \msg_error:nn { unravel } { not-implemented } { pdfprimitive } }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \@@_new_tex_cmd:nn { after_assignment }                     % 40
   {
     \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
@@ -3934,6 +3999,24 @@
         Afterassignment:~\tl_to_str:N \l_@@_tmpa_tl
         \gtl_to_str:N \l_@@_head_gtl
       }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { after_group }                          % 41
+  { \msg_error:nnx { unravel } { not-implemented } { aftergroup } }
+%    \end{macrocode}
+%
+% See \cs{@@_do_append_glue:}.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { break_penalty }                        % 42
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_int:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 %
@@ -3957,6 +4040,87 @@
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { ital_corr }                            % 44
+  {
+    \mode_if_vertical:TF { \@@_forbidden_case: }
+      { \l_@@_head_token \@@_print_action: }
+  }
+%    \end{macrocode}
+%
+% \begin{macro}[aux]{\@@_do_accent:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_accent:
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_int:
+    \@@_do_assignments:
+    \bool_if:nTF
+      {
+        \token_if_eq_catcode_p:NN
+          \l_@@_head_token \c_catcode_letter_token
+        ||
+        \token_if_eq_catcode_p:NN
+          \l_@@_head_token \c_catcode_other_token
+        ||
+        \int_compare_p:nNn
+          \l_@@_head_cmd_int = { \@@_tex_use:n { char_given } }
+      }
+      { \@@_prev_input_right:V \l_@@_head_tl }
+      {
+        \token_if_eq_meaning:NNTF \l_@@_head_token \tex_char:D
+          {
+            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_scan_int:
+          }
+          { \@@_break:w }
+      }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_break_point:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_do_math_accent:}
+%   \TeX{} will complain if \cs{l_@@_head_tl} happens to start with
+%   \tn{accent} (the user used \tn{accent} in math mode).
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_math_accent:
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_int:
+    \@@_scan_math:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { accent }                               % 45
+  {
+    \@@_mode_non_vertical:n
+      { \mode_if_math:TF { \@@_do_math_accent: } { \@@_do_accent: } }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { math_accent }                          % 46
+  { \@@_mode_math:n { \@@_do_math_accent: } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { discretionary }                        % 47
+  { \msg_error:nnx { unravel } { not-implemented } { discretionary } }
+%    \end{macrocode}
+%
 % \subsubsection{Maths: from $48$ to $56$}
 %
 % \begin{itemize}
@@ -3970,6 +4134,51 @@
 % \item |non_script=55|
 % \item |vcenter=56|
 % \end{itemize}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { eq_no }                                % 48
+  { \msg_error:nnx { unravel } { not-implemented } { eqno } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { left_right }                           % 49
+  { \msg_error:nnx { unravel } { not-implemented } { left/right } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { math_comp }                            % 50
+  { \msg_error:nnx { unravel } { not-implemented } { math~comp } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { limit_switch }                         % 51
+  { \msg_error:nnx { unravel } { not-implemented } { limits } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { above }                                % 52
+  { \msg_error:nnx { unravel } { not-implemented } { above } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { math_style }                           % 53
+  { \msg_error:nnx { unravel } { not-implemented } { math~style } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { math_choice }                          % 54
+  { \msg_error:nnx { unravel } { not-implemented } { math~choice } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { non_script }                           % 55
+  { \msg_error:nnx { unravel } { not-implemented } { non~script } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { vcenter }                              % 56
+  { \msg_error:nnx { unravel } { not-implemented } { vcenter } }
+%    \end{macrocode}
 %
 % \subsubsection{From $57$ to $70$}
 %
@@ -4065,7 +4274,73 @@
   }
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { omit }                                 % 63
+  { \msg_error:nn { unravel } { not-implemented } { omit } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { ex_space }                             % 64
+  { \@@_mode_non_vertical:n { \l_@@_head_token \@@_print_action: } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { no_boundary }                          % 65
+  { \@@_mode_non_vertical:n { \l_@@_head_token \@@_print_action: } }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { radical }                              % 66
+  {
+    \@@_mode_math:n
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:
+        \@@_scan_int:
+        \@@_scan_math:
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \tl_use:N \l_@@_head_tl \scan_stop:
+        \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+      }
+  }
+%    \end{macrocode}
+%
+% Let \TeX{} cause the error.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { end_cs_name }                          % 67
+  { \l_@@_head_token \@@_print_action: }
+%    \end{macrocode}
+%
+% See |the_char| and |other_char|.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { char_given }                           % 68
+  {
+    \@@_mode_non_vertical:n
+      {
+        \mode_if_math:TF
+          { \@@_char_in_mmode:V \l_@@_head_char_int }
+          { \@@_char:V \l_@@_head_char_int }
+      }
+  }
+%    \end{macrocode}
+%
+% See |math_char_num|.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { math_given }                           % 69
+  {
+    \@@_mode_math:n
+      { \@@_mathchar:x { \int_use:N \l_@@_head_char_int } }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { last_item }                            % 70
+  { \@@_forbidden_case: }
+%    \end{macrocode}
+%
 % \subsubsection{Extensions}
+% ^^A todo: move this section.
 %
 % \begin{macro}[int]{\@@_scan_extension_operands:}
 %    \begin{macrocode}
@@ -4837,7 +5112,7 @@
   {
     % ^^A todo...
     % new_letterspaced_font(a);
-    \msg_error:nn { unravel } { not-implemented }
+    \msg_error:nnx { unravel } { not-implemented } { letterspace-font }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_omit_after_assignment:w
   }
@@ -4845,7 +5120,7 @@
   {
     % ^^A todo...
     % make_font_copy(a);
-    \msg_error:nn { unravel } { not-implemented }
+    \msg_error:nnx { unravel } { not-implemented } { pdf-copy-font }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_omit_after_assignment:w
   }
@@ -4966,6 +5241,7 @@
         \seq_gput_right:Nn \g_@@_prev_input_seq { }
         \@@_prefixed_command:
         \bool_gset_true:N \g_@@_set_box_allowed_bool
+        \@@_do_assignments:
       }
   }
 %    \end{macrocode}
@@ -5010,13 +5286,10 @@
 % The following are not implemented: \tn{pdfprimitive},
 % |end_template=117|.
 %
+% Let \TeX{} trigger an error.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { undefined_cs }                  % 103
-  {
-    \msg_error:nnx { unravel } { undefined }
-      { \g_@@_action_text_str }
-    \@@_print_action:
-  }
+  { \tl_use:N \l_@@_head_tl \@@_print_action: }
 %    \end{macrocode}
 %
 % \begin{macro}[aux]{\@@_expandafter:, \@@_unless:, \@@_unless_bad:}
@@ -6123,8 +6396,67 @@
   { Internal~error:~the~command~'#1'~is~not~known. }
 \msg_new:nnn { unravel } { extra-fi-or-else }
   { Extra~fi,~or,~or~else. }
+\msg_new:nnn { unravel } { missing-lbrace }
+  { Missing~left~brace~inserted. }
+\msg_new:nnn { unravel } { missing-dollar }
+  { Missing~dollar~inserted. }
+\msg_new:nnn { unravel } { unknown-expandable }
+  { Internal~error:~the~expandable~command~'#1'~is~not~known. }
+\msg_new:nnn { unravel } { missing-font-id }
+  { Missing~font~identifier.~\iow_char:N\\nullfont~inserted. }
+\msg_new:nnn { unravel } { missing-rparen }
+  { Missing~right~parenthesis~inserted~for~expression. }
+\msg_new:nnn { unravel } { incompatible-units }
+  { Mu~glue/dimen~used~as~a~normal~glue/dimen~or~vice-versa. }
+\msg_new:nnn { unravel } { missing-mudim }
+  { Missing~mu~unit. }
+\msg_new:nnn { unravel } { missing-cs }
+  { Missing~control~sequence.~\iow_char:N\\inaccessible~inserted. }
+\msg_new:nnn { unravel } { missing-box }
+  { Missing~box~inserted. }
+\msg_new:nnn { unravel } { missing-to }
+  { Missing~keyword~'to'~inserted. }
+\msg_new:nnn { unravel } { improper-leaders }
+  { Leaders~not~followed~by~proper~glue. }
+\msg_new:nnn { unravel } { extra-close }
+  { Extra~right~brace~or~\iow_char:N\\endgroup. }
+\msg_new:nnn { unravel } { off-save }
+  { Something~is~wrong~with~groups. }
+\msg_new:nnn { unravel } { hrule-bad-mode }
+  { \iow_char\\hrule~used~in~wrong~mode. }
+\msg_new:nnn { unravel } { invalid-mode }
+  { Invalid~mode~for~this~command. }
+\msg_new:nnn { unravel } { color-stack-action-missing }
+  { Missing~color~stack~action. }
+\msg_new:nnn { unravel } { action-type-missing }
+  { Missing~action~type. }
+\msg_new:nnn { unravel } { identifier-type-missing }
+  { Missing~identifier~type. }
+\msg_new:nnn { unravel } { destination-type-missing }
+  { Missing~destination~type. }
+\msg_new:nnn { unravel } { erroneous-prefixes }
+  { Prefixes~appplied~to~non-assignment~command. }
+\msg_new:nnn { unravel } { improper-setbox }
+  { \iow_char:N\\setbox~while~fetching~base~of~an~accent. }
+\msg_new:nnn { unravel } { after-advance }
+  {
+    Missing~register~after~\iow_char:N\\advance,~
+    \iow_char:N\\multiply,~or~\iow_char:N\\divide.
+  }
+\msg_new:nnn { unravel } { bad-unless }
+  { \iow_char:N\\unless~not~followed~by~conditional. }
+\msg_new:nnn { unravel } { missing-endcsname }
+  { Missing~\iow_char:N\\endcsname~inserted. }
+\msg_new:nnn { unravel } { runaway-if }
+  { Runaway~\iow_char:N\\if... }
+\msg_new:nnn { unravel } { extra-or }
+  { Extra~\iow_char:N\\or. }
+\msg_new:nnn { unravel } { missing-equals }
+  { Missing~equals~for~\iow_char:N\\ifnum~or~\iow_char:N\\ifdim. }
 \msg_new:nnn { unravel } { internal }
   { Internal~error:~'#1' }
+\msg_new:nnn { unravel } { not-implemented }
+  { The~following~feature~is~not~implemented:~'#1'. }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
