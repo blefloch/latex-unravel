@@ -830,10 +830,10 @@
 \@@_tex_primitive:nnn { vtop              } { make_box } { 4 }
 \@@_tex_primitive:nnn { vbox              } { make_box } { 5 }
 \@@_tex_primitive:nnn { hbox              } { make_box } { 106 }
-\@@_tex_primitive:nnn { moveleft          } { hmove } { 1 }
 \@@_tex_primitive:nnn { moveright         } { hmove } { 0 }
-\@@_tex_primitive:nnn { raise             } { vmove } { 1 }
+\@@_tex_primitive:nnn { moveleft          } { hmove } { 1 }
 \@@_tex_primitive:nnn { lower             } { vmove } { 0 }
+\@@_tex_primitive:nnn { raise             } { vmove } { 1 }
 \@@_tex_primitive:nnn { unhbox            } { un_hbox } { 0 }
 \@@_tex_primitive:nnn { unhcopy           } { un_hbox } { 1 }
 \@@_tex_primitive:nnn { unvbox            } { un_vbox } { 0 }
@@ -2808,6 +2808,84 @@
 %
 % \subsection{Paragraphs}
 %
+% \begin{macro}[int,TF]{\@@_charcode_if_safe:n}
+%    \begin{macrocode}
+\prg_new_protected_conditional:Npnn \@@_charcode_if_safe:n #1 { TF }
+  {
+    \bool_if:nTF
+      {
+        \int_compare_p:n { `0 <= #1 <= `9 }
+        || \int_compare_p:n { `A <= #1 <= `Z }
+        || \int_compare_p:n { `a <= #1 <= `z }
+      }
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_char:n, \@@_char:V, \@@_char:x}
+%    \begin{macrocode}
+\group_begin:
+  \char_set_catcode_other:n { 0 }
+  \cs_new_protected:Npn \@@_char:n #1
+    {
+      \tex_char:D #1 \scan_stop:
+      \@@_charcode_if_safe:nTF {#1}
+        {
+          \group_begin:
+          \char_set_lccode:nn { 0 } {#1}
+          \tex_lowercase:D
+            { \group_end: \tl_set:Nn \l_@@_tmpa_tl { ^^@ } }
+        }
+        {
+          \tl_set:Nx \l_@@_tmpa_tl
+            { \exp_not:N \char \int_eval:n {#1} ~ }
+        }
+      \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
+      \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
+    }
+\group_end:
+\cs_generate_variant:Nn \@@_char:n { V , x }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]
+%   {\@@_char_in_mmode:n, \@@_char_in_mmode:V, \@@_char_in_mmode:x}
+%    \begin{macrocode}
+\group_begin:
+  \char_set_catcode_other:n { 0 }
+  \cs_new_protected:Npn \@@_char_in_mmode:n #1
+    {
+      \int_compare:nNnTF { \tex_mathcode:D #1 } = { "8000 }
+        { % math active
+          \group_begin:
+          \char_set_lccode:nn { 0 } { \l_@@_tmpa_tl }
+          \tex_lowercase:D
+            { \group_end: \gtl_set:Nn \l_@@_head_gtl { ^^@ } }
+          \@@_back_input:
+        }
+        { \@@_char:n {#1} }
+    }
+\group_end:
+\cs_generate_variant:Nn \@@_char_in_mmode:n { V , x }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_mathchar:n, \@@_mathchar:x}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_mathchar:n #1
+  {
+    \tex_mathchar:D #1 \scan_stop:
+    \tl_set:Nx \l_@@_tmpa_tl
+      { \exp_not:N \mathchar \int_eval:n {#1} ~ }
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
+  }
+\cs_generate_variant:Nn \@@_mathchar:n { x }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[int]{\@@_new_graf:N}
 %   The argument is a boolean, indicating whether the paragraph should
 %   be indented.  We have much less work to do here than \TeX{} itself.
@@ -3054,10 +3132,11 @@
   {
     \@@_mode_non_vertical:n
       {
-        \gtl_gput_right:Nx \g_@@_output_gtl
-          { \@@_token_to_char:N \l_@@_head_token }
-        \@@_print_action:
-        \l_@@_head_token
+        \tl_set:Nx \l_@@_tmpa_tl
+          { ` \@@_token_to_char:N \l_@@_head_token }
+        \mode_if_math:TF
+          { \@@_char_in_mmode:V \l_@@_tmpa_tl }
+          { \@@_char:V \l_@@_tmpa_tl }
       }
   }
 \@@_new_eq_tex_cmd:nn { other_char } { the_char }           % 12
@@ -3109,6 +3188,193 @@
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
         \tl_use:N \l_@@_head_tl
+      }
+  }
+%    \end{macrocode}
+%
+% \subsubsection{From $16$ to $31$}
+%
+% \begin{itemize}
+% \item |char_num=16| for \tn{char}
+% \item |math_char_num=17| for \tn{mathchar}
+% \item |mark=18| for \tn{mark} and \tn{marks}
+% \item |xray=19| for \tn{show}, \tn{showbox}, \tn{showthe},
+%   \tn{showlists}, \tn{showgroups}, \tn{showtokens}, \tn{showifs}.
+% \item |make_box=20| for \tn{box}, \tn{copy}, \tn{lastbox},
+%   \tn{vsplit}, \tn{vtop}, \tn{vbox}, and \tn{hbox}~(106).
+% \item |hmove=21| for \tn{moveright} and \tn{moveleft}.
+% \item |vmove=22| for \tn{lower} and \tn{raise}.
+% \item |un_hbox=23| for \tn{unhbox} and \tn{unhcopy}.
+% \item |unvbox=24| for \tn{unvbox}, \tn{unvcopy}, \tn{pagediscards},
+%   and \tn{splitdiscards}.
+% \end{itemize}
+%
+% \tn{char} leaves vertical mode, then scans an integer operand, then
+% calls \cs{@@_char_in_mmode:n} or \cs{@@_char:n} depending on the mode.
+% See implementation of |the_char| and |other_char|.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { char_num }                             % 16
+  {
+    \@@_mode_non_vertical:n
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:
+        \@@_scan_int:
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \mode_if_math:TF
+          { \@@_char_in_mmode:x { \tl_tail:N \l_@@_head_tl } }
+          { \@@_char:x { \tl_tail:N \l_@@_head_tl } }
+      }
+  }
+%    \end{macrocode}
+%
+% Only allowed in math mode, \tn{mathchar} reads an integer operand, and
+% calls \cs{@@_mathchar:n}, which places the corresponding math
+% character in the \cs{g_@@_output_gtl}, and in the actual output.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { math_char_num }                        % 17
+  {
+    \@@_mode_math:n
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:
+        \@@_scan_int:
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_mathchar:x { \tl_tail:N \l_@@_head_tl }
+      }
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { mark }                                 % 18
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \int_compare:nNnF \l_@@_head_char_int = \c_zero
+      { \@@_scan_int: }
+    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_scan_toks:NN \c_false_bool \c_true_bool
+    \seq_gpop_right:Nn \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:x
+      { \tl_to_str:N \l_@@_head_tl \tl_to_str:N \l_@@_tmpa_tl }
+    \tl_put_right:Nx \l_@@_head_tl
+      { { \exp_not:N \exp_not:n \exp_not:V \l_@@_tmpa_tl } }
+    \tl_use:N \l_@@_head_tl
+  }
+%    \end{macrocode}
+%
+% We now implement the primitives \tn{show}, \tn{showbox}, \tn{showthe},
+% \tn{showlists}, \tn{showgroups}, \tn{showtokens} and \tn{showifs}.
+% Those with no operand are first sent to \TeX{} before calling
+% \cs{@@_print_action:}.  Those with operands print first, then scan
+% their operands, then are sent to \TeX{}, and print again the action.
+% The case of \tn{show} is a bit special, as its operand is a single
+% token, which cannot easily be put into the \cs{g_@@_prev_input_seq} in
+% general.  Since no expansion can occur, simply grab the token, show
+% it, then print the action just done.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { xray }                                 % 19
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \int_case:nnTF \l_@@_head_char_int
+      {
+        { 1 } { \@@_print_action: \@@_scan_int: } % showbox
+        { 2 } % showthe
+          { \@@_print_action: \@@_scan_something_internal:n { 5 } }
+        { 3 } { } % showlists
+        { 4 } { } % showgroups
+        { 5 } % showtokens
+          {
+            \@@_print_action:
+            \@@_scan_toks:NN \c_false_bool \c_false_bool
+          }
+        { 6 } { } % showifs
+      }
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \tl_use:N \l_@@_head_tl
+        \@@_print_action:
+      }
+      { % show
+        \@@_get_next:
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl
+        \@@_print_action:
+      }
+  }
+%    \end{macrocode}
+%
+% |make_box=20| for \tn{box}, \tn{copy}, \tn{lastbox},
+%   \tn{vsplit}, \tn{vtop}, \tn{vbox}, and \tn{hbox}~(106).
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { make_box }                             % 20
+  { \@@_begin_box:n { 0 } }
+%    \end{macrocode}
+%
+% ^^A todo: implement \@@_begin_box:n
+% ^^A todo: implement \@@_forbidden_case:
+%
+% \begin{macro}[aux]{\@@_do_move:}
+%   Scan a dimension and a box, and perform the shift, printing the
+%   appropriate action.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_move:
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_normal_dimen:
+    \@@_scan_box:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% |hmove=21| for \tn{moveright} and \tn{moveleft}.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { hmove }                                % 21
+  { \mode_if_vertical:TF { \@@_do_move: } { \@@_forbidden_case: } }
+%    \end{macrocode}
+%
+% |vmove=22| for \tn{lower} and \tn{raise}.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { vmove }                                % 22
+  { \mode_if_vertical:TF { \@@_forbidden_case: } { \@@_do_move: } }
+%    \end{macrocode}
+%
+% \begin{macro}[aux]{\@@_do_unpackage:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_do_unpackage:
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_int:
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \tl_use:N \l_@@_head_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% |un_hbox=23| for \tn{unhbox} and \tn{unhcopy}.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { un_hbox }                              % 23
+  { \@@_mode_non_vertical:n { \@@_do_unpackage: } }
+%    \end{macrocode}
+%
+% |unvbox=24| for \tn{unvbox}, \tn{unvcopy}, \tn{pagediscards}, and
+% \tn{splitdiscards}.  The latter two take no operands, so we just let
+% \TeX{} do its thing, then we show the action.
+%    \begin{macrocode}
+\@@_new_tex_cmd:nn { un_vbox }                              % 24
+  {
+    \@@_mode_vertical:n
+      {
+        \int_compare:nNnTF \l_@@_head_char_int > { 1 }
+          { \l_@@_head_token \@@_print_action: }
+          { \@@_do_unpackage: }
       }
   }
 %    \end{macrocode}
