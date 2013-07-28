@@ -234,6 +234,16 @@
 %    \end{macrocode}
 % \end{variable}
 %
+% ^^A todo: doc, and let user decide
+% \begin{variable}{\g_@@_speedup_macros_bool}
+%   If this boolean is true, speed up macros which have a simple
+%   parameter text.  This may not be safe if very weird macros appear.
+%    \begin{macrocode}
+\bool_new:N \g_@@_speedup_macros_bool
+\bool_gset_true:N \g_@@_speedup_macros_bool
+%    \end{macrocode}
+% \end{variable}
+%
 % \begin{variable}{\l_@@_print_int}
 %   The length of one piece of the terminal output.
 %    \begin{macrocode}
@@ -358,6 +368,17 @@
 %    \end{macrocode}
 % \end{variable}
 %
+% \begin{variable}{\c_@@_parameters_tl}
+%   Used to determine if a macro has simple parameters or not.
+%    \begin{macrocode}
+\group_begin:
+  \char_set_lccode:nn { `* } { `# }
+  \tex_lowercase:D
+    { \tl_const:Nn \c_@@_parameters_tl { ^*1*2*3*4*5*6*7*8*9 } }
+\group_end:
+%    \end{macrocode}
+% \end{variable}
+%
 % \subsubsection{Numbers and conditionals}
 %
 % \begin{variable}{\g_@@_val_level_int}
@@ -455,7 +476,7 @@
 \cs_generate_variant:Nn \tl_if_in:nnF { nV }
 \cs_generate_variant:Nn \tl_if_in:nnTF { nV }
 \cs_generate_variant:Nn \tl_if_eq:nnT { V }
-\cs_generate_variant:Nn \tl_if_in:NnTF { No }
+\cs_generate_variant:Nn \tl_if_in:NnTF { No , NV }
 \cs_generate_variant:Nn \tl_if_single_token:nT { V }
 \cs_generate_variant:Nn \tl_gset_rescan:Nnn { Nnx }
 \cs_generate_variant:Nn \gtl_gput_left:Nn { Nx , NV , No }
@@ -2104,8 +2125,15 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% ^^A todo: redoc
 % ^^A todo: estimate how far the macro has touched the input.
 % \begin{macro}[int]{\@@_macro_call:}
+% \begin{macro}[aux]
+%   {
+%     \@@_macro_call_safe:,
+%     \@@_macro_call_quick:,
+%     \@@_macro_call_quick_loop:NN
+%   }
 %   Macros are simply expanded once.  We cannot determine precisely
 %   which tokens a macro will need for its parameters, but we know that
 %   it must form a balanced token list.  Thus we can be safe by
@@ -2114,16 +2142,37 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_macro_call:
   {
-    \exp_args:Nx \tl_if_empty:nF
-      { \exp_after:wN \@@_macro_parameter:N \l_@@_head_tl }
+    \bool_if:NTF \g_@@_speedup_macros_bool
       {
-        \@@_input_gpop_tl:N \l_@@_tmpa_tl
-        \tl_put_right:NV \l_@@_head_tl \l_@@_tmpa_tl
+        \tl_set:Nx \l_@@_tmpa_tl
+          { ^ \exp_after:wN \@@_macro_parameter:N \l_@@_head_tl }
+        \tl_if_in:NVTF \c_@@_parameters_tl \l_@@_tmpa_tl
+          { \@@_macro_call_quick: } { \@@_macro_call_safe: }
       }
+      { \@@_macro_call_safe: }
     \exp_args:NV \@@_back_input:o \l_@@_head_tl
     \@@_print_done:x { \g_@@_action_text_str }
   }
+\cs_new_protected_nopar:Npn \@@_macro_call_safe:
+  {
+    \@@_input_gpop_tl:N \l_@@_tmpa_tl
+    \tl_put_right:NV \l_@@_head_tl \l_@@_tmpa_tl
+  }
+\cs_new_protected_nopar:Npn \@@_macro_call_quick:
+  {
+    \exp_after:wN \@@_macro_call_quick_loop:NN \l_@@_tmpa_tl
+      { ? \use_none_delimit_by_q_stop:w } \q_stop
+  }
+\cs_new_protected_nopar:Npn \@@_macro_call_quick_loop:NN #1#2
+  {
+    \use_none:n #2
+    \@@_input_gpop_item:NF \l_@@_tmpa_tl
+      { \msg_error:nn { unravel } { runaway-macro-parameter } }
+    \tl_put_right:Nx \l_@@_head_tl { { \exp_not:V \l_@@_tmpa_tl } }
+    \@@_macro_call_quick_loop:NN
+  }
 %    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %
 % \subsection{Expand next token}
@@ -6566,7 +6615,8 @@
           }
           { \g_@@_action_text_str }
         % \\
-        \ \ < \int_use:N \g_@@_input_int > % ^^A todo: remove
+        % \ \ < \int_use:N \g_@@_input_int > % ^^A todo: remove
+        \ < \seq_count:N \g_@@_prev_input_seq > % ^^A todo: remove
       }
     \@@_print_state:
   }
@@ -6786,7 +6836,7 @@
         \tl_if_empty_p:N \g_@@_if_limit_tl
         && \int_compare_p:nNn \g_@@_if_limit_int = \c_zero
         && \int_compare_p:nNn \g_@@_if_depth_int = \c_zero
-        && \seq_if_empty_p:N \g_@@_prev_input_seq
+        % && \seq_if_empty_p:N \g_@@_prev_input_seq
       }
       { \@@_input_if_empty:TF { } { \@@_bad_finish: } }
       { \@@_bad_finish: }
@@ -6794,7 +6844,7 @@
   }
 \cs_new_protected_nopar:Npn \@@_bad_finish:
   {
-    \msg_error:nn { unravel } { internal }
+    \msg_error:nnx { unravel } { internal }
       { the-last-unravel-finished-badly }
   }
 %    \end{macrocode}
