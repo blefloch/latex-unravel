@@ -28,4 +28,5 @@
 *.mtc0
 *.zip
 texput.*
-runner.pdf
+unravel.sty
+unravel.pdf
