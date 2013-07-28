@@ -97,7 +97,7 @@
 %
 % Given all the work that \pkg{unravel} has to do to emulate \TeX{}, it
 % is not fast on very large pieces of code.  For instance, running it on
-% |\documentclass{article}| takes about $20$~minutes on my machine, and
+% |\documentclass{article}| takes about ten minutes on my machine, and
 % finishes after slightly more than $20000$ steps.
 % \begin{verbatim}
 % \RequirePackage{unravel}
@@ -5198,7 +5198,7 @@
     % ^^A todo: Adjust for the setting of \globaldefs
     \cs_if_exist_use:cF { @@_prefixed_ \int_use:N \l_@@_head_cmd_int : }
       {
-        \msg_error:nn { unravel } { not-implemented }
+        \msg_error:nnx { unravel } { internal } { prefixed }
         \@@_omit_after_assignment:w
       }
     \@@_after_assignment:
