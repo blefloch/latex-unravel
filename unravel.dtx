@@ -112,7 +112,13 @@
 % \cs{unravel} would not find any token, and would give up, as \TeX{}
 % would if your file ended just after |\documentclass{article}|.  After
 % running the above through \pdfTeX{}, one can check that the result is
-% identical to that without \pkg{unravel}.
+% identical to that without \pkg{unravel}.  Note that
+% \cs{unravel}|\usepackage{lipsum}\relax|, despite taking as many steps
+% to complete, is four times slower, because \tn{newcommand} uses
+% delimited arguments, which prevent some optimizations that
+% \pkg{unravel} can otherwise obtain.  For comparison,
+% |\unravel{\lipsum[1-30]}|, which also takes $20000$ step, takes
+% $8$~minutes to complete.
 %
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
@@ -140,7 +146,11 @@
 %
 % \subsection{Future perhaps}
 %
-% Allow users to change the settings.
+% \begin{itemize}
+% \item Allow users to change some settings.
+% \item Fix the display for \tn{if} and \tn{ifcat} (remove extraneous
+%   \cs{exp_not:N}).
+% \end{itemize}
 %
 % \end{documentation}
 %
@@ -448,6 +458,15 @@
 %   vertical mode leaders construction; it is |Z|~otherwise.
 %    \begin{macrocode}
 \seq_new:N \l_@@_leaders_box_seq
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\g_@@_ends_int}
+%   Number of times \tn{end} will be put back into the input in case
+%   there remains to ship some pages.
+%    \begin{macrocode}
+\int_new:N \g_@@_ends_int
+\int_gset:Nn \g_@@_ends_int { 3 }
 %    \end{macrocode}
 % \end{variable}
 %
@@ -3270,6 +3289,7 @@
       }
       { \@@_scan_group_x:n {#1} }
   }
+\cs_generate_variant:Nn \@@_scan_group_x:n { f }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -3523,8 +3543,15 @@
 \cs_new_protected:Npn \@@_box_hook:N #1
   {
     \tl_set:NV \l_@@_tmpa_tl #1
-    \exp_args:Nx #1
-      { \exp_not:n { \@@_box_hook:w \prg_do_nothing: } \exp_not:V #1 }
+    \str_if_eq_x:nnF
+      { \tl_head:N \l_@@_tmpa_tl } { \exp_not:N \@@_box_hook:w }
+      {
+        \exp_args:Nx #1
+          {
+            \exp_not:n { \@@_box_hook:w \prg_do_nothing: }
+            \exp_not:V #1
+          }
+      }
     \cs_gset_protected:Npn \@@_box_hook:w ##1 \@@_box_hook_end:
       {
         \exp_args:No #1 {##1}
@@ -4042,11 +4069,23 @@
           { \@@_forbidden_case: }
           {
             % ^^A todo: unless its_all_over
-            \@@_back_input:
-            \tex_hbox:D to \tex_hsize:D { }
-            \tex_vfill:D
-            \tex_penalty:D - '10000000000 \exp_stop_f:
-            \@@_build_page:
+            \int_gdecr:N \g_@@_ends_int
+            \int_compare:nNnTF \g_@@_ends_int > \c_zero
+              {
+                \@@_back_input:
+                \@@_back_input:n
+                  {
+                    \tex_hbox:D to \tex_hsize:D { }
+                    \tex_vfill:D
+                    \tex_penalty:D - '10000000000 ~
+                  }
+                \@@_build_page:
+                \@@_print_action:x { End~everything! }
+              }
+              {
+                \@@_print_outcome:
+                \l_@@_head_token
+              }
           }
       }
   }
