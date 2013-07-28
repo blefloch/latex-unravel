@@ -444,7 +444,8 @@
 \cs_generate_variant:Nn \gtl_gpop_left:NN { c }
 \cs_generate_variant:Nn \gtl_get_left:NN { c }
 \cs_generate_variant:Nn \gtl_gset:Nn { c }
-\cs_generate_variant:Nn \gtl_gconcat:NNN { cNc }
+\cs_generate_variant:Nn \gtl_gconcat:NNN { ccc , cNc }
+\cs_generate_variant:Nn \gtl_gclear:N { c }
 %    \end{macrocode}
 %
 % \begin{macro}[aux]{\@@_tl_gset_input:Nnn, \@@_tl_gset_input:Nno}
@@ -618,6 +619,28 @@
     \else:
       \prg_return_true:
     \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int,EXP,pTF]{\@@_token_if_protected:N}
+%   Returns \texttt{true} if the token is either not expandable or is a
+%   protected macro.
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \@@_token_if_protected:N #1
+  { p , T ,  F , TF }
+  {
+    \@@_token_if_expandable:NTF #1
+      {
+        \token_if_protected_macro:NTF #1
+          { \prg_return_true: }
+          {
+            \token_if_protected_long_macro:NTF #1
+              { \prg_return_true: }
+              { \prg_return_false: }
+          }
+      }
+      { \prg_return_true: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -1836,6 +1859,63 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[aux]{\@@_input_merge:}
+%   Merge the top two levels of input.  This requires, but does not
+%   check, that \cs{g_@@_input_int} is at least~$2$.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_input_merge:
+  {
+    \int_gdecr:N \g_@@_input_int
+    \gtl_gconcat:ccc
+      { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
+      { g_@@_input_ \int_eval:n { \g_@@_input_int + \c_one } _gtl }
+      { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
+    \gtl_gclear:c
+      { g_@@_input_ \int_eval:n { \g_@@_input_int + \c_one } _gtl }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int,TF]{\@@_input_gpop_item:N}
+% \begin{macro}[aux]{\@@_input_gpop_item_aux:NN}
+%   If there is no input, we cannot pop an item.  Othewise, try to pop
+%   from the top of the input stack.  If this succeeds, or if this
+%   failed and the top of stack has extra end-group characters, or if
+%   the input stack contains only the top-most item, then the answer
+%   given by \cs{gtl_gpop_left_item:NNTF} is the correct one, which we
+%   return.  Otherwise, merge the top two levels and repeat.
+%    \begin{macrocode}
+\prg_new_protected_conditional:Npnn \@@_input_gpop_item:N #1 { F }
+  {
+    \int_compare:nNnTF \g_@@_input_int = \c_zero
+      { \prg_return_false: }
+      {
+        \exp_args:Nc \@@_input_gpop_item_aux:NN
+          { g_@@_input_ \int_use:N \g_@@_input_int _gtl } #1
+      }
+  }
+\cs_new_protected:Npn \@@_input_gpop_item_aux:NN #1#2
+  {
+    \gtl_gpop_left_item:NNTF #1#2
+      { \prg_return_true: }
+      {
+        \int_compare:nNnTF { \gtl_extra_end:N #1 } > \c_zero
+          { \prg_return_false: }
+          {
+            \int_compare:nNnTF \g_@@_input_int = \c_one
+              { \prg_return_false: }
+              {
+                \@@_input_merge:
+                \exp_args:Nc \@@_input_gpop_item_aux:NN
+                  { g_@@_input_ \int_use:N \g_@@_input_int _gtl } #2
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 % \begin{macro}[int]{\@@_input_gpop_tl:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_input_gpop_tl:N #1
@@ -1866,12 +1946,7 @@
             \gtl_gpop_left_tl:N #1
           }
           {
-            \int_gdecr:N \g_@@_input_int
-            \gtl_gconcat:cNc
-              { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
-              #1
-              { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
-            \gtl_gclear:N #1
+            \@@_input_merge:
             \@@_input_gpop_tl_aux:N #2
           }
       }
@@ -2099,16 +2174,10 @@
 \cs_new_protected_nopar:Npn \@@_get_x_or_protected:
   {
     \@@_get_next:
-    \@@_token_if_expandable:NT \l_@@_head_token
+    \@@_token_if_protected:NF \l_@@_head_token
       {
-        \token_if_protected_macro:NF \l_@@_head_token
-          {
-            \token_if_protected_long_macro:NF \l_@@_head_token
-              {
-                \@@_expand:
-                \@@_get_x_or_protected:
-              }
-          }
+        \@@_expand:
+        \@@_get_x_or_protected:
       }
   }
 %    \end{macrocode}
@@ -3007,127 +3076,133 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks:NN #1#2
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
     \bool_if:NT #1 { \@@_scan_param: }
     \@@_scan_left_brace:
-    \@@_scan_group:NN #1 #2
+    \bool_if:NTF #2
+      { \@@_scan_toks_x:N #1 }
+      { \@@_scan_toks_n:N #1 }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_param:}
+% \begin{macro}[aux]{\@@_scan_param_aux:}
+%   Collect the parameter text into \cs{l_@@_tmpa_tl}, and when seeing
+%   either a begin-group or an end-group character, put it back into the
+%   input, stop looping, and put what we collected into
+%   \cs{l_@@_defining_gtl} and into the |prev_input|.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_param:
+  {
+    \tl_clear:N \l_@@_tmpa_tl
+    \@@_scan_param_aux:
+    \gtl_put_right:NV \l_@@_defining_gtl \l_@@_tmpa_tl
+    \@@_prev_input_right_silent:V \l_@@_tmpa_tl
+  }
+\cs_new_protected_nopar:Npn \@@_scan_param_aux:
+  {
+    \@@_get_next:
+    \tl_concat:NNN \l_@@_tmpa_tl \l_@@_tmpa_tl \l_@@_head_tl
+    \tl_if_empty:NTF \l_@@_head_tl
+      { \@@_back_input: } { \@@_scan_param_aux: }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_toks_n:N}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_toks_n:N #1
+  {
+    \@@_back_input:
+    \@@_input_gpop_item:NF \l_@@_head_tl
+      {
+        \msg_error:nn { unravel } { runaway-definition }
+        \@@_exit:w
+      }
+    \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
+    \bool_if:NT #1
+      { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl }
+    \@@_prev_input_right_silent:V \l_@@_head_tl
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_toks_x:N}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_toks_x:N #1
+  {
+    \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
+    \bool_if:NT #1
+      {
+        \gtl_concat:NNN \l_@@_defining_gtl
+          \l_@@_defining_gtl \l_@@_head_gtl
+      }
+    \@@_prev_input_gtl_right:N \l_@@_head_gtl
+    \@@_scan_group_x:Nn #1 { 1 }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
     \gtl_if_tl:NF \l_@@_tmpb_gtl
       { \msg_error:nnx { unravel } { internal } { scantoks-balance } }
     \@@_prev_input_right_silent:x { \gtl_left_tl:N \l_@@_tmpb_gtl }
   }
-\cs_new_protected_nopar:Npn \@@_scan_param:
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_group_x:Nn}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_group_x:Nn #1#2
   {
-    \@@_get_next:
-    \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
-      { \@@_back_input: }
+    \@@_get_token_x:N #1
+    \tl_if_empty:NTF \l_@@_head_tl
       {
-        \token_if_eq_catcode:NNTF \l_@@_head_token \c_group_end_token
-          { \@@_insert_group_begin_error: }
+        \bool_if:NT #1
+          {
+            \gtl_put_right:Nx \l_@@_defining_gtl
+              { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
+          }
+        \@@_prev_input_gtl_right:N \l_@@_head_gtl
+        \@@_scan_group_x:Nn #1 {#2}
+      }
+      {
+        \bool_if:NT #1
           {
             \gtl_concat:NNN \l_@@_defining_gtl
-              \l_@@_defining_gtl \l_@@_head_gtl
-            \@@_prev_input_gtl_right:N \l_@@_head_gtl
-            \@@_scan_param:
+              \l_@@_defining_gtl \l_@@_head_tl
           }
-      }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[aux]{\@@_scan_group:NN}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_group:NN #1#2
-  {
-    \bool_if:NT #1
-      {
-        \gtl_concat:NNN \l_@@_defining_gtl
-          \l_@@_defining_gtl \l_@@_head_gtl
-      }
-    \@@_prev_input_gtl_right:N \l_@@_head_gtl
-    \bool_if:NTF #2
-      { \@@_scan_group_expanding:Nn #1 { 1 } }
-      { \@@_scan_group_no_expansion:N #1 }
-  }
-\cs_new_protected:Npn \@@_scan_group_no_expansion:N #1
-  {
-    \@@_input_gpop_tl:N \l_@@_tmpa_tl
-    \bool_if:NT #1
-      { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_tmpa_tl }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_gtl
-    \gtl_put_right:NV \l_@@_prev_input_gtl \l_@@_tmpa_tl
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_gtl
-    \@@_get_next:
-    \bool_if:NT #1
-      {
-        \gtl_gconcat:NNN \l_@@_defining_gtl
-          \l_@@_defining_gtl \l_@@_head_gtl
-      }
-    \@@_prev_input_gtl_right:N \l_@@_head_gtl
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[aux]{\@@_scan_group_expanding:Nn}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_group_expanding:Nn #1#2
-  {
-    \@@_get_token_expanding:N #1
-    \bool_if:NT #1
-      {
-        \gtl_put_right:Nn \l_@@_defining_gtl { \exp_not:N }
-        \gtl_concat:NNN \l_@@_defining_gtl
-          \l_@@_defining_gtl \l_@@_head_gtl
-      }
-    \@@_prev_input_gtl_right:N \l_@@_head_gtl
-    \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
-      { \@@_scan_group_expanding:Nf #1 { \int_eval:n { #2 + 1 } } }
-      {
-        \gtl_if_head_is_group_end:NTF \l_@@_head_gtl
+        \@@_prev_input_gtl_right:N \l_@@_head_gtl
+        \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
+          { \@@_scan_group_x:Nf #1 { \int_eval:n { #2 + 1 } } }
           {
             \int_compare:nNnF {#2} = \c_one
-              {
-                \@@_scan_group_expanding:Nf #1
-                  { \int_eval:n { #2 - 1 } }
-              }
+              { \@@_scan_group_x:Nf #1 { \int_eval:n { #2 - 1 } } }
           }
-          { \@@_scan_group_expanding:Nn #1 {#2} }
       }
   }
-\cs_generate_variant:Nn \@@_scan_group_expanding:Nn { Nf }
+\cs_generate_variant:Nn \@@_scan_group_x:Nn { Nf }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_token_expanding:N}
+% \begin{macro}[aux]{\@@_get_token_x:N}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_get_token_expanding:N #1
+\cs_new_protected:Npn \@@_get_token_x:N #1
   {
     \@@_get_next:
-    \@@_token_if_expandable:NT \l_@@_head_token
+    \@@_token_if_protected:NF \l_@@_head_token
       {
-        \token_if_protected_macro:NF \l_@@_head_token
+        \@@_set_cmd:
+        \int_compare:nNnTF
+          \l_@@_head_cmd_int = { \@@_tex_use:n { the } }
           {
-            \token_if_protected_long_macro:NF \l_@@_head_token
-              {
-                \@@_get_expanding_expand:N #1
-                \@@_get_token_expanding:N #1
-              }
+            \@@_get_the:
+            \bool_if:NT #1
+              { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl }
+            \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
+            \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
+            \@@_print_action:
           }
+          { \@@_expand: }
+        \@@_get_token_x:N #1
       }
-  }
-\cs_new_protected:Npn \@@_get_expanding_expand:N #1
-  {
-    \@@_set_cmd:
-    \int_compare:nNnTF \l_@@_head_cmd_int = { \@@_tex_use:n { the } }
-      {
-        \@@_get_the:
-        \bool_if:NT #1
-          { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl }
-        \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
-        \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
-        \@@_print_action:
-      }
-      { \@@_expand: }
   }
 %    \end{macrocode}
 % \end{macro}
