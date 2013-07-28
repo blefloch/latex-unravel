@@ -3116,7 +3116,7 @@
     \@@_back_input:
     \@@_input_gpop_item:NF \l_@@_head_tl
       {
-        \msg_error:nn { unravel } { runaway-definition }
+        \msg_error:nn { unravel } { runaway-text }
         \@@_exit:w
       }
     \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
@@ -3131,57 +3131,71 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_x:N #1
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
-    \bool_if:NT #1
-      { \tl_put_right:Nn \l_@@_defining_tl { { \if_false: } \fi: } }
-    \@@_prev_input_gtl_right:N \l_@@_head_gtl
-    \@@_scan_group_x:Nn #1 { 1 }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
-    \gtl_if_tl:NF \l_@@_tmpb_gtl
-      { \msg_error:nnx { unravel } { internal } { scantoks-balance } }
-    \@@_prev_input_right_silent:x { \gtl_left_tl:N \l_@@_tmpb_gtl }
+    \bool_if:NTF #1
+      {
+        \@@_prev_input_right_silent:V \c_left_brace_str
+        \tl_put_right:Nn \l_@@_defining_tl { { \if_false: } \fi: }
+        \@@_scan_group_xdef:n { 1 }
+      }
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
+        \@@_prev_input_gtl_right:N \l_@@_head_gtl
+        \@@_scan_group_x:n { 1 }
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
+        \@@_prev_input_right_silent:x { \gtl_left_tl:N \l_@@_tmpb_gtl }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_group_x:Nn}
+% \begin{macro}[aux]{\@@_scan_group_xdef:n}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_group_x:Nn #1#2
+\cs_new_protected:Npn \@@_scan_group_xdef:n #1
   {
-    \@@_get_token_x:N #1
+    \@@_get_token_x:N \c_true_bool
     \tl_if_empty:NTF \l_@@_head_tl
       {
-        \@@_prev_input_gtl_right:N \l_@@_head_gtl
         \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
           {
-            \bool_if:NT #1
-              {
-                \tl_put_right:Nn \l_@@_defining_tl
-                  { { \if_false: } \fi: }
-              }
-            \@@_scan_group_x:Nf #1 { \int_eval:n { #2 + 1 } }
+            \@@_prev_input_right_silent:V \c_left_brace_str
+            \tl_put_right:Nn \l_@@_defining_tl { { \if_false: } \fi: }
+            \@@_scan_group_xdef:f { \int_eval:n { #1 + 1 } }
           }
           {
-            \bool_if:NT #1
-              {
-                \tl_put_right:Nn \l_@@_defining_tl
-                  { \if_false: { \fi: } }
-              }
-            \int_compare:nNnF {#2} = \c_one
-              { \@@_scan_group_x:Nf #1 { \int_eval:n { #2 - 1 } } }
+            \@@_prev_input_right_silent:V \c_right_brace_str
+            \tl_put_right:Nn \l_@@_defining_tl { \if_false: { \fi: } }
+            \int_compare:nNnF {#1} = \c_one
+              { \@@_scan_group_xdef:f { \int_eval:n { #1 - 1 } } }
           }
       }
       {
-        \bool_if:NT #1
-          {
-            \tl_put_right:Nx \l_@@_defining_tl
-              { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
-          }
-        \@@_prev_input_gtl_right:N \l_@@_head_gtl
-        \@@_scan_group_x:Nn #1 {#2}
+        \@@_prev_input_right_silent:V \l_@@_head_tl
+        \tl_put_right:Nx \l_@@_defining_tl
+          { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
+        \@@_scan_group_xdef:n {#1}
       }
   }
-\cs_generate_variant:Nn \@@_scan_group_x:Nn { Nf }
+\cs_generate_variant:Nn \@@_scan_group_xdef:n { f }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_group_x:n}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_group_x:n #1
+  {
+    \@@_get_token_x:N \c_false_bool
+    \@@_prev_input_gtl_right:N \l_@@_head_gtl
+    \tl_if_empty:NTF \l_@@_head_tl
+      {
+        \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
+          { \@@_scan_group_x:f { \int_eval:n { #1 + 1 } } }
+          {
+            \int_compare:nNnF {#1} = \c_one
+              { \@@_scan_group_x:f { \int_eval:n { #1 - 1 } } }
+          }
+      }
+      { \@@_scan_group_x:n {#1} }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -3197,11 +3211,16 @@
           \l_@@_head_cmd_int = { \@@_tex_use:n { the } }
           {
             \@@_get_the:
-            \bool_if:NT #1
-              { \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl }
-            \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
-            \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
-            \@@_print_action:
+            \bool_if:NTF #1
+              {
+                \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
+                \@@_prev_input_right:V \l_@@_head_tl
+              }
+              {
+                \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
+                \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
+                \@@_print_action:
+              }
           }
           { \@@_expand: }
         \@@_get_token_x:N #1
