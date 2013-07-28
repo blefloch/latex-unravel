@@ -3033,7 +3033,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_group:NN,  \@@_scan_group_aux:Nnn}
+% \begin{macro}[aux]{\@@_scan_group:NN}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group:NN #1#2
   {
@@ -3044,15 +3044,33 @@
       }
     \@@_prev_input_gtl_right:N \l_@@_head_gtl
     \bool_if:NTF #2
-      {
-        \@@_scan_group_aux:Nnn #1
-          { \@@_get_token_expanding:N #1 } { 1 }
-      }
-      { \@@_scan_group_aux:Nnn #1 \@@_get_next: { 1 } }
+      { \@@_scan_group_expanding:Nn #1 { 1 } }
+      { \@@_scan_group_no_expansion:N #1 }
   }
-\cs_new_protected:Npn \@@_scan_group_aux:Nnn #1#2#3
+\cs_new_protected:Npn \@@_scan_group_no_expansion:N #1
   {
-    #2
+    \@@_input_gpop_tl:N \l_@@_tmpa_tl
+    \bool_if:NT #1
+      { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_tmpa_tl }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_gtl
+    \gtl_put_right:NV \l_@@_prev_input_gtl \l_@@_tmpa_tl
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_gtl
+    \@@_get_next:
+    \bool_if:NT #1
+      {
+        \gtl_gconcat:NNN \l_@@_defining_gtl
+          \l_@@_defining_gtl \l_@@_head_gtl
+      }
+    \@@_prev_input_gtl_right:N \l_@@_head_gtl
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_scan_group_expanding:Nn}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_group_expanding:Nn #1#2
+  {
+    \@@_get_token_expanding:N #1
     \bool_if:NT #1
       {
         \gtl_put_right:Nn \l_@@_defining_gtl { \exp_not:N }
@@ -3061,20 +3079,20 @@
       }
     \@@_prev_input_gtl_right:N \l_@@_head_gtl
     \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
-      { \@@_scan_group_aux:Nnf #1 {#2} { \int_eval:n { #3 + 1 } } }
+      { \@@_scan_group_expanding:Nf #1 { \int_eval:n { #2 + 1 } } }
       {
         \gtl_if_head_is_group_end:NTF \l_@@_head_gtl
           {
-            \int_compare:nNnF {#3} = \c_one
+            \int_compare:nNnF {#2} = \c_one
               {
-                \@@_scan_group_aux:Nnf #1 {#2}
-                  { \int_eval:n { #3 - 1 } }
+                \@@_scan_group_expanding:Nf #1
+                  { \int_eval:n { #2 - 1 } }
               }
           }
-          { \@@_scan_group_aux:Nnn #1 {#2} {#3} }
+          { \@@_scan_group_expanding:Nn #1 {#2} }
       }
   }
-\cs_generate_variant:Nn \@@_scan_group_aux:Nnn { Nnf }
+\cs_generate_variant:Nn \@@_scan_group_expanding:Nn { Nf }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -5306,9 +5324,7 @@
   {
     \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
     \gtl_set:NV \l_@@_defining_gtl \l_@@_tmpa_tl
-    \int_if_even:nTF \l_@@_head_char_int
-      { \gtl_put_right:Nn \l_@@_defining_gtl { \tex_edef:D  } }
-      { \gtl_put_right:Nn \l_@@_defining_gtl { \tex_xdef:D } }
+    \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \int_compare:nNnTF \l_@@_head_char_int < \c_two
       { % def/gdef
