@@ -2353,6 +2353,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% ^^A todo: redoc
+% ^^A todo: rename: all other scan functions do get_x_next themselves.
 % \begin{macro}[aux]{\@@_scan_something_internal:n}
 % \begin{macro}[aux]{\@@_scan_something_aux:nwn}
 %   Receives an (explicit) \enquote{level} argument:
@@ -2399,7 +2401,7 @@
   {
     \int_compare:nNnTF
       { ( #1 + \c_two ) / \c_four } > { ( #3 + \c_two ) / \c_four }
-      { \tl_clear:N \l_@@_head_tl }
+      { \@@_back_input: }
       {
         \tl_if_empty:nF {#2}
           {
@@ -4007,24 +4009,29 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
-    \int_case:nnTF \l_@@_head_char_int
+    \int_case:nnF \l_@@_head_char_int
       {
-        { 1 } { \@@_scan_int: } % showbox
-        { 2 } { \@@_scan_something_internal:n { 5 } } % showthe
-        { 3 } { } % showlists
-        { 4 } { } % showgroups
-        { 5 } % showtokens
-          { \@@_scan_toks:NN \c_false_bool \c_false_bool }
-        { 6 } { } % showifs
+        { 0 }
+          { % show
+            \@@_get_next:
+            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+            \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl
+          }
+        { 2 }
+          { % showthe
+            \@@_get_x_next:
+            \@@_scan_something_internal:n { 5 }
+            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+            \exp_args:Nx \etex_showtokens:D { \tl_tail:N \l_@@_head_tl }
+          }
       }
-      {
+      { % no operand for showlists, showgroups, showifs
+        \int_compare:nNnT \l_@@_head_char_int = \c_one % showbox
+          { \@@_scan_int: }
+        \int_compare:nNnT \l_@@_head_char_int = \c_five % showtokens
+          { \@@_scan_toks:NN \c_false_bool \c_false_bool }
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
-      }
-      { % show
-        \@@_get_next:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-        \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl
       }
   }
 %    \end{macrocode}
@@ -5785,7 +5792,7 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_get_the:N}
+% \begin{macro}[aux]{\@@_get_the:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { the }                           % 111
   {
@@ -5809,7 +5816,7 @@
         \@@_scan_something_internal:n { 5 }
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
         \@@_set_action_text:x
-          { \g_@@_action_text_str \tl_head:N \l_@@_head_tl }
+          { \tl_head:N \l_@@_head_tl => \tl_tail:N \l_@@_head_tl }
         \tl_set:Nx \l_@@_head_tl
           { \exp_not:N \exp_not:n { \tl_tail:N \l_@@_head_tl } }
       }
