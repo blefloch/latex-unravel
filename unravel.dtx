@@ -630,37 +630,37 @@
 %
 % \begin{macro}[int]
 %   {
-%     \@@_prev_input_right_silent:n,
-%     \@@_prev_input_right_silent:V,
-%     \@@_prev_input_right_silent:x
+%     \@@_prev_input_silent:n,
+%     \@@_prev_input_silent:V,
+%     \@@_prev_input_silent:x
 %   }
 % \begin{macro}[int]
 %   {
-%     \@@_prev_input_right:n,
-%     \@@_prev_input_right:V,
-%     \@@_prev_input_right:x
+%     \@@_prev_input:n,
+%     \@@_prev_input:V,
+%     \@@_prev_input:x
 %   }
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_prev_input_right_silent:n #1
+\cs_new_protected:Npn \@@_prev_input_silent:n #1
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_tl
     \tl_put_right:Nn \l_@@_prev_input_tl {#1}
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_tl
   }
-\cs_generate_variant:Nn \@@_prev_input_right_silent:n { V , x }
-\cs_new_protected:Npn \@@_prev_input_right:n #1
+\cs_generate_variant:Nn \@@_prev_input_silent:n { V , x }
+\cs_new_protected:Npn \@@_prev_input:n #1
   {
-    \@@_prev_input_right_silent:n {#1}
+    \@@_prev_input_silent:n {#1}
     \@@_print_action:x { \tl_to_str:n {#1} }
   }
-\cs_generate_variant:Nn \@@_prev_input_right:n { V , x }
+\cs_generate_variant:Nn \@@_prev_input:n { V , x }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_prev_input_gtl_right:N}
+% \begin{macro}[int]{\@@_prev_input_gtl:N}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_prev_input_gtl_right:N #1
+\cs_new_protected:Npn \@@_prev_input_gtl:N #1
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_gtl
     \gtl_concat:NNN \l_@@_prev_input_gtl \l_@@_prev_input_gtl #1
@@ -802,14 +802,20 @@
 % \begin{macro}[int]{\@@_tex_primitive:nnn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_primitive:nnn #1#2#3
-  { \tl_const:cx { c_@@_tex_#1_tl } { { \@@_tex_use:n {#2} } {#3} } }
+  {
+    \tl_const:cx { c_@@_tex_#1_tl }
+      { { \@@_tex_use:n {#2} } {#3} }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_new_tex_cmd:nn, \@@_new_eq_tex_cmd:nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_new_tex_cmd:nn #1#2
-  { \cs_new_protected_nopar:cpn { @@_cmd_ \@@_tex_use:n {#1} : } {#2} }
+  {
+    \cs_new_protected_nopar:cpn
+      { @@_cmd_ \@@_tex_use:n {#1} : } {#2}
+  }
 \cs_new_protected:Npn \@@_new_eq_tex_cmd:nn #1#2
   {
     \cs_new_eq:cc
@@ -1125,219 +1131,221 @@
 \@@_tex_primitive:nnn { pdfsetmatrix      } { extension } { 38 }
 \@@_tex_primitive:nnn { pdfsave           } { extension } { 39 }
 \@@_tex_primitive:nnn { pdfrestore        } { extension } { 40 }
-\@@_tex_primitive:nnn { pdfnobuiltintounicode  } { extension } { 41 }
-\@@_tex_primitive:nnn { openin                 } { in_stream } { 1 }
-\@@_tex_primitive:nnn { closein                } { in_stream } { 0 }
-\@@_tex_primitive:nnn { begingroup             } { begin_group } { 0 }
-\@@_tex_primitive:nnn { endgroup               } { end_group } { 0 }
-\@@_tex_primitive:nnn { omit                   } { omit } { 0 }
-\@@_tex_primitive:nnn { ~                      } { ex_space } { 0 }
-\@@_tex_primitive:nnn { noboundary             } { no_boundary } { 0 }
-\@@_tex_primitive:nnn { radical                } { radical } { 0 }
-\@@_tex_primitive:nnn { endcsname              } { end_cs_name } { 0 }
-\@@_tex_primitive:nnn { lastpenalty            } { last_item } { 0 }
-\@@_tex_primitive:nnn { lastkern               } { last_item } { 1 }
-\@@_tex_primitive:nnn { lastskip               } { last_item } { 2 }
-\@@_tex_primitive:nnn { lastnodetype           } { last_item } { 3 }
-\@@_tex_primitive:nnn { inputlineno            } { last_item } { 4 }
-\@@_tex_primitive:nnn { badness                } { last_item } { 5 }
-\@@_tex_primitive:nnn { pdftexversion          } { last_item } { 6 }
-\@@_tex_primitive:nnn { pdflastobj             } { last_item } { 7 }
-\@@_tex_primitive:nnn { pdflastxform           } { last_item } { 8 }
-\@@_tex_primitive:nnn { pdflastximage          } { last_item } { 9 }
-\@@_tex_primitive:nnn { pdflastximagepages     } { last_item } { 10 }
-\@@_tex_primitive:nnn { pdflastannot           } { last_item } { 11 }
-\@@_tex_primitive:nnn { pdflastxpos            } { last_item } { 12 }
-\@@_tex_primitive:nnn { pdflastypos            } { last_item } { 13 }
-\@@_tex_primitive:nnn { pdfretval              } { last_item } { 14 }
+\@@_tex_primitive:nnn { pdfnobuiltintounicode } { extension } { 41 }
+\@@_tex_primitive:nnn { openin                } { in_stream } { 1 }
+\@@_tex_primitive:nnn { closein               } { in_stream } { 0 }
+\@@_tex_primitive:nnn { begingroup            } { begin_group } { 0 }
+\@@_tex_primitive:nnn { endgroup              } { end_group } { 0 }
+\@@_tex_primitive:nnn { omit                  } { omit } { 0 }
+\@@_tex_primitive:nnn { ~                     } { ex_space } { 0 }
+\@@_tex_primitive:nnn { noboundary            } { no_boundary } { 0 }
+\@@_tex_primitive:nnn { radical               } { radical } { 0 }
+\@@_tex_primitive:nnn { endcsname             } { end_cs_name } { 0 }
+\@@_tex_primitive:nnn { lastpenalty           } { last_item } { 0 }
+\@@_tex_primitive:nnn { lastkern              } { last_item } { 1 }
+\@@_tex_primitive:nnn { lastskip              } { last_item } { 2 }
+\@@_tex_primitive:nnn { lastnodetype          } { last_item } { 3 }
+\@@_tex_primitive:nnn { inputlineno           } { last_item } { 4 }
+\@@_tex_primitive:nnn { badness               } { last_item } { 5 }
+\@@_tex_primitive:nnn { pdftexversion         } { last_item } { 6 }
+\@@_tex_primitive:nnn { pdflastobj            } { last_item } { 7 }
+\@@_tex_primitive:nnn { pdflastxform          } { last_item } { 8 }
+\@@_tex_primitive:nnn { pdflastximage         } { last_item } { 9 }
+\@@_tex_primitive:nnn { pdflastximagepages    } { last_item } { 10 }
+\@@_tex_primitive:nnn { pdflastannot          } { last_item } { 11 }
+\@@_tex_primitive:nnn { pdflastxpos           } { last_item } { 12 }
+\@@_tex_primitive:nnn { pdflastypos           } { last_item } { 13 }
+\@@_tex_primitive:nnn { pdfretval             } { last_item } { 14 }
 \@@_tex_primitive:nnn { pdflastximagecolordepth } { last_item } { 15 }
-\@@_tex_primitive:nnn { pdfelapsedtime         } { last_item } { 16 }
-\@@_tex_primitive:nnn { pdfshellescape         } { last_item } { 17 }
-\@@_tex_primitive:nnn { pdfrandomseed          } { last_item } { 18 }
-\@@_tex_primitive:nnn { pdflastlink            } { last_item } { 19 }
-\@@_tex_primitive:nnn { eTeXversion            } { last_item } { 20 }
-\@@_tex_primitive:nnn { currentgrouplevel      } { last_item } { 21 }
-\@@_tex_primitive:nnn { currentgrouptype       } { last_item } { 22 }
-\@@_tex_primitive:nnn { currentiflevel         } { last_item } { 23 }
-\@@_tex_primitive:nnn { currentiftype          } { last_item } { 24 }
-\@@_tex_primitive:nnn { currentifbranch        } { last_item } { 25 }
-\@@_tex_primitive:nnn { gluestretchorder       } { last_item } { 26 }
-\@@_tex_primitive:nnn { glueshrinkorder        } { last_item } { 27 }
-\@@_tex_primitive:nnn { fontcharwd             } { last_item } { 28 }
-\@@_tex_primitive:nnn { fontcharht             } { last_item } { 29 }
-\@@_tex_primitive:nnn { fontchardp             } { last_item } { 30 }
-\@@_tex_primitive:nnn { fontcharic             } { last_item } { 31 }
-\@@_tex_primitive:nnn { parshapelength         } { last_item } { 32 }
-\@@_tex_primitive:nnn { parshapeindent         } { last_item } { 33 }
-\@@_tex_primitive:nnn { parshapedimen          } { last_item } { 34 }
-\@@_tex_primitive:nnn { gluestretch            } { last_item } { 35 }
-\@@_tex_primitive:nnn { glueshrink             } { last_item } { 36 }
-\@@_tex_primitive:nnn { mutoglue               } { last_item } { 37 }
-\@@_tex_primitive:nnn { gluetomu               } { last_item } { 38 }
-\@@_tex_primitive:nnn { numexpr                } { last_item } { 39 }
-\@@_tex_primitive:nnn { dimexpr                } { last_item } { 40 }
-\@@_tex_primitive:nnn { glueexpr               } { last_item } { 41 }
-\@@_tex_primitive:nnn { muexpr                 } { last_item } { 42 }
-\@@_tex_primitive:nnn { toks                   } { toks_register } { 0 }
-\@@_tex_primitive:nnn { output                 } { assign_toks } { 1 }
-\@@_tex_primitive:nnn { everypar               } { assign_toks } { 2 }
-\@@_tex_primitive:nnn { everymath              } { assign_toks } { 3 }
-\@@_tex_primitive:nnn { everydisplay           } { assign_toks } { 4 }
-\@@_tex_primitive:nnn { everyhbox              } { assign_toks } { 5 }
-\@@_tex_primitive:nnn { everyvbox              } { assign_toks } { 6 }
-\@@_tex_primitive:nnn { everyjob               } { assign_toks } { 7 }
-\@@_tex_primitive:nnn { everycr                } { assign_toks } { 8 }
-\@@_tex_primitive:nnn { errhelp                } { assign_toks } { 9 }
-\@@_tex_primitive:nnn { pdfpagesattr           } { assign_toks } { 10 }
-\@@_tex_primitive:nnn { pdfpageattr            } { assign_toks } { 11 }
-\@@_tex_primitive:nnn { pdfpageresources       } { assign_toks } { 12 }
-\@@_tex_primitive:nnn { pdfpkmode              } { assign_toks } { 13 }
-\@@_tex_primitive:nnn { everyeof               } { assign_toks } { 14 }
-\@@_tex_primitive:nnn { pretolerance           } { assign_int } { 0 }
-\@@_tex_primitive:nnn { tolerance              } { assign_int } { 1 }
-\@@_tex_primitive:nnn { linepenalty            } { assign_int } { 2 }
-\@@_tex_primitive:nnn { hyphenpenalty          } { assign_int } { 3 }
-\@@_tex_primitive:nnn { exhyphenpenalty        } { assign_int } { 4 }
-\@@_tex_primitive:nnn { clubpenalty            } { assign_int } { 5 }
-\@@_tex_primitive:nnn { widowpenalty           } { assign_int } { 6 }
-\@@_tex_primitive:nnn { displaywidowpenalty    } { assign_int } { 7 }
-\@@_tex_primitive:nnn { brokenpenalty          } { assign_int } { 8 }
-\@@_tex_primitive:nnn { binoppenalty           } { assign_int } { 9 }
-\@@_tex_primitive:nnn { relpenalty             } { assign_int } { 10 }
-\@@_tex_primitive:nnn { predisplaypenalty      } { assign_int } { 11 }
-\@@_tex_primitive:nnn { postdisplaypenalty     } { assign_int } { 12 }
-\@@_tex_primitive:nnn { interlinepenalty       } { assign_int } { 13 }
-\@@_tex_primitive:nnn { doublehyphendemerits   } { assign_int } { 14 }
-\@@_tex_primitive:nnn { finalhyphendemerits    } { assign_int } { 15 }
-\@@_tex_primitive:nnn { adjdemerits            } { assign_int } { 16 }
-\@@_tex_primitive:nnn { mag                    } { assign_int } { 17 }
-\@@_tex_primitive:nnn { delimiterfactor        } { assign_int } { 18 }
-\@@_tex_primitive:nnn { looseness              } { assign_int } { 19 }
-\@@_tex_primitive:nnn { time                   } { assign_int } { 20 }
-\@@_tex_primitive:nnn { day                    } { assign_int } { 21 }
-\@@_tex_primitive:nnn { month                  } { assign_int } { 22 }
-\@@_tex_primitive:nnn { year                   } { assign_int } { 23 }
-\@@_tex_primitive:nnn { showboxbreadth         } { assign_int } { 24 }
-\@@_tex_primitive:nnn { showboxdepth           } { assign_int } { 25 }
-\@@_tex_primitive:nnn { hbadness               } { assign_int } { 26 }
-\@@_tex_primitive:nnn { vbadness               } { assign_int } { 27 }
-\@@_tex_primitive:nnn { pausing                } { assign_int } { 28 }
-\@@_tex_primitive:nnn { tracingonline          } { assign_int } { 29 }
-\@@_tex_primitive:nnn { tracingmacros          } { assign_int } { 30 }
-\@@_tex_primitive:nnn { tracingstats           } { assign_int } { 31 }
-\@@_tex_primitive:nnn { tracingparagraphs      } { assign_int } { 32 }
-\@@_tex_primitive:nnn { tracingpages           } { assign_int } { 33 }
-\@@_tex_primitive:nnn { tracingoutput          } { assign_int } { 34 }
-\@@_tex_primitive:nnn { tracinglostchars       } { assign_int } { 35 }
-\@@_tex_primitive:nnn { tracingcommands        } { assign_int } { 36 }
-\@@_tex_primitive:nnn { tracingrestores        } { assign_int } { 37 }
-\@@_tex_primitive:nnn { uchyph                 } { assign_int } { 38 }
-\@@_tex_primitive:nnn { outputpenalty          } { assign_int } { 39 }
-\@@_tex_primitive:nnn { maxdeadcycles          } { assign_int } { 40 }
-\@@_tex_primitive:nnn { hangafter              } { assign_int } { 41 }
-\@@_tex_primitive:nnn { floatingpenalty        } { assign_int } { 42 }
-\@@_tex_primitive:nnn { globaldefs             } { assign_int } { 43 }
-\@@_tex_primitive:nnn { fam                    } { assign_int } { 44 }
-\@@_tex_primitive:nnn { escapechar             } { assign_int } { 45 }
-\@@_tex_primitive:nnn { defaulthyphenchar      } { assign_int } { 46 }
-\@@_tex_primitive:nnn { defaultskewchar        } { assign_int } { 47 }
-\@@_tex_primitive:nnn { endlinechar            } { assign_int } { 48 }
-\@@_tex_primitive:nnn { newlinechar            } { assign_int } { 49 }
-\@@_tex_primitive:nnn { language               } { assign_int } { 50 }
-\@@_tex_primitive:nnn { lefthyphenmin          } { assign_int } { 51 }
-\@@_tex_primitive:nnn { righthyphenmin         } { assign_int } { 52 }
-\@@_tex_primitive:nnn { holdinginserts         } { assign_int } { 53 }
-\@@_tex_primitive:nnn { errorcontegtlines      } { assign_int } { 54 }
-\@@_tex_primitive:nnn { pdfoutput              } { assign_int } { 55 }
-\@@_tex_primitive:nnn { pdfcompresslevel       } { assign_int } { 56 }
-\@@_tex_primitive:nnn { pdfdecimaldigits       } { assign_int } { 57 }
-\@@_tex_primitive:nnn { pdfmovechars           } { assign_int } { 58 }
-\@@_tex_primitive:nnn { pdfimageresolution     } { assign_int } { 59 }
-\@@_tex_primitive:nnn { pdfpkresolution        } { assign_int } { 60 }
-\@@_tex_primitive:nnn { pdfuniqueresname       } { assign_int } { 61 }
+\@@_tex_primitive:nnn { pdfelapsedtime        } { last_item } { 16 }
+\@@_tex_primitive:nnn { pdfshellescape        } { last_item } { 17 }
+\@@_tex_primitive:nnn { pdfrandomseed         } { last_item } { 18 }
+\@@_tex_primitive:nnn { pdflastlink           } { last_item } { 19 }
+\@@_tex_primitive:nnn { eTeXversion           } { last_item } { 20 }
+\@@_tex_primitive:nnn { currentgrouplevel     } { last_item } { 21 }
+\@@_tex_primitive:nnn { currentgrouptype      } { last_item } { 22 }
+\@@_tex_primitive:nnn { currentiflevel        } { last_item } { 23 }
+\@@_tex_primitive:nnn { currentiftype         } { last_item } { 24 }
+\@@_tex_primitive:nnn { currentifbranch       } { last_item } { 25 }
+\@@_tex_primitive:nnn { gluestretchorder      } { last_item } { 26 }
+\@@_tex_primitive:nnn { glueshrinkorder       } { last_item } { 27 }
+\@@_tex_primitive:nnn { fontcharwd            } { last_item } { 28 }
+\@@_tex_primitive:nnn { fontcharht            } { last_item } { 29 }
+\@@_tex_primitive:nnn { fontchardp            } { last_item } { 30 }
+\@@_tex_primitive:nnn { fontcharic            } { last_item } { 31 }
+\@@_tex_primitive:nnn { parshapelength        } { last_item } { 32 }
+\@@_tex_primitive:nnn { parshapeindent        } { last_item } { 33 }
+\@@_tex_primitive:nnn { parshapedimen         } { last_item } { 34 }
+\@@_tex_primitive:nnn { gluestretch           } { last_item } { 35 }
+\@@_tex_primitive:nnn { glueshrink            } { last_item } { 36 }
+\@@_tex_primitive:nnn { mutoglue              } { last_item } { 37 }
+\@@_tex_primitive:nnn { gluetomu              } { last_item } { 38 }
+\@@_tex_primitive:nnn { numexpr               } { last_item } { 39 }
+\@@_tex_primitive:nnn { dimexpr               } { last_item } { 40 }
+\@@_tex_primitive:nnn { glueexpr              } { last_item } { 41 }
+\@@_tex_primitive:nnn { muexpr                } { last_item } { 42 }
+\@@_tex_primitive:nnn { toks } { toks_register } { 0 }
+\@@_tex_primitive:nnn { output                } { assign_toks } { 1 }
+\@@_tex_primitive:nnn { everypar              } { assign_toks } { 2 }
+\@@_tex_primitive:nnn { everymath             } { assign_toks } { 3 }
+\@@_tex_primitive:nnn { everydisplay          } { assign_toks } { 4 }
+\@@_tex_primitive:nnn { everyhbox             } { assign_toks } { 5 }
+\@@_tex_primitive:nnn { everyvbox             } { assign_toks } { 6 }
+\@@_tex_primitive:nnn { everyjob              } { assign_toks } { 7 }
+\@@_tex_primitive:nnn { everycr               } { assign_toks } { 8 }
+\@@_tex_primitive:nnn { errhelp               } { assign_toks } { 9 }
+\@@_tex_primitive:nnn { pdfpagesattr          } { assign_toks } { 10 }
+\@@_tex_primitive:nnn { pdfpageattr           } { assign_toks } { 11 }
+\@@_tex_primitive:nnn { pdfpageresources      } { assign_toks } { 12 }
+\@@_tex_primitive:nnn { pdfpkmode             } { assign_toks } { 13 }
+\@@_tex_primitive:nnn { everyeof              } { assign_toks } { 14 }
+\@@_tex_primitive:nnn { pretolerance          } { assign_int } { 0 }
+\@@_tex_primitive:nnn { tolerance             } { assign_int } { 1 }
+\@@_tex_primitive:nnn { linepenalty           } { assign_int } { 2 }
+\@@_tex_primitive:nnn { hyphenpenalty         } { assign_int } { 3 }
+\@@_tex_primitive:nnn { exhyphenpenalty       } { assign_int } { 4 }
+\@@_tex_primitive:nnn { clubpenalty           } { assign_int } { 5 }
+\@@_tex_primitive:nnn { widowpenalty          } { assign_int } { 6 }
+\@@_tex_primitive:nnn { displaywidowpenalty   } { assign_int } { 7 }
+\@@_tex_primitive:nnn { brokenpenalty         } { assign_int } { 8 }
+\@@_tex_primitive:nnn { binoppenalty          } { assign_int } { 9 }
+\@@_tex_primitive:nnn { relpenalty            } { assign_int } { 10 }
+\@@_tex_primitive:nnn { predisplaypenalty     } { assign_int } { 11 }
+\@@_tex_primitive:nnn { postdisplaypenalty    } { assign_int } { 12 }
+\@@_tex_primitive:nnn { interlinepenalty      } { assign_int } { 13 }
+\@@_tex_primitive:nnn { doublehyphendemerits  } { assign_int } { 14 }
+\@@_tex_primitive:nnn { finalhyphendemerits   } { assign_int } { 15 }
+\@@_tex_primitive:nnn { adjdemerits           } { assign_int } { 16 }
+\@@_tex_primitive:nnn { mag                   } { assign_int } { 17 }
+\@@_tex_primitive:nnn { delimiterfactor       } { assign_int } { 18 }
+\@@_tex_primitive:nnn { looseness             } { assign_int } { 19 }
+\@@_tex_primitive:nnn { time                  } { assign_int } { 20 }
+\@@_tex_primitive:nnn { day                   } { assign_int } { 21 }
+\@@_tex_primitive:nnn { month                 } { assign_int } { 22 }
+\@@_tex_primitive:nnn { year                  } { assign_int } { 23 }
+\@@_tex_primitive:nnn { showboxbreadth        } { assign_int } { 24 }
+\@@_tex_primitive:nnn { showboxdepth          } { assign_int } { 25 }
+\@@_tex_primitive:nnn { hbadness              } { assign_int } { 26 }
+\@@_tex_primitive:nnn { vbadness              } { assign_int } { 27 }
+\@@_tex_primitive:nnn { pausing               } { assign_int } { 28 }
+\@@_tex_primitive:nnn { tracingonline         } { assign_int } { 29 }
+\@@_tex_primitive:nnn { tracingmacros         } { assign_int } { 30 }
+\@@_tex_primitive:nnn { tracingstats          } { assign_int } { 31 }
+\@@_tex_primitive:nnn { tracingparagraphs     } { assign_int } { 32 }
+\@@_tex_primitive:nnn { tracingpages          } { assign_int } { 33 }
+\@@_tex_primitive:nnn { tracingoutput         } { assign_int } { 34 }
+\@@_tex_primitive:nnn { tracinglostchars      } { assign_int } { 35 }
+\@@_tex_primitive:nnn { tracingcommands       } { assign_int } { 36 }
+\@@_tex_primitive:nnn { tracingrestores       } { assign_int } { 37 }
+\@@_tex_primitive:nnn { uchyph                } { assign_int } { 38 }
+\@@_tex_primitive:nnn { outputpenalty         } { assign_int } { 39 }
+\@@_tex_primitive:nnn { maxdeadcycles         } { assign_int } { 40 }
+\@@_tex_primitive:nnn { hangafter             } { assign_int } { 41 }
+\@@_tex_primitive:nnn { floatingpenalty       } { assign_int } { 42 }
+\@@_tex_primitive:nnn { globaldefs            } { assign_int } { 43 }
+\@@_tex_primitive:nnn { fam                   } { assign_int } { 44 }
+\@@_tex_primitive:nnn { escapechar            } { assign_int } { 45 }
+\@@_tex_primitive:nnn { defaulthyphenchar     } { assign_int } { 46 }
+\@@_tex_primitive:nnn { defaultskewchar       } { assign_int } { 47 }
+\@@_tex_primitive:nnn { endlinechar           } { assign_int } { 48 }
+\@@_tex_primitive:nnn { newlinechar           } { assign_int } { 49 }
+\@@_tex_primitive:nnn { language              } { assign_int } { 50 }
+\@@_tex_primitive:nnn { lefthyphenmin         } { assign_int } { 51 }
+\@@_tex_primitive:nnn { righthyphenmin        } { assign_int } { 52 }
+\@@_tex_primitive:nnn { holdinginserts        } { assign_int } { 53 }
+\@@_tex_primitive:nnn { errorcontegtlines     } { assign_int } { 54 }
+\@@_tex_primitive:nnn { pdfoutput             } { assign_int } { 55 }
+\@@_tex_primitive:nnn { pdfcompresslevel      } { assign_int } { 56 }
+\@@_tex_primitive:nnn { pdfdecimaldigits      } { assign_int } { 57 }
+\@@_tex_primitive:nnn { pdfmovechars          } { assign_int } { 58 }
+\@@_tex_primitive:nnn { pdfimageresolution    } { assign_int } { 59 }
+\@@_tex_primitive:nnn { pdfpkresolution       } { assign_int } { 60 }
+\@@_tex_primitive:nnn { pdfuniqueresname      } { assign_int } { 61 }
 \@@_tex_primitive:nnn
   { pdfoptionalwaysusepdfpagebox    } { assign_int } { 62 }
 \@@_tex_primitive:nnn
   { pdfoptionpdfinclusionerrorlevel } { assign_int } { 63 }
 \@@_tex_primitive:nnn
   { pdfoptionpdfminorversion        } { assign_int } { 64 }
-\@@_tex_primitive:nnn { pdfminorversion        } { assign_int } { 64 }
-\@@_tex_primitive:nnn { pdfforcepagebox        } { assign_int } { 65 }
-\@@_tex_primitive:nnn { pdfpagebox             } { assign_int } { 66 }
-\@@_tex_primitive:nnn { pdfinclusionerrorlevel } { assign_int } { 67 }
-\@@_tex_primitive:nnn { pdfgamma               } { assign_int } { 68 }
-\@@_tex_primitive:nnn { pdfimagegamma          } { assign_int } { 69 }
-\@@_tex_primitive:nnn { pdfimagehicolor        } { assign_int } { 70 }
-\@@_tex_primitive:nnn { pdfimageapplygamma     } { assign_int } { 71 }
-\@@_tex_primitive:nnn { pdfadjustspacing       } { assign_int } { 72 }
-\@@_tex_primitive:nnn { pdfprotrudechars       } { assign_int } { 73 }
-\@@_tex_primitive:nnn { pdftracingfonts        } { assign_int } { 74 }
-\@@_tex_primitive:nnn { pdfobjcompresslevel    } { assign_int } { 75 }
-\@@_tex_primitive:nnn { pdfadjustinterwordglue } { assign_int } { 76 }
-\@@_tex_primitive:nnn { pdfprependkern         } { assign_int } { 77 }
-\@@_tex_primitive:nnn { pdfappendkern          } { assign_int } { 78 }
-\@@_tex_primitive:nnn { pdfgentounicode        } { assign_int } { 79 }
-\@@_tex_primitive:nnn { pdfdraftmode           } { assign_int } { 80 }
-\@@_tex_primitive:nnn { pdfinclusioncopyfonts  } { assign_int } { 81 }
-\@@_tex_primitive:nnn { tracingassigns         } { assign_int } { 82 }
-\@@_tex_primitive:nnn { tracinggroups          } { assign_int } { 83 }
-\@@_tex_primitive:nnn { tracingifs             } { assign_int } { 84 }
-\@@_tex_primitive:nnn { tracingscantokens      } { assign_int } { 85 }
-\@@_tex_primitive:nnn { tracingnesting         } { assign_int } { 86 }
-\@@_tex_primitive:nnn { predisplaydirection    } { assign_int } { 87 }
-\@@_tex_primitive:nnn { lastlinefit            } { assign_int } { 88 }
-\@@_tex_primitive:nnn { savingvdiscards        } { assign_int } { 89 }
-\@@_tex_primitive:nnn { savinghyphcodes        } { assign_int } { 90 }
-\@@_tex_primitive:nnn { TeXXeTstate            } { assign_int } { 91 }
-\@@_tex_primitive:nnn { parindent              } { assign_dimen } { 0 }
-\@@_tex_primitive:nnn { mathsurround           } { assign_dimen } { 1 }
-\@@_tex_primitive:nnn { lineskiplimit          } { assign_dimen } { 2 }
-\@@_tex_primitive:nnn { hsize                  } { assign_dimen } { 3 }
-\@@_tex_primitive:nnn { vsize                  } { assign_dimen } { 4 }
-\@@_tex_primitive:nnn { maxdepth               } { assign_dimen } { 5 }
-\@@_tex_primitive:nnn { splitmaxdepth          } { assign_dimen } { 6 }
-\@@_tex_primitive:nnn { boxmaxdepth            } { assign_dimen } { 7 }
-\@@_tex_primitive:nnn { hfuzz                  } { assign_dimen } { 8 }
-\@@_tex_primitive:nnn { vfuzz                  } { assign_dimen } { 9 }
-\@@_tex_primitive:nnn { delimitershortfall     } { assign_dimen } { 10 }
-\@@_tex_primitive:nnn { nulldelimiterspace     } { assign_dimen } { 11 }
-\@@_tex_primitive:nnn { scriptspace            } { assign_dimen } { 12 }
-\@@_tex_primitive:nnn { predisplaysize         } { assign_dimen } { 13 }
-\@@_tex_primitive:nnn { displaywidth           } { assign_dimen } { 14 }
-\@@_tex_primitive:nnn { displayindent          } { assign_dimen } { 15 }
-\@@_tex_primitive:nnn { overfullrule           } { assign_dimen } { 16 }
-\@@_tex_primitive:nnn { hangindent             } { assign_dimen } { 17 }
-\@@_tex_primitive:nnn { hoffset                } { assign_dimen } { 18 }
-\@@_tex_primitive:nnn { voffset                } { assign_dimen } { 19 }
-\@@_tex_primitive:nnn { emergencystretch       } { assign_dimen } { 20 }
-\@@_tex_primitive:nnn { pdfhorigin             } { assign_dimen } { 21 }
-\@@_tex_primitive:nnn { pdfvorigin             } { assign_dimen } { 22 }
-\@@_tex_primitive:nnn { pdfpagewidth           } { assign_dimen } { 23 }
-\@@_tex_primitive:nnn { pdfpageheight          } { assign_dimen } { 24 }
-\@@_tex_primitive:nnn { pdflinkmargin          } { assign_dimen } { 25 }
-\@@_tex_primitive:nnn { pdfdestmargin          } { assign_dimen } { 26 }
-\@@_tex_primitive:nnn { pdfthreadmargin        } { assign_dimen } { 27 }
-\@@_tex_primitive:nnn { pdffirstlineheight     } { assign_dimen } { 28 }
-\@@_tex_primitive:nnn { pdflastlinedepth       } { assign_dimen } { 29 }
-\@@_tex_primitive:nnn { pdfeachlineheight      } { assign_dimen } { 30 }
-\@@_tex_primitive:nnn { pdfeachlinedepth       } { assign_dimen } { 31 }
-\@@_tex_primitive:nnn { pdfignoreddimen        } { assign_dimen } { 32 }
-\@@_tex_primitive:nnn { pdfpxdimen             } { assign_dimen } { 33 }
-\@@_tex_primitive:nnn { lineskip               } { assign_glue } { 0 }
-\@@_tex_primitive:nnn { baselineskip           } { assign_glue } { 1 }
-\@@_tex_primitive:nnn { parskip                } { assign_glue } { 2 }
-\@@_tex_primitive:nnn { abovedisplayskip       } { assign_glue } { 3 }
-\@@_tex_primitive:nnn { belowdisplayskip       } { assign_glue } { 4 }
-\@@_tex_primitive:nnn { abovedisplayshortskip  } { assign_glue } { 5 }
-\@@_tex_primitive:nnn { belowdisplayshortskip  } { assign_glue } { 6 }
-\@@_tex_primitive:nnn { leftskip               } { assign_glue } { 7 }
-\@@_tex_primitive:nnn { rightskip              } { assign_glue } { 8 }
-\@@_tex_primitive:nnn { topskip                } { assign_glue } { 9 }
-\@@_tex_primitive:nnn { splittopskip           } { assign_glue } { 10 }
-\@@_tex_primitive:nnn { tabskip                } { assign_glue } { 11 }
-\@@_tex_primitive:nnn { spaceskip              } { assign_glue } { 12 }
-\@@_tex_primitive:nnn { xspaceskip             } { assign_glue } { 13 }
-\@@_tex_primitive:nnn { parfillskip            } { assign_glue } { 14 }
+\@@_tex_primitive:nnn { pdfminorversion       } { assign_int } { 64 }
+\@@_tex_primitive:nnn { pdfforcepagebox       } { assign_int } { 65 }
+\@@_tex_primitive:nnn { pdfpagebox            } { assign_int } { 66 }
+\@@_tex_primitive:nnn
+  { pdfinclusionerrorlevel } { assign_int } { 67 }
+\@@_tex_primitive:nnn { pdfgamma              } { assign_int } { 68 }
+\@@_tex_primitive:nnn { pdfimagegamma         } { assign_int } { 69 }
+\@@_tex_primitive:nnn { pdfimagehicolor       } { assign_int } { 70 }
+\@@_tex_primitive:nnn { pdfimageapplygamma    } { assign_int } { 71 }
+\@@_tex_primitive:nnn { pdfadjustspacing      } { assign_int } { 72 }
+\@@_tex_primitive:nnn { pdfprotrudechars      } { assign_int } { 73 }
+\@@_tex_primitive:nnn { pdftracingfonts       } { assign_int } { 74 }
+\@@_tex_primitive:nnn { pdfobjcompresslevel   } { assign_int } { 75 }
+\@@_tex_primitive:nnn
+  { pdfadjustinterwordglue } { assign_int } { 76 }
+\@@_tex_primitive:nnn { pdfprependkern        } { assign_int } { 77 }
+\@@_tex_primitive:nnn { pdfappendkern         } { assign_int } { 78 }
+\@@_tex_primitive:nnn { pdfgentounicode       } { assign_int } { 79 }
+\@@_tex_primitive:nnn { pdfdraftmode          } { assign_int } { 80 }
+\@@_tex_primitive:nnn { pdfinclusioncopyfonts } { assign_int } { 81 }
+\@@_tex_primitive:nnn { tracingassigns        } { assign_int } { 82 }
+\@@_tex_primitive:nnn { tracinggroups         } { assign_int } { 83 }
+\@@_tex_primitive:nnn { tracingifs            } { assign_int } { 84 }
+\@@_tex_primitive:nnn { tracingscantokens     } { assign_int } { 85 }
+\@@_tex_primitive:nnn { tracingnesting        } { assign_int } { 86 }
+\@@_tex_primitive:nnn { predisplaydirection   } { assign_int } { 87 }
+\@@_tex_primitive:nnn { lastlinefit           } { assign_int } { 88 }
+\@@_tex_primitive:nnn { savingvdiscards       } { assign_int } { 89 }
+\@@_tex_primitive:nnn { savinghyphcodes       } { assign_int } { 90 }
+\@@_tex_primitive:nnn { TeXXeTstate           } { assign_int } { 91 }
+\@@_tex_primitive:nnn { parindent             } { assign_dimen } { 0 }
+\@@_tex_primitive:nnn { mathsurround          } { assign_dimen } { 1 }
+\@@_tex_primitive:nnn { lineskiplimit         } { assign_dimen } { 2 }
+\@@_tex_primitive:nnn { hsize                 } { assign_dimen } { 3 }
+\@@_tex_primitive:nnn { vsize                 } { assign_dimen } { 4 }
+\@@_tex_primitive:nnn { maxdepth              } { assign_dimen } { 5 }
+\@@_tex_primitive:nnn { splitmaxdepth         } { assign_dimen } { 6 }
+\@@_tex_primitive:nnn { boxmaxdepth           } { assign_dimen } { 7 }
+\@@_tex_primitive:nnn { hfuzz                 } { assign_dimen } { 8 }
+\@@_tex_primitive:nnn { vfuzz                 } { assign_dimen } { 9 }
+\@@_tex_primitive:nnn { delimitershortfall   } { assign_dimen } { 10 }
+\@@_tex_primitive:nnn { nulldelimiterspace   } { assign_dimen } { 11 }
+\@@_tex_primitive:nnn { scriptspace          } { assign_dimen } { 12 }
+\@@_tex_primitive:nnn { predisplaysize       } { assign_dimen } { 13 }
+\@@_tex_primitive:nnn { displaywidth         } { assign_dimen } { 14 }
+\@@_tex_primitive:nnn { displayindent        } { assign_dimen } { 15 }
+\@@_tex_primitive:nnn { overfullrule         } { assign_dimen } { 16 }
+\@@_tex_primitive:nnn { hangindent           } { assign_dimen } { 17 }
+\@@_tex_primitive:nnn { hoffset              } { assign_dimen } { 18 }
+\@@_tex_primitive:nnn { voffset              } { assign_dimen } { 19 }
+\@@_tex_primitive:nnn { emergencystretch     } { assign_dimen } { 20 }
+\@@_tex_primitive:nnn { pdfhorigin           } { assign_dimen } { 21 }
+\@@_tex_primitive:nnn { pdfvorigin           } { assign_dimen } { 22 }
+\@@_tex_primitive:nnn { pdfpagewidth         } { assign_dimen } { 23 }
+\@@_tex_primitive:nnn { pdfpageheight        } { assign_dimen } { 24 }
+\@@_tex_primitive:nnn { pdflinkmargin        } { assign_dimen } { 25 }
+\@@_tex_primitive:nnn { pdfdestmargin        } { assign_dimen } { 26 }
+\@@_tex_primitive:nnn { pdfthreadmargin      } { assign_dimen } { 27 }
+\@@_tex_primitive:nnn { pdffirstlineheight   } { assign_dimen } { 28 }
+\@@_tex_primitive:nnn { pdflastlinedepth     } { assign_dimen } { 29 }
+\@@_tex_primitive:nnn { pdfeachlineheight    } { assign_dimen } { 30 }
+\@@_tex_primitive:nnn { pdfeachlinedepth     } { assign_dimen } { 31 }
+\@@_tex_primitive:nnn { pdfignoreddimen      } { assign_dimen } { 32 }
+\@@_tex_primitive:nnn { pdfpxdimen           } { assign_dimen } { 33 }
+\@@_tex_primitive:nnn { lineskip              } { assign_glue } { 0 }
+\@@_tex_primitive:nnn { baselineskip          } { assign_glue } { 1 }
+\@@_tex_primitive:nnn { parskip               } { assign_glue } { 2 }
+\@@_tex_primitive:nnn { abovedisplayskip      } { assign_glue } { 3 }
+\@@_tex_primitive:nnn { belowdisplayskip      } { assign_glue } { 4 }
+\@@_tex_primitive:nnn { abovedisplayshortskip } { assign_glue } { 5 }
+\@@_tex_primitive:nnn { belowdisplayshortskip } { assign_glue } { 6 }
+\@@_tex_primitive:nnn { leftskip              } { assign_glue } { 7 }
+\@@_tex_primitive:nnn { rightskip             } { assign_glue } { 8 }
+\@@_tex_primitive:nnn { topskip               } { assign_glue } { 9 }
+\@@_tex_primitive:nnn { splittopskip          } { assign_glue } { 10 }
+\@@_tex_primitive:nnn { tabskip               } { assign_glue } { 11 }
+\@@_tex_primitive:nnn { spaceskip             } { assign_glue } { 12 }
+\@@_tex_primitive:nnn { xspaceskip            } { assign_glue } { 13 }
+\@@_tex_primitive:nnn { parfillskip           } { assign_glue } { 14 }
 \@@_tex_primitive:nnn { thinmuskip       } { assign_mu_glue } { 15 }
 \@@_tex_primitive:nnn { medmuskip        } { assign_mu_glue } { 16 }
 \@@_tex_primitive:nnn { thickmuskip      } { assign_mu_glue } { 17 }
@@ -1538,7 +1546,10 @@
         \@@_input_gpop:N \l_@@_head_gtl
         \gtl_head_do:NN \l_@@_head_gtl \@@_get_next_aux:w
         \gtl_if_tl:NTF \l_@@_head_gtl
-          { \tl_set:Nx \l_@@_head_tl { \gtl_head:N \l_@@_head_gtl } }
+          {
+            \tl_set:Nx \l_@@_head_tl
+              { \gtl_head:N \l_@@_head_gtl }
+          }
           { \tl_clear:N \l_@@_head_tl }
       }
   }
@@ -1728,7 +1739,8 @@
         \exp_after:wN \@@_set_cmd_aux_numeric:N
           \l_@@_head_meaning_tl + 0
       }
-    \exp_after:wN \@@_set_cmd_aux_numeric:w \l_@@_tmpa_tl \q_stop
+    \exp_after:wN \@@_set_cmd_aux_numeric:w
+      \l_@@_tmpa_tl \q_stop
   }
 \cs_new:Npn \@@_set_cmd_aux_numeric:N #1
   {
@@ -1778,12 +1790,16 @@
       { \token_to_meaning:N \l_@@_head_token }
     \token_if_eq_catcode:NNT \l_@@_head_token \c_catcode_other_token
       { \tl_set:Nn \l_@@_head_meaning_tl { other~ } }
-    \exp_after:wN \@@_set_cmd_aux_char:w \l_@@_head_meaning_tl \q_stop
+    \exp_after:wN \@@_set_cmd_aux_char:w
+      \l_@@_head_meaning_tl \q_stop
     \exp_args:NNx \int_set:Nn \l_@@_head_char_int
       { ` \@@_token_to_char:N \l_@@_head_token }
   }
 \cs_new_protected:Npn \@@_set_cmd_aux_char:w #1 ~ #2 \q_stop
-  { \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { #1_char } } }
+  {
+    \int_set:Nn \l_@@_head_cmd_int
+      { \@@_tex_use:n { #1_char } }
+  }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -1823,13 +1839,15 @@
             \@@_input_if_empty:TF
           }
           {
-            \@@_input_split: % ^^A todo: time it to know if beneficial.
+            \@@_input_split:
             \use_ii:nn
           }
       }
   }
 %    \end{macrocode}
 % \end{macro}
+%
+% ^^A todo: "timeit" to know if \@@_input_split: is beneficial.
 %
 % \begin{macro}[int]{\@@_input_split:}
 %   If the input is completely flat, and is a token list starting with
@@ -1839,7 +1857,10 @@
 \cs_new_protected_nopar:Npn \@@_input_split:
   {
     \int_compare:nNnT \g_@@_input_int = \c_one
-      { \exp_args:Nc \@@_input_split_aux:N { g_@@_input_1_gtl } }
+      {
+        \exp_args:Nc \@@_input_split_aux:N
+          { g_@@_input_1_gtl }
+      }
   }
 \cs_new_protected:Npn \@@_input_split_aux:N #1
   {
@@ -1870,7 +1891,8 @@
       }
   }
 \cs_new_nopar:Npn \@@_input_split_end: { }
-\cs_new_protected:Npn \@@_input_split_auxiii:w #1 \@@_input_split_end:
+\cs_new_protected:Npn \@@_input_split_auxiii:w
+    #1 \@@_input_split_end:
   {
     \gtl_gset:cn
       { g_@@_input_ \int_use:N \g_@@_input_tmpa_int _gtl } {#1}
@@ -1930,10 +1952,10 @@
     \int_gdecr:N \g_@@_input_int
     \gtl_gconcat:ccc
       { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
-      { g_@@_input_ \int_eval:n { \g_@@_input_int + \c_one } _gtl }
+      { g_@@_input_ \int_eval:n { \g_@@_input_int + 1 } _gtl }
       { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
     \gtl_gclear:c
-      { g_@@_input_ \int_eval:n { \g_@@_input_int + \c_one } _gtl }
+      { g_@@_input_ \int_eval:n { \g_@@_input_int + 1 } _gtl }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -1969,7 +1991,11 @@
               {
                 \@@_input_merge:
                 \exp_args:Nc \@@_input_gpop_item_aux:NN
-                  { g_@@_input_ \int_use:N \g_@@_input_int _gtl } #2
+                  {
+                    g_@@_input_
+                    \int_use:N \g_@@_input_int _gtl
+                  }
+                  #2
               }
           }
       }
@@ -2060,7 +2086,8 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_back_input_tl_o:
   {
-    \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
+    \tl_set:Nx \l_@@_tmpa_tl
+      { \exp_args:NV \exp_not:o \l_@@_head_tl }
     \@@_back_input:V \l_@@_tmpa_tl
     \@@_print_done:x
       { \tl_to_str:N \l_@@_head_tl = \tl_to_str:N \l_@@_tmpa_tl }
@@ -2164,7 +2191,7 @@
     \bool_if:NTF \g_@@_speedup_macros_bool
       {
         \tl_set:Nx \l_@@_tmpa_tl
-          { ^ \exp_after:wN \@@_macro_parameter:N \l_@@_head_tl }
+          {^ \exp_after:wN \@@_macro_parameter:N \l_@@_head_tl }
         \tl_if_in:NVTF \c_@@_parameters_tl \l_@@_tmpa_tl
           { \@@_macro_call_quick: } { \@@_macro_call_safe: }
       }
@@ -2187,7 +2214,8 @@
     \use_none:n #2
     \@@_input_gpop_item:NF \l_@@_tmpa_tl
       { \msg_error:nn { unravel } { runaway-macro-parameter } }
-    \tl_put_right:Nx \l_@@_head_tl { { \exp_not:V \l_@@_tmpa_tl } }
+    \tl_put_right:Nx \l_@@_head_tl
+      { { \exp_not:V \l_@@_tmpa_tl } }
     \@@_macro_call_quick_loop:NN
   }
 %    \end{macrocode}
@@ -2206,7 +2234,10 @@
   {
     \@@_set_action_text:
     \bool_if:NT \l_@@_debug_bool
-      { \@@_set_cmd: \iow_term:x { Exp:~\int_use:N \l_@@_head_cmd_int } }
+      {
+        \@@_set_cmd:
+        \iow_term:x { Exp:~\int_use:N \l_@@_head_cmd_int }
+      }
     \token_if_macro:NTF \l_@@_head_token
       { \@@_macro_call: }
       { \@@_expand_nonmacro: }
@@ -2327,9 +2358,9 @@
   {
     \@@_get_x_non_blank:
     \tl_if_eq:NNTF \l_@@_head_tl \c_@@_eq_tl
-      { \@@_prev_input_right:n { = } }
+      { \@@_prev_input:n { = } }
       {
-        \@@_prev_input_right_silent:n { = }
+        \@@_prev_input_silent:n { = }
         \@@_back_input:
       }
   }
@@ -2403,13 +2434,14 @@
   }
 \cs_new_protected:Npn \@@_scan_keyword_loop:NNN #1#2#3
   {
-    \quark_if_recursion_tail_stop_do:nn {#2} { \@@_scan_keyword_true: }
+    \quark_if_recursion_tail_stop_do:nn {#2}
+      { \@@_scan_keyword_true: }
     \quark_if_recursion_tail_stop_do:nn {#3}
       { \msg_error:nnx { unravel } { internal } { odd-keyword-length } }
     \@@_get_x_next:
     \@@_scan_keyword_test:NNTF #2#3
       {
-        \@@_prev_input_gtl_right:N \l_@@_head_gtl
+        \@@_prev_input_gtl:N \l_@@_head_gtl
         \@@_scan_keyword_loop:NNN \c_false_bool
       }
       {
@@ -2420,7 +2452,8 @@
         \@@_scan_keyword_loop:NNN #1#2#3
       }
   }
-\prg_new_protected_conditional:Npnn \@@_scan_keyword_test:NN #1#2 { TF }
+\prg_new_protected_conditional:Npnn \@@_scan_keyword_test:NN #1#2
+  { TF }
   {
     \@@_gtl_if_head_is_definable:NTF \l_@@_head_gtl
       { \prg_return_false: }
@@ -2439,7 +2472,7 @@
 \cs_new_protected_nopar:Npn \@@_scan_keyword_true:
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
-    \@@_prev_input_right:x { \gtl_to_str:N \l_@@_tmpb_gtl }
+    \@@_prev_input:x { \gtl_to_str:N \l_@@_tmpb_gtl }
     \prg_return_true:
   }
 \cs_new_protected_nopar:Npn \@@_scan_keyword_false:w
@@ -2465,19 +2498,22 @@
     \int_case:nnF \l_@@_head_cmd_int
       {
         { \@@_tex_use:n { def_font } }
-          { \@@_prev_input_right:V \l_@@_head_tl }
+          { \@@_prev_input:V \l_@@_head_tl }
         { \@@_tex_use:n { letterspace_font } }
-          { \@@_prev_input_right:V \l_@@_head_tl }
+          { \@@_prev_input:V \l_@@_head_tl }
         { \@@_tex_use:n { pdf_copy_font } }
-          { \@@_prev_input_right:V \l_@@_head_tl }
+          { \@@_prev_input:V \l_@@_head_tl }
         { \@@_tex_use:n { set_font } }
-          { \@@_prev_input_right:V \l_@@_head_tl }
+          { \@@_prev_input:V \l_@@_head_tl }
         { \@@_tex_use:n { def_family } }
-          { \@@_prev_input_right:V \l_@@_head_tl \@@_scan_int: }
+          {
+            \@@_prev_input:V \l_@@_head_tl
+            \@@_scan_int:
+          }
       }
       {
         \msg_error:nn { unravel } { missing-font-id }
-        \@@_prev_input_right:n { \tex_nullfont:D }
+        \@@_prev_input:n { \tex_nullfont:D }
         \@@_back_error:
       }
   }
@@ -2572,7 +2608,7 @@
       }
     \tl_set:Nx \l_@@_tmpa_tl
       { \@@_thing_use:nnN {#1} {#3} \l_@@_head_tl }
-    \@@_prev_input_right_silent:V \l_@@_tmpa_tl
+    \@@_prev_input_silent:V \l_@@_tmpa_tl
     \@@_set_action_text:
     \@@_set_action_text:x
       { \g_@@_action_text_str = ~ \tl_to_str:N \l_@@_tmpa_tl }
@@ -2640,10 +2676,14 @@
           {
             { 26 } { 0 \@@_scan_normal_glue: } % gluestretchorder
             { 27 } { 0 \@@_scan_normal_glue: } % glueshrinkorder
-            { 28 } { 1 \@@_scan_font_ident: \@@_scan_int: } % fontcharwd
-            { 29 } { 1 \@@_scan_font_ident: \@@_scan_int: } % fontcharht
-            { 30 } { 1 \@@_scan_font_ident: \@@_scan_int: } % fontchardp
-            { 31 } { 1 \@@_scan_font_ident: \@@_scan_int: } % fontcharic
+            { 28 } % fontcharwd
+              { 1 \@@_scan_font_ident: \@@_scan_int: }
+            { 29 } % fontcharht
+              { 1 \@@_scan_font_ident: \@@_scan_int: }
+            { 30 } % fontchardp
+              { 1 \@@_scan_font_ident: \@@_scan_int: }
+            { 31 } % fontcharic
+              { 1 \@@_scan_font_ident: \@@_scan_int: }
             { 32 } { 1 \@@_scan_int: } % parshapelength
             { 33 } { 1 \@@_scan_int: } % parshapeindent
             { 34 } { 1 \@@_scan_int: } % parshapedimen
@@ -2651,10 +2691,14 @@
             { 36 } { 1 \@@_scan_normal_glue: } % glueshrink
             { 37 } { 2 \@@_scan_mu_glue: } % mutoglue
             { 38 } { 3 \@@_scan_normal_glue: } % gluetomu
-            { 39 } { 0 \@@_scan_expr:N \@@_scan_int: } % numepr
-            { 40 } { 1 \@@_scan_expr:N \@@_scan_normal_dimen: } %dimexpr
-            { 41 } { 2 \@@_scan_expr:N \@@_scan_normal_glue: } %glueexpr
-            { 42 } { 3 \@@_scan_expr:N \@@_scan_mu_glue: } % muexpr
+            { 39 } % numepr
+              { 0 \@@_scan_expr:N \@@_scan_int: }
+            { 40 } % dimexpr
+              { 1 \@@_scan_expr:N \@@_scan_normal_dimen: }
+            { 41 } % glueexpr
+              { 2 \@@_scan_expr:N \@@_scan_normal_glue: }
+            { 42 } % muexpr
+              { 3 \@@_scan_expr:N \@@_scan_mu_glue: }
           }
           { }
       }
@@ -2672,7 +2716,10 @@
 %   A case where getting operands is not completely trivial.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks_register:
-  { \int_compare:nNnT \l_@@_head_char_int = \c_zero { \@@_scan_int: } }
+  {
+    \int_compare:nNnT \l_@@_head_char_int = \c_zero
+      { \@@_scan_int: }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2714,24 +2761,24 @@
       {
         \c_@@_plus_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_scan_expr_aux:NN #1#2
           }
         \c_@@_minus_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_scan_expr_aux:NN #1#2
           }
         \c_@@_times_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_non_blank:
             \@@_scan_factor:N \@@_scan_int:
             \@@_scan_expr_op:NN #1#2
           }
         \c_@@_over_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_non_blank:
             \@@_scan_factor:N \@@_scan_int:
             \@@_scan_expr_op:NN #1#2
@@ -2739,7 +2786,7 @@
         \c_@@_rp_tl
           {
             \bool_if:NTF #2
-              { \@@_prev_input_right:V \l_@@_head_tl }
+              { \@@_prev_input:V \l_@@_head_tl }
               { \@@_back_input: }
           }
       }
@@ -2748,7 +2795,7 @@
           {
             \msg_error:nn { unravel } { missing-rparen }
             \@@_back_input:
-            \@@_prev_input_right:V \c_@@_rp_tl
+            \@@_prev_input:V \c_@@_rp_tl
           }
           {
             \token_if_eq_meaning:NNF \l_@@_head_token \scan_stop:
@@ -2760,7 +2807,7 @@
   {
     \tl_if_eq:NNTF \l_@@_head_tl \c_@@_lp_tl
       {
-        \@@_prev_input_right:V \l_@@_head_tl
+        \@@_prev_input:V \l_@@_head_tl
         \@@_scan_expr_aux:NN #1 \c_true_bool
       }
       {
@@ -2774,20 +2821,20 @@
 %
 % \begin{macro}[aux]{\@@_scan_signs:}
 %   Skips blanks, scans signs, and places them to the right of the last
-%   item of \cs{@@_prev_input_right:n}.
+%   item of \cs{@@_prev_input:n}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_signs:
   {
     \@@_get_x_non_blank:
     \tl_if_eq:NNTF \l_@@_head_tl \c_@@_plus_tl
       {
-        \@@_prev_input_right:V \l_@@_head_tl
+        \@@_prev_input:V \l_@@_head_tl
         \@@_scan_signs:
       }
       {
         \tl_if_eq:NNT \l_@@_head_tl \c_@@_minus_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_scan_signs:
           }
       }
@@ -2809,7 +2856,8 @@
       { \@@_scan_int_char: }
       {
         \int_compare:nNnTF
-          \l_@@_head_cmd_int > { \@@_tex_use:n { max_internal } }
+          \l_@@_head_cmd_int
+          > { \@@_tex_use:n { max_internal } }
           { \@@_scan_int_char: }
           { \@@_scan_something_internal:n { 0 } }
       }
@@ -2821,13 +2869,13 @@
         \c_@@_lq_tl { \@@_scan_int_lq: }
         \c_@@_rq_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_next:
             \@@_scan_int_explicit:n { ' }
           }
         \c_@@_dq_tl
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_next:
             \@@_scan_int_explicit:n { " }
           }
@@ -2844,7 +2892,7 @@
       }
     \tl_set:Nx \l_@@_tmpa_tl
       { \int_eval:n { \exp_after:wN ` \l_@@_head_tl } }
-    \@@_prev_input_right_silent:V \l_@@_tmpa_tl
+    \@@_prev_input_silent:V \l_@@_tmpa_tl
     \@@_print_action:x
       { ` \gtl_to_str:N \l_@@_head_gtl = \l_@@_tmpa_tl }
     \@@_skip_optional_space:
@@ -2858,7 +2906,7 @@
       \exp_after:wN \use_ii:nn
     \fi:
     {
-      \@@_prev_input_right:V \l_@@_head_tl
+      \@@_prev_input:V \l_@@_head_tl
       \@@_get_x_next:
       \@@_scan_int_explicit:n {#1}
     }
@@ -2896,7 +2944,8 @@
       { \@@_scan_dimen_char:NN #1#2 }
       {
         \int_compare:nNnTF
-          \l_@@_head_cmd_int > { \@@_tex_use:n { max_internal } }
+          \l_@@_head_cmd_int
+          > { \@@_tex_use:n { max_internal } }
           { \@@_scan_dimen_char:NN #1#2 }
           {
             \bool_if:NTF #1
@@ -2925,7 +2974,7 @@
           }
       }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
   }
 \cs_new_protected:Npn \@@_scan_dimen_char:NN #1#2
   {
@@ -2933,7 +2982,7 @@
       { \tl_set_eq:NN \l_@@_head_tl \c_@@_point_tl }
     \tl_if_eq:NNTF \l_@@_head_tl \c_@@_point_tl
       {
-        \@@_prev_input_right:n { . }
+        \@@_prev_input:n { . }
         \@@_scan_decimal_loop:
       }
       {
@@ -2946,7 +2995,7 @@
             \tl_if_eq:NNT \l_@@_head_tl \c_@@_point_tl
               {
                 \@@_input_gpop:N \l_@@_tmpb_gtl
-                \@@_prev_input_right:n { . }
+                \@@_prev_input:n { . }
                 \@@_scan_decimal_loop:
               }
           }
@@ -2974,7 +3023,8 @@
       { \@@_back_input: }
       {
         \int_compare:nNnTF
-          \l_@@_head_cmd_int > { \@@_tex_use:n { max_internal } }
+          \l_@@_head_cmd_int
+          > { \@@_tex_use:n { max_internal } }
           { \@@_back_input: }
           {
             \seq_gput_right:Nn \g_@@_prev_input_seq { }
@@ -3028,13 +3078,13 @@
       { \use_ii:nn }
       { \tl_if_in:nVTF { 0123456789 } \l_@@_head_tl }
       {
-        \@@_prev_input_right:V \l_@@_head_tl
+        \@@_prev_input:V \l_@@_head_tl
         \@@_scan_decimal_loop:
       }
       {
         \token_if_eq_catcode:NNF \l_@@_head_token \c_space_token
           { \@@_back_input: }
-        \@@_prev_input_right_silent:n { ~ }
+        \@@_prev_input_silent:n { ~ }
       }
   }
 %    \end{macrocode}
@@ -3068,8 +3118,12 @@
       { \@@_back_input: \@@_scan_dimen:NN #2 \c_false_bool }
       {
         \int_compare:nNnTF
-          \l_@@_head_cmd_int > { \@@_tex_use:n { max_internal } }
-          { \@@_back_input: \@@_scan_dimen:NN #2 \c_false_bool }
+          \l_@@_head_cmd_int
+          > { \@@_tex_use:n { max_internal } }
+          {
+            \@@_back_input:
+            \@@_scan_dimen:NN #2 \c_false_bool
+          }
           {
             \@@_scan_something_internal:n {#1}
             \int_case:nnF \g_@@_val_level_int
@@ -3090,7 +3144,7 @@
       { \@@_scan_dimen:NN #2 \c_true_bool }
     \@@_break_point:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3105,7 +3159,7 @@
     \@@_get_x_non_blank:
     \@@_scan_file_name_loop:
     \bool_gset_false:N \g_@@_name_in_progress_bool
-    \@@_prev_input_right_silent:n { ~ }
+    \@@_prev_input_silent:n { ~ }
   }
 \cs_new_protected_nopar:Npn \@@_scan_file_name_loop:
   {
@@ -3116,7 +3170,7 @@
           { \@@_token_to_char:N \l_@@_head_token }
         \tl_if_eq:NNF \l_@@_tmpa_tl \c_space_tl
           {
-            \@@_prev_input_right_silent:V \l_@@_tmpa_tl
+            \@@_prev_input_silent:V \l_@@_tmpa_tl
             \@@_get_x_next:
             \@@_scan_file_name_loop:
           }
@@ -3141,7 +3195,7 @@
         \@@_back_input:
         \tl_set:Nn \l_@@_head_tl { \@@_inaccessible:w }
       }
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
   }
 %    \end{macrocode}
@@ -3155,7 +3209,7 @@
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_scan_toks:NN \c_false_bool \c_true_bool
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \@@_prev_input_right_silent:x
+    \@@_prev_input_silent:x
       { { \exp_after:wN \tl_to_str:n \l_@@_tmpa_tl } }
   }
 %    \end{macrocode}
@@ -3187,12 +3241,13 @@
     \tl_clear:N \l_@@_tmpa_tl
     \@@_scan_param_aux:
     \tl_put_right:NV \l_@@_defining_tl \l_@@_tmpa_tl
-    \@@_prev_input_right_silent:V \l_@@_tmpa_tl
+    \@@_prev_input_silent:V \l_@@_tmpa_tl
   }
 \cs_new_protected_nopar:Npn \@@_scan_param_aux:
   {
     \@@_get_next:
-    \tl_concat:NNN \l_@@_tmpa_tl \l_@@_tmpa_tl \l_@@_head_tl
+    \tl_concat:NNN \l_@@_tmpa_tl
+      \l_@@_tmpa_tl \l_@@_head_tl
     \tl_if_empty:NTF \l_@@_head_tl
       { \@@_back_input: } { \@@_scan_param_aux: }
   }
@@ -3213,7 +3268,7 @@
     \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
     \bool_if:NT #1
       { \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl }
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3226,16 +3281,17 @@
     \@@_back_input:V \l_@@_head_tl
     \bool_if:NTF #1
       {
-        \@@_prev_input_right_silent:V \c_left_brace_str
+        \@@_prev_input_silent:V \c_left_brace_str
         \tl_put_right:Nn \l_@@_defining_tl { { \if_false: } \fi: }
         \@@_scan_group_xdef:n { 1 }
       }
       {
         \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
-        \@@_prev_input_gtl_right:N \l_@@_head_gtl
+        \@@_prev_input_gtl:N \l_@@_head_gtl
         \@@_scan_group_x:n { 1 }
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
-        \@@_prev_input_right_silent:x { \gtl_left_tl:N \l_@@_tmpb_gtl }
+        \@@_prev_input_silent:x
+          { \gtl_left_tl:N \l_@@_tmpb_gtl }
       }
   }
 %    \end{macrocode}
@@ -3250,19 +3306,19 @@
       {
         \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
           {
-            \@@_prev_input_right_silent:V \c_left_brace_str
+            \@@_prev_input_silent:V \c_left_brace_str
             \tl_put_right:Nn \l_@@_defining_tl { { \if_false: } \fi: }
             \@@_scan_group_xdef:f { \int_eval:n { #1 + 1 } }
           }
           {
-            \@@_prev_input_right_silent:V \c_right_brace_str
+            \@@_prev_input_silent:V \c_right_brace_str
             \tl_put_right:Nn \l_@@_defining_tl { \if_false: { \fi: } }
             \int_compare:nNnF {#1} = \c_one
               { \@@_scan_group_xdef:f { \int_eval:n { #1 - 1 } } }
           }
       }
       {
-        \@@_prev_input_right_silent:V \l_@@_head_tl
+        \@@_prev_input_silent:V \l_@@_head_tl
         \tl_put_right:Nx \l_@@_defining_tl
           { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
         \@@_scan_group_xdef:n {#1}
@@ -3277,7 +3333,7 @@
 \cs_new_protected:Npn \@@_scan_group_x:n #1
   {
     \@@_get_token_x:N \c_false_bool
-    \@@_prev_input_gtl_right:N \l_@@_head_gtl
+    \@@_prev_input_gtl:N \l_@@_head_gtl
     \tl_if_empty:NTF \l_@@_head_tl
       {
         \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
@@ -3308,11 +3364,11 @@
             \bool_if:NTF #1
               {
                 \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
-                \@@_prev_input_right:V \l_@@_head_tl
+                \@@_prev_input:V \l_@@_head_tl
               }
               {
                 \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
-                \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
+                \@@_prev_input_gtl:N \l_@@_tmpb_gtl
                 \@@_print_action:
               }
           }
@@ -3436,7 +3492,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_begin_box:N #1
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \int_case:nnTF \l_@@_head_char_int
       {
         { 0 } { \@@_scan_int: } % box
@@ -3448,7 +3504,7 @@
             \@@_scan_keyword:nF { tT oO }
               {
                 \msg_error:nn { unravel } { missing-to }
-                \@@_prev_input_right:n { to }
+                \@@_prev_input:n { to }
               }
             \@@_scan_normal_dimen:
           }
@@ -3526,13 +3582,15 @@
       % ^^A todo: TeX calls |normal_paragraph| here.
     \@@_scan_spec:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
+    \@@_set_action_text:x
+      { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
     \seq_push:Nx \l_@@_leaders_box_seq
       { \bool_if:NTF #1 { \mode_if_vertical:TF { v } { h } } { Z } }
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
     \gtl_gconcat:NNN \g_@@_output_gtl
       \g_@@_output_gtl \c_group_begin_gtl
-    \tl_use:N \l_@@_head_tl \c_group_begin_token \@@_box_hook_end:
+    \tl_use:N \l_@@_head_tl
+      \c_group_begin_token \@@_box_hook_end:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3576,7 +3634,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_leaders_rule:
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_scan_alt_rule:
     \@@_do_leaders_fetch_skip:
   }
@@ -3718,7 +3776,7 @@
 % \subsection{Groups}
 %
 % ^^A todo: implement \@@_end_align_group:
-% ^^A todo: implement \@@_end_no_align_group:
+% ^^A todo: implement \@@_end_no_align_group: (start = \@@_end_graf:)
 % ^^A todo: implement \@@_end_output_group:
 % ^^A todo: implement \@@_end_math_group:
 % ^^A todo: implement \@@_end_disc_group:
@@ -3732,21 +3790,21 @@
   {
     \int_case:nnF \etex_currentgrouptype:D
       {
-        { 1 } { \@@_end_simple_group: } % simple_group
-        { 2 } { \@@_end_box_group: } % hbox_group
-        { 3 } { \@@_end_box_group: } % adjusted_hbox_group
-        { 4 } { \@@_end_graf: \@@_end_box_group: } % vbox_group
-        { 5 } { \@@_end_graf: \@@_end_box_group: } % vtop_group
-        { 6 } { \@@_end_align_group: } % align_group
-        { 7 } { \@@_end_graf: \@@_end_no_align_group: } % no_align_group
-        { 8 } { \@@_end_output_group: } % output_group
-        { 9 } { \@@_end_math_group: } % math_group
-        { 10 } { \@@_end_disc_group: } % disc_group
-        { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert_group
-        { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter_group
-        { 13 } { \@@_end_math_choice_group: } % math_choice_group
+        { 1 } { \@@_end_simple_group: } % simple
+        { 2 } { \@@_end_box_group: } % hbox
+        { 3 } { \@@_end_box_group: } % adjusted_hbox
+        { 4 } { \@@_end_graf: \@@_end_box_group: } % vbox
+        { 5 } { \@@_end_graf: \@@_end_box_group: } % vtop
+        { 6 } { \@@_end_align_group: } % align
+        { 7 } { \@@_end_no_align_group: } % no_align
+        { 8 } { \@@_end_output_group: } % output
+        { 9 } { \@@_end_math_group: } % math
+        { 10 } { \@@_end_disc_group: } % disc
+        { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert
+        { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter
+        { 13 } { \@@_end_math_choice_group: } % math_choice
       }
-      { % bottom_level, semi_simple_group, math_shift_group, math_left_group
+      { % bottom_level, semi_simple, math_shift, math_left
         \@@_back_input:
         \l_@@_head_token
         \@@_print_action:
@@ -3890,7 +3948,8 @@
     \@@_set_action_text:
     \bool_if:NT \l_@@_debug_bool
       { \iow_term:x { Cmd:~\int_use:N \l_@@_head_cmd_int } }
-    \cs_if_exist_use:cF { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
+    \cs_if_exist_use:cF
+      { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
       { \msg_error:nnx { unravel } { internal } { unknown-command } }
   }
 %    \end{macrocode}
@@ -3902,7 +3961,7 @@
 % the more elaborate commands call auxiliaries defined in other
 % sections).
 %
-% \subsubsection{Characters: from $0$ to $15$}
+% \subsubsection{Characters: from 0 to 15}
 %
 % This section is about command codes in the range $[0, 15]$.
 % \begin{itemize}
@@ -4054,7 +4113,8 @@
           {
             % if align_state<0 then off_save;
             \@@_end_graf:
-            \mode_if_vertical:T { \mode_if_inner:F { \@@_build_page: } }
+            \mode_if_vertical:T
+              { \mode_if_inner:F { \@@_build_page: } }
           }
       }
   }
@@ -4106,7 +4166,7 @@
   }
 %    \end{macrocode}
 %
-% \subsubsection{Boxes: from $16$ to $31$}
+% \subsubsection{Boxes: from 16 to 31}
 %
 % \begin{itemize}
 % \item |char_num=16| for \tn{char}
@@ -4215,7 +4275,8 @@
             \@@_get_x_next:
             \@@_scan_something_internal:n { 5 }
             \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-            \exp_args:Nx \etex_showtokens:D { \tl_tail:N \l_@@_head_tl }
+            \exp_args:Nx \etex_showtokens:D
+              { \tl_tail:N \l_@@_head_tl }
           }
       }
       { % no operand for showlists, showgroups, showifs
@@ -4259,13 +4320,19 @@
 % |hmove=21| for \tn{moveright} and \tn{moveleft}.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { hmove }                                % 21
-  { \mode_if_vertical:TF { \@@_do_move: } { \@@_forbidden_case: } }
+  {
+    \mode_if_vertical:TF
+      { \@@_do_move: } { \@@_forbidden_case: }
+  }
 %    \end{macrocode}
 %
 % |vmove=22| for \tn{lower} and \tn{raise}.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { vmove }                                % 22
-  { \mode_if_vertical:TF { \@@_forbidden_case: } { \@@_do_move: } }
+  {
+    \mode_if_vertical:TF
+      { \@@_forbidden_case: } { \@@_do_move: }
+  }
 %    \end{macrocode}
 %
 % \begin{macro}[aux]{\@@_do_unpackage:}
@@ -4396,7 +4463,7 @@
   }
 %    \end{macrocode}
 %
-% \subsubsection{From $32$ to $47$}
+% \subsubsection{From 32 to 47}
 %
 % ^^A todo: implement \@@_begin_insert_or_adjust:
 %
@@ -4547,11 +4614,11 @@
         \int_compare_p:nNn
           \l_@@_head_cmd_int = { \@@_tex_use:n { char_given } }
       }
-      { \@@_prev_input_right:V \l_@@_head_tl }
+      { \@@_prev_input:V \l_@@_head_tl }
       {
         \token_if_eq_meaning:NNTF \l_@@_head_token \tex_char:D
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \@@_scan_int:
           }
           { \@@_break:w }
@@ -4587,7 +4654,10 @@
 \@@_new_tex_cmd:nn { accent }                               % 45
   {
     \@@_mode_non_vertical:n
-      { \mode_if_math:TF { \@@_do_math_accent: } { \@@_do_accent: } }
+      {
+        \mode_if_math:TF
+          { \@@_do_math_accent: } { \@@_do_accent: }
+      }
   }
 %    \end{macrocode}
 %
@@ -4601,7 +4671,7 @@
   { \msg_error:nnx { unravel } { not-implemented } { discretionary } }
 %    \end{macrocode}
 %
-% \subsubsection{Maths: from $48$ to $56$}
+% \subsubsection{Maths: from 48 to 56}
 %
 % \begin{itemize}
 % \item |eq_no=48|
@@ -4660,7 +4730,7 @@
   { \msg_error:nnx { unravel } { not-implemented } { vcenter } }
 %    \end{macrocode}
 %
-% \subsubsection{From $57$ to $70$}
+% \subsubsection{From 57 to 70}
 %
 % \begin{itemize}
 % \item |case_shift=57|
@@ -4761,12 +4831,18 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { ex_space }                             % 64
-  { \@@_mode_non_vertical:n { \l_@@_head_token \@@_print_action: } }
+  {
+    \@@_mode_non_vertical:n
+      { \l_@@_head_token \@@_print_action: }
+  }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { no_boundary }                          % 65
-  { \@@_mode_non_vertical:n { \l_@@_head_token \@@_print_action: } }
+  {
+    \@@_mode_non_vertical:n
+      { \l_@@_head_token \@@_print_action: }
+  }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -4921,7 +4997,8 @@
             \@@_scan_keyword:nT { aA tT tT rR }
               { \@@_scan_pdf_ext_toks: }
             \@@_scan_action:
-            \@@_scan_keyword:nT { cC oO uU nN tT } { \@@_scan_int: }
+            \@@_scan_keyword:nT { cC oO uU nN tT }
+              { \@@_scan_int: }
             \@@_scan_pdf_ext_toks:
           }
         { 17 } % pdfdest
@@ -5110,7 +5187,7 @@
               {
                 { 7 } { \@@_scan_extension_operands_aux: } % pdfobj
                 { 9 } { \@@_scan_extension_operands_aux: } % pdfxform
-                { 11 } { \@@_scan_extension_operands_aux: } % pdfximage
+                { 11 } { \@@_scan_extension_operands_aux: } %pdfximage
               }
               { \@@_scan_immediate_operands_bad: }
           }
@@ -5119,7 +5196,7 @@
   }
 \cs_new_protected_nopar:Npn \@@_scan_immediate_operands_aux:
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_scan_extension_operands:
   }
 \cs_new_protected_nopar:Npn \@@_scan_immediate_operands_bad:
@@ -5219,7 +5296,7 @@
     \int_while_do:nNnn
       \l_@@_head_cmd_int = { \@@_tex_use:n { prefix } }
       {
-        \@@_prev_input_right:V \l_@@_head_tl
+        \@@_prev_input:V \l_@@_head_tl
         \@@_get_x_non_relax:
         \@@_set_cmd:
         \int_compare:nNnF \l_@@_head_cmd_int
@@ -5235,7 +5312,8 @@
       }
     % ^^A todo: Discard non-\global prefixes if they are irrelevant
     % ^^A todo: Adjust for the setting of \globaldefs
-    \cs_if_exist_use:cF { @@_prefixed_ \int_use:N \l_@@_head_cmd_int : }
+    \cs_if_exist_use:cF
+      { @@_prefixed_ \int_use:N \l_@@_head_cmd_int : }
       {
         \msg_error:nnx { unravel } { internal } { prefixed }
         \@@_omit_after_assignment:w
@@ -5308,7 +5386,7 @@
         #1
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
       }
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
     \@@_scan_optional_equals:
     #2
@@ -5330,10 +5408,11 @@
       }
     \@@_assign_toks:
   }
-\@@_prefixed_new:nn { assign_toks } { \@@_assign_toks: }    % 72
+\@@_prefixed_new:nn { assign_toks }                         % 72
+  { \@@_assign_toks: }
 \cs_new_protected_nopar:Npn \@@_assign_toks:
   {
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
     \@@_print_action:
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
     \@@_scan_optional_equals:
@@ -5342,13 +5421,14 @@
     \int_compare:nNnTF
       \l_@@_head_cmd_int = { \@@_tex_use:n { toks_register } }
       {
-        \@@_prev_input_right:V \l_@@_head_tl
-        \int_compare:nNnT \l_@@_head_char_int = \c_zero { \@@_scan_int: }
+        \@@_prev_input:V \l_@@_head_tl
+        \int_compare:nNnT \l_@@_head_char_int = \c_zero
+          { \@@_scan_int: }
       }
       {
         \int_compare:nNnTF
           \l_@@_head_cmd_int = { \@@_tex_use:n { assign_toks } }
-          { \@@_prev_input_right:V \l_@@_head_tl }
+          { \@@_prev_input:V \l_@@_head_tl }
           {
             \@@_back_input:
             \@@_scan_toks:NN \c_false_bool \c_false_bool
@@ -5380,10 +5460,10 @@
       { \@@_scan_font_int: } { \@@_scan_int: }
   }
 \@@_prefixed_new:nn { set_aux }                             % 79
-  {
+  { % prevdepth = 1, spacefactor = 0
     \int_compare:nNnTF \l_@@_head_char_int = \c_one
-      { \@@_assign_value:nn { } { \@@_scan_normal_dimen: } } % prevdepth
-      { \@@_assign_value:nn { } { \@@_scan_int: } } % spacefactor
+      { \@@_assign_value:nn { } { \@@_scan_normal_dimen: } }
+      { \@@_assign_value:nn { } { \@@_scan_int: } }
   }
 \@@_prefixed_new:nn { set_prev_graf }                       % 80
   { \@@_assign_value:nn { } { \@@_scan_int: } }
@@ -5416,9 +5496,15 @@
 %
 %    \begin{macrocode}
 \@@_prefixed_new:nn { def_code }                            % 85
-  { \@@_assign_value:nn { \@@_scan_int: } { \@@_scan_int: } }
+  {
+    \@@_assign_value:nn
+      { \@@_scan_int: } { \@@_scan_int: }
+  }
 \@@_prefixed_new:nn { def_family }                          % 86
-  { \@@_assign_value:nn { \@@_scan_int: } { \@@_scan_font_ident: } }
+  {
+    \@@_assign_value:nn
+      { \@@_scan_int: } { \@@_scan_font_ident: }
+  }
 \@@_prefixed_new:nn { set_font }                            % 87
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
@@ -5429,7 +5515,7 @@
   }
 \@@_prefixed_new:nn { def_font }                            % 88
   {
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
     \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_r_token:
     \@@_print_action:x
@@ -5439,7 +5525,10 @@
     \bool_gset_true:N \g_@@_name_in_progress_bool
     \@@_scan_keyword:nTF { aAtT }
       { \@@_scan_normal_dimen: }
-      { \@@_scan_keyword:nT { sScCaAlLeEdD } { \@@_scan_int: } }
+      {
+        \@@_scan_keyword:nT { sS cC aA lL eE dD }
+          { \@@_scan_int: }
+      }
     \bool_gset_false:N \g_@@_name_in_progress_bool
     \@@_assign_token:n { }
   }
@@ -5463,7 +5552,8 @@
         \bool_while_do:nn
           { \token_if_eq_catcode_p:NN \l_@@_head_token \c_space_token }
           { \@@_get_next: }
-        \tl_if_eq:NNT \l_@@_head_tl \c_@@_eq_tl { \@@_get_next: }
+        \tl_if_eq:NNT \l_@@_head_tl \c_@@_eq_tl
+          { \@@_get_next: }
         \token_if_eq_catcode:NNT \l_@@_head_token \c_space_token
           { \@@_get_next: }
       }
@@ -5478,11 +5568,14 @@
         \gtl_set_eq:NN \l_@@_head_gtl \l_@@_tmpb_gtl
         \@@_back_input:
       }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl % \let\cs
-    \tl_put_right:Nn \l_@@_tmpa_tl { = ~ \l_@@_head_token } % \let\cs=X
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl % \global
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \tl_put_right:Nn \l_@@_tmpa_tl { = ~ \l_@@_head_token }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \use:x
-      { \exp_not:V \l_@@_head_tl \tex_let:D \tl_tail:N \l_@@_tmpa_tl }
+      {
+        \exp_not:V \l_@@_head_tl
+        \tex_let:D \tl_tail:N \l_@@_tmpa_tl
+      }
     \@@_print_assigned_token:
   }
 %    \end{macrocode}
@@ -5491,8 +5584,9 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { shorthand_def }                       % 95
   {
-    \@@_prev_input_right_silent:V \l_@@_head_tl
-    \tl_set:Nx \l_@@_prev_action_tl { \tl_to_str:N \l_@@_head_tl }
+    \@@_prev_input_silent:V \l_@@_head_tl
+    \tl_set:Nx \l_@@_prev_action_tl
+      { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_r_token:
     \@@_print_action:x
       { \l_@@_prev_action_tl \tl_to_str:N \l_@@_defined_tl }
@@ -5506,13 +5600,13 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { read_to_cs }                          % 96
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_int:
     \@@_scan_keyword:nF { tToO }
       {
         \msg_error:nn { unravel } { missing-to }
-        \@@_prev_input_right:n { to }
+        \@@_prev_input:n { to }
       }
     \@@_scan_r_token:
     \@@_assign_token:n { }
@@ -5538,7 +5632,7 @@
         \@@_scan_toks:NN \c_true_bool \c_true_bool
       }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_assign_token:n
       { \tl_set_eq:NN \l_@@_head_tl \l_@@_defining_tl }
   }
@@ -5551,7 +5645,7 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { set_box }                             % 98
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_scan_int:
     \@@_scan_optional_equals:
     \bool_if:NTF \g_@@_set_box_allowed_bool
@@ -5569,7 +5663,7 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { hyph_data }                           % 99
   {
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_scan_toks:NN \c_false_bool \c_false_bool
     \@@_assign_token:n { }
   }
@@ -5608,17 +5702,21 @@
 % Changes to numeric registers (\tn{count}, \tn{dimen}, \tn{skip},
 % \tn{muskip}, and commands with a built-in number).
 %    \begin{macrocode}
-\@@_prefixed_new:nn { register } { \@@_do_register:N \c_zero } % 89
-\@@_prefixed_new:nn { advance  } { \@@_do_operation:N \c_one } % 90
-\@@_prefixed_new:nn { multiply } { \@@_do_operation:N \c_two } % 91
-\@@_prefixed_new:nn { divide   } { \@@_do_operation:N \c_three } % 92
+\@@_prefixed_new:nn { register }                            % 89
+  { \@@_do_register:N \c_zero }
+\@@_prefixed_new:nn { advance }                             % 90
+  { \@@_do_operation:N \c_one }
+\@@_prefixed_new:nn { multiply }                            % 91
+  { \@@_do_operation:N \c_two }
+\@@_prefixed_new:nn { divide }                              % 92
+  { \@@_do_operation:N \c_three }
 %    \end{macrocode}
 %
 % \begin{macro}[aux]{\@@_do_operation:N, \@@_do_operation_fail:w}
 %   \begin{macrocode}
 \cs_new_protected:Npn \@@_do_operation:N #1
   {
-    \@@_prev_input_right_silent:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
     \@@_print_action:
     \@@_get_x_next:
     \@@_set_cmd:
@@ -5635,11 +5733,14 @@
           \l_@@_head_cmd_int < { \@@_tex_use:n { assign_int } }
           { \@@_do_operation_fail:w }
           {
-            \@@_prev_input_right:V \l_@@_head_tl
+            \@@_prev_input:V \l_@@_head_tl
             \exp_args:NNf \@@_do_register_set:Nn #1
               {
                 \int_eval:n
-                  { \l_@@_head_cmd_int - \@@_tex_use:n { assign_toks } }
+                  {
+                    \l_@@_head_cmd_int
+                    - \@@_tex_use:n { assign_toks }
+                  }
               }
           }
       }
@@ -5656,7 +5757,10 @@
 % \begin{macro}[aux]{\@@_do_register:N, \@@_do_register_aux:Nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_register:N #1
-  { \exp_args:NNV \@@_do_register_aux:Nn #1 \l_@@_head_char_int }
+  {
+    \exp_args:NNV \@@_do_register_aux:Nn #1
+      \l_@@_head_char_int
+  }
 \cs_new_protected:Npn \@@_do_register_aux:Nn #1#2
   {
     \int_compare:nNnTF { \tl_tail:n {#2} } = \c_zero
@@ -5665,10 +5769,10 @@
         \@@_print_action:
         \@@_scan_int:
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-        \@@_prev_input_right_silent:V \l_@@_head_tl
+        \@@_prev_input_silent:V \l_@@_head_tl
       }
       {
-        \@@_prev_input_right_silent:V \l_@@_head_tl
+        \@@_prev_input_silent:V \l_@@_head_tl
         \@@_print_action:
       }
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
@@ -5688,7 +5792,7 @@
       }
       { % \advance, \multiply, \divide
         \@@_scan_keyword:nF { bByY }
-          { \@@_prev_input_right_silent:n { by } }
+          { \@@_prev_input_silent:n { by } }
       }
     \int_compare:nNnTF {#1} < \c_two
       {
@@ -5714,7 +5818,8 @@
     \@@_get_x_non_relax:
     \@@_set_cmd:
     \int_compare:nNnT
-      \l_@@_head_cmd_int > { \@@_tex_use:n { max_non_prefixed_command } }
+      \l_@@_head_cmd_int
+      > { \@@_tex_use:n { max_non_prefixed_command } }
       {
         \bool_gset_false:N \g_@@_set_box_allowed_bool
         \seq_gput_right:Nn \g_@@_prev_input_seq { }
@@ -5780,7 +5885,8 @@
   {
     \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
     \@@_get_next:
-    \gtl_concat:NNN \l_@@_head_gtl \l_@@_tmpb_gtl \l_@@_head_gtl
+    \gtl_concat:NNN \l_@@_head_gtl
+      \l_@@_tmpb_gtl \l_@@_head_gtl
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_gtl
     \@@_print_action:x { \gtl_to_str:N \l_@@_head_gtl }
     \@@_get_next:
@@ -5892,7 +5998,7 @@
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
     \@@_csname_loop:
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_back_input_tl_o:
   }
@@ -5909,7 +6015,7 @@
           }
       }
       {
-        \@@_prev_input_right_silent:x
+        \@@_prev_input_silent:x
           { \@@_token_to_char:N \l_@@_head_token }
         \@@_csname_loop:
       }
@@ -5926,8 +6032,8 @@
       {
         0      \@@_scan_int:
         1      \@@_scan_int:
-        2      { \@@_get_next: \@@_prev_input_right:V \l_@@_head_tl }
-        3      { \@@_get_next: \@@_prev_input_right:V \l_@@_head_tl }
+        2 { \@@_get_next: \@@_prev_input:V \l_@@_head_tl }
+        3 { \@@_get_next: \@@_prev_input:V \l_@@_head_tl }
         4      \@@_scan_font_ident:
         8      \@@_scan_font_ident:
         9      \@@_scan_font_ident:
@@ -5945,7 +6051,10 @@
         { 22 } \@@_scan_pdf_ext_toks:
         { 23 } \@@_scan_pdf_ext_toks:
         { 24 }
-          { \@@_scan_keyword:n { fF iI lL eE } \@@_scan_pdf_ext_toks: }
+          {
+            \@@_scan_keyword:n { fF iI lL eE }
+            \@@_scan_pdf_ext_toks:
+          }
         { 25 } \@@_scan_pdffiledump:
         { 26 } \@@_scan_pdfmatch:
         { 27 } \@@_scan_int:
@@ -5981,7 +6090,8 @@
 \cs_new_protected_nopar:Npn \@@_scan_pdfmatch:
   {
     \@@_scan_keyword:n { iI cC aA sS eE }
-    \@@_scan_keyword:nT { sS uU bB cC oO uU nN tT } \@@_scan_int:
+    \@@_scan_keyword:nT { sS uU bB cC oO uU nN tT }
+      { \@@_scan_int: }
     \@@_scan_pdf_ext_toks:
     \@@_scan_pdf_ext_toks:
   }
@@ -6011,7 +6121,10 @@
         \@@_scan_something_internal:n { 5 }
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
         \@@_set_action_text:x
-          { \tl_head:N \l_@@_head_tl => \tl_tail:N \l_@@_head_tl }
+          {
+            \tl_head:N \l_@@_head_tl
+            => \tl_tail:N \l_@@_head_tl
+          }
         \tl_set:Nx \l_@@_head_tl
           { \exp_not:N \exp_not:n { \tl_tail:N \l_@@_head_tl } }
       }
@@ -6132,8 +6245,10 @@
   }
 \cs_new_protected_nopar:Npn \@@_cond_pop:
   {
-    \int_gset:Nn \g_@@_if_limit_int { \tl_head:N \g_@@_if_limit_tl }
-    \tl_gset:Nx \g_@@_if_limit_tl { \tl_tail:N \g_@@_if_limit_tl }
+    \int_gset:Nn \g_@@_if_limit_int
+      { \tl_head:N \g_@@_if_limit_tl }
+    \tl_gset:Nx \g_@@_if_limit_tl
+      { \tl_tail:N \g_@@_if_limit_tl }
     \int_gdecr:N \g_@@_if_depth_int
   }
 %    \end{macrocode}
@@ -6186,8 +6301,10 @@
           {
             {  0 } { \@@_test_two_chars: } % if
             {  1 } { \@@_test_two_chars: } % ifcat
-            {  2 } { \@@_test_two_vals:N \@@_scan_int: } % ifnum
-            {  3 } { \@@_test_two_vals:N \@@_scan_normal_dimen: } % ifdim
+            {  2 } % ifnum
+              { \@@_test_two_vals:N \@@_scan_int: }
+            {  3 } % ifdim
+              { \@@_test_two_vals:N \@@_scan_normal_dimen: }
             {  4 } { \@@_scan_int: } % ifodd
             % {  5 } { } % ifvmode
             % {  6 } { } % ifhmode
@@ -6201,10 +6318,13 @@
             % { 15 } { } % iffalse
             { 17 } { \@@_test_ifdefined: } % ifdefined
             { 18 } { \@@_test_ifcsname: } % ifcsname
-            { 19 } { \@@_scan_font_ident: \@@_scan_int: } % iffontchar
+            { 19 } % iffontchar
+              { \@@_scan_font_ident: \@@_scan_int: }
             % { 20 } { } % ifincsname % ^^A todo: something?
-            { 22 } { \@@_test_two_vals:N \@@_scan_int: } % ifpdfabsnum
-            { 23 } { \@@_test_two_vals:N \@@_scan_normal_dimen: } % ifpdfabsdim
+            { 22 } % ifpdfabsnum
+              { \@@_test_two_vals:N \@@_scan_int: }
+            { 23 } % ifpdfabsdim
+              { \@@_test_two_vals:N \@@_scan_normal_dimen: }
           }
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
         \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
@@ -6276,7 +6396,7 @@
         \@@_back_input:
         \tl_set:Nn \l_@@_head_tl { = }
       }
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     #1
   }
 %    \end{macrocode}
@@ -6289,9 +6409,9 @@
 \cs_new_protected_nopar:Npn \@@_test_two_chars:
   {
     \@@_test_two_chars_aux:
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
     \@@_test_two_chars_aux:
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
   }
 \cs_new_protected_nopar:Npn \@@_test_two_chars_aux:
   {
@@ -6347,7 +6467,8 @@
     \@@_scan_int:
     \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
-    \exp_args:No \@@_test_case_aux:nn { \l_@@_head_tl } {#1} % ^^A does text_case_aux use prev_input_seq?
+    % ^^A does text_case_aux use prev_input_seq?
+    \exp_args:No \@@_test_case_aux:nn { \l_@@_head_tl } {#1}
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -6389,7 +6510,7 @@
             Conditional:~ \tl_to_str:N \l_@@_head_tl
             \gtl_to_str:N \l_@@_tmpb_gtl
           }
-        \@@_prev_input_right:x
+        \@@_prev_input:x
           {
             \gtl_if_tl:NTF \l_@@_tmpb_gtl
               { \gtl_head:N \l_@@_tmpb_gtl }
@@ -6405,7 +6526,7 @@
 \cs_new_protected_nopar:Npn \@@_test_ifcsname:
   {
     \@@_csname_loop:
-    \@@_prev_input_right:V \l_@@_head_tl
+    \@@_prev_input:V \l_@@_head_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6535,11 +6656,15 @@
         \int_set:Nn \l_@@_print_int { \str_count:n {#1} }
         \@@_print_message:nn { <| ~ }
           {
-            \int_compare:nNnTF \l_@@_print_int > \g_@@_max_output_int
+            \int_compare:nNnTF
+              \l_@@_print_int > \g_@@_max_output_int
               {
                 (
                   \int_eval:n
-                    { \l_@@_print_int - \g_@@_max_output_int + 14 } ~
+                    {
+                      \l_@@_print_int
+                      - \g_@@_max_output_int + 14
+                    } ~
                   chars
                 )~
                 ...
@@ -6765,7 +6890,11 @@
                 \int_gset_eq:NN \g_@@_noise_int \c_minus_one
                 \int_gzero:N \g_@@_nonstop_int
               }
-            { x } { \group_end: \exp_after:wN \@@_exit:w \@@_exit:w }
+            { x }
+              {
+                \group_end:
+                \exp_after:wN \@@_exit:w \@@_exit:w
+              }
             { X } { \tex_batchmode:D \tex_end:D }
             { s } { \@@_prompt_scan_int:nn {#1}
               \@@_prompt_silent_steps:n }
