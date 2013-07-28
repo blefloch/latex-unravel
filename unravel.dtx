@@ -3131,6 +3131,8 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_x:N #1
   {
+    \@@_input_gpop_tl:N \l_@@_head_tl
+    \@@_back_input:V \l_@@_head_tl
     \bool_if:NTF #1
       {
         \@@_prev_input_right_silent:V \c_left_brace_str
