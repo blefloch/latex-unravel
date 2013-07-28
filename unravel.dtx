@@ -3019,7 +3019,7 @@
 \cs_new_protected_nopar:Npn \@@_scan_param:
   {
     \@@_get_next:
-    \token_if_eq_catcode:NNTF \l_@@_head_token \c_group_begin_token
+    \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
       { \@@_back_input: }
       {
         \token_if_eq_catcode:NNTF \l_@@_head_token \c_group_end_token
