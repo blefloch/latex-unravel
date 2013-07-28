@@ -297,7 +297,7 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_defined_tl, \l_@@_defining_gtl}
+% \begin{variable}{\l_@@_defined_tl, \l_@@_defining_tl}
 %   The token that is defined by the prefixed command (such as
 %   \tn{chardef} or \tn{futurelet}), and the code to define it.  We do
 %   not use the \cs{g_@@_prev_input_seq} to store that code: rather,
@@ -308,7 +308,7 @@
 %   performed again when defining.
 %    \begin{macrocode}
 \tl_new:N \l_@@_defined_tl
-\gtl_new:N \l_@@_defining_gtl
+\tl_new:N \l_@@_defining_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -437,7 +437,6 @@
 \cs_generate_variant:Nn \gtl_gput_left:Nn { Nx , NV , No }
 \cs_generate_variant:Nn \gtl_gput_right:Nn { Nx , NV }
 \cs_generate_variant:Nn \gtl_put_right:Nn { NV }
-\cs_generate_variant:Nn \gtl_set:Nn { NV }
 \cs_generate_variant:Nn \ior_get_str:NN { Nc }
 \cs_generate_variant:Nn \gtl_if_empty:NTF { c }
 \cs_generate_variant:Nn \gtl_to_str:N { c }
@@ -3057,13 +3056,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_toks_to_str:NN}
-%   ^^A todo: hash doubling is wrong?
+% ^^A todo: hash doubling is wrong
+% \begin{macro}[aux]{\@@_scan_toks_to_str:}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_toks_to_str:NN #1#2
+\cs_new_protected:Npn \@@_scan_toks_to_str:
   {
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
-    \@@_scan_toks:NN #1#2
+    \@@_scan_toks:NN \c_false_bool \c_true_bool
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
     \@@_prev_input_right_silent:x
       { { \exp_after:wN \tl_to_str:n \l_@@_tmpa_tl } }
@@ -3079,8 +3078,8 @@
     \bool_if:NT #1 { \@@_scan_param: }
     \@@_scan_left_brace:
     \bool_if:NTF #2
-      { \@@_scan_toks_x:N #1 }
-      { \@@_scan_toks_n:N #1 }
+      { \@@_scan_group_x:N #1 }
+      { \@@_scan_group_n:N #1 }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3090,13 +3089,13 @@
 %   Collect the parameter text into \cs{l_@@_tmpa_tl}, and when seeing
 %   either a begin-group or an end-group character, put it back into the
 %   input, stop looping, and put what we collected into
-%   \cs{l_@@_defining_gtl} and into the |prev_input|.
+%   \cs{l_@@_defining_tl} and into the |prev_input|.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_param:
   {
     \tl_clear:N \l_@@_tmpa_tl
     \@@_scan_param_aux:
-    \gtl_put_right:NV \l_@@_defining_gtl \l_@@_tmpa_tl
+    \tl_put_right:NV \l_@@_defining_tl \l_@@_tmpa_tl
     \@@_prev_input_right_silent:V \l_@@_tmpa_tl
   }
 \cs_new_protected_nopar:Npn \@@_scan_param_aux:
@@ -3110,9 +3109,9 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_toks_n:N}
+% \begin{macro}[aux]{\@@_scan_group_n:N}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_toks_n:N #1
+\cs_new_protected:Npn \@@_scan_group_n:N #1
   {
     \@@_back_input:
     \@@_input_gpop_item:NF \l_@@_head_tl
@@ -3122,22 +3121,19 @@
       }
     \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
     \bool_if:NT #1
-      { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl }
+      { \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl }
     \@@_prev_input_right_silent:V \l_@@_head_tl
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_toks_x:N}
+% \begin{macro}[aux]{\@@_scan_group_x:N}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_toks_x:N #1
+\cs_new_protected:Npn \@@_scan_group_x:N #1
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
     \bool_if:NT #1
-      {
-        \gtl_concat:NNN \l_@@_defining_gtl
-          \l_@@_defining_gtl \l_@@_head_gtl
-      }
+      { \tl_put_right:Nn \l_@@_defining_tl { { \if_false: } \fi: } }
     \@@_prev_input_gtl_right:N \l_@@_head_gtl
     \@@_scan_group_x:Nn #1 { 1 }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
@@ -3155,27 +3151,34 @@
     \@@_get_token_x:N #1
     \tl_if_empty:NTF \l_@@_head_tl
       {
-        \bool_if:NT #1
-          {
-            \gtl_put_right:Nx \l_@@_defining_gtl
-              { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
-          }
         \@@_prev_input_gtl_right:N \l_@@_head_gtl
-        \@@_scan_group_x:Nn #1 {#2}
+        \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
+          {
+            \bool_if:NT #1
+              {
+                \tl_put_right:Nn \l_@@_defining_tl
+                  { { \if_false: } \fi: }
+              }
+            \@@_scan_group_x:Nf #1 { \int_eval:n { #2 + 1 } }
+          }
+          {
+            \bool_if:NT #1
+              {
+                \tl_put_right:Nn \l_@@_defining_tl
+                  { \if_false: { \fi: } }
+              }
+            \int_compare:nNnF {#2} = \c_one
+              { \@@_scan_group_x:Nf #1 { \int_eval:n { #2 - 1 } } }
+          }
       }
       {
         \bool_if:NT #1
           {
-            \gtl_concat:NNN \l_@@_defining_gtl
-              \l_@@_defining_gtl \l_@@_head_tl
+            \tl_put_right:Nx \l_@@_defining_tl
+              { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
           }
         \@@_prev_input_gtl_right:N \l_@@_head_gtl
-        \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
-          { \@@_scan_group_x:Nf #1 { \int_eval:n { #2 + 1 } } }
-          {
-            \int_compare:nNnF {#2} = \c_one
-              { \@@_scan_group_x:Nf #1 { \int_eval:n { #2 - 1 } } }
-          }
+        \@@_scan_group_x:Nn #1 {#2}
       }
   }
 \cs_generate_variant:Nn \@@_scan_group_x:Nn { Nf }
@@ -3195,7 +3198,7 @@
           {
             \@@_get_the:
             \bool_if:NT #1
-              { \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl }
+              { \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl }
             \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
             \@@_prev_input_gtl_right:N \l_@@_tmpb_gtl
             \@@_print_action:
@@ -4582,7 +4585,7 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
-    \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool
+    \@@_scan_toks_to_str:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_use:N \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -4724,7 +4727,7 @@
         { 2 } % closeout
           { \@@_scan_int: }
         { 3 } % special
-          { \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool }
+          { \@@_scan_toks_to_str: }
         { 4 } % immediate
           { \@@_scan_immediate_operands: }
         { 5 } % setlanguage
@@ -5405,24 +5408,24 @@
 \@@_prefixed_new:nn { def }                                 % 97
   {
     \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \gtl_set:NV \l_@@_defining_gtl \l_@@_tmpa_tl
-    \gtl_put_right:NV \l_@@_defining_gtl \l_@@_head_tl
+    \tl_set:NV \l_@@_defining_tl \l_@@_tmpa_tl
+    \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \int_compare:nNnTF \l_@@_head_char_int < \c_two
       { % def/gdef
         \@@_scan_r_token:
-        \gtl_put_right:NV \l_@@_defining_gtl \l_@@_defined_tl
+        \tl_put_right:NV \l_@@_defining_tl \l_@@_defined_tl
         \@@_scan_toks:NN \c_true_bool \c_false_bool
       }
       { % edef/xdef
         \@@_scan_r_token:
-        \gtl_put_right:NV \l_@@_defining_gtl \l_@@_defined_tl
+        \tl_put_right:NV \l_@@_defining_tl \l_@@_defined_tl
         \@@_scan_toks:NN \c_true_bool \c_true_bool
       }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_prev_input_right:V \l_@@_head_tl
     \@@_assign_token:n
-      { \tl_set:Nx \l_@@_head_tl { \gtl_left_tl:N \l_@@_defining_gtl } }
+      { \tl_set_eq:NN \l_@@_head_tl \l_@@_defining_tl }
   }
 %    \end{macrocode}
 %
@@ -5838,8 +5841,8 @@
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdfstrcmp:
   {
-    \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool
-    \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool
+    \@@_scan_toks_to_str:
+    \@@_scan_toks_to_str:
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdfximagebbox:
   { \@@_scan_int: \@@_scan_int: }
@@ -5850,7 +5853,7 @@
       { \bool_set_false:N \l_@@_tmpb_bool }
     \@@_scan_keyword:nF { dD iI rR eE cC tT }
       { \@@_scan_keyword:n { pP aA gG eE } }
-    \@@_scan_toks_to_str:NN \c_false_bool \c_true_bool
+    \@@_scan_toks_to_str:
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdffiledump:
   {
