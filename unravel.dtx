@@ -43,7 +43,7 @@
 % long as none of the primitives specific to those engines is used.  Any
 % difference between how \pkg{unravel} and (pdf)\TeX{} process a given
 % piece of code, unless described in the section~\ref{sec:differences},
-% is a bug of \pkg{unravel}.
+% should be reported to Bruno Le Floch \texttt{<blflatex@gmail.com>}.
 %
 % The only public command is \cs{unravel}, used as \cs{unravel}
 % \Arg{some tokens}.  It will show on the terminal the various steps
@@ -95,23 +95,47 @@
 % \end{document}
 % \end{verbatim}
 %
+% Given all the work that \pkg{unravel} has to do to emulate \TeX{}, it
+% is not fast on very large pieces of code.  For instance, running it on
+% |\documentclass{article}| takes about $20$~minutes on my machine, and
+% finishes after slightly more than $20000$ steps.
+% \begin{verbatim}
+% \RequirePackage{unravel}
+% \unravel{\documentclass{article}\relax}
+% \usepackage{lipsum}
+% \begin{document}
+% \lipsum
+% \end{document}
+% \end{verbatim}
+% The \tn{relax} command is needed after |\documentclass{article}|
+% because this command tries to look for an optional argument:
+% \cs{unravel} would not find any token, and would give up, as \TeX{}
+% would if your file ended just after |\documentclass{article}|.  After
+% running the above through \pdfTeX{}, one can check that the result is
+% identical to that without \pkg{unravel}.
+%
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
 %
 % \begin{itemize}
+% \item Alignments (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit},
+%   \tn{span}, \tn{cr}, \tn{crcr},~|&|) are not implemented.
+% \item Math mode is not implemented, but might be.
+% \item Some other primitives are not implemented (but they should claim
+%   so).
 % \item For \pkg{unravel}, category codes are fixed when a file is read,
 %   while \TeX{} only fixes category codes when the corresponding
 %   characters are converted to tokens.  Similarly, the argument of
 %   \tn{scantokens} is converted to the new category code r\'egime in
 %   one go, and the result must be balanced.
+% \item Explicit begin-group and end-group characters other than the
+%   usual left and right braces will either make \pkg{unravel} choke or
+%   will be replaced by the usual left and right braces.
 % \item \tn{endinput} is ignored, as it is not possible to implement it
 %   in a way similar to \TeX{}'s, and as it is most often used at the
 %   very end of files, in a redundant way.
-% \item Alignments (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit},
-%   \tn{span}, \tn{cr}, \tn{crcr},~|&|) are not implemented.
-% \item Math mode is not implemented, but might be.
 % \item Negative signs and glue probably mix in wrong ways (this is a
-%   bug).
+%   fixable bug, please tell me if it affects you).
 % \end{itemize}
 %
 % \subsection{Future perhaps}
