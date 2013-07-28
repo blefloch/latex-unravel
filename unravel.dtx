@@ -1803,7 +1803,6 @@
         \group_end:
         \int_gset_eq:NN \g_@@_input_tmpa_int \g_@@_input_int
         \l_@@_input_tmpa_tl \@@_input_split_end:
-        \int_compare:nNnF \g_@@_input_tmpa_int = \c_zero { \BOOM }
       }
   }
 \cs_new_nopar:Npn \@@_input_split_end: { }
@@ -6732,7 +6731,6 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \UnravelDebug
   {
-    \everypar { \BOOM }
     \bool_set_true:N \l_@@_debug_bool
   }
 %    \end{macrocode}
@@ -6746,6 +6744,7 @@
   {
     \int_gzero:N  \g_@@_step_int
     \@@_input_gset:n {#1}
+    \seq_gclear:N \g_@@_prev_input_seq
     \gtl_gclear:N \g_@@_output_gtl
     \tl_gclear:N  \g_@@_if_limit_tl
     \int_gzero:N  \g_@@_if_limit_int
@@ -6758,11 +6757,21 @@
     \@@_main_loop:
     \@@_exit_point:
     \@@_print_outcome:
-    \@@_input_if_empty:TF { } { \BOOM }
-    \tl_if_empty:NF \g_@@_if_limit_tl { \BOOM }
-    \int_compare:nNnF \g_@@_if_limit_int = \c_zero { \BOOM }
-    \int_compare:nNnF \g_@@_if_depth_int = \c_zero { \BOOM }
+    \bool_if:nTF
+      {
+        \tl_if_empty_p:N \g_@@_if_limit_tl
+        && \int_compare_p:nNn \g_@@_if_limit_int = \c_zero
+        && \int_compare_p:nNn \g_@@_if_depth_int = \c_zero
+        && \seq_if_empty_p:N \g_@@_prev_input_seq
+      }
+      { \@@_input_if_empty:TF { } { \@@_bad_finish: } }
+      { \@@_bad_finish: }
     \@@_exit_point:
+  }
+\cs_new_protected_nopar:Npn \@@_bad_finish:
+  {
+    \msg_error:nn { unravel } { internal }
+      { the-last-unravel-finished-badly }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6846,7 +6855,7 @@
 \msg_new:nnn { unravel } { missing-equals }
   { Missing~equals~for~\iow_char:N\\ifnum~or~\iow_char:N\\ifdim. }
 \msg_new:nnn { unravel } { internal }
-  { Internal~error:~'#1' }
+  { Internal~error:~'#1'.~\ Please report. }
 \msg_new:nnn { unravel } { not-implemented }
   { The~following~feature~is~not~implemented:~'#1'. }
 %    \end{macrocode}
