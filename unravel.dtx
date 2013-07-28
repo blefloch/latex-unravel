@@ -3392,21 +3392,15 @@
 % \begin{macro}[aux]{\@@_do_box_error:}
 %   Put the (non-|make_box|) command back into the input and complain.
 %   Then recover by throwing away the action (last item of
-%   \cs{g_@@_prev_input_seq}), and, if the action was a \tn{setbox}
-%   construction, also remove the prefixes, but for some reason, leave
-%   the after assignment token (this appears to be what \TeX{} does).
+%   \cs{g_@@_prev_input_seq}).  For some reason (this appears to be what
+%   \TeX{} does), there is no need to remove the after assignment token
+%   here.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_box_error:
   {
     \@@_back_input:
     \msg_error:nn { unravel } { missing-box }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_setbox:D
-      {
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-        \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
-        % \@@_omit_after_assignment:w
-      }
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
@@ -3447,20 +3441,14 @@
 %
 % \begin{macro}[aux]{\@@_do_simple_box:N}
 %   For leaders, we need to fetch a glue.  In all cases, retrieve the
-%   box construction (such as |\raise3pt\vsplit7to5em|).  For
-%   \tn{setbox}, retrieve the prefixes too.  Finally, let \TeX{} run the
-%   code and print what we have done.
+%   box construction (such as |\raise3pt\vsplit7to5em|).  Finally, let
+%   \TeX{} run the code and print what we have done.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_simple_box:N #1
   {
     \bool_if:NTF #1 { \@@_do_leaders_fetch_skip: }
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-        \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_setbox:D
-          {
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-            \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
-          }
         \tl_use:N \l_@@_head_tl \scan_stop:
         \gtl_put_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -3505,8 +3493,8 @@
 %   \cs{g_@@_prev_input_seq}).  \TeX{} inserts \tn{everyhbox} or
 %   \tn{everyvbox} just after the begin-group token, and the hook we did
 %   is such that all that material is collected and put into the input
-%   that we will study.  Once more, for |\setbox| we first retrieve
-%   prefixes.  We must remember to find a glue for leaders, and for this
+%   that we will study.
+%   We must remember to find a glue for leaders, and for this
 %   we use a stack of booleans: the top is true if the innermost box is
 %   part of leaders.
 %    \begin{macrocode}
@@ -3518,11 +3506,6 @@
       % ^^A todo: TeX calls |normal_paragraph| here.
     \@@_scan_spec:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_setbox:D
-      {
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-        \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
-      }
     \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
     \seq_push:Nx \l_@@_leaders_box_seq
       { \bool_if:NTF #1 { \mode_if_vertical:TF { v } { h } } { Z } }
@@ -5522,18 +5505,20 @@
   }
 %    \end{macrocode}
 %
+% \tn{setbox} is a bit special: directly put it in
+% \cs{g_@@_prev_input_seq} with the prefixes; the box code will take
+% care of things, and expects a single item containing what it needs to
+% do.
 %    \begin{macrocode}
 \@@_prefixed_new:nn { set_box }                             % 98
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_print_action:
+    \@@_prev_input_right:V \l_@@_head_tl
     \@@_scan_int:
     \@@_scan_optional_equals:
     \bool_if:NTF \g_@@_set_box_allowed_bool
       { \@@_do_box:N \c_false_bool }
       {
         \msg_error:nn { unravel } { improper-setbox }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \@@_omit_after_assignment:w
       }
@@ -6616,7 +6601,7 @@
           { \g_@@_action_text_str }
         % \\
         % \ \ < \int_use:N \g_@@_input_int > % ^^A todo: remove
-        \ < \seq_count:N \g_@@_prev_input_seq > % ^^A todo: remove
+        % \ < \seq_count:N \g_@@_prev_input_seq > % ^^A todo: remove
       }
     \@@_print_state:
   }
