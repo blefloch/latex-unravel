@@ -3401,7 +3401,7 @@
     \@@_back_input:
     \msg_error:nn { unravel } { missing-box }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_if_head_eq_meaning:VNT \l_@@_tmpa_tl \tex_setbox:D
+    \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_setbox:D
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
@@ -3456,7 +3456,7 @@
     \bool_if:NTF #1 { \@@_do_leaders_fetch_skip: }
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-        \tl_if_head_eq_meaning:VNT \l_@@_tmpa_tl \tex_setbox:D
+        \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_setbox:D
           {
             \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
             \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
@@ -3518,7 +3518,7 @@
       % ^^A todo: TeX calls |normal_paragraph| here.
     \@@_scan_spec:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \tl_if_head_eq_meaning:VNT \l_@@_tmpa_tl \tex_setbox:D
+    \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_setbox:D
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
         \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
@@ -6836,7 +6836,7 @@
         \tl_if_empty_p:N \g_@@_if_limit_tl
         && \int_compare_p:nNn \g_@@_if_limit_int = \c_zero
         && \int_compare_p:nNn \g_@@_if_depth_int = \c_zero
-        % && \seq_if_empty_p:N \g_@@_prev_input_seq
+        && \seq_if_empty_p:N \g_@@_prev_input_seq
       }
       { \@@_input_if_empty:TF { } { \@@_bad_finish: } }
       { \@@_bad_finish: }
