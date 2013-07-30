@@ -23,9 +23,9 @@
 %
 % \title{The \textsf{unravel} package: \\
 %   watching TeX digest tokens\thanks{This
-%     file has version number 0.0a, last revised 2013/07/14.}}
+%     file has version number 0.0a, last revised 2013/07/28.}}
 % \author{Bruno Le Floch}
-% \date{2013/07/14}
+% \date{2013/07/28}
 %
 % \maketitle
 % \tableofcontents
@@ -168,9 +168,9 @@
 %    \begin{macrocode}
 \RequirePackage{expl3}[2013/07/01]
 \RequirePackage{l3str}[2013/04/24]
-\RequirePackage{gtl}[2013/07/14]
+\RequirePackage{gtl}[2013/07/28]
 \ProvidesExplPackage
-  {unravel} {2013/07/14} {0.0a} {Watching TeX digest tokens}
+  {unravel} {2013/07/28} {0.0a} {Watching TeX digest tokens}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -3617,7 +3617,7 @@
         \@@_print_action:
         \@@_back_input:o {##1}
         \@@_set_action_text:x
-          { \token_to_meaning:N #1 \tl_to_str:o {##1} }
+          { \token_to_meaning:N #1 = \tl_to_str:o {##1} }
         \tl_if_empty:oF {##1} { \@@_print_action: }
       }
   }
@@ -3778,7 +3778,6 @@
 % ^^A todo: implement \@@_end_align_group:
 % ^^A todo: implement \@@_end_no_align_group: (start = \@@_end_graf:)
 % ^^A todo: implement \@@_end_output_group:
-% ^^A todo: implement \@@_end_math_group:
 % ^^A todo: implement \@@_end_disc_group:
 % ^^A todo: implement \@@_end_math_choice_group:
 %
@@ -3798,7 +3797,7 @@
         { 6 } { \@@_end_align_group: } % align
         { 7 } { \@@_end_no_align_group: } % no_align
         { 8 } { \@@_end_output_group: } % output
-        { 9 } { \@@_end_math_group: } % math
+        { 9 } { \@@_end_simple_group: } % math
         { 10 } { \@@_end_disc_group: } % disc
         { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert
         { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter
@@ -3887,9 +3886,6 @@
 %
 % \subsection{Modes}
 % ^^A todo: implement \aftergroup and things happening at end-group
-% ^^A todo: implement \@@_after_math:
-% ^^A todo: implement \@@_goto_inner_math:
-% ^^A todo: implement \@@_goto_display_math:
 % ^^A todo: implement \@@_scan_math:
 %
 % \begin{macro}[int]
@@ -3933,6 +3929,56 @@
         \gtl_set:Nn \l_@@_head_gtl { \par }
         \@@_back_input:
       }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% ^^A todo: should push_math be provided?
+% \begin{macro}[aux]{\@@_goto_inner_math:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_goto_inner_math:
+  {
+    \@@_box_hook:N \tex_everymath:D
+    $ % $
+    \@@_box_hook_end:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_goto_display_math:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_goto_display_math:
+  {
+    \@@_box_hook:N \tex_everydisplay:D
+    $ $
+    \@@_box_hook_end:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_after_math:}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_after_math:
+  {
+    \mode_if_inner:TF
+      {
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        $ % $
+      }
+      {
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \@@_get_x_next:
+        \token_if_eq_catcode:NNF
+          \l_@@_head_token \c_math_toggle_token
+          {
+            \@@_back_input:
+            \tl_set:Nn \l_@@_head_tl { $ } % $
+            \msg_error:nn { unravel } { missing-dollar }
+          }
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        $ $
+      }
+    \@@_print_action:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -4019,18 +4065,23 @@
         \mode_if_math:TF
           {
             \int_compare:nNnTF
-              \etex_currentgrouplevel:D = { 15 } % math_shift_group
+              \etex_currentgrouptype:D = { 15 } % math_shift_group
               { \@@_after_math: }
               { \@@_off_save: }
           }
           {
+            \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
             \@@_get_next:
             \token_if_eq_catcode:NNTF
               \l_@@_head_token \c_math_toggle_token
               {
                 \mode_if_inner:TF
                   { \@@_back_input: \@@_goto_inner_math: }
-                  { \@@_goto_display_math: }
+                  {
+                    \gtl_gput_right:NV
+                      \g_@@_output_gtl \l_@@_head_tl
+                    \@@_goto_display_math:
+                  }
               }
               { \@@_back_input: \@@_goto_inner_math: }
           }
@@ -4050,6 +4101,8 @@
   { \l_@@_head_token \@@_print_action: }
 %    \end{macrocode}
 %
+% ^^A todo: wrong: needs to collect subsup before output (otherwise b{}^2{}_3)
+% ^^A todo: wrong: mathcode "8000 is not recognized.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { superscript_char }                     % 7
   { \@@_mode_math:n { \@@_sub_sup: } }
@@ -4059,10 +4112,45 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
-    \@@_scan_math:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl \scan_stop:
+    \@@_get_x_non_relax:
+    \@@_set_cmd:
+    \int_case:nnTF \l_@@_head_cmd_int
+      {
+        { \@@_tex_use:n { the_char } }
+          { \@@_prev_input:V \l_@@_head_tl }
+        { \@@_tex_use:n { other_char } }
+          { \@@_prev_input:V \l_@@_head_tl }
+        { \@@_tex_use:n { char_given } }
+          { \@@_prev_input:V \l_@@_head_tl }
+        { \@@_tex_use:n { char_num } }
+          {
+            \@@_prev_input:V \l_@@_head_tl
+            \@@_scan_int:
+          }
+        { \@@_tex_use:n { math_char_num } }
+          {
+            \@@_prev_input:V \l_@@_head_tl
+            \@@_scan_int:
+          }
+        { \@@_tex_use:n { math_given } }
+          { \@@_prev_input:V \l_@@_head_tl }
+        { \@@_tex_use:n { delim_num } }
+          { \@@_prev_input:V \l_@@_head_tl \@@_scan_int: }
+      }
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \tl_use:N \l_@@_head_tl \scan_stop:
+      }
+      {
+        \@@_back_input:
+        \@@_scan_left_brace:
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \gtl_gconcat:NNN \g_@@_output_gtl
+          \g_@@_output_gtl \c_group_begin_gtl
+        \tl_use:N \l_@@_head_tl \c_group_begin_token
+      }
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
