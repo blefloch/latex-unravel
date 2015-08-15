@@ -177,6 +177,38 @@
 %<@@=unravel>
 %    \end{macrocode}
 %
+% \subsection{Renamed primitives}
+%
+% \begin{macro}
+%   {
+%     \@@_lowercase:n, \@@_everyeof:w, \@@_expandable_input:w,
+%     \@@_exp_start:w, \@@_set_escapechar:n, \@@_nullfont:, \@@_register_use:N,
+%     \@@_hrule:w, \@@_vrule:w, \@@_hbox:w, \@@_everyhbox:w, \@@_everyvbox:w,
+%     \@@_char:w, \@@_mathcode:w,
+%   }
+%   Copy primitives to avoid littering the code with |:D| commands.
+%    \begin{macrocode}
+\cs_new_eq:NN \@@_lowercase:n            \tex_lowercase:D
+\cs_new_eq:NN \@@_everyeof:w             \etex_everyeof:D
+\cs_new_eq:NN \@@_expandable_input:w     \tex_input:D
+\cs_new_eq:NN \@@_exp_start:w            \tex_romannumeral:D
+\cs_new_protected_nopar:Npn \@@_set_escapechar:n
+  { \int_set:Nn \tex_escapechar:D }
+\cs_new_eq:NN \@@_nullfont:              \tex_nullfont:D
+\cs_new_eq:NN \@@_register_use:N         \tex_the:D
+\cs_new_eq:NN \@@_muexpr:w               \etex_muexpr:D
+\cs_new_eq:NN \@@_glueexpr:w             \etex_glueexpr:D
+\cs_new_eq:NN \@@_hrule:w                \tex_hrule:D
+\cs_new_eq:NN \@@_vrule:w                \tex_vrule:D
+\cs_new_eq:NN \@@_hbox:w                 \tex_hbox:D
+\cs_new_eq:NN \@@_everyhbox:w            \tex_everyhbox:D
+\cs_new_eq:NN \@@_everyvbox:w            \tex_everyvbox:D
+\cs_new_eq:NN \@@_char:w                 \tex_char:D
+\cs_new_eq:NN \@@_mathcode:w             \tex_mathcode:D
+\cs_new_eq:NN \@@_mathchar:w             \tex_mathchar:D
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Variables}
 %
 % \subsubsection{User interaction}
@@ -383,7 +415,7 @@
 %    \begin{macrocode}
 \group_begin:
   \char_set_lccode:nn { `* } { `# }
-  \tex_lowercase:D
+  \@@_lowercase:n
     { \tl_const:Nn \c_@@_parameters_tl { ^*1*2*3*4*5*6*7*8*9 } }
 \group_end:
 %    \end{macrocode}
@@ -517,18 +549,18 @@
 \cs_new_protected:Npn \@@_tl_gset_input:Nnn #1#2#3
   {
     \group_begin:
-      \etex_everyeof:D \exp_after:wN { \token_to_str:N @ @ #1 }
+      \@@_everyeof:w \exp_after:wN { \token_to_str:N @ @ #1 }
       #2
       \tl_gclear:N #1
       \str_if_eq_x:nnF
-        { \token_to_meaning:N \tex_input:D }
+        { \token_to_meaning:N \@@_expandable_input:w }
         { \token_to_str:N \input }
         { \msg_unravel:nnx { unravel } { internal } { input-prim } }
       \exp_after:wN \@@_tl_gset_input_aux:wN
       \exp_after:wN \prg_do_nothing:
-        \tex_input:D \tl_to_str:n {#3} \scan_stop:
+        \@@_expandable_input:w \tl_to_str:n {#3} \scan_stop:
     \group_end:
-    \tl_gput_right:NV #1 \etex_everyeof:D
+    \tl_gput_right:NV #1 \@@_everyeof:w
   }
 \cs_generate_variant:Nn \@@_tl_gset_input:Nnn { Nno }
 \use:x
@@ -568,7 +600,7 @@
 %    \begin{macrocode}
 \cs_new_nopar:Npn \@@_strip_escape:w
   {
-    \tex_romannumeral:D
+    \@@_exp_start:w
       \if_charcode:w \token_to_str:N \ \@@_strip_escape_aux:w \fi:
       \@@_strip_escape_aux:N
   }
@@ -741,12 +773,12 @@
     { TF }
     {
       \group_begin:
-        \int_set:Nn \tex_escapechar:D { 92 }
+        \@@_set_escapechar:n { 92 }
         \exp_args:No \tl_if_single:nTF { \token_to_str:N #1 }
           {
             \exp_args:Nx \char_set_lccode:nn
               { ` \str_head:n {#1} } { `Z }
-            \tex_lowercase:D { \tl_if_eq:nnTF {#1} } { Z }
+            \@@_lowercase:n { \tl_if_eq:nnTF {#1} } { Z }
               { \group_end: \prg_return_true: }
               { \group_end: \prg_return_false: }
           }
@@ -2149,7 +2181,7 @@
 %    \begin{macrocode}
 \group_begin:
   \char_set_lccode:nn { `. } { `: }
-  \tex_lowercase:D
+  \@@_lowercase:n
     {
       \cs_new:Npn \@@_macro_split_do:NN #1
         {
@@ -2513,7 +2545,7 @@
       }
       {
         \msg_error:nn { unravel } { missing-font-id }
-        \@@_prev_input:n { \tex_nullfont:D }
+        \@@_prev_input:n { \@@_nullfont: }
         \@@_back_error:
       }
   }
@@ -2737,7 +2769,7 @@
         { 2 } \skip_eval:n
         { 3 } \muskip_eval:n
       }
-      { \tex_the:D }
+      { \@@_register_use:N }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3038,7 +3070,7 @@
                 \bool_if:NTF #1 \muskip_eval:n \skip_eval:n
                   {
                     \l_@@_tmpa_tl
-                    \bool_if:NTF #1 \etex_muexpr:D \etex_glueexpr:D
+                    \bool_if:NTF #1 \@@_muexpr:w \@@_glueexpr:w
                     \l_@@_head_tl
                   }
               }
@@ -3454,8 +3486,8 @@
           {
             \@@_cs_case:NnF \l_@@_head_token
               {
-                \tex_hrule:D { \@@_do_leaders_rule: }
-                \tex_vrule:D { \@@_do_leaders_rule: }
+                \@@_hrule:w { \@@_do_leaders_rule: }
+                \@@_vrule:w { \@@_do_leaders_rule: }
               }
               { \@@_do_box_error: }
           }
@@ -3576,9 +3608,9 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_box_explicit:N #1
   {
-    \token_if_eq_meaning:NNTF \l_@@_head_token \tex_hbox:D
-      { \@@_box_hook:N \tex_everyhbox:D }
-      { \@@_box_hook:N \tex_everyvbox:D }
+    \token_if_eq_meaning:NNTF \l_@@_head_token \@@_hbox:w
+      { \@@_box_hook:N \@@_everyhbox:w }
+      { \@@_box_hook:N \@@_everyvbox:w }
       % ^^A todo: TeX calls |normal_paragraph| here.
     \@@_scan_spec:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
@@ -3666,12 +3698,12 @@
   \char_set_catcode_other:n { 0 }
   \cs_new_protected:Npn \@@_char:n #1
     {
-      \tex_char:D #1 \scan_stop:
+      \@@_char:w #1 \scan_stop:
       \@@_charcode_if_safe:nTF {#1}
         {
           \group_begin:
           \char_set_lccode:nn { 0 } {#1}
-          \tex_lowercase:D
+          \@@_lowercase:n
             { \group_end: \tl_set:Nn \l_@@_tmpa_tl { ^^@ } }
         }
         {
@@ -3693,11 +3725,11 @@
   \char_set_catcode_other:n { 0 }
   \cs_new_protected:Npn \@@_char_in_mmode:n #1
     {
-      \int_compare:nNnTF { \tex_mathcode:D #1 } = { "8000 }
+      \int_compare:nNnTF { \@@_mathcode:w #1 } = { "8000 }
         { % math active
           \group_begin:
           \char_set_lccode:nn { 0 } { \l_@@_tmpa_tl }
-          \tex_lowercase:D
+          \@@_lowercase:n
             { \group_end: \gtl_set:Nn \l_@@_head_gtl { ^^@ } }
           \@@_back_input:
         }
@@ -3712,7 +3744,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_mathchar:n #1
   {
-    \tex_mathchar:D #1 \scan_stop:
+    \@@_mathchar:w #1 \scan_stop:
     \tl_set:Nx \l_@@_tmpa_tl
       { \exp_not:N \mathchar \int_eval:n {#1} ~ }
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
@@ -6690,7 +6722,7 @@
 \cs_new_protected:Npn \@@_set_action_text:x #1
   {
     \group_begin:
-      \int_set:Nn \tex_escapechar:D { 92 }
+      \@@_set_escapechar:n { 92 }
       \str_gset:Nx \g_@@_action_text_str {#1}
     \group_end:
   }
@@ -6716,7 +6748,7 @@
 \cs_new_protected:Npn \@@_print_state:
   {
     \group_begin:
-      \int_set:Nn \tex_escapechar:D { 92 }
+      \@@_set_escapechar:n { 92 }
       \int_compare:nNnT \g_@@_noise_int > \c_zero
         {
           \exp_args:Nx \@@_print_state_output:n
@@ -6953,7 +6985,7 @@
     \int_compare:nNnF \g_@@_nonstop_int > \c_zero
       {
         \group_begin:
-          \int_set_eq:NN \tex_escapechar:D \c_minus_one
+          \@@_set_escapechar:n { -1 }
           \int_set_eq:NN \tex_endlinechar:D \c_minus_one
           \tl_use:N \g_@@_prompt_before_tl
           \tl_gclear:N \g_@@_prompt_before_tl
