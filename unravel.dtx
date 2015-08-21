@@ -1,5 +1,5 @@
 % \iffalse
-%% File: unravel.dtx Copyright (C) 2013 Bruno Le Floch
+%% File: unravel.dtx Copyright (C) 2013, 2015 Bruno Le Floch
 %%
 %% It may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License (LPPL), either version 1.3c of this
@@ -212,6 +212,12 @@
 % \subsection{Variables}
 %
 % \subsubsection{User interaction}
+%
+% \begin{variable}{\g_@@_print_state_before_tl}
+%    \begin{macrocode}
+\tl_new:N \g_@@_print_state_before_tl
+%    \end{macrocode}
+% \end{variable}
 %
 % \begin{variable}
 %   {\g_@@_prompt_ior, \g_@@_prompt_before_tl, \l_@@_prompt_tmpa_int}
@@ -2296,7 +2302,7 @@
       {
         \msg_error:nnx { unravel } { unknown-primitive }
           { \l_@@_head_meaning_tl }
-        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl % ^^A todo: probably this is silly
         \@@_print_action:
       }
   }
@@ -3411,7 +3417,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: catch runaway expand/get_x_next.
+% ^^A todo: catch runaway expand/get_x_next. (get_next too, probably)
 %
 % \begin{macro}[aux]{\@@_scan_alt_rule:}
 %    \begin{macrocode}
@@ -6749,6 +6755,7 @@
   {
     \group_begin:
       \@@_set_escapechar:n { 92 }
+      \tl_use:N \g_@@_print_state_before_tl
       \int_compare:nNnT \g_@@_noise_int > \c_zero
         {
           \exp_args:Nx \@@_print_state_output:n
@@ -6785,7 +6792,7 @@
                       \l_@@_print_int
                       - \g_@@_max_output_int + 14
                     } ~
-                  chars
+                  more~chars
                 )~
                 ...
                 \str_substr:nnn {#1}
@@ -6812,7 +6819,7 @@
       %       (
       %         \int_eval:n
       %           { \l_@@_print_int - \g_@@_max_prev_int + 14 } ~
-      %         chars
+      %         more~chars
       %       )~
       %       ...
       %       \str_substr:nnn {#1}
@@ -6839,7 +6846,7 @@
             (
               \int_eval:n
                 { \l_@@_print_int - \g_@@_max_input_int + 14 } ~
-              chars
+              more~chars
             )
           }
           {#1}
@@ -6988,7 +6995,6 @@
           \@@_set_escapechar:n { -1 }
           \int_set_eq:NN \tex_endlinechar:D \c_minus_one
           \tl_use:N \g_@@_prompt_before_tl
-          \tl_gclear:N \g_@@_prompt_before_tl
           \@@_prompt_aux:
         \group_end:
       }
@@ -7028,6 +7034,9 @@
                   { \tl_gclear:N \g_@@_tmpc_tl }
                 \group_insert_after:N \g_@@_tmpc_tl
               }
+            { | } { \@@_prompt_scan_int:nn {#1}
+              \@@_prompt_vert:n }
+            { a } { \@@_prompt_all: }
           }
           { \@@_prompt_help: }
       }
@@ -7035,7 +7044,9 @@
 \cs_new_protected:Npn \@@_prompt_scan_int:nn #1
   {
     \tex_afterassignment:D \@@_prompt_scan_int_after:wn
-    \l_@@_prompt_tmpa_int = 0 \use_none:n #1 \scan_stop:
+    \l_@@_prompt_tmpa_int =
+      \tl_if_head_eq_charcode:fNF { \use_none:n #1 } - { 0 }
+      \use_ii:nn #1 \scan_stop:
   }
 \cs_new_protected:Npn \@@_prompt_scan_int_after:wn #1 \scan_stop: #2
   {
@@ -7045,24 +7056,77 @@
 \cs_new_protected:Npn \@@_prompt_help:
   {
     \@@_print:n { "m":~meaning~of~first~token }
-    \@@_print:n { "q":~semi-quiet }
-    \@@_print:n { "x":~exit~this~instance~of~unravel }
-    \@@_print:n { "X":~try~harder~to~exit }
+    \@@_print:n { "q":~semi-quiet~(same~as~"o1") }
+    \@@_print:n { "x"/"X":~exit~this~instance~of~unravel/TeX }
     \@@_print:n { "s<num>":~do~<num>~steps~silently }
     \@@_print:n
-      { "o<num>":~0~=>~only~log~not~online,~1~=>~both,~-1~=>~neither.}
-    \@@_print:n { "C<code>":~run~some~code~immediately }
+      { "o<num>":~1~=>~log~and~terminal,~0~=>~only~log,~-1~=>~neither.}
+    \@@_print:n { "C<code>":~run~some~expl3~code~immediately }
+    \@@_print:n { "|<num>":~silent~steps~until~<num>~fewer~"||" }
+    \@@_print:n { "a":~print~state~again,~without~truncating }
     \@@_prompt_aux:
   }
 \cs_new_protected:Npn \@@_prompt_silent_steps:n #1
   {
-    \int_gset_eq:NN \g_@@_noise_int \c_minus_one
-    \tl_gset:Nn \g_@@_prompt_before_tl
-      { \int_gset_eq:NN \g_@@_noise_int \c_one }
-    \int_gset:Nn \g_@@_nonstop_int {#1}
+    \int_compare:nNnF {#1} < \c_zero
+      {
+        \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+        \tl_gset:Nn \g_@@_prompt_before_tl
+          {
+            \int_gset_eq:NN \g_@@_noise_int \c_one
+            \tl_gclear:N \g_@@_prompt_before_tl
+          }
+        \int_gset:Nn \g_@@_nonstop_int {#1}
+      }
   }
+\cs_new_protected:Npn \@@_prompt_vert:n #1
+  {
+    \int_compare:nNnTF {#1} < { 0 }
+      { \@@_prompt_vert:Nn > {#1} }
+      { \@@_prompt_vert:Nn < {#1} }
+  }
+\cs_new_protected:Npn \@@_prompt_vert:Nn #1#2
+  {
+    \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+    \tl_gset:Nf \g_@@_print_state_before_tl
+      {
+        \exp_args:NNf \exp_stop_f: \int_compare:nNnTF
+          { \int_eval:n { \seq_count:N \g_@@_prev_input_seq - #2 } }
+          #1 { \seq_count:N \g_@@_prev_input_seq }
+          {
+            \int_gset:Nn \g_@@_nonstop_int
+              { \int_max:nn { \g_@@_nonstop_int } { 2 } }
+          }
+          {
+            \int_gset_eq:NN \g_@@_noise_int \c_one
+            \tl_gclear:N \g_@@_print_state_before_tl
+          }
+      }
+  }
+\cs_new_protected_nopar:Npn \@@_prompt_all:
+  {
+    \tl_gset:Nx \g_@@_tmpc_tl
+      {
+        \exp_not:n
+          {
+            \tl_gclear:N \g_@@_tmpc_tl
+            \int_gset_eq:NN \g_@@_max_output_int \c_max_int
+            \int_gset_eq:NN \g_@@_max_prev_int \c_max_int
+            \int_gset_eq:NN \g_@@_max_input_int \c_max_int
+            \@@_print_state:
+          }
+        \@@_prompt_all_aux:N \g_@@_max_output_int
+        \@@_prompt_all_aux:N \g_@@_max_prev_int
+        \@@_prompt_all_aux:N \g_@@_max_input_int
+      }
+    \group_insert_after:N \g_@@_tmpc_tl
+  }
+\cs_new:Npn \@@_prompt_all_aux:N #1
+  { \exp_not:n { \int_gset:Nn #1 } { \int_use:N #1 } }
 %    \end{macrocode}
 % \end{macro}
+%
+% ^^A todo: I suspect a bug if given 'a' twice in a row
 %
 % \subsection{Main command}
 %
@@ -7197,6 +7261,8 @@
   { Missing~\iow_char:N\\endcsname~inserted. }
 \msg_new:nnn { unravel } { runaway-if }
   { Runaway~\iow_char:N\\if... }
+\msg_new:nnn { unravel } { runaway-macro-parameter }
+  { Runaway~macro~parameter! }
 \msg_new:nnn { unravel } { extra-or }
   { Extra~\iow_char:N\\or. }
 \msg_new:nnn { unravel } { missing-equals }
