@@ -318,27 +318,30 @@ Defining \g__unravel_input_6_gtl on line ...
 [===== Step 21 =====] -
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D -
+|| \etex_glueexpr:D 
+|| -
 |> \l_tmpa_skip \scan_stop: }
 [===== Step 22 =====] \l_tmpa_skip = \skip43
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D -
+|| \etex_glueexpr:D 
+|| -
 || \l_tmpa_skip 
 |> \scan_stop: }
 [===== Step 23 =====] \l_tmpa_skip = \skip43 => 1.0pt plus 2.0pt minu...
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D -
+|| \etex_glueexpr:D 
+|| -
 || 1.0pt plus 2.0pt minus 3.0pt
 |> \scan_stop: }
-[===== Step 24 =====] \exp_not:n {-1.0pt plus 2.0pt minus 3.0pt}
-|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0pt plus 2.0pt minus 3.0pt}
+[===== Step 24 =====] \exp_not:n {-1.0pt plus -2.0pt minus -3.0pt}
+|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0pt plus -2.0pt minus -3.0pt}
 |> }
 [===== Step 25 =====] \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0p...
-|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0pt plus 2.0pt minus 3.0pt}}
+|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0pt plus -2.0pt minus -3.0pt}}
 |> 
-[===== Step 26 =====] Set \l_tmpa_tl=macro:->-1.0pt plus 2.0pt minus ...
+[===== Step 26 =====] Set \l_tmpa_tl=macro:->-1.0pt plus -2.0pt minus...
 || 
 |> 
 [===== The end! =====]

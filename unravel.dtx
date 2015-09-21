@@ -3183,6 +3183,7 @@
   }
 \cs_new_protected:Npn \@@_scan_glue_aux:nN #1#2
   {
+    \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_scan_signs:
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_set_cmd:
@@ -3210,13 +3211,27 @@
               }
           }
       }
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \tl_put_right:NV \l_@@_tmpa_tl \l_@@_head_tl
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
     \@@_scan_keyword:nT { pP lL uU sS }
       { \@@_scan_dimen:NN #2 \c_true_bool }
     \@@_scan_keyword:nT { mM iI nN uU sS }
       { \@@_scan_dimen:NN #2 \c_true_bool }
     \@@_break_point:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_prev_input_silent:V \l_@@_head_tl
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_silent:x
+      {
+        \bool_if:NTF #2 \muskip_eval:n \skip_eval:n
+          {
+            \l_@@_tmpa_tl
+            \bool_if:NTF #2 \@@_muexpr:w \@@_glueexpr:w
+            \l_@@_head_tl
+          }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
