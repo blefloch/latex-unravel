@@ -131,8 +131,6 @@
 %
 % Bugs.
 % \begin{itemize}
-% \item Glues (skips/muskips) are not handled correctly at all.
-% \item Negative signs and glue mix in wrong ways.
 % \item |\unravel{\escapechar=-1\relax}| shows |\escapechar=92| but
 %   does the correct assignment.
 % \item |\font\tenrm=cmr10\showthe\tenrm\relax| breaks oddly.
@@ -153,7 +151,7 @@
 % \item Explicit begin-group and end-group characters other than the
 %   usual left and right braces may make \pkg{unravel} choke, or may be
 %   silently replaced by the usual left and right braces.
-% \item \tn{endinput} is ignored with a warning, as it is not possible
+% \item \tn{endinput} is ignored with a warning, as it is very difficult
 %   to implement it in a way similar to \TeX{}'s, and as it is most
 %   often used at the very end of files, in a redundant way.
 % \end{itemize}
