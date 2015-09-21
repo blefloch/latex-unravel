@@ -424,9 +424,9 @@
 %   Used to determine if a macro has simple parameters or not.
 %    \begin{macrocode}
 \group_begin:
-  \char_set_lccode:nn { `* } { `# }
-  \@@_lowercase:n
-    { \tl_const:Nn \c_@@_parameters_tl { ^*1*2*3*4*5*6*7*8*9 } }
+  \cs_set:Npx \@@_tmp:w #1 { \c_hash_str #1 }
+  \tl_const:Nx \c_@@_parameters_tl
+    { ^ \tl_map_function:nN { 123456789 } \@@_tmp:w }
 \group_end:
 %    \end{macrocode}
 % \end{variable}
@@ -769,7 +769,7 @@
 %   control sequence and the test is \texttt{true} (note that we did not
 %   use \cs{tl_to_str:n}, as this would fail on explicit macro parameter
 %   characters).  Otherwise, the token was an explicit character, active
-%   or not.  Use \tn{lowercase} to convert the character to a fixed
+%   or not.  Use the \tn{lowercase} primitive to convert the character to a fixed
 %   character code~|Z|.  Compare with an active~|Z|.  In all three
 %   outcomes, remember to end the group.
 %    \begin{macrocode}
@@ -2185,21 +2185,20 @@
 %     \@@_macro_replacement:N
 %   }
 %    \begin{macrocode}
-\group_begin:
-  \char_set_lccode:nn { `. } { `: }
-  \@@_lowercase:n
-    {
-      \cs_new:Npn \@@_macro_split_do:NN #1
-        {
-          \exp_after:wN \@@_macro_split_do:wN
-          \token_to_meaning:N #1 \q_mark { } . -> \q_mark \use_none:nnnn
-          \q_stop
-        }
-      \cs_new:Npn \@@_macro_split_do:wN
-          #1 . #2 -> #3 \q_mark #4 #5 \q_stop #6
-          { #4 #6 {#1} {#2} {#3} }
-    }
-\group_end:
+\use:x
+  {
+    \exp_not:n { \cs_new:Npn \@@_macro_split_do:NN #1 }
+      {
+        \exp_not:n { \exp_after:wN \@@_macro_split_do:wN }
+        \exp_not:n { \token_to_meaning:N #1 \q_mark { } }
+        \tl_to_str:n { : } \exp_not:n { -> \q_mark \use_none:nnnn }
+        \exp_not:N \q_stop
+      }
+    \exp_not:n { \cs_new:Npn \@@_macro_split_do:wN }
+        \exp_not:n {#1} \tl_to_str:n { : } \exp_not:n { #2 -> }
+        \exp_not:n { #3 \q_mark #4 #5 \q_stop #6 }
+      { \exp_not:n { #4 #6 {#1} {#2} {#3} } }
+  }
 \cs_new:Npn \@@_macro_prefix:N #1
   { \@@_macro_split_do:NN #1 \use_i:nnn }
 \cs_new:Npn \@@_macro_parameter:N #1
@@ -3700,26 +3699,18 @@
 %
 % \begin{macro}[aux]{\@@_char:n, \@@_char:V, \@@_char:x}
 %    \begin{macrocode}
-\group_begin:
-  \char_set_catcode_other:n { 0 }
-  \cs_new_protected:Npn \@@_char:n #1
-    {
-      \@@_char:w #1 \scan_stop:
-      \@@_charcode_if_safe:nTF {#1}
-        {
-          \group_begin:
-          \char_set_lccode:nn { 0 } {#1}
-          \@@_lowercase:n
-            { \group_end: \tl_set:Nn \l_@@_tmpa_tl { ^^@ } }
-        }
-        {
-          \tl_set:Nx \l_@@_tmpa_tl
-            { \exp_not:N \char \int_eval:n {#1} ~ }
-        }
-      \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
-      \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
-    }
-\group_end:
+\cs_new_protected:Npn \@@_char:n #1
+  {
+    \@@_char:w #1 \scan_stop:
+    \@@_charcode_if_safe:nTF {#1}
+      { \tl_set:Nx \l_@@_tmpa_tl { \char_generate:nn {#1} { 12 } } }
+      {
+        \tl_set:Nx \l_@@_tmpa_tl
+          { \exp_not:N \char \int_eval:n {#1} ~ }
+      }
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
+    \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
+  }
 \cs_generate_variant:Nn \@@_char:n { V , x }
 %    \end{macrocode}
 % \end{macro}
@@ -3727,21 +3718,16 @@
 % \begin{macro}[aux]
 %   {\@@_char_in_mmode:n, \@@_char_in_mmode:V, \@@_char_in_mmode:x}
 %    \begin{macrocode}
-\group_begin:
-  \char_set_catcode_other:n { 0 }
-  \cs_new_protected:Npn \@@_char_in_mmode:n #1
-    {
-      \int_compare:nNnTF { \@@_mathcode:w #1 } = { "8000 }
-        { % math active
-          \group_begin:
-          \char_set_lccode:nn { 0 } { \l_@@_tmpa_tl }
-          \@@_lowercase:n
-            { \group_end: \gtl_set:Nn \l_@@_head_gtl { ^^@ } }
-          \@@_back_input:
-        }
-        { \@@_char:n {#1} }
-    }
-\group_end:
+\cs_new_protected:Npn \@@_char_in_mmode:n #1
+  {
+    \int_compare:nNnTF { \@@_mathcode:w #1 } = { "8000 }
+      { % math active
+        \gtl_set:Nx \l_@@_head_gtl
+          { \char_generate:nn { \l_@@_tmpa_tl } { 12 } }
+        \@@_back_input:
+      }
+      { \@@_char:n {#1} }
+  }
 \cs_generate_variant:Nn \@@_char_in_mmode:n { V , x }
 %    \end{macrocode}
 % \end{macro}
