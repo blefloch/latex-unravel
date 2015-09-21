@@ -562,10 +562,6 @@
       \@@_everyeof:w \exp_after:wN { \token_to_str:N @ @ #1 }
       #2
       \tl_gclear:N #1
-      \str_if_eq_x:nnF
-        { \token_to_meaning:N \@@_expandable_input:w }
-        { \token_to_str:N \input }
-        { \msg_error:nnx { unravel } { internal } { input-prim } }
       \exp_after:wN \@@_tl_gset_input_aux:wN
       \exp_after:wN \prg_do_nothing:
         \@@_expandable_input:w \tl_to_str:n {#3} \scan_stop:
