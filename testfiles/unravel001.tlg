@@ -203,3 +203,143 @@ Press <enter> to continue; 'h' <enter> for help.
 l. ...  }
 [===== The end! =====]
 ============================================================
+============================================================
+TEST 3: \unravel and glue sign
+============================================================
+======== Welcome to the unravel package ========
+"<|" denotes the output to TeX's stomach.
+"||" denotes tokens waiting to be used.
+"|>" denotes tokens that we will act on.
+Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> \tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 1 =====] \tl_set:Nx = \protected\long macro:#1#2->\__chk...
+|| 
+|> \__chk_if_exist_var:N \l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> {-\l_tmpa_skip }}
+[===== Step 2 =====] \__chk_if_exist_var:N = \protected\long macro:#...
+|| 
+|> \cs_if_exist:NF \l_tmpa_tl {\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 3 =====] \cs_if_exist:NF = \long macro:#1->\if_meaning:w...
+|| 
+|> \if_meaning:w \l_tmpa_tl \scan_stop: \prg_return_false: \else:
+|> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
+|> \fi: \exp_end: {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 4 =====] \if_meaning:w = \ifx
+|| \if_meaning:w 
+|> \l_tmpa_tl \scan_stop: \prg_return_false: \else: \if_cs_exist:N \l_tmpa_tl
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 5 =====] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =...
+|| 
+|> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
+|> \fi: \exp_end: {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 6 =====] \if_cs_exist:N = \ifdefined
+|| \if_cs_exist:N 
+|> \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 7 =====] \l_tmpa_tl 
+|| \if_cs_exist:N \l_tmpa_tl 
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 8 =====] \if_cs_exist:N \l_tmpa_tl =true
+|| 
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 9 =====] \prg_return_true: = macro:->\exp_after:wN \use_...
+|| 
+|> \exp_after:wN \use_i:nn \exp:w \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 10 =====] \exp_after:wN \use_i:nn 
+|| \exp_after:wN \use_i:nn 
+|> \exp:w \else: \prg_return_false: \fi: \fi: \exp_end:
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 11 =====] \exp:w = \romannumeral
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \else: \prg_return_false: \fi: \fi: \exp_end: {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 12 =====] \else: = \else => skipped to \fi: 
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \fi: \exp_end: {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 13 =====] \fi: = \fi
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \exp_end: {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 14 =====] \exp_end: = \char"0 => 0
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 0
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 15 =====] \exp:w 0=
+|| \exp_after:wN \use_i:nn 
+|> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
+|> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+Defining \g__unravel_input_6_gtl on line ...
+[===== Step 16 =====] back_input: \exp_after:wN \use_i:nn 
+|| 
+|> \use_i:nn {}{\__msg_kernel_error:nnx
+|> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
+|> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 17 =====] \use_i:nn = \long macro:#1#2->#1
+|| 
+|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[===== Step 18 =====] \skip_eval:n = \long macro:#1->\skip_use:N \ete...
+|| \cs_set_nopar:Npx \l_tmpa_tl {
+|> \skip_use:N \etex_glueexpr:D -\l_tmpa_skip \scan_stop: }
+[===== Step 19 =====] \skip_eval:n = \long macro:#1->\skip_use:N \ete...
+|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \skip_use:N 
+|> \etex_glueexpr:D -\l_tmpa_skip \scan_stop: }
+[===== Step 20 =====] \etex_glueexpr:D = \glueexpr
+|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \skip_use:N 
+|| \etex_glueexpr:D 
+|> -\l_tmpa_skip \scan_stop: }
+[===== Step 21 =====] -
+|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \skip_use:N 
+|| \etex_glueexpr:D -
+|> \l_tmpa_skip \scan_stop: }
+[===== Step 22 =====] \l_tmpa_skip = \skip43
+|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \skip_use:N 
+|| \etex_glueexpr:D -
+|| \l_tmpa_skip 
+|> \scan_stop: }
+[===== Step 23 =====] \l_tmpa_skip = \skip43 => 1.0pt plus 2.0pt minu...
+|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \skip_use:N 
+|| \etex_glueexpr:D -
+|| 1.0pt plus 2.0pt minus 3.0pt
+|> \scan_stop: }
+[===== Step 24 =====] \exp_not:n {-1.0pt plus 2.0pt minus 3.0pt}
+|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0pt plus 2.0pt minus 3.0pt}
+|> }
+[===== Step 25 =====] \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0p...
+|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-1.0pt plus 2.0pt minus 3.0pt}}
+|> 
+[===== Step 26 =====] Set \l_tmpa_tl=macro:->-1.0pt plus 2.0pt minus ...
+|| 
+|> 
+[===== The end! =====]
+============================================================

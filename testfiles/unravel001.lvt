@@ -21,4 +21,10 @@
     \unravel { \let \ = \c_backslash_str \show \ }
   }
 
+\TEST { \unravel ~ and ~ glue ~ sign }
+  {
+    \skip_set:Nn \l_tmpa_skip { 1pt plus 2pt minus 3pt }
+    \unravel { \tl_set:Nx \l_tmpa_tl { \skip_eval:n { - \l_tmpa_skip } } }
+  }
+
 \END
