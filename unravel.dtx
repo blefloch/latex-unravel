@@ -129,6 +129,15 @@
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
 %
+% Bugs.
+% \begin{itemize}
+% \item Glues (skips/muskips) are not handled correctly at all.
+% \item Negative signs and glue mix in wrong ways.
+% \item |\unravel{\escapechar=-1\relax}| shows |\escapechar=92| but
+%   does the correct assignment.
+% \item |\font\tenrm=cmr10\showthe\tenrm\relax| breaks oddly.
+% \end{itemize}
+%
 % Differences.
 % \begin{itemize}
 % \item Some primitives are not implemented yet: alignments
@@ -149,19 +158,11 @@
 %   often used at the very end of files, in a redundant way.
 % \end{itemize}
 %
-% Bugs.
-% \begin{itemize}
-% \item Negative signs and glue mix in wrong ways (this is a fixable
-%   bug, please tell me if it affects you).
-% \item |\unravel{\escapechar=-1\relax}| shows |\escapechar=92| but
-%   does the correct assignment.
-% \item |\font\tenrm=cmr10\showthe\tenrm\relax| breaks oddly.
-% \end{itemize}
-%
 % \subsection{Future perhaps}
 %
 % \begin{itemize}
-% \item Allow users to change some settings.
+% \item Allow users to change some settings globally/for one |\unravel|.
+% \item Allow to replay steps that have already been run.
 % \item Fix the display for \tn{if} and \tn{ifcat} (remove extraneous
 %   \cs{exp_not:N}).
 % \end{itemize}
@@ -2915,7 +2916,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: |\let\a b \ifnum`\a=`b wrong!\fi|
 % \begin{macro}[aux]{\@@_scan_int:}
 % \begin{macro}[aux]
 %   {\@@_scan_int_char:, \@@_scan_int_lq:, \@@_scan_int_explicit:n}
