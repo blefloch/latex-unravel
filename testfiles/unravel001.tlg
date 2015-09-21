@@ -91,7 +91,7 @@ Press <enter> to continue; 'h' <enter> for help.
 || \__int_value:w 
 || \__int_eval:w 12
 |> \__int_eval_end: \cs_end: {}
-[===== Step 8 =====] \__int_eval:w 12= 12
+[===== Step 8 =====] \__int_eval:w 12 => 12
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \__int_value:w 12
@@ -170,7 +170,7 @@ Defining \g__unravel_input_5_gtl on line ...
 [===== Step 25 =====] \__prg_replicate_first_1:n = \long macro:#1->\e...
 || \exp:w 
 |> \exp_end: 
-[===== Step 26 =====] \exp_end: = \char"0= 0
+[===== Step 26 =====] \exp_end: = \char"0 => 0
 || \exp:w 0
 |> 
 [===== Step 27 =====] \exp:w 0=
