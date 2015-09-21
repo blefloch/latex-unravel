@@ -38,20 +38,24 @@
 % This is done by letting the user step through the execution of some
 % \TeX{} code, going through the details of nested expansions,
 % performing assignments, as well as some simple typesetting commands.
+%
+% The only public command is \cs{unravel}, used as \cs{unravel}
+% \Arg{some tokens}.  It should normally be used within an interactive
+% session where \TeX{} is run in a terminal.  Then the function will
+% show in the terminal the various steps that \TeX{} performs when
+% reading \meta{some tokens}.  The user has some control on what is
+% shown to them at every step, can skip steps, insert code, \emph{etc.}
+% In the future it will be possible to go back a few steps.
+% The function \cs{unravel} is also available as \cs{unravel:n}.
+%
 % The \pkg{unravel} package is currently based on the behaviour of
-% \pdfTeX{}, but it should work in the \XeTeX{} and \LuaTeX{} engines as
-% long as none of the primitives specific to those engines is used.  Any
+% \pdfTeX{}, but it should work in all engines supported by \pkg{expl3}
+% (\pdfTeX{}, \XeTeX{}, \LuaTeX{}, ep\TeX{}, eup\TeX{}) as long as none
+% of the primitives specific to those engines is used.  Any
 % difference between how \pkg{unravel} and (pdf)\TeX{} process a given
 % piece of code, unless described in the section~\ref{sec:differences},
 % should be reported on the issue tracker
 % (\url{github.com/blefloch/latex-unravel/issues}).
-%
-% The only public command is \cs{unravel} (also available as
-% \cs{unravel:n}), used as \cs{unravel}
-% \Arg{some tokens}.  It will show on the terminal the various steps
-% that \TeX{} performs, waiting for input from the user at each step.
-% As a result, \pkg{unravel} can only be used meaningfully when \TeX{}
-% is run in a terminal.
 %
 % As a simple example, one can run \LaTeX{} on the following file.
 % \begin{verbatim}
