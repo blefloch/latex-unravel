@@ -721,34 +721,33 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_prev_input_join_factor:n}
-% \begin{macro}[aux]{\@@_join_factor_aux:NN}
+% \begin{macro}[int]{\@@_prev_input_join_get:nN}
+% \begin{macro}[aux]{\@@_join_get_aux:NNN}
 %   Pops \cs{g_@@_prev_input_seq} twice to get some value in
 %   \cs{l_@@_head_tl} and some sign or decimal number in
 %   \cs{l_@@_tmpa_tl}.  Combines them into a value, using
 %   the appropriate evaluation function, determined based
 %   on~|#1|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_prev_input_join_factor:n #1
+\cs_new_protected:Npn \@@_prev_input_join_get:nN #1
   {
     \int_case:nnF {#1}
       {
-        { 0 } { \@@_join_factor_aux:NN \int_eval:n \@@_numexpr:w }
-        { 1 } { \@@_join_factor_aux:NN \dim_eval:n \@@_dimexpr:w }
-        { 2 } { \@@_join_factor_aux:NN \skip_eval:n \@@_glueexpr:w }
-        { 3 } { \@@_join_factor_aux:NN \muskip_eval:n \@@_muexpr:w }
+        { 0 } { \@@_join_get_aux:NNN \int_eval:n \@@_numexpr:w }
+        { 1 } { \@@_join_get_aux:NNN \dim_eval:n \@@_dimexpr:w }
+        { 2 } { \@@_join_get_aux:NNN \skip_eval:n \@@_glueexpr:w }
+        { 3 } { \@@_join_get_aux:NNN \muskip_eval:n \@@_muexpr:w }
       }
       {
         \msg_error:nnn { unravel } { internal } { join-factor }
-        \@@_join_factor_aux:NN \use:n \prg_do_nothing:
+        \@@_join_get_aux:NNN \use:n \prg_do_nothing:
       }
   }
-\cs_new_protected:Npn \@@_join_factor_aux:NN #1#2
+\cs_new_protected:Npn \@@_join_get_aux:NNN #1#2#3
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \tl_set:Nx \l_@@_tmpa_tl { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl } }
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \tl_set:Nx #3 { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl } }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3026,38 +3025,40 @@
 % \begin{macro}[int]{\@@_scan_normal_dimen:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_normal_dimen:
-  { \@@_scan_dimen:NN \c_false_bool \c_false_bool }
+  { \@@_scan_dimen:nN { 2 } \c_false_bool }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_scan_dimen:NN}
-%   Quoth |tex.web|.  ``\emph{|mu| is |true| if the finite units must be
-%     `mu', while |mu| is |false| if `mu' units are disallowed; |inf| is
-%     |true| if the infinite units `fil', `fill', `filll' are
-%     permitted.}''  The function here has the same first two parameters
-%   as \TeX{}'s |scan_dimen|, but omits the third, as the shortcut is
-%   provided as a separate function, \cs{@@_scan_dimen_unit:NN}.
+% \begin{macro}[int]{\@@_scan_dimen:nN}
+%   The first argument is $2$ if the unit may not be |mu| and $3$ if
+%   the unit must be |mu| (or |fil|).  The second argument is
+%   \cs{c_true_bool} if |fil|, |fill|, |filll| are permitted, and is
+%   otherwise |false|.  These arguments are similar to those of
+%   \TeX{}'s own |scan_dimen| procedure, in which |mu| is |bool(#1=3)|
+%   and |inf| is |#2|.  The third argument of this procedure is omitted
+%   here, as the corresponding shortcut is provided as a separate
+%   function, \cs{@@_scan_dimen_unit:nN}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_dimen:NN #1#2
+\cs_new_protected:Npn \@@_scan_dimen:nN #1#2
   {
     \@@_scan_signs:
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_set_cmd:
     \int_compare:nNnTF
       \l_@@_head_cmd_int < { \@@_tex_use:n { min_internal } }
-      { \@@_scan_dimen_char:NN #1#2 }
+      { \@@_scan_dimen_char:nN {#1} #2 }
       {
         \int_compare:nNnTF
           \l_@@_head_cmd_int
           > { \@@_tex_use:n { max_internal } }
-          { \@@_scan_dimen_char:NN #1#2 }
+          { \@@_scan_dimen_char:nN {#1} #2 }
           {
-            \bool_if:NTF #1
+            \int_compare:nNnTF {#1} = { 3 }
               {
                 \@@_scan_something_internal:n { 3 }
                 \int_case:nnF \g_@@_val_level_int
                   {
-                    { 0 } { \@@_scan_dim_unit:NN #1 #2 }
+                    { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
                     { 3 } { }
                   }
                   {
@@ -3069,7 +3070,7 @@
                 \@@_scan_something_internal:n { 1 }
                 \int_case:nnF \g_@@_val_level_int
                   {
-                    { 0 } { \@@_scan_dim_unit:NN #1#2 }
+                    { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
                     { 3 } % ^^A todo: error recovery
                     { \msg_error:nn { unravel } { incompatible-units } }
                   }
@@ -3080,7 +3081,7 @@
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_prev_input_silent:V \l_@@_head_tl
   }
-\cs_new_protected:Npn \@@_scan_dimen_char:NN #1#2
+\cs_new_protected:Npn \@@_scan_dimen_char:nN #1#2
   {
     \tl_if_eq:NNT \l_@@_head_tl \c_@@_comma_tl
       { \tl_set_eq:NN \l_@@_head_tl \c_@@_point_tl }
@@ -3108,9 +3109,9 @@
             \@@_scan_int:
           }
       }
-    \@@_scan_dim_unit:NN #1#2
+    \@@_scan_dim_unit:nN {#1} #2
   }
-\cs_new_protected:Npn \@@_scan_dim_unit:NN #1#2
+\cs_new_protected:Npn \@@_scan_dim_unit:nN #1#2
   {
     \bool_if:NT #2
       {
@@ -3132,16 +3133,13 @@
           { \@@_back_input: }
           {
             \seq_gput_right:Nn \g_@@_prev_input_seq { }
-            \bool_if:NTF #1
-              { \@@_scan_something_internal:n { 3 } }
-              { \@@_scan_something_internal:n { 2 } }
-            \bool_if:NTF #1
-              { \@@_prev_input_join_factor:n { 3 } }
-              { \@@_prev_input_join_factor:n { 2 } }
+            \@@_scan_something_internal:n {#1}
+            \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
+            \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
             \@@_break:w
           }
       }
-    \bool_if:NT #1
+    \int_compare:nNnT {#1} = { 3 }
       {
         \@@_scan_keyword:nT { mM uU } { \@@_break:w }
         \msg_error:nn { unravel } { missing-mudim }
@@ -3199,32 +3197,26 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_glue:n #1
   {
-    \int_compare:nNnTF {#1} = { 2 }
-      { \@@_scan_glue_aux:nN {#1} \c_false_bool }
-      { \@@_scan_glue_aux:nN {#1} \c_true_bool }
-  }
-\cs_new_protected:Npn \@@_scan_glue_aux:nN #1#2
-  {
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_scan_signs:
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_set_cmd:
     \int_compare:nNnTF
       \l_@@_head_cmd_int < { \@@_tex_use:n { min_internal } }
-      { \@@_back_input: \@@_scan_dimen:NN #2 \c_false_bool }
+      { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
       {
         \int_compare:nNnTF
           \l_@@_head_cmd_int
           > { \@@_tex_use:n { max_internal } }
           {
             \@@_back_input:
-            \@@_scan_dimen:NN #2 \c_false_bool
+            \@@_scan_dimen:nN {#1} \c_false_bool
           }
           {
             \@@_scan_something_internal:n {#1}
             \int_case:nnF \g_@@_val_level_int
               {
-                { 0 } { \@@_scan_dimen:NN #2 \c_false_bool }
+                { 0 } { \@@_scan_dimen:nN {#1} \c_false_bool }
                 {#1} { \@@_break:w }
               }
               {
@@ -3239,21 +3231,12 @@
     \tl_put_right:NV \l_@@_tmpa_tl \l_@@_head_tl
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
     \@@_scan_keyword:nT { pP lL uU sS }
-      { \@@_scan_dimen:NN #2 \c_true_bool }
+      { \@@_scan_dimen:nN {#1} \c_true_bool }
     \@@_scan_keyword:nT { mM iI nN uU sS }
-      { \@@_scan_dimen:NN #2 \c_true_bool }
+      { \@@_scan_dimen:nN {#1} \c_true_bool }
     \@@_break_point:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \@@_prev_input_silent:x
-      {
-        \bool_if:NTF #2 \muskip_eval:n \skip_eval:n
-          {
-            \l_@@_tmpa_tl
-            \bool_if:NTF #2 \@@_muexpr:w \@@_glueexpr:w
-            \l_@@_head_tl
-          }
-      }
+    \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
+    \@@_prev_input_silent:V \l_@@_tmpa_tl
   }
 %    \end{macrocode}
 % \end{macro}
@@ -4615,8 +4598,8 @@
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_kern:D
-      { \@@_scan_dimen:NN \c_true_bool \c_false_bool }
-      { \@@_scan_dimen:NN \c_false_bool \c_false_bool }
+      { \@@_scan_dimen:nN { 2 } \c_false_bool }
+      { \@@_scan_dimen:nN { 3 } \c_false_bool }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
