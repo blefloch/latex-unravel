@@ -6990,8 +6990,11 @@
   }
 \cs_new_protected_nopar:Npn \@@_prompt_aux:
   {
-    \ior_get_str:Nc \g_@@_prompt_ior { Your~input }
-    \exp_args:Nv \@@_prompt_treat:n { Your~input }
+    \int_compare:nNnT { \etex_interactionmode:D } = { 3 } % todo: think
+      {
+        \ior_get_str:Nc \g_@@_prompt_ior { Your~input }
+        \exp_args:Nv \@@_prompt_treat:n { Your~input }
+      }
   }
 \cs_new_protected:Npn \@@_prompt_treat:n #1
   {
