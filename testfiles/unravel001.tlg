@@ -346,3 +346,66 @@ Defining \g__unravel_input_6_gtl on line ...
 |> 
 [===== The end! =====]
 ============================================================
+============================================================
+TEST 4: \unravel and glue multiplier
+============================================================
+======== Welcome to the unravel package ========
+"<|" denotes the output to TeX's stomach.
+"||" denotes tokens waiting to be used.
+"|>" denotes tokens that we will act on.
+Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> \l_tmpb_skip =3.4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 1 =====] \l_tmpb_skip = \skip44
+|| \l_tmpb_skip 
+|> =3.4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 2 =====] =
+|| \l_tmpb_skip =
+|> 3.4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 3 =====] 3
+|| \l_tmpb_skip =
+|| 3
+|> .4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 4 =====] .
+|| \l_tmpb_skip =
+|| 3.
+|> 4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 5 =====] 4
+|| \l_tmpb_skip =
+|| 3.4
+|> \l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 6 =====] \l_tmpa_skip = \skip43
+|| \l_tmpb_skip =
+|| 3.4 
+|| \l_tmpa_skip 
+|> plus1fil\scan_stop: 
+[===== Step 7 =====] \l_tmpa_skip = \skip43 => 1.0pt plus 2.0pt minu...
+|| \l_tmpb_skip =
+|| 3.4 
+|| 1.0pt plus 2.0pt minus 3.0pt
+|> plus1fil\scan_stop: 
+[===== Step 8 =====] plus
+|| \l_tmpb_skip =
+|| 3.4ptplus
+|> 1fil\scan_stop: 
+[===== Step 9 =====] 1
+|| \l_tmpb_skip =
+|| 3.4ptplus
+|| 1
+|> fil\scan_stop: 
+[===== Step 10 =====] fil
+|| \l_tmpb_skip =
+|| 3.4ptplus
+|| 1fil
+|> \scan_stop: 
+[===== Step 11 =====] Set \l_tmpb_skip(\skip44)=3.4pt plus 1.0fil
+|| 
+|> \scan_stop: 
+[===== Step 12 =====] \scan_stop: = \relax
+|| 
+|> 
+[===== The end! =====]
+> \l_tmpb_skip=3.4pt plus 1.0fil.
+<recently read> }
+l. ...  }
+============================================================

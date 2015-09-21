@@ -27,4 +27,11 @@
     \unravel { \tl_set:Nx \l_tmpa_tl { \skip_eval:n { - \l_tmpa_skip } } }
   }
 
+\TEST { \unravel ~ and ~ glue ~ multiplier }
+  {
+    \skip_set:Nn \l_tmpa_skip { 1pt plus 2pt minus 3pt }
+    \unravel { \l_tmpb_skip = 3.4 \l_tmpa_skip plus 1 fil \scan_stop: }
+    \skip_show:N \l_tmpb_skip
+  }
+
 \END
