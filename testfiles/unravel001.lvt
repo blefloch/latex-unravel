@@ -16,4 +16,9 @@
     \unravel { \prg_replicate:nn { 12 } { } }
   }
 
+\TEST { \unravel ~ and ~ "\ " }
+  {
+    \unravel { \let \ = \c_backslash_str \show \ }
+  }
+
 \END

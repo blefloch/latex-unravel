@@ -178,3 +178,28 @@ Defining \g__unravel_input_5_gtl on line ...
 |> 
 [===== The end! =====]
 ============================================================
+============================================================
+TEST 2: \unravel and "\ "
+============================================================
+======== Welcome to the unravel package ========
+"<|" denotes the output to TeX's stomach.
+"||" denotes tokens waiting to be used.
+"|>" denotes tokens that we will act on.
+Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> \let \ =\c_backslash_str \show \ 
+[===== Step 1 =====] \let \ 
+|| \let \ 
+|> =\c_backslash_str \show \ 
+[===== Step 2 =====] Set \ =macro:->\
+|| 
+|> \show \ 
+[===== Step 3 =====] \show = \show
+|| \show 
+|> \ 
+> \ =macro:
+->\.
+<argument> \ 
+l. ...  }
+[===== The end! =====]
+============================================================

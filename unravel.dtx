@@ -153,10 +153,9 @@
 % \begin{itemize}
 % \item Negative signs and glue mix in wrong ways (this is a fixable
 %   bug, please tell me if it affects you).
-% \item |\unravel{\let\ =?}| breaks, thinking that \verb*|\ | is not
-%   definable.
 % \item |\unravel{\escapechar=-1\relax}| shows |\escapechar=92| but
 %   does the correct assignment.
+% \item |\font\tenrm=cmr10\showthe\tenrm\relax| breaks oddly.
 % \end{itemize}
 %
 % \subsection{Future perhaps}
@@ -779,15 +778,24 @@
 % \end{macro}
 %
 % \begin{macro}[int,TF]{\@@_token_if_definable:N}
-%   Within a group, set the escape character to a non-zero non-space
-%   value (backslash): if the result of converting the token to a string
-%   is longer than a single token (false branch), the token was a
-%   control sequence and the test is \texttt{true} (note that we did not
-%   use \cs{tl_to_str:n}, as this would fail on explicit macro parameter
-%   characters).  Otherwise, the token was an explicit character, active
-%   or not.  Use the \tn{lowercase} primitive to convert the character to a fixed
-%   character code~|Z|.  Compare with an active~|Z|.  In all three
-%   outcomes, remember to end the group.
+%   Within a group, set the escape character to a non-space value
+%   (backslash).  Convert the token to a string with
+%   \cs{token_to_str:N}.  The result is multiple characters if the
+%   token is a control sequence, and a single character otherwise (even
+%   for explicit catcode~$6$ character tokens which would be doubled if
+%   we used \cs{tl_to_str:n} instead of \cs{token_to_str:N}).  Thus
+%   \cs{str_tail:n} gives a non-empty result exactly for control
+%   sequences.  Those are definable (technically, not always:
+%   |\expandafter\font\csname\endcsname=cmr10|
+%   |\expandafter\def\the\csname\endcsname{}|).  For characters, there
+%   remains to determine if |#1| is an active character.  One option
+%   would be to build the active character with that character code and
+%   compare them using a delimited-argument test, but that needlessly
+%   pollutes the hash table in \XeTeX{} (and \LuaTeX{}?) if the
+%   character was in fact not active.  Instead, use the \tn{lowercase}
+%   primitive to convert the character to a fixed character code~|Z|.
+%   Compare with an active~|Z|.  In all cases, remember to end the
+%   group.
 %    \begin{macrocode}
 \group_begin:
   \char_set_catcode_active:n { `Z }
@@ -796,7 +804,9 @@
     {
       \group_begin:
         \@@_set_escapechar:n { 92 }
-        \exp_args:No \tl_if_single:nTF { \token_to_str:N #1 }
+        \tl_set:Nx \l_@@_tmpa_tl
+          { \exp_args:No \str_tail:n { \token_to_str:N #1 } }
+        \tl_if_empty:NTF \l_@@_tmpa_tl
           {
             \exp_args:Nx \char_set_lccode:nn
               { ` \str_head:n {#1} } { `Z }
