@@ -373,10 +373,12 @@
 % \end{variable}
 %
 % \begin{variable}
-%   {\l_@@_tmpa_tl, \l_@@_tmpb_gtl, \g_@@_tmpc_tl, \l_@@_tmpa_seq}
-%   Temporary storage.
+%   {\l_@@_tmpa_tl, \l_@@_tmpb_gtl, \g_@@_tmpc_tl, \l_@@_tmpa_seq, \l_@@_unused_gtl}
+%   Temporary storage.  The \cs{l_@@_unused_gtl} is only used once,
+%   to ignore some unwanted tokens.
 %    \begin{macrocode}
 \tl_new:N \l_@@_tmpa_tl
+\gtl_new:N \l_@@_unused_gtl
 \gtl_new:N \l_@@_tmpb_gtl
 \tl_new:N \g_@@_tmpc_tl
 \seq_new:N \l_@@_tmpa_seq
@@ -551,6 +553,7 @@
 \cs_generate_variant:Nn \gtl_gset:Nn { c }
 \cs_generate_variant:Nn \gtl_gconcat:NNN { ccc , cNc }
 \cs_generate_variant:Nn \gtl_gclear:N { c }
+\cs_generate_variant:Nn \gtl_gclear_new:N { c }
 %    \end{macrocode}
 %
 % \begin{macro}[aux]{\@@_tl_gset_input:Nnn, \@@_tl_gset_input:Nno}
@@ -1935,6 +1938,8 @@
 \cs_new_protected:Npn \@@_input_split_auxiii:w
     #1 \@@_input_split_end:
   {
+    \gtl_gclear_new:c
+      { g_@@_input_ \int_use:N \g_@@_input_tmpa_int _gtl }
     \gtl_gset:cn
       { g_@@_input_ \int_use:N \g_@@_input_tmpa_int _gtl } {#1}
     \int_gdecr:N \g_@@_input_tmpa_int
@@ -1947,8 +1952,8 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_input_gset:n
   {
-    \int_gset_eq:NN \g_@@_input_int \c_one
-    \gtl_gset:cn { g_@@_input_1_gtl }
+    \int_gzero:N \g_@@_input_int
+    \@@_back_input:n
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2084,11 +2089,14 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_back_input:n, \@@_back_input:x}
-%   Insert a token list back into the input.
+%   Insert a token list back into the input.  Use \cs{gtl_gclear_new:c}
+%   to define the gtl variable if necessary: this happens whenever a
+%   new largest value of \cs{g_@@_input_int} is reached.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_back_input:n
   {
     \int_gincr:N \g_@@_input_int
+    \gtl_gclear_new:c { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
     \gtl_gset:cn { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
   }
 \cs_generate_variant:Nn \@@_back_input:n { x , V , o }
@@ -6330,7 +6338,7 @@
         \fi:
         \int_incr:N \l_@@_if_nesting_int
         \fi:
-        \@@_input_gpop:N \l_@@_tmpa_gtl
+        \@@_input_gpop:N \l_@@_unused_gtl
         \int_compare:nNnTF \l_@@_if_nesting_int = \c_zero
           { \@@_pass_text: }
           { \@@_pass_text_nested: }
