@@ -1,0 +1,1105 @@
+% \iffalse meta-comment
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+----------------------------------------------------------------
+The unravel package --- Watching TeX digest tokens
+Maintained by Bruno Le Floch
+E-mail: blflatex@gmail.com
+Released under the LaTeX Project Public License v1.3c or later
+See http://www.latex-project.org/lppl.txt
+----------------------------------------------------------------
+
+TeX is a strange beast. Its eyes read files, making characters
+into tokens. Its mouth then chews tokens, expanding them if
+possible, namely, expanding user-defined macros, or conditionals,
+etc. When meeting a so called ``unexpandable'' token, TeX's
+stomach comes into play, performing assignments, or moving boxes
+around, eventually typesetting the result thanks to its great
+line- and page-breaking algorithms.
+
+All of this is interleaved, and difficult to follow. Of course,
+one can always use \tracingall, but the result is... messy.
+This package is an attempt to replicate how TeX digests tokens,
+and to make the process easier to follow. Namely,
+\unravel{\some\tokens} will let you go through expansions and
+assignments performed by TeX upon seeing of ``\some\tokens'',
+step by step.
+
+Some parts of TeX are not covered. In particular, category codes
+are fixed for the whole argument of \unravel when it is read.
+
+Installation (I stole this section from Joseph Wright's siunitx)
+------------
+
+The package is supplied in dtx format and as a pre-extracted zip
+file, unravel.tds.zip. The later is most convenient for most
+users: simply unzip this in your local texmf directory and run
+texhash to update the database of file locations. If you want to
+unpack the dtx yourself, running "tex unravel.dtx" will extract
+the package whereas "latex unravel.dtx" will extract it and also
+typeset the documentation.
+
+The package requires LaTeX3 support as provided in the expl3
+and l3packages bundles. Both of these are available on CTAN
+(http://www.ctan.org/) as ready-to-install zip files. Suitable
+versions are available in MiKTeX 2.9 and TeX Live 2010
+(updating the relevant packages online may be necessary).
+LaTeX3, and so unravel, requires the e-TeX extensions: these
+are available on all modern TeX systems.
+%</readme>
+%<*internal>
+\fi
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+%</internal>
+%<*install>
+\input docstrip.tex
+\keepsilent
+\askforoverwritefalse
+\preamble
+---------------------------------------------------------------
+The unravel package --- Watching TeX digest tokens
+Maintained by Bruno Le Floch
+E-mail: blflatex@gmail.com
+Released under the LaTeX Project Public License v1.3c or later
+See http://www.latex-project.org/lppl.txt
+---------------------------------------------------------------
+
+\endpreamble
+\postamble
+Copyright (C) 2011 by
+  Bruno Le Floch <blflatex@gmail.com>
+
+It may be distributed and/or modified under the conditions of
+the LaTeX Project Public License (LPPL), either version 1.3c of
+this license or (at your option) any later version.  The latest
+version of this license is in the file:
+   http://www.latex-project.org/lppl.txt
+This work is "maintained" (as per LPPL maintenance status) by
+  Bruno Le Floch.
+
+This work consists of the file  unravel.dtx
+          and the derived files unravel.pdf,
+                                unravel.sty and
+                                unravel.ins.
+
+\endpostamble
+\usedir{tex/latex/unravel}
+\generate{
+  \file{\jobname.sty}{\from{\jobname.dtx}{package}}
+}
+%</install>
+%<install>\endbatchfile
+%<*internal>
+\usedir{source/latex/unravel}
+\generate{
+  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+}
+\nopreamble\nopostamble
+\usedir{doc/latex/unravel}
+\generate{
+  \file{README.txt}{\from{\jobname.dtx}{readme}}
+}
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%</internal>
+%<*driver|package>
+\RequirePackage{expl3}
+%</driver|package>
+%<*driver>
+\documentclass{l3doc}
+%\DisableImplementation
+\begin{document}
+  \DocInput{\jobname.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+%\GetFileInfo{\jobname.sty}
+%
+%\title{^^A
+%  \textsf{unravel} --- Watching TeX digest tokens\thanks{^^A
+%    This file describes \fileversion, last revised \filedate.^^A
+%  }^^A
+%}
+%\author{^^A
+%  Bruno Le Floch\thanks
+%    {^^A
+%      E-mail: \href{mailto:blflatex@gmail.com}
+%      {\texttt{blflatex@gmail.com}}^^A
+%    }^^A
+%}
+%\date{Released \filedate}
+%
+%\maketitle
+%
+%\changes{v0.0}{2011/05/20}{Started coding a proper package}
+%
+%\begin{abstract}
+% TeX is a strange beast. Its eyes read files, making characters
+% into tokens. Its mouth then chews tokens, expanding them if
+% possible, namely, expanding user-defined macros, or conditionals,
+% etc. When meeting a so called ``unexpandable'' token, TeX's
+% stomach comes into play, performing assignments, or moving boxes
+% around, eventually typesetting the result thanks to its great
+% line- and page-breaking algorithms.
+%
+% All of this is interleaved, and difficult to follow. Of course,
+% one can always use \tracingall, but the result is... messy.
+% This package is an attempt to replicate how TeX digests tokens,
+% and to make the process easier to follow. Namely,
+% \unravel{\some\tokens} will let you go through expansions and
+% assignments performed by TeX upon seeing of ``\some\tokens'',
+% step by step.
+%
+% Some parts of TeX are not covered. In particular, category codes
+% are fixed for the whole argument of \unravel when it is read.
+%\end{abstract}
+%
+%\tableofcontents
+%
+%\begin{documentation}
+%
+%\section{Introduction}
+%
+%
+%\section{Installation}
+%
+%
+%\section{\pkg{unravel} for the impatient}
+%
+%\section{Using the \pkg{unravel} package}
+%
+%\subsection{Loading the package}
+%
+% The package should be loaded in the usual \LaTeXe{} way.
+%\begin{verbatim}
+%  \usepackage{unravel}
+%\end{verbatim}
+%
+%\section{Making suggestions and reporting bugs}
+%
+%\end{documentation}
+%
+%\begin{implementation}
+%
+%\section{Implementation}
+%
+%    \begin{macrocode}
+%<*package>
+%    \end{macrocode}
+%
+%\subsection{Setting up}
+%
+% The usual preliminaries.
+%    \begin{macrocode}
+\ProvidesExplPackage {unravel} {2011/05/20} {0.0}
+  {Watching TeX digest tokens}
+%    \end{macrocode}
+%
+% We need the hardwrap package.
+%^^A actually, we don't _need_ it, so I should add an availability check.
+%    \begin{macrocode}
+\RequirePackage{hardwrap}
+\makeatletter
+%    \end{macrocode}
+%
+%   Variants that we need.
+%    \begin{macrocode}
+\cs_if_exist:NF \exp_last_unbraced:NNv
+  {
+    \cs_new:Npn \exp_last_unbraced:NNv #1 #2 #3
+      {
+        \exp_after:wN #1 \exp_after:wN #2
+        \tex_romannumeral:D \exp_eval_register:c {#3}
+      }
+  }
+%    \end{macrocode}
+%
+% \begin{variable}{\g_unravel_input_tl,\g_unravel_output_tl}
+% \begin{variable}{\g_unravel_input_pre_int, \g_unravel_output_pre_int}
+% \begin{variable}{\g_unravel_input_post_int, \g_unravel_output_post_int}
+%   Both \cs{g_unravel_intput_tl} and \cs{g_unravel_output_tl}
+%   are used to represent possibly unbalanced lists of tokens.
+%   Of course these can not be stored directly, so we must prepend and
+%   append extra braces. For instance, the [...] %^^A here!
+%   \begin{quote}
+%     |{{...{| \meta{unbalanced token list} |}}...}|,
+%   \end{quote}
+%   where there are \cs{g_unravel_input_pre_int} braces before,
+%   and \cs{g_unravel_input_post_int} braces afterwards.
+%    \begin{macrocode}
+\tl_new:N \g_unravel_input_tl
+\int_new:N \g_unravel_input_pre_int
+\int_new:N \g_unravel_input_post_int
+\tl_new:N \g_unravel_output_tl
+\int_new:N \g_unravel_output_pre_int
+\int_new:N \g_unravel_output_post_int
+\tl_new:N \g_unravel_action_tl
+\int_new:N \g_unravel_step_int
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%     \c_unravel_rbrace_tl,
+%     \c_unravel_spaces_tl
+%   }
+%   Constants.
+%    \begin{macrocode}
+\tl_const:Nx \c_unravel_rbrace_tl { \cs_to_str:N \} }
+\tl_const:Nx \c_unravel_spaces_tl { \prg_replicate:nn {4} {~}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Printing}
+% Let us start with the procedure which prints to the terminal: this will
+% help me test the code while I'm writing it.
+%
+% \subsubsection{Converting unbalanced tl to string}
+% 
+% \begin{macro}{
+%     \unravel_gset_str_from_tl:Nn
+%   }
+%   Simply a wrapper around \cs{tl_to_str:N}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_gset_str_from_tl:Nn #1 #2
+  { \tl_gset:Nx #1 { \tl_to_str:n { #2 } } }
+%    \end{macrocode}
+% \end{macro}
+%^^A Not implemented yet: non-hash-doubling version.
+%
+% \begin{macro}{\unravel_gset_str_from_tl_trim:Nnnn}
+%   Trimming leading and trailing balancing braces.
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_gset_str_from_tl_trim:Nnnn #1 #2 #3 #4
+  {
+    \unravel_gset_str_from_tl:Nn #1 {#2}
+    \tl_gset:Nx #1
+      { \unravel_str_trim:nnw {#3} {#4} #1 \q_stop }
+  }
+\cs_new_nopar:Npn \unravel_str_trim:nnw #1 #2
+  {
+    \int_compare:nNnTF {#1} > {\c_zero}
+      {
+        \use_i:nn
+          {
+            \exp_args:NNf \unravel_str_trim:nnw
+              { \int_eval:n {#1 - 1} } {#2}
+          }
+      }
+      { \unravel_str_trim_trailing:nw {#2} }
+  }
+\cs_new_nopar:Npn \unravel_str_trim_trailing:nw #1
+  {
+    \int_compare:nNnTF {#1} > {\c_zero}
+      { \unravel_str_trim_trailing_aux:nw {#1} }
+      { \unravel_str_trim_done:w }
+  }
+\exp_args:Nno \use:nn
+  { \cs_new_nopar:Npn \unravel_str_trim_trailing_aux:nw #1 #2 }
+  { \c_unravel_rbrace_tl }
+  \q_stop
+    {
+      \exp_args:Nf \unravel_str_trim_trailing:nw
+        { \int_eval:n { #1 - 1 } }
+      #2 \q_stop
+    }
+\cs_new_nopar:Npn \unravel_str_trim_done:w #1 \q_stop {#1}
+%    \end{macrocode} 
+% \end{macro}
+% 
+% \subsubsection{Printing proper}
+%
+% \begin{macro}{
+%     \g_unravel_print_stream, 
+%     \unravel_print_line:x,
+%   }
+%    \begin{macrocode}
+\int_new:N \g_unravel_print_stream
+\int_set_eq:NN \g_unravel_print_stream \c_iow_term_stream
+\cs_new_protected:Npn \unravel_print_line:x
+  { \iow_now:Nx \g_unravel_print_stream }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{
+%     \unravel_print_message_aux:xx,
+%     \unravel_print_message:xn
+%   }
+%   The message to be printed should come already detokenized, as |#2|.
+%   It will be wrapped to 72 characters per line, and we put |#1~| before
+%   each line.
+%   
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_print_message:xx #1 #2
+  {
+    \HardWrap
+      { \unravel_print_message_aux:xx {#1} }
+      {72}
+      {
+        \tex_lccode:D `\* = \tex_newlinechar:D
+        \tex_lowercase:D { \cs_set:Npn \MessageBreak{ * #1 ~ } }
+        \tex_escapechar:D = 92 \scan_stop:
+      }
+      {\MessageBreak}
+      {#2}
+  }
+\cs_new_protected:Npn \unravel_print_message_aux:xx #1#2
+  { \unravel_print_line:x { #1 ~ #2 } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Various messages}
+%
+% \begin{macro}{\unravel_print_welcome:}
+%   Welcoming message.%^^A needs improvement.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_print_welcome:
+  {
+    \unravel_print_line:x { }
+    \unravel_print_line:x
+      {========~ Welcome~ to~ the~ unravel~ package~ ========}
+    \unravel_print_line:x 
+      { \c_unravel_spaces_tl "|>"~ denotes~ tokens~ that~ we~ will~ act~ on.}
+    \unravel_print_line:x
+      { \c_unravel_spaces_tl "<|"~ denotes~ the~ output~ to~ TeX's~ stomach.}
+    \unravel_print_line:x {}
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%     \unravel_print_state:,
+%     \unravel_print_input:,
+%     \unravel_print_output:
+%   }
+%   We want to print both \cs{g_unravel_input_tl}
+%   and \cs{g_unravel_output_tl}
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_print_state:
+  {
+    \unravel_print_line:x { }
+    \unravel_print_input:
+    \unravel_print_line:x { }
+    \unravel_print_output:
+  }
+\cs_new_protected:Npn \unravel_print_input:
+  {
+    \exp_args:NNo
+    \unravel_gset_str_from_tl_trim:Nnnn \g_unravel_print_str
+      \g_unravel_input_tl
+      \g_unravel_input_pre_int
+      \g_unravel_input_post_int
+    \unravel_print_message:xx
+      { |> ~ }
+      \g_unravel_print_str
+  }
+\cs_new_protected:Npn \unravel_print_output:
+  {
+    \exp_args:NNo
+    \unravel_gset_str_from_tl_trim:Nnnn \g_unravel_print_str
+      \g_unravel_output_tl
+      \g_unravel_output_pre_int
+      \g_unravel_output_post_int
+    \unravel_print_message:xx
+      { <| ~ }
+      \g_unravel_print_str
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\unravel_print_action:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_print_action:
+  {
+    \unravel_print_line:x
+      {
+        Step \int_use:N \g_unravel_step_int
+        ===== \tl_to_str:N \g_unravel_action_tl .
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unravel_print_next:}
+%   When we read the head of the token list \cs{g_unravel_input_tl},
+%   in Section~\ref{sec:head}, the result is returned as
+%   \cs{g_unravel_head_token}, \cs{g_unravel_head_tl}, and
+%   \cs{g_unravel_head_int}.
+%    \begin{macrocode}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsection{Working with unbalanced token lists}
+%
+% Unbalanced token lists can have too many begin-group tokens,
+% too many end-group tokens, or both.
+%
+% \begin{macro}{\l_unbtl_tmpa_int,\l_unbtl_tmpa_tl}
+%    \begin{macrocode}
+\int_new:N \l_unbtl_tmpa_int
+\tl_new:N \l_unbtl_tmpa_tl
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unbtl_new:n}
+%   An \meta{unbalanced token list} is stored as four things.
+%   Firstly, a \meta{token list} with the form
+%   \begin{quote}
+%     |\if_false: {{...{ \fi:| \meta{unbalanced~tl} |}}...}|
+%   \end{quote}
+%   i.e., the unbalanced token list with braces added at both ends to
+%   make it balanced. Note that we add \cs{if_false:} and \cs{fi:} to
+%   be able to remove the left braces easily. Unfortunately, removing
+%   braces on the right will be much more difficult, and we won't attempt
+%   that.
+%   
+%   Secondly, two \meta{integers}, which encode the number of
+%   begin-group tokens and end-group tokens added to the unbalanced
+%   token list.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_new:n #1
+  {
+    \tl_const:cx {#1}
+      {
+        \exp_not:c {#1_tl}
+        \exp_not:c {#1_b_int}
+        \exp_not:c {#1_e_int}
+      }
+    \tl_new:c  {#1_tl}
+    \tl_set:cn {#1_tl}   { \if_false: \fi: }
+    \int_new:c {#1_b_int}
+    \int_new:c {#1_e_int}
+  }
+\cs_new_protected_nopar:Npn \unbtl_new:N #1
+  { \exp_args:Nx \unbtl_new:n { \cs_to_str:N #1 } }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\unbtl_show:N, \unbtl_show:n}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_show:n #1
+  {
+    \iow_term:x {
+      \int_use:c {#1_b_int} ~ %
+      \int_use:c {#1_e_int} ~ %
+      \exp_not:v {#1_tl}
+    }
+  }
+\cs_new_protected_nopar:Npn \unbtl_show:N #1
+  { \exp_args:Nx \unbtl_show:n { \cs_to_str:N #1 } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unbtl_gput_left:nn}
+%    \begin{macrocode}
+\cs_new_protected:Npn \unbtl_gput_left:nn #1 #2
+  {
+    \int_compare:nNnTF { \use:c {#1_b_int} } > { \c_zero }
+      {
+        \tl_set:Nn \l_unbtl_tmpa_tl {#2}
+        \tl_gset:co {#1_tl}
+        {
+          \exp_after:wN \if_false: \tex_romannumeral:D -`0
+          \prg_replicate:nn { \use:c {#1_b_int} }
+            { \exp_after:wN { \if:w } \exp_after:wN \fi: }
+          \exp_after:wN \fi:
+          \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+                \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+                \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+                \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+            \c_zero           \exp_after:wN \exp_after:wN \exp_after:wN
+                \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+          \l_unbtl_tmpa_tl
+          \cs:w #1_tl \cs_end:
+        }
+      }
+      {
+        \tl_gset:cx {#1_tl}
+          {
+            \exp_not:n { \if_false: \fi: #2 }
+            \exp_args:Nv \exp_not:o {#1_tl}
+          }
+      }
+  }
+\cs_new_protected:Npn \unbtl_gput_left:Nn #1
+  { \exp_args:Nx \unbtl_gput_left:nn { \cs_to_str:N #1 } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unbtl_head_case_begin_normal_end:nnnn}
+%    \begin{macrocode}
+\cs_new_nopar:Npn \unbtl_head_case_begin_normal_end:nnnn #1
+  {
+    \if_false: { { { \fi:
+          \if_case:w
+            \exp_after:wN \use_none:n \tex_romannumeral:D
+            \prg_replicate:nn { \use:c {#1_b_int} + 2 }
+              {
+                \exp_after:wN \c_zero
+                \exp_after:wN { \if:w } \exp_after:wN \fi:
+              }
+              \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+                    \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+                    \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+                    \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+                 \c_zero          \exp_after:wN \exp_after:wN \exp_after:wN
+                    \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+                 \token_to_str:N
+              \cs:w #1_tl \cs_end:
+        } \c_two } \c_one } \c_zero
+    \exp_after:wN \use_iii:nnn
+    \or:
+    \exp_after:wN \use_ii:nnn
+    \or:
+    \exp_after:wN \use_i:nnn
+    \fi:
+  }
+\cs_new_nopar:Npn \unbtl_head_case_begin_normal_end:Nnnn #1
+  { \exp_args:Nf \unbtl_head_case_begin_normal_end:nnnn { \cs_to_str:N #1 } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[TF]{\unbtl_head_if_space:n}
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \unbtl_head_if_space:n #1 {p,TF,T,F}
+  {
+    \exp_args:Ncv \unbtl_head_if_space_aux:Nn { #1_b_int } { #1_tl }
+  }
+\prg_new_conditional:Npnn \unbtl_head_if_space:N #1 {p,TF,T,F}
+  {
+    \exp_args:Ncv \unbtl_head_if_space_aux:Nn
+      { \cs_to_str:N #1_b_int }
+      { \cs_to_str:N #1_tl }
+  }
+\cs_new:Npn \unbtl_head_if_space_aux:Nn #1 #2
+  {
+    \if_false: { { \fi:
+      \exp_after:wN \unbtl_head_if_space_auxii:Nw
+      \exp_after:wN #1
+      #2
+    } }
+  }
+\cs_new:Npn \unbtl_head_if_space_auxii:Nw #1
+  {
+    \exp_after:wN \unbtl_head_if_space_auxiii:Nn
+    \exp_after:wN #1
+    \exp_after:wN { \if_false: } \fi:
+  }
+\cs_new:Npn \unbtl_head_if_space_auxiii:Nn #1 #2
+  {
+    \tl_head_if_space:nTF {#2} \prg_return_true: \prg_return_false:
+    \exp_after:wN \use_none:n \tex_romannumeral:D
+    \prg_replicate:nn { #1 + 1 }
+      {
+        \exp_after:wN \c_zero
+        \exp_after:wN { \if:w } \exp_after:wN \fi:
+      }
+    \prg_do_nothing:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unbtl_head_to_token:NN}
+%   Sets the second argument equal to the front of the unbalanced
+%   token list.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_head_to_token:NN #1
+  { \exp_args:Nx \unbtl_head_to_token:nN { \cs_to_str:N #1 } }
+\cs_new_protected_nopar:Npn \unbtl_head_to_token:nN #1 #2
+  {
+    \int_set_eq:Nc \l_unbtl_tmpa_int { #1_b_int }
+    \tl_set_eq:Nc  \l_unbtl_tmpa_tl  { #1_tl }
+    \tex_afterassignment:D \unbtl_head_to_token_aux:
+    \exp_after:wN \tex_futurelet:D
+    \exp_after:wN #2
+    \exp_after:wN {
+      \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+        \c_zero
+      \l_unbtl_tmpa_tl
+    }
+  }
+\cs_new_nopar:Npn \unbtl_head_to_token_aux:
+  {
+    \exp_after:wN \use_none:n \tex_romannumeral:D
+      \prg_replicate:nn \l_unbtl_tmpa_int
+        {
+          \exp_after:wN \c_zero
+          \exp_after:wN { \if:w } \exp_after:wN \fi:
+        }
+      \c_zero
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \subsubsection{Removing the head of an unbalanced token list}
+%
+% \begin{macro}{\unbtl_remove_head:N, \unbtl_remove_head:n}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head:N #1
+  { \exp_args:Nx \unbtl_remove_head:n { \cs_to_str:N #1 } }
+\cs_new_protected_nopar:Npn \unbtl_remove_head:n #1
+  {
+    \unbtl_head_case_begin_normal_end:nnnn {#1}
+      { \unbtl_remove_head_begin:n {#1} }
+      {
+        \unbtl_head_if_space:nTF {#1}
+          { \unbtl_remove_head_space:n {#1} }
+          { \unbtl_remove_head_normal:n {#1} }
+      }
+      { \unbtl_remove_head_end:n {#1} }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unbtl_remove_head_with:nN}
+%   Removing the first token of an unbalanced token list
+%   always follows the same pattern: put the relevant
+%   |\if_false: {...{ \fi:| first, then expand the initial
+%       ^^A}}
+%   token list, and its leading |\if_false: {...{ \fi:|,
+%       ^^A}}
+%   and finally remove the first token. This last step is
+%   the only one that differs between the various types of
+%   leading tokens. The relevant function will be given as
+%   a second argument to \cs{unbtl_remove_head_with:nN},
+%   where the first argument is the name of the unbalanced
+%   token list.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_with:nN #1 #2
+  {
+    \tl_gset:co {#1_tl}
+      {
+        \exp_after:wN \if_false:
+        \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+          \c_zero
+        \prg_replicate:nn { \use:c {#1_b_int} }
+          { \exp_after:wN { \if:w } \exp_after:wN \fi: }
+        \exp_after:wN \fi:
+        \tex_romannumeral:D
+          \exp_last_unbraced:NNv \exp_after:wN #2 {#1_tl}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{
+%     \unbtl_remove_head_normal:n,
+%     \unbtl_remove_head_normal_aux:
+%   }
+%   Using the \cs{unbtl_remove_head_with:nN} function defined above,
+%   things are easy: to remove a normal token, just \cs{use_none:n}.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_normal:n #1
+  { \unbtl_remove_head_with:nN {#1} \unbtl_remove_head_normal_aux: }
+\cs_new:Npn \unbtl_remove_head_normal_aux:
+  { \exp_after:wN \c_zero \use_none:n }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%     \unbtl_remove_head_begin:n,
+%     \unbtl_remove_head_begin_aux:
+%   }
+%   To remove a begin-group token, increment the \meta{begin~int}:
+%   this will ensure that \cs{unbtl_remove_head_with:nN} inserts
+%   the correct number of left braces at the start of the result,
+%   to yield a balanced token list. The removal itself is done by
+%   converting the begin-group token to its string representation,
+%   and then remove it. This will fail if the token was a (weird)
+%   space.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_begin:n #1
+  {
+    \int_gincr:c {#1_b_int}
+    \unbtl_remove_head_with:nN {#1} \unbtl_remove_head_begin_aux:
+  }
+\cs_new:Npn \unbtl_remove_head_begin_aux:
+  {
+    \exp_after:wN \exp_after:wN \exp_after:wN \c_zero
+    \exp_after:wN \use_none:n \token_to_str:N
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{
+%     \unbtl_remove_head_end:n,
+%     \unbtl_remove_head_end_aux:
+%   }
+%   Same as \cs{unbtl_remove_head_begin:n}, with an extra
+%   consistency check: after decreasing the \meta{begin~int},
+%   it should still be non-negative.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_end:n #1
+  {
+    \int_gdecr:c {#1_b_int}
+    \int_compare:nNnT { \use:c {#1_b_int} } < \c_zero {\ERROR}
+    \unbtl_remove_head_with:nN {#1} \unbtl_remove_head_end_aux:
+  }
+\cs_new_eq:NN \unbtl_remove_head_end_aux: \unbtl_remove_head_begin_aux:
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{
+%     \unbtl_remove_head_space:n,
+%     \unbtl_remove_head_space_aux:
+%   }
+%   Here, we use the fact that f-expansion removes one space.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_space:n #1
+  { \unbtl_remove_head_with:nN {#1} \unbtl_remove_head_space_aux: }
+\cs_new_nopar:Npn \unbtl_remove_head_space_aux: {-`0}
+%    \end{macrocode}
+% \end{macro}
+%
+% \subsubsection{Removing the head of an unbalanced token list
+%   and storing it}
+%
+%
+% \subsection{Examining the head}
+% \label{sec:head}
+%
+% The user input is stored at all times in \cs{g_unravel_input_tl}.
+% One step is either to expand the leading token of
+% \cs{g_unravel_input_tl} if it is expandable, or to perform one
+% assignment, or enter a group, etc. In order to do that, we first
+% have to examine the leading token of \cs{g_unravel_input_tl} very
+% carefully.
+%
+% The result will be returned as \cs{g_unravel_head_token} and
+% \cs{g_unravel_head_int}. The token \cs{g_unravel_head_token}
+% is set equal in meaning to the first token in the tl variable
+% that is being examined. The integer \cs{g_unravel_head_int}
+% separates various cases that can not always be distinguished
+% via the meaning only. Its possible values are as follows:
+% \begin{itemize}
+% \item $-1$ if it is an explicit begin-group token,
+% \item $0$ if the token is expandable,
+% \item $1$ if it is an implicit begin-group token,
+% \item $2$ if it is an implicit end-group token,
+% \item $3$ if it is a 
+% \end{itemize}
+%
+% 
+% \subsubsection{Helpers for the head}
+% This subsubsection is about functions that could be provided
+% by \pkg{l3tl} or \pkg{l3token} but are not.
+% 
+% \begin{macro}{\unravel_gset_eq_head:NN}
+%   Setting the first argument to the head of the second argument
+%   (which should be a token list).
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_gset_eq_head:NN #1 #2
+  {
+    \tex_afterassignment:D \use_none:n
+    \exp_args:NNNo \tex_global:D \tex_futurelet:D #1 { #2 }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[EXP,pTF]{
+%     \unravel_if_head_begin_group:n,
+%     \unravel_if_head_begin_group:N
+%   }
+%   We test whether the first token of a token list is an
+%   explicit begin-group token (token of category code 1)
+%   by applying \cs{tex_string:D} to the first token. If the
+%   brace balance of the token list is changed, then the head
+%   was indeed an explicit begin-group token.
+%
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \unravel_if_head_begin_group:n #1 {p,T,F,TF}
+  {
+    \exp_after:wN \use_none:n
+      \exp_after:wN {
+        \exp_after:wN {
+          \token_to_str:N #1 .
+        }
+        \prg_return_true: \exp_after:wN \use_none:nn \token_to_str:N
+      }
+      \prg_return_false:
+  }
+\cs_new:Npn \unravel_if_head_begin_group:NTF
+  { \exp_args:No \unravel_if_head_begin_group:nTF }
+\cs_new:Npn \unravel_if_head_begin_group:NT
+  { \exp_args:No \unravel_if_head_begin_group:nT }
+\cs_new:Npn \unravel_if_head_begin_group:NF
+  { \exp_args:No \unravel_if_head_begin_group:nF }
+\cs_new:Npn \unravel_if_head_begin_group_p:N
+  { \exp_args:No \unravel_if_head_begin_group_p:n }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}[EXP,pTF]{\tl_head_if_space:n}
+%   Testing for an explicit space is easy. Just use an argument
+%   delimited by a space. Fully robust cleanup for any token list.
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \tl_head_if_space:n #1 {p,TF,T,F}
+  {
+    \if_false: { \fi:
+      \tl_head_if_space_aux:w #1 ~ }
+  }
+\prg_new_conditional:Npnn \tl_head_if_space:N #1 {p,TF,T,F}
+  {
+    \if_false: { \fi:
+      \exp_after:wN \tl_head_if_space_aux:w #1 ~ }
+  }
+\cs_new:Npn \tl_head_if_space_aux:w #1 ~ %
+  {
+    \tl_if_empty:nTF {#1} \prg_return_true: \prg_return_false:
+    \exp_after:wN \use_none:n \exp_after:wN { \if_false: } \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\unravel_tl_ggpop_left:NN}
+% \begin{macro}[aux]{\unravel_tl_ggpop_left_aux:NNNNN}
+%   Removing the left-most token group of a token list, and
+%   storing it into another token list. All assignments are
+%   global.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_tl_ggpop_left:NN #1 #2
+  {
+    \if_false: { \fi:
+      \exp_after:wN \unravel_tl_ggpop_left_aux:NNNNN
+      \exp_after:wN \tl_gset:Nn
+      \exp_after:wN #2
+      \exp_after:wN \tl_gset:Nn
+      \exp_after:wN #1
+      #1
+    }
+  }
+\cs_new_protected_nopar:Npn \unravel_tl_ggpop_left_aux:NNNNN #1#2 #3#4 #5
+  {
+    #1 #2 {#5}
+    \exp_after:wN #3
+      \exp_after:wN #4
+      \exp_after:wN { \if_false: } \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro} 
+%
+% \subsubsection{Splitting cases}
+%
+% In the first pass, we distinguish between explicit space,
+% explicit begin-group token, and everything else, which we
+% can grab with an undelimited argument.
+%
+% \begin{macro}{
+%     \g_unravel_head_token,
+%     \g_unravel_head_tl
+%   }
+%    \begin{macrocode}
+\cs_new_eq:NN \g_unravel_head_token \tex_relax:D
+\tl_new:N \g_unravel_head_tl
+\int_const:Nn \c_unravel_head_empty_int { \c_zero }
+\int_const:Nn \c_unravel_head_begin_int { \c_one }
+\int_const:Nn \c_unravel_head_space_int { \c_two }
+\int_const:Nn \c_unravel_head_normal_int { \c_three }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unravel_head_read:N}
+%   The tl variable to examine comes as |#1|. Four cases:
+%   the token list can be empty, or the head can be either an
+%   explicit space, an explicit begin-group token, or a normal
+%   token. It cannot be an end-group token, because token lists
+%   are balanced.
+%
+%   After the tests the relevant \cs{unravel_head_...:N} function
+%   is called, with the token list as its argument.
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_head_read:N #1
+  {
+    \unravel_gset_eq_head:NN \g_unravel_head_token #1
+    \token_if_eq_meaning:NNTF \g_unravel_head_token \c_space_token
+      {
+        \unravel_if_head_space:NTF #1
+          { \unravel_head_space:N #1 }
+          { \unravel_head_normal:N #1 }
+      }
+      {
+        \token_if_eq_catcode:NNTF
+          \g_unravel_head_token \c_group_begin_token
+          {
+            \unravel_if_head_begin_group:NTF #1
+              { \unravel_head_begin:N #1 }
+              {
+                \tl_if_empty:NTF #1
+                  { \unravel_head_empty:N #1 }
+                  { \unravel_head_normal:N #1 }
+              }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \subsubsection{The various cases}
+%
+% \begin{macro}{\unravel_head_normal:N}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_head_normal:N #1
+  {
+    \unravel_tl_ggpop_left:NN #1 \g_unravel_head_tl
+    \int_gset_eq:NN \g_unravel_head_int \c_unravel_head_normal_int
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unravel_head_empty:N}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_head_empty:N #1
+  {
+    \tl_gset:Nn \g_unravel_head_tl { }
+    \int_gset_eq:NN \g_unravel_head_int \c_unravel_head_empty_int
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unravel_head_space:N}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_head_space:N #1
+  {
+    \tl_gset:Nn \g_unravel_head_tl { ~ }
+    \tl_gset:Nf #1 {#1}
+    \int_gset_eq:NN \g_unravel_head_int \c_unravel_head_space_int
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\unravel_head_begin:N}
+%   We save the whole first brace group in \cs{g_unravel_head_tl}.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_head_begin:N #1
+  {
+    \unravel_tl_ggpop_left:NN #1 \g_unravel_head_tl
+    \int_gset_eq:NN \g_unravel_head_int \c_unravel_head_begin_int
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% 
+% \subsection{Analysing the result}
+% 
+% Here, we have separated the very special cases, 
+% \cs{g_unravel_head_token} is set equal to the first token
+% in the token list, \cs{g_unravel_head_tl} is either empty,
+% contains the first token or token group, or contains an
+% explicit space. Also, \cs{g_unravel_head_int} has a value,
+% and we have removed the first piece of the token list. Note
+% that in all cases, \cs{g_unravel_head_tl} and the token list
+% form the old token list. %^^A todo: clarify.
+% 
+% We still need to analyse the meaning of the head token to
+% determine if it is a primitive, if it is expandable, etc.
+%
+% \begin{macro}{\unravel_head_analyse:}
+%   This macro builds a csname of the form \cs{unravel_do_...:w},
+%   where |...| is either of
+%   \begin{itemize}
+%   \item |macro| if the token is a macro,
+%   \item |ifnum| or other expandable primitives,
+%   \item |def| or other non-expandable primitives,
+%   \item |toksZ|, |charZ| or other ``registers'', followed by |Z|
+%     to distinguish it from the corresponding primitive.
+%   \item |beginZ|, |endZ|, |mathZ|, |alignmentZ|, |macroZ|,
+%     |superscriptZ|, |subscriptZ|, |blankZ|, |theZ| for character
+%     tokens, both letters and others becoming |theZ|.
+%   \end{itemize}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_head_analyse:
+  {
+    \cs:w
+      unravel_do_
+      \token_if_expandable:NTF \g_unravel_head_token
+        {
+          \token_if_macro:NTF \g_unravel_head_token
+            { macro }
+            {
+              \exp_after:wN \cs_to_str:N
+              \token_to_meaning:N \g_unravel_head_token
+            }
+        }
+        {
+          \exp_after:wN \unravel_head_meaning:w
+          \token_to_meaning:N \g_unravel_head_token
+          Z
+        }
+      :w
+    \cs_end:
+  }
+\cs_new_nopar:Npn \unravel_head_meaning:w #1
+  {
+    \if_int_compare:w `#1 < `a ~ %
+      \reverse_if: \if:w #1 Z
+        \exp_after:wN \exp_after:wN
+        \exp_after:wN \unravel_head_meaning_aux:w
+      \fi:
+    \else:
+      #1
+      \exp_after:wN \unravel_head_meaning:w
+    \fi:
+  }
+\cs_new_nopar:Npn \unravel_head_meaning_aux:N #1 Z {Z}
+%    \end{macrocode}
+% \end{macro}
+% 
+%
+% \subsection{Prompt}
+%
+% \subsection{Unravelling}
+% 
+% \begin{macro}{\unravel_unravel:n}
+%   This is the main user command, under a private name.
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_unravel:n #1
+  {
+    \unravel_print_welcome:
+    \tl_gset:Nn  \g_unravel_input_tl {#1}
+    \tl_gclear:N \g_unravel_output_tl
+    \int_gzero:N \g_unravel_step_int
+    \bool_until_do:nn
+      { \tl_if_empty_p:N \g_unravel_input_tl }
+      {
+        \unravel_print_state:
+        \unravel_step:
+      }
+    \unravel_print_outcome:
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}{\unravel_step:}
+%   But we need to know what ``one step'' means.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unravel_step:
+  {
+    \unravel_head_read:N
+      \g_unravel_input_tl
+      % \g_unravel_input_pre_int
+      % \g_unravel_input_post_int
+  }
+%    \end{macrocode}
+% \end{macro} 
+%
+%
+%    \begin{macrocode}
+%</package>
+%    \end{macrocode}
+%
+%\end{implementation}
+%
+%\PrintChanges
+%
+%\PrintIndex

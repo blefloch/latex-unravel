@@ -1,0 +1,82 @@
+% \begin{macro}{
+%     \unbtl_remove_head_begin:n,
+%     \unbtl_remove_head_begin_aux:n
+%   }
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_begin:n #1
+  {
+    \int_gincr:c {#1_b_int}
+    \tl_gset:co {#1_tl}
+      {
+        \exp_after:wN \if_false:
+        \tex_romannumeral:D -`0
+        \exp_args:Nv \unbtl_remove_head_begin_aux:n {#1_tl}
+      }
+  }
+\cs_new_protected:Npn \unbtl_remove_head_begin_aux:n #1
+  {
+    \prg_replicate:nn { \use:c {#1_b_int} }
+      { \exp_after:wN { \if:w } \exp_after:wN \fi: }
+    \exp_after:wN \fi:
+    \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+          \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+      \c_zero           \exp_after:wN \exp_after:wN \exp_after:wN
+      \use_none:n       \exp_after:wN 
+      \token_to_str:N
+    #1
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\unbtl_remove_head_space:n}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_space:n #1
+  {
+    \tl_gset:co {#1_tl}
+      {
+        \exp_after:wN \if_false:
+        \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+          \c_zero
+        \prg_replicate:nn { \use:c {#1_b_int} }
+          { \exp_after:wN { \if:w } \exp_after:wN \fi: }
+        \exp_after:wN \fi:
+        \tex_romannumeral:D -`0 \use:c {#1_tl}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\unbtl_remove_head_end:n}
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \unbtl_remove_head_end:n #1
+  {
+    \int_gdecr:c {#1_b_int}
+    \int_compare:nNnT {\use:c{#1_b_int}}<\c_zero {\ERROR}
+    \tl_gset:co {#1_tl}
+      {
+        \exp_after:wN \if_false:
+        \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+              \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+          \c_zero
+        \prg_replicate:nn { \use:c {#1_b_int} }
+          { \exp_after:wN { \if:w } \exp_after:wN \fi: }
+        \exp_after:wN \fi:
+        \tex_romannumeral:D
+            \unbtl_remove_head_end_aux:n {#1_tl}
+      }
+  }
+\cs_new_protected:Npn \unbtl_remove_head_begin_aux:n #1
+  {
+    \tex_romannumeral:D \exp_after:wN \exp_after:wN \exp_after:wN
+          \exp_after:wN \exp_after:wN \exp_after:wN \exp_after:wN
+      \c_zero           \exp_after:wN \exp_after:wN \exp_after:wN
+      \use_none:n       \exp_after:wN 
+      \token_to_str:N
+    #1
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
