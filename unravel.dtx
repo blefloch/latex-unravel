@@ -721,6 +721,39 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[int]{\@@_prev_input_join_factor:n}
+% \begin{macro}[aux]{\@@_join_factor_aux:NN}
+%   Pops \cs{g_@@_prev_input_seq} twice to get some value in
+%   \cs{l_@@_head_tl} and some sign or decimal number in
+%   \cs{l_@@_tmpa_tl}.  Combines them into a value, using
+%   the appropriate evaluation function, determined based
+%   on~|#1|.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_prev_input_join_factor:n #1
+  {
+    \int_case:nnF {#1}
+      {
+        { 0 } { \@@_join_factor_aux:NN \int_eval:n \@@_numexpr:w }
+        { 1 } { \@@_join_factor_aux:NN \dim_eval:n \@@_dimexpr:w }
+        { 2 } { \@@_join_factor_aux:NN \skip_eval:n \@@_glueexpr:w }
+        { 3 } { \@@_join_factor_aux:NN \muskip_eval:n \@@_muexpr:w }
+      }
+      {
+        \msg_error:nnn { unravel } { internal } { join-factor }
+        \@@_join_factor_aux:NN \use:n \prg_do_nothing:
+      }
+  }
+\cs_new_protected:Npn \@@_join_factor_aux:NN #1#2
+  {
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \tl_set:Nx \l_@@_tmpa_tl { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl } }
+    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 % \begin{macro}[int,EXP,pTF]{\@@_token_if_expandable:N}
 %   We need to cook up our own version of \cs{token_if_expandable:NTF}
 %   because the \texttt{expl3} one does not think that |undefined| is
@@ -3102,18 +3135,9 @@
             \bool_if:NTF #1
               { \@@_scan_something_internal:n { 3 } }
               { \@@_scan_something_internal:n { 2 } }
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-            \tl_set:Nx \l_@@_tmpa_tl
-              {
-                \bool_if:NTF #1 \muskip_eval:n \skip_eval:n
-                  {
-                    \l_@@_tmpa_tl
-                    \bool_if:NTF #1 \@@_muexpr:w \@@_glueexpr:w
-                    \l_@@_head_tl
-                  }
-              }
-            \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
+            \bool_if:NTF #1
+              { \@@_prev_input_join_factor:n { 3 } }
+              { \@@_prev_input_join_factor:n { 2 } }
             \@@_break:w
           }
       }
