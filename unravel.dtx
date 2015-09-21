@@ -23,9 +23,9 @@
 %
 % \title{The \textsf{unravel} package: \\
 %   watching TeX digest tokens\thanks{This
-%     file has version number 0.0a, last revised 2013/07/28.}}
+%     file has version number 0.1, last revised 2015/09/21.}}
 % \author{Bruno Le Floch}
-% \date{2013/07/28}
+% \date{2015/09/21}
 %
 % \maketitle
 % \tableofcontents
@@ -43,7 +43,8 @@
 % long as none of the primitives specific to those engines is used.  Any
 % difference between how \pkg{unravel} and (pdf)\TeX{} process a given
 % piece of code, unless described in the section~\ref{sec:differences},
-% should be reported to Bruno Le Floch \texttt{<blflatex@gmail.com>}.
+% should be reported on the issue tracker
+% (\url{github.com/blefloch/latex-unravel/issues}).
 %
 % The only public command is \cs{unravel}, used as \cs{unravel}
 % \Arg{some tokens}.  It will show on the terminal the various steps
@@ -169,11 +170,10 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\RequirePackage{expl3}[2013/07/01]
-\RequirePackage{l3str}[2013/04/24]
-\RequirePackage{gtl}[2013/07/28]
+\RequirePackage{expl3}[2015/09/11]
+\RequirePackage{gtl}[2015/09/21]
 \ProvidesExplPackage
-  {unravel} {2013/07/28} {0.0a} {Watching TeX digest tokens}
+  {unravel} {2015/09/21} {0.1} {Watching TeX digest tokens}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
