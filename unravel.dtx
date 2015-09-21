@@ -233,6 +233,15 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsection{Helpers}
+%
+% \begin{function}[aux]{\@@_tmp:w}
+%   Temporary function used to define other functions.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_tmp:w { }
+%    \end{macrocode}
+% \end{function}
+%
 % \subsection{Variables}
 %
 % \subsubsection{User interaction}
@@ -5441,7 +5450,6 @@
 %
 % \subsubsection{Assignments}
 %
-% ^^A todo: introduce \@@_tmp:w
 % Quoting \texttt{tex.web}: ``Every prefix, and every command code that
 % might or might not be prefixed, calls the action procedure
 % |prefixed_command|.  This routine accumulates a sequence of prefixes
