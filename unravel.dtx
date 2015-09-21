@@ -610,15 +610,6 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[EXP]{\@@_cs_case:NnF}
-%   Currently, \texttt{expl3} does not provide a case statement for the
-%   meaning of control sequences.  However, \cs{tl_case:NnF} in fact
-%   does precisely this.
-%    \begin{macrocode}
-\cs_new_eq:NN \@@_cs_case:NnF \tl_case:NnF
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}[int]{\@@_strip_escape:w}
 % \begin{macro}[aux]{\@@_strip_escape_aux:N, \@@_strip_escape_aux:w}
 %   This is based on the 2013-07-19 (and earlier) version of
@@ -3560,11 +3551,12 @@
       {
         \bool_if:NTF #1
           {
-            \@@_cs_case:NnF \l_@@_head_token
+            \int_case:nnTF \l_@@_head_cmd_int
               {
-                \@@_hrule:w { \@@_do_leaders_rule: }
-                \@@_vrule:w { \@@_do_leaders_rule: }
+                { \@@_tex_use:n { hrule } } { }
+                { \@@_tex_use:n { vrule } } { }
               }
+              { \@@_do_leaders_rule: }
               { \@@_do_box_error: }
           }
           { \@@_do_box_error: }
