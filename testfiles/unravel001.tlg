@@ -1,0 +1,180 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+============================================================
+TEST 1: \unravel 
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+======== Welcome to the unravel package ========
+"<|" denotes the output to TeX's stomach.
+"||" denotes tokens waiting to be used.
+"|>" denotes tokens that we will act on.
+Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> \exp_after:wN \c_space_tl \c_space_tl 
+Defining \g__unravel_input_2_gtl on line ...
+[===== Step 1 =====] \exp_after:wN \c_space_tl 
+|| \exp_after:wN \c_space_tl 
+|> \c_space_tl 
+[===== Step 2 =====] \c_space_tl = macro:-> 
+|| \exp_after:wN \c_space_tl 
+|>  
+Defining \g__unravel_input_3_gtl on line ...
+[===== Step 3 =====] back_input: \exp_after:wN \c_space_tl 
+|| 
+|> \c_space_tl  
+Defining \g__unravel_input_4_gtl on line ...
+[===== Step 4 =====] \c_space_tl = macro:-> 
+|| 
+|>   
+[===== Step 5 =====]  = blank space  
+|| 
+|>  
+[===== Step 6 =====]  = blank space  
+|| 
+|> 
+[===== The end! =====]
+======== Welcome to the unravel package ========
+"<|" denotes the output to TeX's stomach.
+"||" denotes tokens waiting to be used.
+"|>" denotes tokens that we will act on.
+Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> \prg_replicate:nn {12}{}
+[===== Step 1 =====] \prg_replicate:nn = \long macro:#1->\exp:w \exp...
+|| 
+|> \exp:w \exp_after:wN \__prg_replicate_first:N \__int_value:w \__int_eval:w
+|> 12\__int_eval_end: \cs_end: {}
+[===== Step 2 =====] \exp:w = \romannumeral
+|| \exp:w 
+|> \exp_after:wN \__prg_replicate_first:N \__int_value:w \__int_eval:w
+|> 12\__int_eval_end: \cs_end: {}
+[===== Step 3 =====] \exp_after:wN \__prg_replicate_first:N 
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|> \__int_value:w \__int_eval:w 12\__int_eval_end: \cs_end: {}
+[===== Step 4 =====] \__int_value:w = \number
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|| \__int_value:w 
+|> \__int_eval:w 12\__int_eval_end: \cs_end: {}
+[===== Step 5 =====] \__int_eval:w = \numexpr
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|| \__int_value:w 
+|| \__int_eval:w 
+|> 12\__int_eval_end: \cs_end: {}
+[===== Step 6 =====] 1
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|| \__int_value:w 
+|| \__int_eval:w 1
+|> 2\__int_eval_end: \cs_end: {}
+[===== Step 7 =====] 2
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|| \__int_value:w 
+|| \__int_eval:w 12
+|> \__int_eval_end: \cs_end: {}
+[===== Step 8 =====] \__int_eval:w 12= 12
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|| \__int_value:w 12
+|> \cs_end: {}
+[===== Step 9 =====] \__int_value:w 12=12
+|| \exp:w 
+|| \exp_after:wN \__prg_replicate_first:N 
+|> 12\cs_end: {}
+Defining \g__unravel_input_5_gtl on line ...
+[===== Step 10 =====] back_input: \exp_after:wN \__prg_replicate_firs...
+|| \exp:w 
+|> \__prg_replicate_first:N 12\cs_end: {}
+[===== Step 11 =====] \__prg_replicate_first:N = \long macro:#1->\cs:...
+|| \exp:w 
+|> \cs:w __prg_replicate_first_1:n\__prg_replicate:N 2\cs_end: {}
+[===== Step 12 =====] \cs:w = \csname
+|| \exp:w 
+|| \cs:w 
+|> __prg_replicate_first_1:n\__prg_replicate:N 2\cs_end: {}
+[===== Step 13 =====] \__prg_replicate:N = \long macro:#1->\cs:w __pr...
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|> \cs:w __prg_replicate_2:n\__prg_replicate:N \cs_end: {}
+[===== Step 14 =====] \cs:w = \csname
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w 
+|> __prg_replicate_2:n\__prg_replicate:N \cs_end: {}
+[===== Step 15 =====] \__prg_replicate:N = \long macro:#1->\cs:w __pr...
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w __prg_replicate_2:n
+|> \cs:w __prg_replicate_\cs_end: :n\__prg_replicate:N {}
+[===== Step 16 =====] \cs:w = \csname
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w __prg_replicate_2:n
+|| \cs:w 
+|> __prg_replicate_\cs_end: :n\__prg_replicate:N {}
+[===== Step 17 =====] \cs_end: 
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w __prg_replicate_2:n
+|| \cs:w __prg_replicate_\cs_end: 
+|> :n\__prg_replicate:N {}
+[===== Step 18 =====] \cs:w __prg_replicate_\cs_end: =\__prg_replicate_ 
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w __prg_replicate_2:n
+|> \__prg_replicate_ :n\__prg_replicate:N {}
+[===== Step 19 =====] \__prg_replicate_ = \long macro::n#1->\cs_end: 
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w __prg_replicate_2:n
+|> \cs_end: {}
+[===== Step 20 =====] \cs_end: 
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|| \cs:w __prg_replicate_2:n\cs_end: 
+|> {}
+[===== Step 21 =====] \cs:w __prg_replicate_2:n\cs_end: =\__prg_repli...
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|> \__prg_replicate_2:n {}
+[===== Step 22 =====] \__prg_replicate_2:n = \long macro:#1->\cs_end:...
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n
+|> \cs_end: {}
+[===== Step 23 =====] \cs_end: 
+|| \exp:w 
+|| \cs:w __prg_replicate_first_1:n\cs_end: 
+|> {}
+[===== Step 24 =====] \cs:w __prg_replicate_first_1:n\cs_end: =\__prg...
+|| \exp:w 
+|> \__prg_replicate_first_1:n {}
+[===== Step 25 =====] \__prg_replicate_first_1:n = \long macro:#1->\e...
+|| \exp:w 
+|> \exp_end: 
+[===== Step 26 =====] \exp_end: = \char"0= 0
+|| \exp:w 0
+|> 
+[===== Step 27 =====] \exp:w 0=
+|| 
+|> 
+[===== The end! =====]
+============================================================

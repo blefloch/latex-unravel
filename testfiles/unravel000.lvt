@@ -1,0 +1,10 @@
+%
+% Copyright (C) 2015 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[log-functions,check-declarations]{expl3}
+\RequirePackage{gtl}
+\START
+\RequirePackage{unravel}
+\END
