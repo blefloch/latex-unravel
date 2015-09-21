@@ -3192,7 +3192,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: this is wrong for signs.
 % \begin{macro}[int]{\@@_scan_glue:n}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_glue:n #1
@@ -3225,10 +3224,8 @@
               }
           }
       }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
-    \tl_put_right:NV \l_@@_tmpa_tl \l_@@_head_tl
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
     \@@_scan_keyword:nT { pP lL uU sS }
       { \@@_scan_dimen:nN {#1} \c_true_bool }
