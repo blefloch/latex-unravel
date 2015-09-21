@@ -6799,7 +6799,7 @@
                   more~chars
                 )~
                 ...
-                \str_substr:nnn {#1}
+                \str_range:nnn {#1}
                   { \l_@@_print_int - \g_@@_max_output_int + 15 }
                   { \l_@@_print_int }
               }
@@ -6826,7 +6826,7 @@
       %         more~chars
       %       )~
       %       ...
-      %       \str_substr:nnn {#1}
+      %       \str_range:nnn {#1}
       %         { \l_@@_print_int - \g_@@_max_prev_int + 15 }
       %         { \l_@@_print_int }
       %     }
@@ -6845,7 +6845,7 @@
       {
         \int_compare:nNnTF \l_@@_print_int > \g_@@_max_input_int
           {
-            \str_substr:nnn {#1} { 1 } { \g_@@_max_input_int - 14 }
+            \str_range:nnn {#1} { 1 } { \g_@@_max_input_int - 14 }
             ...~
             (
               \int_eval:n
@@ -6890,7 +6890,7 @@
           { \str_count:N \g_@@_action_text_str }
           > { \g_@@_max_action_int }
           {
-            \str_substr:Nnn \g_@@_action_text_str
+            \str_range:Nnn \g_@@_action_text_str
               { 1 } { \g_@@_max_action_int - 3 } ...
           }
           { \g_@@_action_text_str }
