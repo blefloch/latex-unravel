@@ -3202,12 +3202,11 @@
             \int_case:nnF \g_@@_val_level_int
               {
                 { 0 } { \@@_scan_dimen:NN #2 \c_false_bool }
-                { 1 } { \bool_if:NT #2 { \msg_error: } } % ^^A todo: ??
+                {#1} { \@@_break:w }
               }
               {
-                \int_compare:nNnF \g_@@_val_level_int = {#1}
+                \int_compare:nNnF { \g_@@_val_level_int + #1 } = 3
                   { \msg_error:nn { unravel } { incompatible-units } }
-                \@@_break:w
               }
           }
       }
