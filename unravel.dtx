@@ -877,22 +877,22 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_cmd_if_not_internal:TF}
+% \begin{macro}[int]{\@@_cmd_if_internal:TF}
 %   Test whether the \cs{l_@@_head_cmd_int} denotes an ``internal''
 %   command, between |min_internal| and |max_internal| (see
 %   Section~\ref{sec:numeric-codes}).
 %    \begin{macrocode}
-\prg_new_conditional:Npnn \@@_cmd_if_not_internal: { TF }
+\prg_new_conditional:Npnn \@@_cmd_if_internal: { TF }
   {
     \int_compare:nNnTF
       \l_@@_head_cmd_int < { \@@_tex_use:n { min_internal } }
-      { \prg_return_true: }
+      { \prg_return_false: }
       {
         \int_compare:nNnTF
           \l_@@_head_cmd_int
           > { \@@_tex_use:n { max_internal } }
-          { \prg_return_true: }
           { \prg_return_false: }
+          { \prg_return_true: }
       }
   }
 %    \end{macrocode}
@@ -2976,9 +2976,9 @@
   {
     \@@_scan_signs:
     \@@_set_cmd:
-    \@@_cmd_if_not_internal:TF
+    \@@_cmd_if_internal:TF
+      { \@@_scan_something_internal:n { 0 } }
       { \@@_scan_int_char: }
-          { \@@_scan_something_internal:n { 0 } }
   }
 \cs_new_protected_nopar:Npn \@@_scan_int_char:
   {
@@ -3059,33 +3059,33 @@
     \@@_scan_signs:
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_set_cmd:
-    \@@_cmd_if_not_internal:TF
-      { \@@_scan_dimen_char:nN {#1} #2 }
+    \@@_cmd_if_internal:TF
+      {
+        \int_compare:nNnTF {#1} = { 3 }
           {
-            \int_compare:nNnTF {#1} = { 3 }
+            \@@_scan_something_internal:n { 3 }
+            \int_case:nnF \g_@@_val_level_int
               {
-                \@@_scan_something_internal:n { 3 }
-                \int_case:nnF \g_@@_val_level_int
-                  {
-                    { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
-                    { 3 } { }
-                  }
-                  {
-                    \msg_error:nn { unravel } { incompatible-units }
-                    % ^^A todo: error recovery
-                  }
+                { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
+                { 3 } { }
               }
               {
-                \@@_scan_something_internal:n { 1 }
-                \int_case:nnF \g_@@_val_level_int
-                  {
-                    { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
-                    { 3 } % ^^A todo: error recovery
-                    { \msg_error:nn { unravel } { incompatible-units } }
-                  }
-                  { }
+                \msg_error:nn { unravel } { incompatible-units }
+                % ^^A todo: error recovery
               }
           }
+          {
+            \@@_scan_something_internal:n { 1 }
+            \int_case:nnF \g_@@_val_level_int
+              {
+                { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
+                { 3 } % ^^A todo: error recovery
+                { \msg_error:nn { unravel } { incompatible-units } }
+              }
+              { }
+          }
+      }
+      { \@@_scan_dimen_char:nN {#1} #2 }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_prev_input_silent:V \l_@@_head_tl
   }
@@ -3131,15 +3131,15 @@
       }
     \@@_get_x_non_blank:
     \@@_set_cmd:
-    \@@_cmd_if_not_internal:TF
+    \@@_cmd_if_internal:TF
+      {
+        \seq_gput_right:Nn \g_@@_prev_input_seq { }
+        \@@_scan_something_internal:n {#1}
+        \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_break:w
+      }
       { \@@_back_input: }
-          {
-            \seq_gput_right:Nn \g_@@_prev_input_seq { }
-            \@@_scan_something_internal:n {#1}
-            \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
-            \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
-            \@@_break:w
-          }
     \int_compare:nNnT {#1} = { 3 }
       {
         \@@_scan_keyword:nT { mM uU } { \@@_break:w }
@@ -3201,20 +3201,20 @@
     \@@_scan_signs:
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \@@_set_cmd:
-    \@@_cmd_if_not_internal:TF
-      { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
+    \@@_cmd_if_internal:TF
+      {
+        \@@_scan_something_internal:n {#1}
+        \int_case:nnF \g_@@_val_level_int
           {
-            \@@_scan_something_internal:n {#1}
-            \int_case:nnF \g_@@_val_level_int
-              {
-                { 0 } { \@@_scan_dimen:nN {#1} \c_false_bool }
-                {#1} { \@@_break:w }
-              }
-              {
-                \int_compare:nNnF { \g_@@_val_level_int + #1 } = 3
-                  { \msg_error:nn { unravel } { incompatible-units } }
-              }
+            { 0 } { \@@_scan_dimen:nN {#1} \c_false_bool }
+            {#1} { \@@_break:w }
           }
+          {
+            \int_compare:nNnF { \g_@@_val_level_int + #1 } = 3
+              { \msg_error:nn { unravel } { incompatible-units } }
+          }
+      }
+      { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
     \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
