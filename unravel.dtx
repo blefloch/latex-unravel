@@ -641,8 +641,10 @@
 %
 % ^^A this abuses future l3obj.
 % \begin{macro}[int,EXP]{\@@_to_str:n}
-% \begin{macro}[aux,EXP]{\@@_to_str_auxi:w, \@@_to_str_auxii:w}
+% \begin{macro}[aux,EXP]
+%   {\@@_to_str_auxi:w, \@@_to_str_auxii:w, \@@_gtl_to_str:n}
 %   Use the type-appropriate conversion to string.
+%   This unavoidably uses an internal function of \pkg{gtl}.
 %    \begin{macrocode}
 \cs_new:Npn \@@_to_str:n #1
   {
@@ -659,9 +661,10 @@
           #1 tl \q_mark \q_stop
       }
     \cs_new:Npn \@@_to_str_auxii:w ##1 #1 ##2 \q_mark ##3 \q_stop
-      { \cs_if_exist_use:cF { ##2 _to_str:n } { \tl_to_str:n } }
+      { \cs_if_exist_use:cF { @@_ ##2 _to_str:n } { \tl_to_str:n } }
   }
 \exp_args:No \@@_tmp:w { \tl_to_str:n { s__ } }
+\cs_new:Npn \@@_gtl_to_str:n #1 { \__gtl_to_str:w #1 }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -3723,7 +3726,7 @@
     \int_compare:nNnTF { \@@_mathcode:w #1 } = { "8000 }
       { % math active
         \gtl_set:Nx \l_@@_head_gtl
-          { \char_generate:nn { \l_@@_tmpa_tl } { 12 } }
+          { \char_generate:nn {#1} { 12 } }
         \@@_back_input:
       }
       { \@@_char:n {#1} }
