@@ -46,7 +46,8 @@
 % should be reported on the issue tracker
 % (\url{github.com/blefloch/latex-unravel/issues}).
 %
-% The only public command is \cs{unravel}, used as \cs{unravel}
+% The only public command is \cs{unravel} (also available as
+% \cs{unravel:n}), used as \cs{unravel}
 % \Arg{some tokens}.  It will show on the terminal the various steps
 % that \TeX{} performs, waiting for input from the user at each step.
 % As a result, \pkg{unravel} can only be used meaningfully when \TeX{}
@@ -7134,9 +7135,9 @@
 % \subsection{Main command}
 %
 % \begin{macro}{\unravel}
-%   Simply call an underlying internal command.
+%   Simply call an underlying code-level command.
 %    \begin{macrocode}
-\cs_new_protected:Npn \unravel #1 { \@@_unravel:n {#1} }
+\cs_new_protected:Npn \unravel #1 { \unravel:n {#1} }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7150,11 +7151,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_unravel:n}
+% \begin{macro}[int]{\unravel:n}
 %   Welcome the user, then initialize the input, output and step.  Until
 %   the input is exhausted, print the current status and do one step.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_unravel:n #1
+\cs_new_protected:Npn \unravel:n #1
   {
     \int_gzero:N  \g_@@_step_int
     \@@_input_gset:n {#1}
