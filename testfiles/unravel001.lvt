@@ -30,7 +30,7 @@
 \TEST { \unravel ~ and ~ glue ~ multiplier }
   {
     \skip_set:Nn \l_tmpa_skip { 2pt plus 3pt minus 4pt }
-    \unravel { \l_tmpb_skip = 3.4 \l_tmpa_skip plus 1 fil \scan_stop: }
+    \unravel { \l_tmpb_skip = -3.4 \l_tmpa_skip plus 1 fil \scan_stop: }
     \skip_show:N \l_tmpb_skip
   }
 

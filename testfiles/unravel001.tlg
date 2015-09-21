@@ -355,57 +355,66 @@ TEST 4: \unravel and glue multiplier
 "|>" denotes tokens that we will act on.
 Press <enter> to continue; 'h' <enter> for help.
 || 
-|> \l_tmpb_skip =3.4\l_tmpa_skip plus1fil\scan_stop: 
+|> \l_tmpb_skip =-3.4\l_tmpa_skip plus1fil\scan_stop: 
 [===== Step 1 =====] \l_tmpb_skip = \skip44
 || \l_tmpb_skip 
-|> =3.4\l_tmpa_skip plus1fil\scan_stop: 
+|> =-3.4\l_tmpa_skip plus1fil\scan_stop: 
 [===== Step 2 =====] =
 || \l_tmpb_skip =
-|> 3.4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 3 =====] 3
+|> -3.4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 3 =====] -
 || \l_tmpb_skip =
+|| -
+|> 3.4\l_tmpa_skip plus1fil\scan_stop: 
+[===== Step 4 =====] 3
+|| \l_tmpb_skip =
+|| -
 || 3
 |> .4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 4 =====] .
+[===== Step 5 =====] .
 || \l_tmpb_skip =
+|| -
 || 3.
 |> 4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 5 =====] 4
+[===== Step 6 =====] 4
 || \l_tmpb_skip =
+|| -
 || 3.4
 |> \l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 6 =====] \l_tmpa_skip = \skip43
+[===== Step 7 =====] \l_tmpa_skip = \skip43
 || \l_tmpb_skip =
+|| -
 || 3.4 
 || \l_tmpa_skip 
 |> plus1fil\scan_stop: 
-[===== Step 7 =====] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minu...
+[===== Step 8 =====] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minu...
 || \l_tmpb_skip =
+|| -
 || 3.4 
 || 2.0pt plus 3.0pt minus 4.0pt
 |> plus1fil\scan_stop: 
-[===== Step 8 =====] plus
+[===== Step 9 =====] plus
 || \l_tmpb_skip =
-|| 6.79999ptplus
+|| -6.79999ptplus
 |> 1fil\scan_stop: 
-[===== Step 9 =====] 1
+[===== Step 10 =====] 1
 || \l_tmpb_skip =
-|| 6.79999ptplus
+|| -6.79999ptplus
 || 1
 |> fil\scan_stop: 
-[===== Step 10 =====] fil
+[===== Step 11 =====] fil
 || \l_tmpb_skip =
-|| 6.79999ptplus
+|| -6.79999ptplus
 || 1fil
 |> \scan_stop: 
-[===== Step 11 =====] Set \l_tmpb_skip(\skip44)=6.79999pt plus 1.0fil
+[===== Step 12 =====] Set \l_tmpb_skip(\skip44)=-6.79999pt plus 1.0fil
 || 
 |> \scan_stop: 
-[===== Step 12 =====] \scan_stop: = \relax
+[===== Step 13 =====] \scan_stop: = \relax
 || 
 |> 
 [===== The end! =====]
-> \l_tmpb_skip=6.79999pt plus 1.0fil.
+> \l_tmpb_skip=-6.79999pt plus 1.0fil.
 <recently read> }
 l. ...  }
 ============================================================
