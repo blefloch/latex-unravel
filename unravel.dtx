@@ -38,15 +38,27 @@
 % This is done by letting the user step through the execution of some
 % \TeX{} code, going through the details of nested expansions,
 % performing assignments, as well as some simple typesetting commands.
+% To use this package, one should normally run \TeX{} in a terminal.
 %
-% The only public command is \cs{unravel}, used as \cs{unravel}
-% \Arg{some tokens}.  It should normally be used within an interactive
-% session where \TeX{} is run in a terminal.  Then the function will
-% show in the terminal the various steps that \TeX{} performs when
-% reading \meta{some tokens}.  The user has some control on what is
-% shown to them at every step, can skip steps, insert code, \emph{etc.}
-% In the future it will be possible to go back a few steps.
-% The function \cs{unravel} is also available as \cs{unravel:n}.
+% \begin{function}{\unravel}
+%   \begin{syntax}
+%     \cs{unravel} \marg{code}
+%   \end{syntax}
+%   This command shows in the terminal the steps performed by \TeX{}
+%   when running the \meta{code}.  By default, it pauses to let the
+%   user read the description of every step: simply press |<return>| to
+%   proceed.  Typing |s|\meta{integer} instead will go forward
+%   \meta{integer} steps somewhat silently.  In the future it will be
+%   possible to use a negative \meta{integer} to go back a few steps.
+%   Typing |h| gives a list of various other options.
+% \end{function}
+%
+% \begin{function}{\unravel:n}
+%   \begin{syntax}
+%     \cs{unravel:n} \Arg{code}
+%   \end{syntax}
+%   See the function \cs{unravel}.
+% \end{function}
 %
 % The \pkg{unravel} package is currently based on the behaviour of
 % \pdfTeX{}, but it should work in all engines supported by \pkg{expl3}
