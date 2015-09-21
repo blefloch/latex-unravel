@@ -129,29 +129,35 @@
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
 %
+% Differences.
 % \begin{itemize}
-% \item Alignments (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit},
-%   \tn{span}, \tn{cr}, \tn{crcr},~|&|) are not implemented.
-% \item Math mode is not implemented, but might be.
-% \item Some other primitives are not implemented (but they should claim
-%   so).
+% \item Some primitives are not implemented yet: alignments
+%   (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit}, \tn{span},
+%   \tn{cr}, \tn{crcr},~|&|), many math mode primitives, and
+%   \cs{pdfprimitive}, \cs{aftergroup}, \cs{discretionary}, as well as
+%   all primitives specific to engines other than \pdfTeX{}.
 % \item For \pkg{unravel}, category codes are fixed when a file is read,
 %   while \TeX{} only fixes category codes when the corresponding
 %   characters are converted to tokens.  Similarly, the argument of
 %   \tn{scantokens} is converted to the new category code r\'egime in
 %   one go, and the result must be balanced.
 % \item Explicit begin-group and end-group characters other than the
-%   usual left and right braces will either make \pkg{unravel} choke or
-%   will be replaced by the usual left and right braces.
-% \item \tn{endinput} is ignored, as it is not possible to implement it
-%   in a way similar to \TeX{}'s, and as it is most often used at the
-%   very end of files, in a redundant way.
-% \item Negative signs and glue probably mix in wrong ways (this is a
-%   fixable bug, please tell me if it affects you).
+%   usual left and right braces may make \pkg{unravel} choke, or may be
+%   silently replaced by the usual left and right braces.
+% \item \tn{endinput} is ignored with a warning, as it is not possible
+%   to implement it in a way similar to \TeX{}'s, and as it is most
+%   often used at the very end of files, in a redundant way.
 % \end{itemize}
 %
-% ^^A todo: "\unravel{\escapechar=-1\relax}" shows "\escapechar=92" but does the right thing.
-% ^^A todo: "\unravel{\let\ ...}" breaks, thinking that "\ " is not definable.
+% Bugs.
+% \begin{itemize}
+% \item Negative signs and glue mix in wrong ways (this is a fixable
+%   bug, please tell me if it affects you).
+% \item |\unravel{\let\ =?}| breaks, thinking that \verb*|\ | is not
+%   definable.
+% \item |\unravel{\escapechar=-1\relax}| shows |\escapechar=92| but
+%   does the correct assignment.
+% \end{itemize}
 %
 % \subsection{Future perhaps}
 %
@@ -5812,22 +5818,36 @@
   }
 %    \end{macrocode}
 %
+% ^^A todo: print the temporary nullfont assignment?
 %    \begin{macrocode}
 \@@_prefixed_new:nn { letterspace_font }                    % 101
   {
-    % ^^A todo...
-    % new_letterspaced_font(a);
-    \msg_error:nnx { unravel } { not-implemented } { letterspace-font }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_omit_after_assignment:w
+    \@@_prev_input_silent:V \l_@@_head_tl
+    \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_scan_r_token:
+    \@@_print_action:x
+      { \g_@@_action_text_str \tl_to_str:N \l_@@_defined_tl }
+    \exp_after:wN \cs_set_eq:NN \l_@@_defined_tl \@@_nullfont:
+    \@@_scan_optional_equals:
+    \@@_scan_font_ident:
+    \@@_scan_int:
+    \@@_assign_token:n { }
   }
+%    \end{macrocode}
+%
+% ^^A todo: print the temporary nullfont assignment?
+%    \begin{macrocode}
 \@@_prefixed_new:nn { pdf_copy_font }                       % 102
   {
-    % ^^A todo...
-    % make_font_copy(a);
-    \msg_error:nnx { unravel } { not-implemented } { pdf-copy-font }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \@@_omit_after_assignment:w
+    \@@_prev_input_silent:V \l_@@_head_tl
+    \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_scan_r_token:
+    \@@_print_action:x
+      { \g_@@_action_text_str \tl_to_str:N \l_@@_defined_tl }
+    \exp_after:wN \cs_set_eq:NN \l_@@_defined_tl \@@_nullfont:
+    \@@_scan_optional_equals:
+    \@@_scan_font_ident:
+    \@@_assign_token:n { }
   }
 %    \end{macrocode}
 %
@@ -6085,20 +6105,24 @@
 % \end{macro}
 %
 % ^^A todo: document that this often fails.
-% ^^A todo: better \endinput?  Document current behaviour (ignored).
-% \begin{macro}[aux]{\@@_scantokens:, \@@_input:}
+% \begin{macro}[aux]{\@@_endinput:, \@@_scantokens:, \@@_input:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { input }                       % 106
   {
     \int_case:nnF \l_@@_head_char_int
       {
-        { 1 } { \@@_print_action: } % \endinput
+        { 1 } { \@@_endinput: } % \endinput
         { 2 } { \@@_scantokens: } % \scantokens
       }
       { % 0=\input
         \bool_if:NTF \g_@@_name_in_progress_bool
           { \@@_insert_relax: } { \@@_input: }
       }
+  }
+\cs_new_protected_nopar:Npn \@@_endinput:
+  {
+    \msg_warning:nn { unravel } { endinput-ignored }
+    \@@_print_action:
   }
 \cs_new_protected_nopar:Npn \@@_scantokens:
   {
@@ -7280,6 +7304,8 @@
   { Internal~error:~'#1'.~\ Please report. }
 \msg_new:nnn { unravel } { not-implemented }
   { The~following~feature~is~not~implemented:~'#1'. }
+\msg_new:nnn { unravel } { endinput-ignored }
+  { The~primitive~\iow_char:N\\endinput~was~ignored. }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
