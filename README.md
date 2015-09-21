@@ -1,4 +1,4 @@
-latex-unravel: Watching TeX digest tokens
+unravel: Watching TeX digest tokens
 ====================================================
 * E-mail: blflatex@gmail.com
 * Released under the LaTeX Project Public License v1.3c or later
@@ -30,7 +30,7 @@ This package requires up-to-date versions of the `l3kernel`,
 `l3packages` and `l3experimental` bundles.
 
 The package is extracted by running `pdflatex unravel.ins`.
-For documentation, run `pdflatex unravel.dtx` twice.
+For the documentation, run `pdflatex unravel.dtx` twice.
 
 This is work in progress, all suggestions/comments/bug reports are
 welcome!
