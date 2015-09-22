@@ -197,6 +197,13 @@
   {unravel} {2015/09/21} {0.1} {Watching TeX digest tokens}
 %    \end{macrocode}
 %
+% Load \pkg{l3str} if \pkg{expl3} is too old and does not define
+% \cs{str_range:nnn}.  Otherwise loading \pkg{l3str} would give
+% an error.
+%    \begin{macrocode}
+\cs_if_exist:NF \str_range:nnn { \RequirePackage{l3str} }
+%    \end{macrocode}
+%
 %    \begin{macrocode}
 %<@@=unravel>
 %    \end{macrocode}
