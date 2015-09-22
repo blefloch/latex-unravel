@@ -5980,12 +5980,11 @@
   }
 %    \end{macrocode}
 %
-% ^^A todo: the implementation of |set_interaction| looks fishy
 %    \begin{macrocode}
 \@@_prefixed_new:nn { set_interaction }                     % 100
   {
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \tl_put_right:NV \l_@@_head_tl \l_@@_tmpa_tl
+    \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
