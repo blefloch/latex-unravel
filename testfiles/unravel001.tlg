@@ -20,11 +20,7 @@ Don't change this file in any respect.
 TEST 1: \unravel 
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
-======== Welcome to the unravel package ========
-"<|" denotes the output to TeX's stomach.
-"||" denotes tokens waiting to be used.
-"|>" denotes tokens that we will act on.
-Press <enter> to continue; 'h' <enter> for help.
+[===== Start =====]
 || 
 |> \exp_after:wN \c_space_tl \c_space_tl 
 Defining \g__unravel_input_2_gtl on line ...
@@ -49,11 +45,7 @@ Defining \g__unravel_input_4_gtl on line ...
 || 
 |> 
 [===== The end! =====]
-======== Welcome to the unravel package ========
-"<|" denotes the output to TeX's stomach.
-"||" denotes tokens waiting to be used.
-"|>" denotes tokens that we will act on.
-Press <enter> to continue; 'h' <enter> for help.
+[===== Start =====]
 || 
 |> \prg_replicate:nn {12}{}
 [==========] \prg_replicate:nn = \long macro:#1->\exp:w \exp_after:wN \__prg_replicate_first:N \__int_value:w \__int_eval:w #1\__int_eval_end: \cs_end: 
@@ -181,11 +173,7 @@ Defining \g__unravel_input_5_gtl on line ...
 ============================================================
 TEST 2: \unravel and "\ "
 ============================================================
-======== Welcome to the unravel package ========
-"<|" denotes the output to TeX's stomach.
-"||" denotes tokens waiting to be used.
-"|>" denotes tokens that we will act on.
-Press <enter> to continue; 'h' <enter> for help.
+[===== Start =====]
 || 
 |> \let \ =\c_backslash_str \show \ 
 [==========] \let \ 
@@ -206,11 +194,7 @@ l. ...  }
 ============================================================
 TEST 3: \unravel and glue sign
 ============================================================
-======== Welcome to the unravel package ========
-"<|" denotes the output to TeX's stomach.
-"||" denotes tokens waiting to be used.
-"|>" denotes tokens that we will act on.
-Press <enter> to continue; 'h' <enter> for help.
+[===== Start =====]
 || 
 |> \tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \tl_set:Nx = \protected\long macro:#1#2->\__chk_if_exist_var:N #1\cs_set_nopar:Npx #1{#2}
@@ -349,11 +333,7 @@ Defining \g__unravel_input_6_gtl on line ...
 ============================================================
 TEST 4: \unravel and glue multiplier
 ============================================================
-======== Welcome to the unravel package ========
-"<|" denotes the output to TeX's stomach.
-"||" denotes tokens waiting to be used.
-"|>" denotes tokens that we will act on.
-Press <enter> to continue; 'h' <enter> for help.
+[===== Start =====]
 || 
 |> \l_tmpb_skip =-3.4\l_tmpa_skip plus1fil\scan_stop: 
 [==========] \l_tmpb_skip = \skip44

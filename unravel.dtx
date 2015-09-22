@@ -186,6 +186,11 @@
 %   number steps.
 % \end{function}
 %
+% \begin{function}{welcome-message}
+%   Boolean option (default \texttt{true}) determining whether to
+%   display the welcome message.
+% \end{function}
+%
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
 %
@@ -694,6 +699,7 @@
 %     \g_@@_default_explicit_prompt_bool , \g_@@_explicit_prompt_bool ,
 %     \g_@@_default_internal_debug_bool  , \g_@@_internal_debug_bool  ,
 %     \g_@@_default_number_steps_bool    , \g_@@_number_steps_bool    ,
+%     \g_@@_default_welcome_message_bool , \g_@@_welcome_message_bool ,
 %   }
 %   Variables for the options |explicit-prompt|,
 %   |internal-debug|, |number-steps|.  The
@@ -705,9 +711,12 @@
 \bool_new:N \g_@@_default_internal_debug_bool
 \bool_new:N \g_@@_default_number_steps_bool
 \bool_gset_true:N \g_@@_default_number_steps_bool
+\bool_new:N \g_@@_default_welcome_message_bool
+\bool_gset_true:N \g_@@_default_welcome_message_bool
 \bool_new:N \g_@@_explicit_prompt_bool
 \bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
+\bool_new:N \g_@@_welcome_message_bool
 %    \end{macrocode}
 % \end{variable}
 %
@@ -7072,21 +7081,25 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_print_welcome:}
-%   Welcoming message.
+%   Welcome message.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_welcome:
   {
     \@@_print_message:nn { }
       {
-        \\
-        ========~ Welcome~ to~ the~ unravel~ package~ ========\\
-        \iow_indent:n
+        \bool_if:NTF \g_@@_welcome_message_bool
           {
-            "<|"~ denotes~ the~ output~ to~ TeX's~ stomach. \\
-            "||"~ denotes~ tokens~ waiting~ to~ be~ used. \\
-            "|>"~ denotes~ tokens~ that~ we~ will~ act~ on. \\
-            Press~<enter>~to~continue;~'h'~<enter>~for~help. \\
+            \\
+            ========~ Welcome~ to~ the~ unravel~ package~ ========\\
+            \iow_indent:n
+              {
+                "<|"~ denotes~ the~ output~ to~ TeX's~ stomach. \\
+                "||"~ denotes~ tokens~ waiting~ to~ be~ used. \\
+                "|>"~ denotes~ tokens~ that~ we~ will~ act~ on. \\
+                Press~<enter>~to~continue;~'h'~<enter>~for~help. \\
+              }
           }
+          { [=====~Start~=====] }
       }
     \@@_print_state:
   }
@@ -7263,21 +7276,23 @@
 %    \begin{macrocode}
 \keys_define:nn { unravel/defaults }
   {
-    explicit-prompt .bool_gset:N = \g_@@_default_explicit_prompt_bool ,
-    internal-debug .bool_gset:N = \g_@@_default_internal_debug_bool ,
-    max-action     .int_gset:N  = \g_@@_default_max_action_int ,
-    max-output     .int_gset:N  = \g_@@_default_max_output_int ,
-    max-input      .int_gset:N  = \g_@@_default_max_input_int ,
-    number-steps   .bool_gset:N = \g_@@_default_number_steps_bool ,
+    explicit-prompt  .bool_gset:N = \g_@@_default_explicit_prompt_bool ,
+    internal-debug   .bool_gset:N = \g_@@_default_internal_debug_bool ,
+    max-action       .int_gset:N  = \g_@@_default_max_action_int ,
+    max-output       .int_gset:N  = \g_@@_default_max_output_int ,
+    max-input        .int_gset:N  = \g_@@_default_max_input_int ,
+    number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
+    welcome-message  .bool_gset:N = \g_@@_default_welcome_message_bool ,
   }
 \keys_define:nn { unravel }
   {
-    explicit-prompt .bool_gset:N = \g_@@_explicit_prompt_bool ,
-    internal-debug .bool_gset:N = \g_@@_internal_debug_bool ,
-    max-action     .int_gset:N  = \g_@@_max_action_int ,
-    max-output     .int_gset:N  = \g_@@_max_output_int ,
-    max-input      .int_gset:N  = \g_@@_max_input_int ,
-    number-steps   .bool_gset:N = \g_@@_number_steps_bool ,
+    explicit-prompt  .bool_gset:N = \g_@@_explicit_prompt_bool ,
+    internal-debug   .bool_gset:N = \g_@@_internal_debug_bool ,
+    max-action       .int_gset:N  = \g_@@_max_action_int ,
+    max-output       .int_gset:N  = \g_@@_max_output_int ,
+    max-input        .int_gset:N  = \g_@@_max_input_int ,
+    number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
+    welcome-message  .bool_gset:N = \g_@@_welcome_message_bool ,
   }
 %    \end{macrocode}
 %
@@ -7299,6 +7314,7 @@
             max-output      = \c_max_int ,
             max-input       = \c_max_int ,
             number-steps    = false ,
+            welcome-message = false ,
           } ,
       }
   }
@@ -7364,6 +7380,7 @@
     \bool_gset_eq:NN \g_@@_explicit_prompt_bool \g_@@_default_explicit_prompt_bool
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
+    \bool_gset_eq:NN \g_@@_welcome_message_bool \g_@@_default_welcome_message_bool
     \int_gset_eq:NN \g_@@_max_action_int \g_@@_default_max_action_int
     \int_gset_eq:NN \g_@@_max_output_int \g_@@_default_max_output_int
     \int_gset_eq:NN \g_@@_max_input_int  \g_@@_default_max_input_int
