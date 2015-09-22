@@ -423,6 +423,58 @@
 % \end{macro}
 % \end{macro}
 %
+% \subsubsection{String helpers}
+%
+% \begin{macro}[int]{\@@_str_truncate_left:nn}
+% \begin{macro}[aux]{\@@_str_truncate_left_aux:nnn}
+%   Truncate the string |#1| to a maximum of |#2| characters.  If it is
+%   longer, replace some characters on the left of the string by
+%   |(123~more~chars)~| with the appropriate number instead of~|123|.
+%   In any reasonable case, $25$ is big enough to fit this extra text.
+%    \begin{macrocode}
+\cs_new:Npn \@@_str_truncate_left:nn #1#2
+  {
+    \exp_args:Nf \@@_str_truncate_left_aux:nnn
+      { \str_count:n {#1} } {#1} {#2}
+  }
+\cs_new:Npn \@@_str_truncate_left_aux:nnn #1#2#3
+  {
+    \int_compare:nNnTF {#1} > {#3}
+      {
+        ( \int_eval:n { #1 - #3 + 25 } ~ more~chars ) ~
+        \str_range:nnn {#2} { #1 - #3 + 26 } {#1}
+      }
+      { \tl_to_str:n {#2} }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_str_truncate_right:nn}
+% \begin{macro}[aux]{\@@_str_truncate_right_aux:nnn}
+%   Truncate the string |#1| to a maximum of |#2| characters.  If it is
+%   longer, replace some characters on the right of the string by
+%   |~(123~more~chars)| with the appropriate number instead of~|123|.
+%   In any reasonable case, $25$ is big enough to fit this extra text.
+%    \begin{macrocode}
+\cs_new:Npn \@@_str_truncate_right:nn #1#2
+  {
+    \exp_args:Nf \@@_str_truncate_right_aux:nnn
+      { \str_count:n {#1} } {#1} {#2}
+  }
+\cs_new:Npn \@@_str_truncate_right_aux:nnn #1#2#3
+  {
+    \int_compare:nNnTF {#1} > {#3}
+      {
+        \str_range:nnn {#2} { 1 } { #3 - 25 } ~
+        ( \int_eval:n { #1 - #3 + 25 } ~ more~chars )
+      }
+      { \tl_to_str:n {#2} }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 % \subsubsection{Helpers for control flow}
 %
 % \begin{macro}[int,EXP]{\@@_exit:w, \@@_exit_point:}
@@ -6928,39 +6980,24 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_print_state_output:n}
+% \begin{macro}[aux]{\@@_print_state_output:n}
+%   Unless empty, print |#1| with each line starting with \verb*+<|~+.
+%   The \cs{@@_str_truncate_left:nn} function trims |#1| if needed, to
+%   fit in a maximum of \cs{g_@@_max_output_int} characters.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_output:n #1
   {
     \tl_if_empty:nF {#1}
       {
-        \int_set:Nn \l_@@_print_int { \str_count:n {#1} }
         \@@_print_message:nn { <| ~ }
-          {
-            \int_compare:nNnTF
-              \l_@@_print_int > \g_@@_max_output_int
-              {
-                (
-                  \int_eval:n
-                    {
-                      \l_@@_print_int
-                      - \g_@@_max_output_int + 14
-                    } ~
-                  more~chars
-                )~
-                ...
-                \str_range:nnn {#1}
-                  { \l_@@_print_int - \g_@@_max_output_int + 15 }
-                  { \l_@@_print_int }
-              }
-              {#1}
-          }
+          { \@@_str_truncate_left:nn {#1} { \g_@@_max_output_int } }
       }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_print_state_prev:n}
+%   Never trim~|#1|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_prev:n #1
   { \@@_print_message:nn { || ~ } {#1} }
@@ -6968,24 +7005,14 @@
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_print_state_input:n}
+%   Print |#1| with each line starting with \verb*+|>~+.  The
+%   \cs{@@_str_truncate_right:nn} function trims |#1| if needed, to fit
+%   in a maximum of \cs{g_@@_max_input_int} characters.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_input:n #1
   {
-    \int_set:Nn \l_@@_print_int { \str_count:n {#1} }
     \@@_print_message:nn { |> ~ }
-      {
-        \int_compare:nNnTF \l_@@_print_int > \g_@@_max_input_int
-          {
-            \str_range:nnn {#1} { 1 } { \g_@@_max_input_int - 14 }
-            ...~
-            (
-              \int_eval:n
-                { \l_@@_print_int - \g_@@_max_input_int + 14 } ~
-              more~chars
-            )
-          }
-          {#1}
-      }
+      { \@@_str_truncate_right:nn {#1} { \g_@@_max_input_int } }
   }
 %    \end{macrocode}
 % \end{macro}
