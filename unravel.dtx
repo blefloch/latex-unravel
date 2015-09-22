@@ -142,8 +142,14 @@
 %
 % \subsection{Options}
 %
+% \begin{function}{number-steps}
+%   Boolean option (default \texttt{true}) determining whether to
+%   number steps.
+% \end{function}
+%
 % \begin{function}[int]{internal-debug}
-%   Boolean option used to debug \pkg{unravel} itself.
+%   Boolean option (default \texttt{false}) used to debug \pkg{unravel}
+%   itself.
 % \end{function}
 %
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
@@ -641,10 +647,12 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\g_@@_debug_bool}
-%   If true, debug-mode.  Activated by the |internal-debug| option.
+% \begin{variable}{\g_@@_debug_bool, \g_@@_number_steps_bool}
+%   Booleans for the options |internal-debug|, |number-steps|.
 %    \begin{macrocode}
 \bool_new:N \g_@@_debug_bool
+\bool_new:N \g_@@_number_steps_bool
+\bool_gset_true:N \g_@@_number_steps_bool
 %    \end{macrocode}
 % \end{variable}
 %
@@ -6960,7 +6968,10 @@
     \@@_print_message:nn { }
       {
         % \\
-        [=====~ Step~ \int_use:N \g_@@_step_int \ =====]~
+        [=====
+        \bool_if:NT \g_@@_number_steps_bool
+          { ~ Step ~ \int_use:N \g_@@_step_int \ }
+        =====]~
         \int_compare:nNnTF
           { \str_count:N \g_@@_action_text_str }
           > { \g_@@_max_action_int }
@@ -7215,7 +7226,8 @@
 %    \begin{macrocode}
 \keys_define:nn { unravel }
   {
-    internal-debug .bool_gset:N = \g_@@_debug_bool
+    internal-debug .bool_gset:N = \g_@@_debug_bool ,
+    number-steps   .bool_gset:N = \g_@@_number_steps_bool ,
   }
 %    \end{macrocode}
 %
