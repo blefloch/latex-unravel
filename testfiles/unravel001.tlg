@@ -44,7 +44,7 @@ Defining \g__unravel_input_4_gtl on line ...
 [==========]  = blank space  
 || 
 |> 
-[===== The end! =====]
+[===== End =====]
 [===== Start =====]
 || 
 |> \prg_replicate:nn {12}{}
@@ -168,7 +168,7 @@ Defining \g__unravel_input_5_gtl on line ...
 [==========] \exp:w 0=
 || 
 |> 
-[===== The end! =====]
+[===== End =====]
 ============================================================
 ============================================================
 TEST 2: \unravel and "\ "
@@ -189,7 +189,7 @@ TEST 2: \unravel and "\ "
 ->\.
 <argument> \ 
 l. ...  }
-[===== The end! =====]
+[===== End =====]
 ============================================================
 ============================================================
 TEST 3: \unravel and glue sign
@@ -328,7 +328,7 @@ Defining \g__unravel_input_6_gtl on line ...
 [==========] Set \l_tmpa_tl=macro:->-2.0pt plus -3.0pt minus -4.0pt
 || 
 |> 
-[===== The end! =====]
+[===== End =====]
 ============================================================
 ============================================================
 TEST 4: \unravel and glue multiplier
@@ -393,7 +393,7 @@ TEST 4: \unravel and glue multiplier
 [==========] \scan_stop: = \relax
 || 
 |> 
-[===== The end! =====]
+[===== End =====]
 > \l_tmpb_skip=-6.79999pt plus 1.0fil.
 <recently read> }
 l. ...  }
