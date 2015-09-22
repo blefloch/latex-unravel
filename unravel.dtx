@@ -157,6 +157,17 @@
 %
 % \subsection{Options}
 %
+% \begin{function}{explicit-prompt}
+%   Boolean option (default \texttt{false}) determining whether to give
+%   an explicit prompt.  If \texttt{true}, the text ``|Your input=|''
+%   will appear at the beginning of lines where user input is expected.
+% \end{function}
+%
+% \begin{function}{internal-debug}
+%   Boolean option (default \texttt{false}) used to debug \pkg{unravel}
+%   itself.
+% \end{function}
+%
 % \begin{function}{machine}
 %   Option which takes no value and makes \pkg{unravel} produce an
 %   output that is somewhat more suitable for automatic processing.  In
@@ -173,11 +184,6 @@
 % \begin{function}{number-steps}
 %   Boolean option (default \texttt{true}) determining whether to
 %   number steps.
-% \end{function}
-%
-% \begin{function}[int]{internal-debug}
-%   Boolean option (default \texttt{false}) used to debug \pkg{unravel}
-%   itself.
 % \end{function}
 %
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
@@ -273,6 +279,15 @@
 \cs_new_eq:NN \@@_hbox:w                 \tex_hbox:D
 \cs_new_eq:NN \@@_nullfont:              \tex_nullfont:D
 \cs_new_eq:NN \@@_the:w                  \tex_the:D
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\c_@@_prompt_ior, \c_@@_noprompt_ior}
+%   These are not quite primitives, but are very low-level
+%   |ior| streams to prompt the user explicitly or not.
+%    \begin{macrocode}
+\cs_new_eq:NN \c_@@_prompt_ior \c_sixteen
+\cs_new_eq:NN \c_@@_noprompt_ior \c_minus_one
 %    \end{macrocode}
 % \end{macro}
 %
@@ -659,9 +674,8 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\g_@@_prompt_ior, \l_@@_prompt_tmpa_int}
+% \begin{variable}{\l_@@_prompt_tmpa_int}
 %    \begin{macrocode}
-\ior_new:N \g_@@_prompt_ior
 \int_new:N \l_@@_prompt_tmpa_int
 %    \end{macrocode}
 % \end{variable}
@@ -677,17 +691,21 @@
 %
 % \begin{variable}
 %   {
-%     \g_@@_default_internal_debug_bool, \g_@@_default_number_steps_bool,
-%     \g_@@_internal_debug_bool, \g_@@_number_steps_bool,
+%     \g_@@_default_explicit_prompt_bool , \g_@@_explicit_prompt_bool ,
+%     \g_@@_default_internal_debug_bool  , \g_@@_internal_debug_bool  ,
+%     \g_@@_default_number_steps_bool    , \g_@@_number_steps_bool    ,
 %   }
-%   Variables for the options |internal-debug|, |number-steps|.  The
+%   Variables for the options |explicit-prompt|,
+%   |internal-debug|, |number-steps|.  The
 %   \texttt{default_} booleans store the default value of these
 %   options, and are affected by \cs{unravelsetup} or
 %   \cs{unravel_setup:n}.
 %    \begin{macrocode}
+\bool_new:N \g_@@_default_explicit_prompt_bool
 \bool_new:N \g_@@_default_internal_debug_bool
 \bool_new:N \g_@@_default_number_steps_bool
 \bool_gset_true:N \g_@@_default_number_steps_bool
+\bool_new:N \g_@@_explicit_prompt_bool
 \bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
 %    \end{macrocode}
@@ -7104,7 +7122,10 @@
   {
     \int_compare:nNnT { \etex_interactionmode:D } = { 3 } % todo: think
       {
-        \ior_get_str:Nc \g_@@_prompt_ior { Your~input }
+        \bool_if:NTF \g_@@_explicit_prompt_bool
+          { \ior_get_str:Nc \c_@@_prompt_ior }
+          { \ior_get_str:Nc \c_@@_noprompt_ior }
+              { Your~input }
         \exp_args:Nv \@@_prompt_treat:n { Your~input }
       }
   }
@@ -7242,6 +7263,7 @@
 %    \begin{macrocode}
 \keys_define:nn { unravel/defaults }
   {
+    explicit-prompt .bool_gset:N = \g_@@_default_explicit_prompt_bool ,
     internal-debug .bool_gset:N = \g_@@_default_internal_debug_bool ,
     max-action     .int_gset:N  = \g_@@_default_max_action_int ,
     max-output     .int_gset:N  = \g_@@_default_max_output_int ,
@@ -7250,6 +7272,7 @@
   }
 \keys_define:nn { unravel }
   {
+    explicit-prompt .bool_gset:N = \g_@@_explicit_prompt_bool ,
     internal-debug .bool_gset:N = \g_@@_internal_debug_bool ,
     max-action     .int_gset:N  = \g_@@_max_action_int ,
     max-output     .int_gset:N  = \g_@@_max_output_int ,
@@ -7270,6 +7293,8 @@
         machine        .meta:nn =
           { unravel #1 }
           {
+            explicit-prompt = false ,
+            internal-debug  = false ,
             max-action      = \c_max_int ,
             max-output      = \c_max_int ,
             max-input       = \c_max_int ,
@@ -7336,7 +7361,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_init_key_vars:
   {
-    \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
+    \bool_gset_eq:NN \g_@@_explicit_prompt_bool \g_@@_default_explicit_prompt_bool
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
     \int_gset_eq:NN \g_@@_max_action_int \g_@@_default_max_action_int
