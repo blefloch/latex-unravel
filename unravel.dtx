@@ -194,12 +194,7 @@
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
 %
-% Bugs.
-% \begin{itemize}
-% \item |\unravel{\escapechar=-1\relax}| shows |\escapechar=92| but
-%   does the correct assignment.
-% \item |\font\tenrm=cmr10\showthe\tenrm\relax| breaks oddly.
-% \end{itemize}
+% Bugs are listed at \url{https://github.com/blefloch/latex-unravel/issues}.
 %
 % Differences.
 % \begin{itemize}
@@ -208,6 +203,7 @@
 %   \tn{cr}, \tn{crcr},~|&|), many math mode primitives, and
 %   \cs{pdfprimitive}, \cs{aftergroup}, \cs{discretionary}, as well as
 %   all primitives specific to engines other than \pdfTeX{}.
+%   This list is sadly incomplete!
 % \item For \pkg{unravel}, category codes are fixed when a file is read,
 %   while \TeX{} only fixes category codes when the corresponding
 %   characters are converted to tokens.  Similarly, the argument of
@@ -219,6 +215,7 @@
 % \item \tn{endinput} is ignored with a warning, as it is very difficult
 %   to implement it in a way similar to \TeX{}'s, and as it is most
 %   often used at the very end of files, in a redundant way.
+% \item \tn{outer} is not supported.
 % \end{itemize}
 %
 % \subsection{Future perhaps}
@@ -395,7 +392,7 @@
 % \end{macro}
 % \end{macro}
 %
-% ^^A this abuses future l3obj.
+% ^^A todo: change approach: this abuses future l3obj.
 % \begin{macro}[int,EXP]{\@@_to_str:n}
 % \begin{macro}[aux,EXP]
 %   {\@@_to_str_auxi:w, \@@_to_str_auxii:w, \@@_gtl_to_str:n}
@@ -789,7 +786,6 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% ^^A todo: let the user fix those numbers.
 % \begin{variable}
 %   {
 %     \g_@@_default_max_action_int,
@@ -813,7 +809,6 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% ^^A todo: doc, and let user decide
 % \begin{variable}{\g_@@_speedup_macros_bool}
 %   If this boolean is true, speed up macros which have a simple
 %   parameter text.  This may not be safe if very weird macros appear.
@@ -856,7 +851,12 @@
 %
 % \begin{variable}
 %   {\g_@@_prev_input_seq, \l_@@_prev_input_tl, \l_@@_prev_input_gtl}
-%   ^^A todo: comment
+%   The different levels of expansion are stored in
+%   \cs{g_@@_prev_input_seq}, with the innermost at the end of the
+%   sequence (otherwise the sequence would have to be reversed for
+%   display).  When adding material to the last level of expansion,
+%   \cs{l_@@_prev_input_tl} or \cs{l_@@_prev_input_gtl} are used to
+%   temporarily store the last level of expansion.
 %    \begin{macrocode}
 \seq_new:N \g_@@_prev_input_seq
 \tl_new:N \l_@@_prev_input_tl
@@ -1931,10 +1931,9 @@
 % \end{macro}
 % \end{macro}
 %
-% ^^A todo: should we worry about call vs long_call etc.?
 % \begin{macro}[aux]{\@@_set_cmd_aux_macro:}
-%   The token is a macro.  For now we do not test if the macro is
-%   long/outer.
+%   The token is a macro.  There is no need to determine whether the
+%   macro is long/outer.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_set_cmd_aux_macro:
   {
@@ -2116,7 +2115,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: "timeit" to know if \@@_input_split: is beneficial.
+% ^^A todo: profiling to know if \@@_input_split: is beneficial.
 %
 % \begin{macro}[int]{\@@_input_split:}
 %   If the input is completely flat, and is a token list starting with
@@ -2445,7 +2444,6 @@
 % \end{macro}
 %
 % ^^A todo: redoc
-% ^^A todo: estimate how far the macro has touched the input.
 % \begin{macro}[int]{\@@_macro_call:}
 % \begin{macro}[aux]
 %   {
@@ -2530,7 +2528,8 @@
 %   and call the function implementing that expansion.  If we do not
 %   recognize the meaning then it is probably an unknown primitive.  If
 %   we recognize the meaning but there is no corresponding function,
-%   then we probably have not implemented it yet.
+%   then we probably have not implemented it yet, so dump it in the
+%   output as is.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_expand_nonmacro:
   {
@@ -2544,7 +2543,7 @@
       {
         \msg_error:nnx { unravel } { unknown-primitive }
           { \l_@@_head_meaning_tl }
-        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl % ^^A todo: probably this is silly
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_print_action:
       }
   }
@@ -2829,7 +2828,7 @@
 % \end{macro}
 %
 % ^^A todo: redoc
-% ^^A todo: rename: all other scan functions do get_x_next themselves.
+% ^^A todo: rename this function because all other scan functions do get_x_next themselves.
 % \begin{macro}[aux]{\@@_scan_something_internal:n}
 % \begin{macro}[aux]{\@@_scan_something_aux:nwn}
 %   Receives an (explicit) \enquote{level} argument:
@@ -5665,7 +5664,6 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_assign_token:n}
-% ^^A todo: wrong printed value for \count123=123\count\count123=987.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_assign_token:n #1
   {
@@ -5678,7 +5676,6 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_assign_register:}
-% ^^A todo: wrong printed value for \count123=123\count\count123=987.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_assign_register:
   {
