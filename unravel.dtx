@@ -204,7 +204,8 @@
 %   \cs{pdfprimitive}, \cs{aftergroup}, \cs{discretionary}, as well as
 %   all primitives specific to engines other than \pdfTeX{}.
 %   This list is sadly incomplete!
-% \item For \pkg{unravel}, category codes are fixed when a file is read,
+% \item For \pkg{unravel}, category codes are fixed when a file is read
+%   using \tn{input},
 %   while \TeX{} only fixes category codes when the corresponding
 %   characters are converted to tokens.  Similarly, the argument of
 %   \tn{scantokens} is converted to the new category code r\'egime in
@@ -6276,7 +6277,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: document that this often fails.
 % \begin{macro}[aux]{\@@_endinput:, \@@_scantokens:, \@@_input:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { input }                       % 106
@@ -6318,7 +6318,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: this wrongly accepts things let to characters.
 % \begin{macro}[aux]{\@@_csname_loop:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { cs_name }                       % 109
@@ -7156,7 +7155,7 @@
   }
 \cs_new_protected_nopar:Npn \@@_prompt_aux:
   {
-    \int_compare:nNnT { \etex_interactionmode:D } = { 3 } % todo: think
+    \int_compare:nNnT { \etex_interactionmode:D } = { 3 }
       {
         \bool_if:NTF \g_@@_explicit_prompt_bool
           { \ior_get_str:Nc \c_@@_prompt_ior }
@@ -7286,8 +7285,6 @@
 % \end{macro}
 %
 % ^^A todo: I suspect a bug if given 'a' twice in a row
-%
-% ^^A todo: document that "C\unravelsetup{internal-debug}" works
 %
 % \subsection{Keys}
 %
