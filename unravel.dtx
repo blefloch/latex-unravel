@@ -338,6 +338,33 @@
 %    \end{macrocode}
 % \end{function}
 %
+% \begin{macro}[aux]{\@@_tl_gset_input:Nnn, \@@_tl_gset_input:Nno}
+% \begin{macro}[aux]{\@@_tl_gset_input_aux:wN}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tl_gset_input:Nnn #1#2#3
+  {
+    \group_begin:
+      \@@_everyeof:w \exp_after:wN { \token_to_str:N @ @ #1 }
+      #2
+      \tl_gclear:N #1
+      \exp_after:wN \@@_tl_gset_input_aux:wN
+      \exp_after:wN \prg_do_nothing:
+        \tex_input:D \tl_to_str:n {#3} \scan_stop:
+    \group_end:
+    \tl_gput_right:NV #1 \@@_everyeof:w
+  }
+\cs_generate_variant:Nn \@@_tl_gset_input:Nnn { Nno }
+\use:x
+  {
+    \cs_new_protected:Npn \exp_not:N \@@_tl_gset_input_aux:wN
+      ##1 \token_to_str:N @ @ ##2
+  }   { \tl_gset:No #2 {#1} }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{String helpers}
+%
 % \begin{macro}[int]{\@@_strip_escape:w}
 % \begin{macro}[aux]{\@@_strip_escape_aux:N, \@@_strip_escape_aux:w}
 %   This is based on the 2013-07-19 (and earlier) version of
@@ -364,31 +391,6 @@
 \cs_new:Npn \@@_strip_escape_aux:N #1 { \c_zero }
 \cs_new:Npn \@@_strip_escape_aux:w #1#2
   { - \__int_value:w #1 \c_zero }
-%    \end{macrocode}
-% \end{macro}
-% \end{macro}
-%
-% \begin{macro}[aux]{\@@_tl_gset_input:Nnn, \@@_tl_gset_input:Nno}
-% \begin{macro}[aux]{\@@_tl_gset_input_aux:wN}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_tl_gset_input:Nnn #1#2#3
-  {
-    \group_begin:
-      \@@_everyeof:w \exp_after:wN { \token_to_str:N @ @ #1 }
-      #2
-      \tl_gclear:N #1
-      \exp_after:wN \@@_tl_gset_input_aux:wN
-      \exp_after:wN \prg_do_nothing:
-        \tex_input:D \tl_to_str:n {#3} \scan_stop:
-    \group_end:
-    \tl_gput_right:NV #1 \@@_everyeof:w
-  }
-\cs_generate_variant:Nn \@@_tl_gset_input:Nnn { Nno }
-\use:x
-  {
-    \cs_new_protected:Npn \exp_not:N \@@_tl_gset_input_aux:wN
-      ##1 \token_to_str:N @ @ ##2
-  }   { \tl_gset:No #2 {#1} }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -422,8 +424,6 @@
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
-%
-% \subsubsection{String helpers}
 %
 % \begin{macro}[int]{\@@_str_truncate_left:nn}
 % \begin{macro}[aux]{\@@_str_truncate_left_aux:nnn}
