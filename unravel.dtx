@@ -7306,54 +7306,69 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\unravel:nn}
-%   Welcome the user, then initialize the input, output and step.  Until
-%   the input is exhausted, print the current status and do one step.
+%   Initialize and setup keys.  Initialize and setup other variables
+%   including the input.  Welcome the user.  Then comes the main loop:
+%   until the input is exhausted, print the current status and do one
+%   step.  The main loop is exited by skipping to the first
+%   \cs{@@_exit_point:}, while some abort procedures jump to the second
+%   (and last) one instead.  If the main loop finished correctly, print
+%   its outcome and finally test that everything is all right.
 %    \begin{macrocode}
 \cs_new_protected:Npn \unravel:nn #1#2
   {
-    \int_gzero:N  \g_@@_step_int
+    \@@_init_key_vars:
+    \keys_set:nn { unravel } {#1}
+    \@@_init_vars:
     \@@_input_gset:n {#2}
-    \seq_gclear:N \g_@@_prev_input_seq
-    \gtl_gclear:N \g_@@_output_gtl
-    \tl_gclear:N  \g_@@_if_limit_tl
-    \int_gzero:N  \g_@@_if_limit_int
-    \int_gzero:N  \g_@@_if_depth_int
-    \gtl_gclear:N \g_@@_after_assignment_gtl
-    \bool_gset_true:N  \g_@@_set_box_allowed_bool
-    \bool_gset_false:N \g_@@_name_in_progress_bool
+    \@@_print_welcome:
+    \@@_main_loop:
+    \@@_exit_point:
+    \@@_print_outcome:
+    \@@_final_test:
+    \@@_exit_point:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_init_key_vars:}
+%   Give variables that are affected by keys their default values (also
+%   controlled by keys).
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_init_keys_vars:
+  {
     \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
     \int_gset_eq:NN \g_@@_max_action_int \g_@@_default_max_action_int
     \int_gset_eq:NN \g_@@_max_output_int \g_@@_default_max_output_int
     \int_gset_eq:NN \g_@@_max_input_int  \g_@@_default_max_input_int
-    \keys_set:nn { unravel } {#1}
-    \@@_print_welcome:
-    \@@_main_loop:
-    \@@_exit_point:
-    \@@_print_outcome:
-    \bool_if:nTF
-      {
-        \tl_if_empty_p:N \g_@@_if_limit_tl
-        && \int_compare_p:nNn \g_@@_if_limit_int = \c_zero
-        && \int_compare_p:nNn \g_@@_if_depth_int = \c_zero
-        && \seq_if_empty_p:N \g_@@_prev_input_seq
-      }
-      { \@@_input_if_empty:TF { } { \@@_bad_finish: } }
-      { \@@_bad_finish: }
-    \@@_exit_point:
   }
-\cs_new_protected_nopar:Npn \@@_bad_finish:
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_init_vars:}
+%   Give initial values to variables used during the processing.  These
+%   have no reason to be modified by the user: neither directly nor
+%   through keys.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_init_vars:
   {
-    \msg_error:nnx { unravel } { internal }
-      { the-last-unravel-finished-badly }
+    \seq_gclear:N \g_@@_prev_input_seq
+    \gtl_gclear:N \g_@@_output_gtl
+    \int_gzero:N  \g_@@_step_int
+    \tl_gclear:N  \g_@@_if_limit_tl
+    \int_gzero:N  \g_@@_if_limit_int
+    \int_gzero:N  \g_@@_if_depth_int
+    \gtl_gclear:N \g_@@_after_assignment_gtl
+    \bool_gset_true:N  \g_@@_set_box_allowed_bool
+    \bool_gset_false:N \g_@@_name_in_progress_bool
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_main_loop:}
-%   Loop forever, getting a token and performing the corresponding
-%   command.
+%   Loop forever, getting the next token (with expansion) and
+%   performing the corresponding command.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_main_loop:
   {
@@ -7361,6 +7376,31 @@
     \@@_set_cmd:
     \@@_do_step:
     \@@_main_loop:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% ^^A todo: improve error message
+% \begin{macro}[aux]{\@@_final_test:, \@@_final_bad:}
+%   Make sure that the \cs{unravel} finished correctly.  The error
+%   message is a bit primitive.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_final_test:
+  {
+    \bool_if:nTF
+      {
+        \tl_if_empty_p:N \g_@@_if_limit_tl
+        && \int_compare_p:nNn \g_@@_if_limit_int = \c_zero
+        && \int_compare_p:nNn \g_@@_if_depth_int = \c_zero
+        && \seq_if_empty_p:N \g_@@_prev_input_seq
+      }
+      { \@@_input_if_empty:TF { } { \@@_final_bad: } }
+      { \@@_final_bad: }
+  }
+\cs_new_protected_nopar:Npn \@@_final_bad:
+  {
+    \msg_error:nnx { unravel } { internal }
+      { the-last-unravel-finished-badly }
   }
 %    \end{macrocode}
 % \end{macro}
