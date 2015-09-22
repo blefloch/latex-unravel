@@ -595,8 +595,6 @@
   {
     \int_case:nnF {#1}
       {
-        { 0 } { \@@_join_get_aux:NNN \int_eval:n \etex_numexpr:D }
-        { 1 } { \@@_join_get_aux:NNN \dim_eval:n \etex_dimexpr:D }
         { 2 } { \@@_join_get_aux:NNN \skip_eval:n \etex_glueexpr:D }
         { 3 } { \@@_join_get_aux:NNN \muskip_eval:n \etex_muexpr:D }
       }
