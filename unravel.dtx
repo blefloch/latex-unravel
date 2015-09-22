@@ -157,6 +157,13 @@
 %
 % \subsection{Options}
 %
+% \begin{function}{machine}
+%   Option which takes no value and makes \pkg{unravel} produce an
+%   output that is somewhat more suitable for automatic processing.  In
+%   particular, it sets |max-action|, |max-output|, |max-input| to very
+%   large values, and |number-steps| to \texttt{false}.
+% \end{function}
+%
 % \begin{function}{max-action, max-output, max-input}
 %   Integer options (defaults $50$, $300$, $300$) determining the
 %   maximum number of characters displayed for the action, the output
@@ -7250,6 +7257,26 @@
     number-steps   .bool_gset:N = \g_@@_number_steps_bool ,
   }
 %    \end{macrocode}
+%
+% The |machine| option is somewhat special so it is clearer to define
+% it separately.  The code is identical for |unravel/defaults| and
+% |unravel| keys.  To be sure of which options are set, use |.meta:nn|
+% and give the path explicitly.
+%    \begin{macrocode}
+\tl_map_inline:nn { { /defaults } { } }
+  {
+    \keys_define:nn { unravel #1 }
+      {
+        machine        .meta:nn =
+          { unravel #1 }
+          {
+            max-action      = \c_max_int ,
+            max-output      = \c_max_int ,
+            max-input       = \c_max_int ,
+            number-steps    = false ,
+          } ,
+      }
+  }
 %
 % \subsection{Main command}
 %
