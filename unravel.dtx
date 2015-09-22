@@ -157,6 +157,12 @@
 %
 % \subsection{Options}
 %
+% \begin{function}{max-action, max-output, max-input}
+%   Integer options (defaults $50$, $300$, $300$) determining the
+%   maximum number of characters displayed for the action, the output
+%   part, and the input part.
+% \end{function}
+%
 % \begin{function}{number-steps}
 %   Boolean option (default \texttt{true}) determining whether to
 %   number steps.
@@ -700,21 +706,24 @@
 % ^^A todo: let the user fix those numbers.
 % \begin{variable}
 %   {
+%     \g_@@_default_max_action_int,
+%     \g_@@_default_max_output_int,
+%     \g_@@_default_max_input_int,
 %     \g_@@_max_action_int,
 %     \g_@@_max_output_int,
-%     \g_@@_max_prev_int,
 %     \g_@@_max_input_int
 %   }
 %   Maximum length of various pieces of what is shown on the terminal.
 %    \begin{macrocode}
+\int_new:N \g_@@_default_max_action_int
+\int_new:N \g_@@_default_max_output_int
+\int_new:N \g_@@_default_max_input_int
+\int_gset:Nn \g_@@_default_max_action_int { 50 }
+\int_gset:Nn \g_@@_default_max_output_int { 300 }
+\int_gset:Nn \g_@@_default_max_input_int { 300 }
 \int_new:N \g_@@_max_action_int
 \int_new:N \g_@@_max_output_int
-\int_new:N \g_@@_max_prev_int
 \int_new:N \g_@@_max_input_int
-\int_gset:Nn \g_@@_max_action_int { 50 }
-\int_gset:Nn \g_@@_max_output_int { 300 }
-\int_gset:Nn \g_@@_max_prev_int { 300 }
-\int_gset:Nn \g_@@_max_input_int { 300 }
 %    \end{macrocode}
 % \end{variable}
 %
@@ -6917,29 +6926,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: use \cs{g_@@_max_prev_int}
 % \begin{macro}[aux]{\@@_print_state_prev:n}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_prev:n #1
-  {
-    % \int_set:Nn \l_@@_print_int { \str_count:n {#1} }
-    \@@_print_message:nn { || ~ } {#1}
-      % {
-      %   \int_compare:nNnTF \l_@@_print_int > \g_@@_max_prev_int
-      %     {
-      %       (
-      %         \int_eval:n
-      %           { \l_@@_print_int - \g_@@_max_prev_int + 14 } ~
-      %         more~chars
-      %       )~
-      %       ...
-      %       \str_range:nnn {#1}
-      %         { \l_@@_print_int - \g_@@_max_prev_int + 15 }
-      %         { \l_@@_print_int }
-      %     }
-      %     {#1}
-      % }
-  }
+  { \@@_print_message:nn { || ~ } {#1} }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6989,9 +6979,8 @@
 \cs_new_protected:Npn \@@_print_action:
   {
     \int_gincr:N \g_@@_step_int
-    \@@_print_message:nn { }
+    \@@_print:x
       {
-        % \\
         [=====
         \bool_if:NT \g_@@_number_steps_bool
           { ~ Step ~ \int_use:N \g_@@_step_int \ }
@@ -7004,9 +6993,6 @@
               { 1 } { \g_@@_max_action_int - 3 } ...
           }
           { \g_@@_action_text_str }
-        % \\
-        % \ \ < \int_use:N \g_@@_input_int > % ^^A todo: remove
-        % \ < \seq_count:N \g_@@_prev_input_seq > % ^^A todo: remove
       }
     \@@_print_state:
   }
@@ -7086,13 +7072,7 @@
 %   Final message.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_outcome:
-  {
-    % \int_gset_eq:NN \g_@@_max_input_int \c_max_int
-    % \int_gset_eq:NN \g_@@_max_prev_int \c_max_int
-    % \int_gset_eq:NN \g_@@_max_output_int \c_max_int
-    % \@@_print_state:
-    \@@_print_message:nn { } { [=====~The~end!~=====] \\ }
-  }
+  { \@@_print_message:nn { } { [=====~The~end!~=====] \\ } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7228,12 +7208,10 @@
           {
             \tl_gclear:N \g_@@_tmpc_tl
             \int_gset_eq:NN \g_@@_max_output_int \c_max_int
-            \int_gset_eq:NN \g_@@_max_prev_int \c_max_int
             \int_gset_eq:NN \g_@@_max_input_int \c_max_int
             \@@_print_state:
           }
         \@@_prompt_all_aux:N \g_@@_max_output_int
-        \@@_prompt_all_aux:N \g_@@_max_prev_int
         \@@_prompt_all_aux:N \g_@@_max_input_int
       }
     \group_insert_after:N \g_@@_tmpc_tl
@@ -7258,11 +7236,17 @@
 \keys_define:nn { unravel/defaults }
   {
     internal-debug .bool_gset:N = \g_@@_default_internal_debug_bool ,
+    max-action     .int_gset:N  = \g_@@_default_max_action_int ,
+    max-output     .int_gset:N  = \g_@@_default_max_output_int ,
+    max-input      .int_gset:N  = \g_@@_default_max_input_int ,
     number-steps   .bool_gset:N = \g_@@_default_number_steps_bool ,
   }
 \keys_define:nn { unravel }
   {
     internal-debug .bool_gset:N = \g_@@_internal_debug_bool ,
+    max-action     .int_gset:N  = \g_@@_max_action_int ,
+    max-output     .int_gset:N  = \g_@@_max_output_int ,
+    max-input      .int_gset:N  = \g_@@_max_input_int ,
     number-steps   .bool_gset:N = \g_@@_number_steps_bool ,
   }
 %    \end{macrocode}
@@ -7313,6 +7297,9 @@
     \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
+    \int_gset_eq:NN \g_@@_max_action_int \g_@@_default_max_action_int
+    \int_gset_eq:NN \g_@@_max_output_int \g_@@_default_max_output_int
+    \int_gset_eq:NN \g_@@_max_input_int  \g_@@_default_max_input_int
     \keys_set:nn { unravel } {#1}
     \@@_print_welcome:
     \@@_main_loop:
