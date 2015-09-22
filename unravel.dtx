@@ -55,11 +55,26 @@
 %   Section~\ref{sec:options}.
 % \end{function}
 %
+% \begin{function}{\unravelsetup}
+%   \begin{syntax}
+%     \cs{unravelsetup} \marg{options}
+%   \end{syntax}
+%   Sets \meta{options} that apply to all subsequent \cs{unravel}.  See
+%   options in Section~\ref{sec:options}.
+% \end{function}
+%
 % \begin{function}{\unravel:nn}
 %   \begin{syntax}
 %     \cs{unravel:nn} \Arg{options} \Arg{code}
 %   \end{syntax}
-%   See the function \cs{unravel}.
+%   See \cs{unravel}.
+% \end{function}
+%
+% \begin{function}{\unravel_setup:n}
+%   \begin{syntax}
+%     \cs{unravel_setup:n} \Arg{options}
+%   \end{syntax}
+%   See \cs{unravelsetup}.
 % \end{function}
 %
 % The \pkg{unravel} package is currently based on the behaviour of
@@ -647,12 +662,21 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\g_@@_debug_bool, \g_@@_number_steps_bool}
-%   Booleans for the options |internal-debug|, |number-steps|.
+% \begin{variable}
+%   {
+%     \g_@@_default_internal_debug_bool, \g_@@_default_number_steps_bool,
+%     \g_@@_internal_debug_bool, \g_@@_number_steps_bool,
+%   }
+%   Variables for the options |internal-debug|, |number-steps|.  The
+%   \texttt{default_} booleans store the default value of these
+%   options, and are affected by \cs{unravelsetup} or
+%   \cs{unravel_setup:n}.
 %    \begin{macrocode}
-\bool_new:N \g_@@_debug_bool
+\bool_new:N \g_@@_default_internal_debug_bool
+\bool_new:N \g_@@_default_number_steps_bool
+\bool_gset_true:N \g_@@_default_number_steps_bool
+\bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
-\bool_gset_true:N \g_@@_number_steps_bool
 %    \end{macrocode}
 % \end{variable}
 %
@@ -2394,7 +2418,7 @@
 \cs_new_protected_nopar:Npn \@@_expand:
   {
     \@@_set_action_text:
-    \bool_if:NT \g_@@_debug_bool
+    \bool_if:NT \g_@@_internal_debug_bool
       {
         \@@_set_cmd:
         \iow_term:x { Exp:~\int_use:N \l_@@_head_cmd_int }
@@ -4100,7 +4124,7 @@
 \cs_new_protected_nopar:Npn \@@_do_step:
   {
     \@@_set_action_text:
-    \bool_if:NT \g_@@_debug_bool
+    \bool_if:NT \g_@@_internal_debug_bool
       { \iow_term:x { Cmd:~\int_use:N \l_@@_head_cmd_int } }
     \cs_if_exist_use:cF
       { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
@@ -6676,7 +6700,7 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
-    \bool_if:NT \g_@@_debug_bool { \iow_term:n { {\ifcase level~#1} } }
+    \bool_if:NT \g_@@_internal_debug_bool { \iow_term:n { {\ifcase level~#1} } }
     \@@_scan_int:
     \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
@@ -7221,12 +7245,24 @@
 %
 % ^^A todo: I suspect a bug if given 'a' twice in a row
 %
+% ^^A todo: document that "C\unravelsetup{internal-debug}" works
+%
 % \subsection{Keys}
 %
+% Each key needs to be defined twice: for its default setting and for
+% its setting applying to a single \cs{unravel}.  This is due to the
+% fact that we cannot use grouping to keep settings local to a single
+% \cs{unravel} since the \meta{code} argument of \cs{unravel} may open
+% or close groups.
 %    \begin{macrocode}
+\keys_define:nn { unravel/defaults }
+  {
+    internal-debug .bool_gset:N = \g_@@_default_internal_debug_bool ,
+    number-steps   .bool_gset:N = \g_@@_default_number_steps_bool ,
+  }
 \keys_define:nn { unravel }
   {
-    internal-debug .bool_gset:N = \g_@@_debug_bool ,
+    internal-debug .bool_gset:N = \g_@@_internal_debug_bool ,
     number-steps   .bool_gset:N = \g_@@_number_steps_bool ,
   }
 %    \end{macrocode}
@@ -7237,6 +7273,24 @@
 %   Simply call an underlying code-level command.
 %    \begin{macrocode}
 \NewDocumentCommand \unravel { O { } m } { \unravel:nn {#1} {#2} }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unravelsetup}
+%   Simply call an underlying code-level command.
+%    \begin{macrocode}
+\NewDocumentCommand \unravelsetup { m } { \unravel_setup:n {#1} }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\unravel_setup:n}
+%   Set keys, updating both default values and current values.
+%    \begin{macrocode}
+\cs_new_protected:Npn \unravel_setup:n #1
+  {
+    \keys_set:nn { unravel/defaults } {#1}
+    \keys_set:nn { unravel } {#1}
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7257,6 +7311,8 @@
     \bool_gset_true:N  \g_@@_set_box_allowed_bool
     \bool_gset_false:N \g_@@_name_in_progress_bool
     \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
+    \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
+    \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
     \keys_set:nn { unravel } {#1}
     \@@_print_welcome:
     \@@_main_loop:
