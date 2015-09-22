@@ -10,6 +10,8 @@
 \START
 \ExplSyntaxOn
 
+\unravelsetup { number-steps = false }
+
 \TEST { \unravel }
   {
     \unravel { \exp_after:wN \c_space_tl \c_space_tl }

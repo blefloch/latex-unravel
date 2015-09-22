@@ -28,24 +28,24 @@ Press <enter> to continue; 'h' <enter> for help.
 || 
 |> \exp_after:wN \c_space_tl \c_space_tl 
 Defining \g__unravel_input_2_gtl on line ...
-[===== Step 1 =====] \exp_after:wN \c_space_tl 
+[==========] \exp_after:wN \c_space_tl 
 || \exp_after:wN \c_space_tl 
 |> \c_space_tl 
-[===== Step 2 =====] \c_space_tl = macro:-> 
+[==========] \c_space_tl = macro:-> 
 || \exp_after:wN \c_space_tl 
 |>  
 Defining \g__unravel_input_3_gtl on line ...
-[===== Step 3 =====] back_input: \exp_after:wN \c_space_tl 
+[==========] back_input: \exp_after:wN \c_space_tl 
 || 
 |> \c_space_tl  
 Defining \g__unravel_input_4_gtl on line ...
-[===== Step 4 =====] \c_space_tl = macro:-> 
+[==========] \c_space_tl = macro:-> 
 || 
 |>   
-[===== Step 5 =====]  = blank space  
+[==========]  = blank space  
 || 
 |>  
-[===== Step 6 =====]  = blank space  
+[==========]  = blank space  
 || 
 |> 
 [===== The end! =====]
@@ -56,124 +56,124 @@ Defining \g__unravel_input_4_gtl on line ...
 Press <enter> to continue; 'h' <enter> for help.
 || 
 |> \prg_replicate:nn {12}{}
-[===== Step 1 =====] \prg_replicate:nn = \long macro:#1->\exp:w \exp...
+[==========] \prg_replicate:nn = \long macro:#1->\exp:w \exp...
 || 
 |> \exp:w \exp_after:wN \__prg_replicate_first:N \__int_value:w \__int_eval:w
 |> 12\__int_eval_end: \cs_end: {}
-[===== Step 2 =====] \exp:w = \romannumeral
+[==========] \exp:w = \romannumeral
 || \exp:w 
 |> \exp_after:wN \__prg_replicate_first:N \__int_value:w \__int_eval:w
 |> 12\__int_eval_end: \cs_end: {}
-[===== Step 3 =====] \exp_after:wN \__prg_replicate_first:N 
+[==========] \exp_after:wN \__prg_replicate_first:N 
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 |> \__int_value:w \__int_eval:w 12\__int_eval_end: \cs_end: {}
-[===== Step 4 =====] \__int_value:w = \number
+[==========] \__int_value:w = \number
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \__int_value:w 
 |> \__int_eval:w 12\__int_eval_end: \cs_end: {}
-[===== Step 5 =====] \__int_eval:w = \numexpr
+[==========] \__int_eval:w = \numexpr
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \__int_value:w 
 || \__int_eval:w 
 |> 12\__int_eval_end: \cs_end: {}
-[===== Step 6 =====] 1
+[==========] 1
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \__int_value:w 
 || \__int_eval:w 1
 |> 2\__int_eval_end: \cs_end: {}
-[===== Step 7 =====] 2
+[==========] 2
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \__int_value:w 
 || \__int_eval:w 12
 |> \__int_eval_end: \cs_end: {}
-[===== Step 8 =====] \__int_eval:w 12 => 12
+[==========] \__int_eval:w 12 => 12
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \__int_value:w 12
 |> \cs_end: {}
-[===== Step 9 =====] \__int_value:w 12=12
+[==========] \__int_value:w 12=12
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 |> 12\cs_end: {}
 Defining \g__unravel_input_5_gtl on line ...
-[===== Step 10 =====] back_input: \exp_after:wN \__prg_replicate_firs...
+[==========] back_input: \exp_after:wN \__prg_replicate_firs...
 || \exp:w 
 |> \__prg_replicate_first:N 12\cs_end: {}
-[===== Step 11 =====] \__prg_replicate_first:N = \long macro:#1->\cs:...
+[==========] \__prg_replicate_first:N = \long macro:#1->\cs:...
 || \exp:w 
 |> \cs:w __prg_replicate_first_1:n\__prg_replicate:N 2\cs_end: {}
-[===== Step 12 =====] \cs:w = \csname
+[==========] \cs:w = \csname
 || \exp:w 
 || \cs:w 
 |> __prg_replicate_first_1:n\__prg_replicate:N 2\cs_end: {}
-[===== Step 13 =====] \__prg_replicate:N = \long macro:#1->\cs:w __pr...
+[==========] \__prg_replicate:N = \long macro:#1->\cs:w __pr...
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 |> \cs:w __prg_replicate_2:n\__prg_replicate:N \cs_end: {}
-[===== Step 14 =====] \cs:w = \csname
+[==========] \cs:w = \csname
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w 
 |> __prg_replicate_2:n\__prg_replicate:N \cs_end: {}
-[===== Step 15 =====] \__prg_replicate:N = \long macro:#1->\cs:w __pr...
+[==========] \__prg_replicate:N = \long macro:#1->\cs:w __pr...
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w __prg_replicate_2:n
 |> \cs:w __prg_replicate_\cs_end: :n\__prg_replicate:N {}
-[===== Step 16 =====] \cs:w = \csname
+[==========] \cs:w = \csname
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w __prg_replicate_2:n
 || \cs:w 
 |> __prg_replicate_\cs_end: :n\__prg_replicate:N {}
-[===== Step 17 =====] \cs_end: 
+[==========] \cs_end: 
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w __prg_replicate_2:n
 || \cs:w __prg_replicate_\cs_end: 
 |> :n\__prg_replicate:N {}
-[===== Step 18 =====] \cs:w __prg_replicate_\cs_end: =\__prg_replicate_ 
+[==========] \cs:w __prg_replicate_\cs_end: =\__prg_replicate_ 
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w __prg_replicate_2:n
 |> \__prg_replicate_ :n\__prg_replicate:N {}
-[===== Step 19 =====] \__prg_replicate_ = \long macro::n#1->\cs_end: 
+[==========] \__prg_replicate_ = \long macro::n#1->\cs_end: 
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w __prg_replicate_2:n
 |> \cs_end: {}
-[===== Step 20 =====] \cs_end: 
+[==========] \cs_end: 
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 || \cs:w __prg_replicate_2:n\cs_end: 
 |> {}
-[===== Step 21 =====] \cs:w __prg_replicate_2:n\cs_end: =\__prg_repli...
+[==========] \cs:w __prg_replicate_2:n\cs_end: =\__prg_repli...
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 |> \__prg_replicate_2:n {}
-[===== Step 22 =====] \__prg_replicate_2:n = \long macro:#1->\cs_end:...
+[==========] \__prg_replicate_2:n = \long macro:#1->\cs_end:...
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n
 |> \cs_end: {}
-[===== Step 23 =====] \cs_end: 
+[==========] \cs_end: 
 || \exp:w 
 || \cs:w __prg_replicate_first_1:n\cs_end: 
 |> {}
-[===== Step 24 =====] \cs:w __prg_replicate_first_1:n\cs_end: =\__prg...
+[==========] \cs:w __prg_replicate_first_1:n\cs_end: =\__prg...
 || \exp:w 
 |> \__prg_replicate_first_1:n {}
-[===== Step 25 =====] \__prg_replicate_first_1:n = \long macro:#1->\e...
+[==========] \__prg_replicate_first_1:n = \long macro:#1->\e...
 || \exp:w 
 |> \exp_end: 
-[===== Step 26 =====] \exp_end: = \char"0 => 0
+[==========] \exp_end: = \char"0 => 0
 || \exp:w 0
 |> 
-[===== Step 27 =====] \exp:w 0=
+[==========] \exp:w 0=
 || 
 |> 
 [===== The end! =====]
@@ -188,13 +188,13 @@ TEST 2: \unravel and "\ "
 Press <enter> to continue; 'h' <enter> for help.
 || 
 |> \let \ =\c_backslash_str \show \ 
-[===== Step 1 =====] \let \ 
+[==========] \let \ 
 || \let \ 
 |> =\c_backslash_str \show \ 
-[===== Step 2 =====] Set \ =macro:->\
+[==========] Set \ =macro:->\
 || 
 |> \show \ 
-[===== Step 3 =====] \show = \show
+[==========] \show = \show
 || \show 
 |> \ 
 > \ =macro:
@@ -213,135 +213,135 @@ TEST 3: \unravel and glue sign
 Press <enter> to continue; 'h' <enter> for help.
 || 
 |> \tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 1 =====] \tl_set:Nx = \protected\long macro:#1#2->\__chk...
+[==========] \tl_set:Nx = \protected\long macro:#1#2->\__chk...
 || 
 |> \__chk_if_exist_var:N \l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
-[===== Step 2 =====] \__chk_if_exist_var:N = \protected\long macro:#...
+[==========] \__chk_if_exist_var:N = \protected\long macro:#...
 || 
 |> \cs_if_exist:NF \l_tmpa_tl {\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 3 =====] \cs_if_exist:NF = \long macro:#1->\if_meaning:w...
+[==========] \cs_if_exist:NF = \long macro:#1->\if_meaning:w...
 || 
 |> \if_meaning:w \l_tmpa_tl \scan_stop: \prg_return_false: \else:
 |> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 4 =====] \if_meaning:w = \ifx
+[==========] \if_meaning:w = \ifx
 || \if_meaning:w 
 |> \l_tmpa_tl \scan_stop: \prg_return_false: \else: \if_cs_exist:N \l_tmpa_tl
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 5 =====] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =...
+[==========] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =...
 || 
 |> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 6 =====] \if_cs_exist:N = \ifdefined
+[==========] \if_cs_exist:N = \ifdefined
 || \if_cs_exist:N 
 |> \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 7 =====] \l_tmpa_tl 
+[==========] \l_tmpa_tl 
 || \if_cs_exist:N \l_tmpa_tl 
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 8 =====] \if_cs_exist:N \l_tmpa_tl =true
+[==========] \if_cs_exist:N \l_tmpa_tl =true
 || 
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 9 =====] \prg_return_true: = macro:->\exp_after:wN \use_...
+[==========] \prg_return_true: = macro:->\exp_after:wN \use_...
 || 
 |> \exp_after:wN \use_i:nn \exp:w \else: \prg_return_false: \fi: \fi:
 |> \exp_end: {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 10 =====] \exp_after:wN \use_i:nn 
+[==========] \exp_after:wN \use_i:nn 
 || \exp_after:wN \use_i:nn 
 |> \exp:w \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 11 =====] \exp:w = \romannumeral
+[==========] \exp:w = \romannumeral
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \else: \prg_return_false: \fi: \fi: \exp_end: {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 12 =====] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skipped to \fi: 
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \fi: \exp_end: {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 13 =====] \fi: = \fi
+[==========] \fi: = \fi
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \exp_end: {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 14 =====] \exp_end: = \char"0 => 0
+[==========] \exp_end: = \char"0 => 0
 || \exp_after:wN \use_i:nn 
 || \exp:w 0
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 15 =====] \exp:w 0=
+[==========] \exp:w 0=
 || \exp_after:wN \use_i:nn 
 |> {}{\__msg_kernel_error:nnx {check}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 Defining \g__unravel_input_6_gtl on line ...
-[===== Step 16 =====] back_input: \exp_after:wN \use_i:nn 
+[==========] back_input: \exp_after:wN \use_i:nn 
 || 
 |> \use_i:nn {}{\__msg_kernel_error:nnx
 |> {check}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 17 =====] \use_i:nn = \long macro:#1#2->#1
+[==========] \use_i:nn = \long macro:#1#2->#1
 || 
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[===== Step 18 =====] \skip_eval:n = \long macro:#1->\skip_use:N \ete...
+[==========] \skip_eval:n = \long macro:#1->\skip_use:N \ete...
 || \cs_set_nopar:Npx \l_tmpa_tl {
 |> \skip_use:N \etex_glueexpr:D -\l_tmpa_skip \scan_stop: }
-[===== Step 19 =====] \skip_eval:n = \long macro:#1->\skip_use:N \ete...
+[==========] \skip_eval:n = \long macro:#1->\skip_use:N \ete...
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
 |> \etex_glueexpr:D -\l_tmpa_skip \scan_stop: }
-[===== Step 20 =====] \etex_glueexpr:D = \glueexpr
+[==========] \etex_glueexpr:D = \glueexpr
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
 || \etex_glueexpr:D 
 |> -\l_tmpa_skip \scan_stop: }
-[===== Step 21 =====] -
+[==========] -
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
 || \etex_glueexpr:D 
 || -
 |> \l_tmpa_skip \scan_stop: }
-[===== Step 22 =====] \l_tmpa_skip = \skip43
+[==========] \l_tmpa_skip = \skip43
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
 || \etex_glueexpr:D 
 || -
 || \l_tmpa_skip 
 |> \scan_stop: }
-[===== Step 23 =====] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minu...
+[==========] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minu...
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
 || \etex_glueexpr:D 
 || -
 || 2.0pt plus 3.0pt minus 4.0pt
 |> \scan_stop: }
-[===== Step 24 =====] \exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}
+[==========] \exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}
 || \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}
 |> }
-[===== Step 25 =====] \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0p...
+[==========] \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0p...
 || \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}}
 |> 
-[===== Step 26 =====] Set \l_tmpa_tl=macro:->-2.0pt plus -3.0pt minus...
+[==========] Set \l_tmpa_tl=macro:->-2.0pt plus -3.0pt minus...
 || 
 |> 
 [===== The end! =====]
@@ -356,61 +356,61 @@ TEST 4: \unravel and glue multiplier
 Press <enter> to continue; 'h' <enter> for help.
 || 
 |> \l_tmpb_skip =-3.4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 1 =====] \l_tmpb_skip = \skip44
+[==========] \l_tmpb_skip = \skip44
 || \l_tmpb_skip 
 |> =-3.4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 2 =====] =
+[==========] =
 || \l_tmpb_skip =
 |> -3.4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 3 =====] -
+[==========] -
 || \l_tmpb_skip =
 || -
 |> 3.4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 4 =====] 3
+[==========] 3
 || \l_tmpb_skip =
 || -
 || 3
 |> .4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 5 =====] .
+[==========] .
 || \l_tmpb_skip =
 || -
 || 3.
 |> 4\l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 6 =====] 4
+[==========] 4
 || \l_tmpb_skip =
 || -
 || 3.4
 |> \l_tmpa_skip plus1fil\scan_stop: 
-[===== Step 7 =====] \l_tmpa_skip = \skip43
+[==========] \l_tmpa_skip = \skip43
 || \l_tmpb_skip =
 || -
 || 3.4 
 || \l_tmpa_skip 
 |> plus1fil\scan_stop: 
-[===== Step 8 =====] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minu...
+[==========] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minu...
 || \l_tmpb_skip =
 || -
 || 3.4 
 || 2.0pt plus 3.0pt minus 4.0pt
 |> plus1fil\scan_stop: 
-[===== Step 9 =====] plus
+[==========] plus
 || \l_tmpb_skip =
 || -6.79999ptplus
 |> 1fil\scan_stop: 
-[===== Step 10 =====] 1
+[==========] 1
 || \l_tmpb_skip =
 || -6.79999ptplus
 || 1
 |> fil\scan_stop: 
-[===== Step 11 =====] fil
+[==========] fil
 || \l_tmpb_skip =
 || -6.79999ptplus
 || 1fil
 |> \scan_stop: 
-[===== Step 12 =====] Set \l_tmpb_skip(\skip44)=-6.79999pt plus 1.0fil
+[==========] Set \l_tmpb_skip(\skip44)=-6.79999pt plus 1.0fil
 || 
 |> \scan_stop: 
-[===== Step 13 =====] \scan_stop: = \relax
+[==========] \scan_stop: = \relax
 || 
 |> 
 [===== The end! =====]
