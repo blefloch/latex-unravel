@@ -4,7 +4,7 @@
 \documentclass{minimal}
 \input{regression-test}
 \RequirePackage[log-functions,check-declarations]{expl3}
-\RequirePackage{gtl}
+\RequirePackage{xparse,gtl}
 \ExplSyntaxOn
 \sys_if_engine_xetex:T { \int_new:N \l_foo_int } % shift allocation by 1
 \ExplSyntaxOff

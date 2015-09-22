@@ -42,7 +42,7 @@
 %
 % \begin{function}{\unravel}
 %   \begin{syntax}
-%     \cs{unravel} \marg{code}
+%     \cs{unravel} \oarg{key-value list} \marg{code}
 %   \end{syntax}
 %   This command shows in the terminal the steps performed by \TeX{}
 %   when running the \meta{code}.  By default, it pauses to let the
@@ -50,12 +50,14 @@
 %   proceed.  Typing |s|\meta{integer} instead will go forward
 %   \meta{integer} steps somewhat silently.  In the future it will be
 %   possible to use a negative \meta{integer} to go back a few steps.
-%   Typing |h| gives a list of various other options.
+%   Typing |h| gives a list of various other possibilities.
+%   The available \meta{key-value} options are described in
+%   Section~\ref{sec:options}.
 % \end{function}
 %
-% \begin{function}{\unravel:n}
+% \begin{function}{\unravel:nn}
 %   \begin{syntax}
-%     \cs{unravel:n} \Arg{code}
+%     \cs{unravel:nn} \Arg{options} \Arg{code}
 %   \end{syntax}
 %   See the function \cs{unravel}.
 % \end{function}
@@ -138,6 +140,12 @@
 % |\unravel{\lipsum[1-30]}|, which also takes $20000$ step, takes
 % $8$~minutes to complete.
 %
+% \subsection{Options}
+%
+% \begin{function}[int]{internal-debug}
+%   Boolean option used to debug \pkg{unravel} itself.
+% \end{function}
+%
 % \subsection{Differences between \pkg{unravel} and \TeX{}'s processing}
 % \label{sec:differences}
 %
@@ -191,7 +199,7 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
-\RequirePackage{expl3}[2015/09/11]
+\RequirePackage{expl3,xparse}[2015/09/11]
 \RequirePackage{gtl}[2015/09/21]
 \ProvidesExplPackage
   {unravel} {2015/09/21} {0.1} {Watching TeX digest tokens}
@@ -426,7 +434,7 @@
 %
 % \begin{macro}[int,EXP,pTF]{\@@_token_if_expandable:N}
 %   We need to cook up our own version of \cs{token_if_expandable:NTF}
-%   because the \texttt{expl3} one does not think that |undefined| is
+%   because the \pkg{expl3} one does not think that |undefined| is
 %   expandable.
 %    \begin{macrocode}
 \prg_new_conditional:Npnn \@@_token_if_expandable:N #1
@@ -636,7 +644,7 @@
 % \end{variable}
 %
 % \begin{variable}{\l_@@_debug_bool}
-%   If true, debug-mode.  Activated by \cs{UnravelDebug}
+%   If true, debug-mode.  Activated by the |internal-debug| option.
 %    \begin{macrocode}
 \bool_new:N \l_@@_debug_bool
 %    \end{macrocode}
@@ -4108,7 +4116,7 @@
 % \item |relax=0| for \tn{relax}.
 % \item |begin-group_char=1| for begin-group characters (catcode~$1$).
 % \item |end-group_char=2| for end-group characters (catcode~$2$).
-% \item |math_char=3| for math shift (math toggle in \texttt{expl3})
+% \item |math_char=3| for math shift (math toggle in \pkg{expl3})
 %   characters (catcode~$3$).
 % \item |tab_mark=4| for \tn{span}
 % \item |alignment_char=4| for alignment tab characters (catcode~$4$).
@@ -7204,33 +7212,32 @@
 %
 % ^^A todo: I suspect a bug if given 'a' twice in a row
 %
+% \subsection{Keys}
+%
+%    \begin{macrocode}
+\keys_define:nn { unravel }
+  {
+    internal-debug .bool_set:N = \l_@@_debug_bool
+  }
+%    \end{macrocode}
+%
 % \subsection{Main command}
 %
 % \begin{macro}{\unravel}
 %   Simply call an underlying code-level command.
 %    \begin{macrocode}
-\cs_new_protected:Npn \unravel #1 { \unravel:n {#1} }
+\NewDocumentCommand \unravel { O { } m } { \unravel:nn {#1} {#2} }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\UnravelDebug}
-%   Turn on debugging mode.
-%    \begin{macrocode}
-\cs_new_protected_nopar:Npn \UnravelDebug
-  {
-    \bool_set_true:N \l_@@_debug_bool
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}[int]{\unravel:n}
+% \begin{macro}[int]{\unravel:nn}
 %   Welcome the user, then initialize the input, output and step.  Until
 %   the input is exhausted, print the current status and do one step.
 %    \begin{macrocode}
-\cs_new_protected:Npn \unravel:n #1
+\cs_new_protected:Npn \unravel:nn #1#2
   {
     \int_gzero:N  \g_@@_step_int
-    \@@_input_gset:n {#1}
+    \@@_input_gset:n {#2}
     \seq_gclear:N \g_@@_prev_input_seq
     \gtl_gclear:N \g_@@_output_gtl
     \tl_gclear:N  \g_@@_if_limit_tl
@@ -7240,6 +7247,7 @@
     \bool_gset_true:N  \g_@@_set_box_allowed_bool
     \bool_gset_false:N \g_@@_name_in_progress_bool
     \cs_gset_eq:NN \g_@@_prompt_ior \c_minus_one % ^^A todo:?
+    \keys_set:nn { unravel } {#1}
     \@@_print_welcome:
     \@@_main_loop:
     \@@_exit_point:
