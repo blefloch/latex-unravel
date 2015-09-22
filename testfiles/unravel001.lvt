@@ -10,7 +10,7 @@
 \START
 \ExplSyntaxOn
 
-\unravelsetup { number-steps = false }
+\unravelsetup { number-steps = false , max-action = 1000 }
 
 \TEST { \unravel }
   {
