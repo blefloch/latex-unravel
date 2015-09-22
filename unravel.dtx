@@ -617,17 +617,17 @@
 %
 % \subsubsection{User interaction}
 %
-% \begin{variable}{\g_@@_print_state_before_tl}
+% \begin{variable}{\g_@@_before_print_state_tl, \g_@@_before_prompt_tl}
+%   Code to run before printing the state or before the prompt.
 %    \begin{macrocode}
-\tl_new:N \g_@@_print_state_before_tl
+\tl_new:N \g_@@_before_print_state_tl
+\tl_new:N  \g_@@_before_prompt_tl
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}
-%   {\g_@@_prompt_ior, \g_@@_prompt_before_tl, \l_@@_prompt_tmpa_int}
+% \begin{variable}{\g_@@_prompt_ior, \l_@@_prompt_tmpa_int}
 %    \begin{macrocode}
 \ior_new:N \g_@@_prompt_ior
-\tl_new:N  \g_@@_prompt_before_tl
 \int_new:N \l_@@_prompt_tmpa_int
 %    \end{macrocode}
 % \end{variable}
@@ -641,10 +641,10 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\l_@@_debug_bool}
+% \begin{variable}{\g_@@_debug_bool}
 %   If true, debug-mode.  Activated by the |internal-debug| option.
 %    \begin{macrocode}
-\bool_new:N \l_@@_debug_bool
+\bool_new:N \g_@@_debug_bool
 %    \end{macrocode}
 % \end{variable}
 %
@@ -2386,7 +2386,7 @@
 \cs_new_protected_nopar:Npn \@@_expand:
   {
     \@@_set_action_text:
-    \bool_if:NT \l_@@_debug_bool
+    \bool_if:NT \g_@@_debug_bool
       {
         \@@_set_cmd:
         \iow_term:x { Exp:~\int_use:N \l_@@_head_cmd_int }
@@ -4092,7 +4092,7 @@
 \cs_new_protected_nopar:Npn \@@_do_step:
   {
     \@@_set_action_text:
-    \bool_if:NT \l_@@_debug_bool
+    \bool_if:NT \g_@@_debug_bool
       { \iow_term:x { Cmd:~\int_use:N \l_@@_head_cmd_int } }
     \cs_if_exist_use:cF
       { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
@@ -6668,7 +6668,7 @@
   {
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
-    \bool_if:NT \l_@@_debug_bool { \iow_term:n { {\ifcase level~#1} } }
+    \bool_if:NT \g_@@_debug_bool { \iow_term:n { {\ifcase level~#1} } }
     \@@_scan_int:
     \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
@@ -6834,7 +6834,7 @@
   {
     \group_begin:
       \@@_set_escapechar:n { 92 }
-      \tl_use:N \g_@@_print_state_before_tl
+      \tl_use:N \g_@@_before_print_state_tl
       \int_compare:nNnT \g_@@_noise_int > \c_zero
         {
           \exp_args:Nx \@@_print_state_output:n
@@ -7073,7 +7073,7 @@
         \group_begin:
           \@@_set_escapechar:n { -1 }
           \int_set_eq:NN \tex_endlinechar:D \c_minus_one
-          \tl_use:N \g_@@_prompt_before_tl
+          \tl_use:N \g_@@_before_prompt_tl
           \@@_prompt_aux:
         \group_end:
       }
@@ -7153,10 +7153,10 @@
     \int_compare:nNnF {#1} < \c_zero
       {
         \int_gset_eq:NN \g_@@_noise_int \c_minus_one
-        \tl_gset:Nn \g_@@_prompt_before_tl
+        \tl_gset:Nn \g_@@_before_prompt_tl
           {
             \int_gset_eq:NN \g_@@_noise_int \c_one
-            \tl_gclear:N \g_@@_prompt_before_tl
+            \tl_gclear:N \g_@@_before_prompt_tl
           }
         \int_gset:Nn \g_@@_nonstop_int {#1}
       }
@@ -7170,7 +7170,7 @@
 \cs_new_protected:Npn \@@_prompt_vert:Nn #1#2
   {
     \int_gset_eq:NN \g_@@_noise_int \c_minus_one
-    \tl_gset:Nf \g_@@_print_state_before_tl
+    \tl_gset:Nf \g_@@_before_print_state_tl
       {
         \exp_args:NNf \exp_stop_f: \int_compare:nNnTF
           { \int_eval:n { \seq_count:N \g_@@_prev_input_seq - #2 } }
@@ -7181,7 +7181,7 @@
           }
           {
             \int_gset_eq:NN \g_@@_noise_int \c_one
-            \tl_gclear:N \g_@@_print_state_before_tl
+            \tl_gclear:N \g_@@_before_print_state_tl
           }
       }
   }
@@ -7215,7 +7215,7 @@
 %    \begin{macrocode}
 \keys_define:nn { unravel }
   {
-    internal-debug .bool_set:N = \l_@@_debug_bool
+    internal-debug .bool_gset:N = \g_@@_debug_bool
   }
 %    \end{macrocode}
 %
