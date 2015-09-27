@@ -2785,8 +2785,8 @@
       }
       {
         \msg_error:nn { unravel } { missing-font-id }
+        \@@_back_input:
         \@@_prev_input:n { \@@_nullfont: }
-        \@@_back_error:
       }
   }
 %    \end{macrocode}
@@ -2928,9 +2928,9 @@
         { 83 } { 1 \@@_scan_int:           } % set_box_dimen
         { 84 } { 0 \@@_scan_int:           } % set_shape
         { 85 } { 0 \@@_scan_int:           } % def_code
-        { 86 } { 4 \@@_scan_font_ident:    } % def_family
-        { 87 } { 4 \@@_scan_font_ident:    } % set_font
-        { 88 } { 4 \@@_scan_font_ident:    } % def_font
+        { 86 } { 4 \@@_scan_int:           } % def_family
+        { 87 } { 4                         } % set_font
+        { 88 } { 4                         } % def_font
         { 89 } { \@@_thing_register:       } % register
       }
       { 8 }
