@@ -202,9 +202,19 @@
 % \item Some primitives are not implemented yet: alignments
 %   (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit}, \tn{span},
 %   \tn{cr}, \tn{crcr},~|&|), many math mode primitives, and
-%   \cs{pdfprimitive}, \cs{aftergroup}, \cs{discretionary}, as well as
+%   \tn{pdfprimitive}, \tn{discretionary}, as well as
 %   all primitives specific to engines other than \pdfTeX{}.
-%   This list is sadly incomplete!
+%   This list may sadly be incomplete!
+% \item \tn{aftergroup} is only partially implemented.
+% \item \tn{everyhbox}, \tn{everyvbox}, \tn{everymath},
+%   \tn{everydisplay}, \tn{lastkern}, \tn{lastnodetype},
+%   \tn{lastpenalty}, \tn{lastskip}, \tn{currentiflevel} and
+%   \tn{currentiftype} may have wrong values.  Perhaps
+%   \tn{currentgrouplevel} and \tn{currentgrouptype} too.
+% \item Tokens passed to \tn{afterassignment} are not yet kept after
+%   \pkg{unravel} is done even if there has been no assignment.
+% \item Tokens passed to \tn{aftergroup} are lost when \pkg{unravel} is
+%   done.
 % \item For \pkg{unravel}, category codes are fixed when a file is read
 %   using \tn{input},
 %   while \TeX{} only fixes category codes when the corresponding
@@ -939,6 +949,14 @@
 \gtl_new:N \g_@@_after_assignment_gtl
 \bool_new:N \g_@@_set_box_allowed_bool
 \bool_new:N \g_@@_name_in_progress_bool
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_after_group_gtl}
+%   Tokens to insert after the current group ends.  This variable must
+%   be emptied at the beginning of every group.
+%    \begin{macrocode}
+\gtl_new:N \l_@@_after_group_gtl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -3829,6 +3847,10 @@
 %
 % \begin{macro}[aux]{\@@_box_hook:N}
 % \begin{macro}[aux]{\@@_box_hook:w, \@@_box_hook_end:}
+%   Used to capture the contents of an \tn{everyhbox} or similar,
+%   without altering \tn{everyhbox} too much (just add one token at the
+%   start).  The various \texttt{o}-expansions remove
+%   \cs{prg_do_nothing:}, used to avoid losing braces.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_box_hook:N #1
   {
@@ -3846,6 +3868,7 @@
       {
         \exp_args:No #1 {##1}
         \cs_gset_eq:NN \@@_box_hook:w \prg_do_nothing:
+        \gtl_clear:N \l_@@_after_group_gtl
         \@@_print_action:
         \@@_back_input:o {##1}
         \@@_set_action_text:x
@@ -4006,21 +4029,27 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_handle_left_brace:
   {
-    \int_case:nnF \@@_currentgrouptype:
+    \int_compare:nTF { 1 <= \@@_currentgrouptype: <= 13 }
       {
-        { 1 } { \@@_end_simple_group: } % simple
-        { 2 } { \@@_end_box_group: } % hbox
-        { 3 } { \@@_end_box_group: } % adjusted_hbox
-        { 4 } { \@@_end_graf: \@@_end_box_group: } % vbox
-        { 5 } { \@@_end_graf: \@@_end_box_group: } % vtop
-        { 6 } { \@@_end_align_group: } % align
-        { 7 } { \@@_end_no_align_group: } % no_align
-        { 8 } { \@@_end_output_group: } % output
-        { 9 } { \@@_end_simple_group: } % math
-        { 10 } { \@@_end_disc_group: } % disc
-        { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert
-        { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter
-        { 13 } { \@@_end_math_choice_group: } % math_choice
+        \gtl_gconcat:NNN \g_@@_output_gtl
+          \g_@@_output_gtl \c_group_end_gtl
+        \@@_back_input_gtl:N \l_@@_after_group_gtl
+        \int_case:nn \@@_currentgrouptype:
+          {
+            { 1 } { \@@_end_simple_group: } % simple
+            { 2 } { \@@_end_box_group: } % hbox
+            { 3 } { \@@_end_box_group: } % adjusted_hbox
+            { 4 } { \@@_end_graf: \@@_end_box_group: } % vbox
+            { 5 } { \@@_end_graf: \@@_end_box_group: } % vtop
+            { 6 } { \@@_end_align_group: } % align
+            { 7 } { \@@_end_no_align_group: } % no_align
+            { 8 } { \@@_end_output_group: } % output
+            { 9 } { \@@_end_simple_group: } % math
+            { 10 } { \@@_end_disc_group: } % disc
+            { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert
+            { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter
+            { 13 } { \@@_end_math_choice_group: } % math_choice
+          }
       }
       { % bottom_level, semi_simple, math_shift, math_left
         \@@_back_input:
@@ -4038,8 +4067,6 @@
 \cs_new_protected_nopar:Npn \@@_end_simple_group:
   {
     \l_@@_head_token
-    \gtl_gconcat:NNN \g_@@_output_gtl
-      \g_@@_output_gtl \c_group_end_gtl
     \@@_print_action:
   }
 %    \end{macrocode}
@@ -4053,13 +4080,17 @@
 \cs_new_protected_nopar:Npn \@@_end_box_group:
   {
     \seq_pop:NN \l_@@_leaders_box_seq \l_@@_tmpa_tl
-    \str_if_eq_x:nnTF \l_@@_tmpa_tl { Z }
+    \exp_args:No \@@_end_box_group_aux:n { \l_@@_tmpa_tl }
+  }
+\cs_new_protected:Npn \@@_end_box_group_aux:n #1
+  {
+    \str_if_eq_x:nnTF {#1} { Z }
       { \@@_end_simple_group: }
       {
         \@@_get_x_non_relax:
         \@@_set_cmd:
         \int_compare:nNnTF \l_@@_head_cmd_int
-          = { \@@_tex_use:n { \l_@@_tmpa_tl skip } }
+          = { \@@_tex_use:n { #1 skip } }
           {
             \tl_put_left:Nn \l_@@_head_tl { \c_group_end_token }
             \@@_do_append_glue:
@@ -4182,6 +4213,7 @@
     \mode_if_inner:TF
       {
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \@@_back_input_gtl:N \l_@@_after_group_gtl
         $ % $
       }
       {
@@ -4195,6 +4227,7 @@
             \msg_error:nn { unravel } { missing-dollar }
           }
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \@@_back_input_gtl:N \l_@@_after_group_gtl
         $ $
       }
     \@@_print_action:
@@ -4258,7 +4291,7 @@
 %    \end{macrocode}
 %
 % Begin-group characters are sent to the output, as their grouping
-% behaviour may affect the scope of font changes, for instance.  The are
+% behaviour may affect the scope of font changes, for instance.  They are
 % also performed.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { begin-group_char }                     % 1
@@ -4267,6 +4300,7 @@
       \g_@@_output_gtl \c_group_begin_gtl
     \@@_print_action:
     \l_@@_head_token
+    \gtl_clear:N \l_@@_after_group_gtl
   }
 %    \end{macrocode}
 %
@@ -4427,6 +4461,7 @@
   }
 %    \end{macrocode}
 %
+% ^^A todo: \dump only at bottom-level (\currentgrouptype=0)
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { stop }                                 % 14
   {
@@ -4856,9 +4891,33 @@
   }
 %    \end{macrocode}
 %
+% Save the next token at the end of \cs{l_@@_after_group_gtl}, unless
+% we are at the bottom group level, in which case, the token is ignored
+% completely.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { after_group }                          % 41
-  { \msg_error:nnx { unravel } { not-implemented } { aftergroup } }
+  {
+    \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
+    \@@_get_next:
+    \int_compare:nNnTF \@@_currentgrouptype: = \c_zero
+      {
+        \@@_print_action:x
+          {
+            Aftergroup~(level~0~=>~dropped):~
+            \tl_to_str:N \l_@@_tmpa_tl
+            \gtl_to_str:N \l_@@_head_gtl
+          }
+      }
+      {
+        \gtl_concat:NNN \l_@@_after_group_gtl
+          \l_@@_after_group_gtl \l_@@_head_gtl
+        \@@_print_action:x
+          {
+            Aftergroup:~\tl_to_str:N \l_@@_tmpa_tl
+            \gtl_to_str:N \l_@@_head_gtl
+          }
+      }
+  }
 %    \end{macrocode}
 %
 % See \cs{@@_do_append_glue:}.
@@ -5115,19 +5174,20 @@
   }
 %    \end{macrocode}
 %
-% ^^A todo: take \aftergroup into account
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { begin_group }                          % 61
   {
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-    \@@_print_action:
     \l_@@_head_token
+    \gtl_clear:N \l_@@_after_group_gtl
+    \@@_print_action:
   }
 \@@_new_tex_cmd:nn { end_group }                            % 62
   {
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-    \@@_print_action:
+    \@@_back_input_gtl:N \l_@@_after_group_gtl
     \l_@@_head_token
+    \@@_print_action:
   }
 %    \end{macrocode}
 %
@@ -7417,6 +7477,7 @@
     \gtl_gclear:N \g_@@_after_assignment_gtl
     \bool_gset_true:N  \g_@@_set_box_allowed_bool
     \bool_gset_false:N \g_@@_name_in_progress_bool
+    \gtl_clear:N \l_@@_after_group_gtl
   }
 %    \end{macrocode}
 % \end{macro}
