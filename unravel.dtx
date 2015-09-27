@@ -299,24 +299,15 @@
 %
 % Variants that we need.
 %    \begin{macrocode}
-\cs_if_exist:NF \exp_last_unbraced:NNn
-  { \cs_new_eq:NN \exp_last_unbraced:NNn \use:nnn }
-\cs_generate_variant:Nn \exp_last_unbraced:NNn { NNv }
 \cs_generate_variant:Nn \str_head:n { f }
 \cs_generate_variant:Nn \tl_to_str:n { o }
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
-\cs_generate_variant:Nn \tl_if_head_is_space:nTF { o }
-\cs_generate_variant:Nn \tl_if_head_is_space:nT { V }
-\cs_generate_variant:Nn \tl_if_head_is_N_type:nTF { o }
 \cs_generate_variant:Nn \tl_if_in:nnF { nV }
 \cs_generate_variant:Nn \tl_if_in:nnTF { nV }
-\cs_generate_variant:Nn \tl_if_eq:nnT { V }
 \cs_generate_variant:Nn \tl_if_in:NnTF { No , NV }
 \cs_generate_variant:Nn \tl_if_single_token:nT { V }
 \cs_generate_variant:Nn \tl_gset_rescan:Nnn { Nnx }
-\cs_generate_variant:Nn \gtl_gput_left:Nn { Nx , NV , No }
-\cs_generate_variant:Nn \gtl_gput_right:Nn { Nx , NV }
-\cs_generate_variant:Nn \gtl_put_right:Nn { NV }
+\cs_generate_variant:Nn \gtl_gput_right:Nn { NV }
 \cs_generate_variant:Nn \ior_get_str:NN { Nc }
 \cs_generate_variant:Nn \gtl_if_empty:NTF { c }
 \cs_generate_variant:Nn \gtl_to_str:N { c }
@@ -3767,7 +3758,7 @@
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
-        \gtl_put_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
       }
   }
