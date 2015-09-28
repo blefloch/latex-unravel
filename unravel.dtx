@@ -3823,8 +3823,8 @@
 %   is such that all that material is collected and put into the input
 %   that we will study.
 %   We must remember to find a glue for leaders, and for this
-%   we use a stack of booleans: the top is true if the innermost box is
-%   part of leaders.
+%   we use a stack of letters |v|, |h| for vertical/horizontal
+%   leaders, and |Z| for normal boxes.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_box_explicit:N #1
   {
