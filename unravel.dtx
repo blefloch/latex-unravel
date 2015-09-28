@@ -215,6 +215,8 @@
 %   \pkg{unravel} is done even if there has been no assignment.
 % \item Tokens passed to \tn{aftergroup} are lost when \pkg{unravel} is
 %   done.
+% \item In \XeTeX{}, characters beyond the basic multilingual plane may
+%   break \pkg{unravel} (not tested).
 % \item For \pkg{unravel}, category codes are fixed when a file is read
 %   using \tn{input},
 %   while \TeX{} only fixes category codes when the corresponding
@@ -338,27 +340,27 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_tl_gset_input:Nnn, \@@_tl_gset_input:Nno}
-% \begin{macro}[aux]{\@@_tl_gset_input_aux:wN}
+% \begin{macro}[aux]{\@@_file_get:nN}
+% \begin{macro}[aux]{\@@_file_get_aux:wN}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_tl_gset_input:Nnn #1#2#3
+\cs_set_protected:Npn \@@_tmp:w #1
   {
-    \group_begin:
-      \@@_everyeof:w \exp_after:wN { \token_to_str:N @ @ #1 }
-      #2
-      \tl_gclear:N #1
-      \exp_after:wN \@@_tl_gset_input_aux:wN
-      \exp_after:wN \prg_do_nothing:
-        \tex_input:D \tl_to_str:n {#3} \scan_stop:
-    \group_end:
-    \tl_gput_right:NV #1 \@@_everyeof:w
+    \cs_new_protected:Npn \@@_file_get:nN ##1##2
+      {
+        \group_begin:
+          \@@_everyeof:w { #1 ##2 }
+          \exp_after:wN \@@_file_get_aux:wN
+          \exp_after:wN \prg_do_nothing:
+            \tex_input:D ##1 \scan_stop:
+      }
+    \cs_new_protected:Npn \@@_file_get_aux:wN ##1 #1 ##2
+      {
+        \group_end:
+        \tl_set:Nx ##2
+          { \exp_not:o {##1} \exp_not:V \@@_everyeof:w }
+      }
   }
-\cs_generate_variant:Nn \@@_tl_gset_input:Nnn { Nno }
-\use:x
-  {
-    \cs_new_protected:Npn \exp_not:N \@@_tl_gset_input_aux:wN
-      ##1 \token_to_str:N @ @ ##2
-  }   { \tl_gset:No #2 {#1} }
+\exp_args:No \@@_tmp:w { \token_to_str:N : : }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -6363,8 +6365,8 @@
     \@@_scan_file_name:
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \tl_set:Nx \l_@@_tmpa_tl { \tl_tail:N \l_@@_head_tl }
-    \@@_tl_gset_input:Nno \g_@@_tmpc_tl { } \l_@@_tmpa_tl
-    \@@_back_input:V \g_@@_tmpc_tl
+    \@@_file_get:nN \l_@@_tmpa_tl \l_@@_tmpa_tl
+    \@@_back_input:V \l_@@_tmpa_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
