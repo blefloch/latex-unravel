@@ -1,0 +1,65 @@
+%
+% Copyright (C) 2015 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\START
+\long\def\testfirstofone#1{#1}
+\testfirstofone
+{
+
+\def\next#1{#1\advance\mag1 \ifnum\mag<256 \next{#1}\fi}
+\mag=0 \next{\catcode\mag=15 }
+\catcode`\%=14
+\catcode`\0=12
+\catcode`\1=12
+\catcode`\2=12
+\catcode`\3=12
+\catcode`\4=12
+\catcode`\5=12
+\catcode`\\=0
+\catcode`\a=11
+\catcode`\b=11
+\catcode`\c=11
+\catcode`\d=11
+\catcode`\e=11
+\catcode`\f=11
+\catcode`\g=11
+\catcode`\i=11
+\catcode`\l=11
+\catcode`\m=11
+\catcode`\n=11
+\catcode`\o=11
+\catcode`\p=11
+\catcode`\r=11
+\catcode`\t=11
+\catcode`\u=11
+\catcode`\v=11
+\def\showcatcodes{\mag=0
+  \next{\ifnum\catcode\mag=15
+    \else\message{\the\mag:\the\catcode\mag}\fi}}
+
+\TEST {RequirePackage in a group}
+  {
+    \RequirePackage{unravel}
+    \showcatcodes
+  }
+\expandafter\let\csname ver@unravel.sty\endcsname\relax
+
+\TEST {input in a group}
+  {
+    \input unravel.sty
+    \showcatcodes
+  }
+
+\TEST {RequirePackage with no group} { }
+\RequirePackage{unravel}
+\showcatcodes
+
+\TEST {input with no group} { }
+\input unravel.sty
+\showcatcodes
+
+\END
+
+}
