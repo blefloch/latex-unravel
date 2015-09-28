@@ -2780,6 +2780,21 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}[aux]{\@@_scan_to:}
+%   Used when |to| is mandatory: after \tn{read} or \tn{readline} and
+%   after \tn{vsplit}.
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_scan_to:
+  {
+    \@@_scan_keyword:nF { tToO }
+      {
+        \msg_error:nn { unravel } { missing-to }
+        \@@_prev_input:n { to }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[aux]{\@@_scan_font_ident:}
 %   Find a font identifier.
 %    \begin{macrocode}
@@ -3753,11 +3768,7 @@
         { 3 } % vsplit
           {
             \@@_scan_int:
-            \@@_scan_keyword:nF { tToO }
-              {
-                \msg_error:nn { unravel } { missing-to }
-                \@@_prev_input:n { to }
-              }
+            \@@_scan_to:
             \@@_scan_normal_dimen:
           }
       }
@@ -5969,11 +5980,7 @@
     \@@_prev_input:V \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_int:
-    \@@_scan_keyword:nF { tToO }
-      {
-        \msg_error:nn { unravel } { missing-to }
-        \@@_prev_input:n { to }
-      }
+    \@@_scan_to:
     \@@_scan_r_token:
     \@@_assign_token:n { }
   }
