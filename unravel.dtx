@@ -3294,7 +3294,7 @@
   {
     \bool_if:NT #2
       {
-        \@@_scan_keyword:nT { fF iI lL }
+        \@@_scan_keyword:nT { fFiIlL }
           {
             \@@_scan_inf_unit_loop:
             \@@_break:w
@@ -3313,25 +3313,25 @@
       { \@@_back_input: }
     \int_compare:nNnT {#1} = { 3 }
       {
-        \@@_scan_keyword:nT { mM uU } { \@@_break:w }
+        \@@_scan_keyword:nT { mMuU } { \@@_break:w }
         \msg_error:nn { unravel } { missing-mudim }
         \@@_break:w
       }
-    \@@_scan_keyword:nT { eE mM } { \@@_break:w }
-    \@@_scan_keyword:nT { eE xX } { \@@_break:w }
-    \@@_scan_keyword:nT { pP xX } { \@@_break:w }
-    \@@_scan_keyword:n { tT rR uU eE }
-    \@@_scan_keyword:nT { pP tT } { \@@_break:w }
-    \@@_scan_keyword:nT { iI nN } { \@@_break:w }
-    \@@_scan_keyword:nT { pP cC } { \@@_break:w }
-    \@@_scan_keyword:nT { cC mM } { \@@_break:w }
-    \@@_scan_keyword:nT { mM mM } { \@@_break:w }
-    \@@_scan_keyword:nT { bB pP } { \@@_break:w }
-    \@@_scan_keyword:nT { dD dD } { \@@_break:w }
-    \@@_scan_keyword:nT { cC cC } { \@@_break:w }
-    \@@_scan_keyword:nT { nN dD } { \@@_break:w }
-    \@@_scan_keyword:nT { nN cC } { \@@_break:w }
-    \@@_scan_keyword:nT { sS pP } { \@@_break:w }
+    \@@_scan_keyword:nT { eEmM } { \@@_break:w }
+    \@@_scan_keyword:nT { eExX } { \@@_break:w }
+    \@@_scan_keyword:nT { pPxX } { \@@_break:w }
+    \@@_scan_keyword:n { tTrRuUeE }
+    \@@_scan_keyword:nT { pPtT } { \@@_break:w }
+    \@@_scan_keyword:nT { iInN } { \@@_break:w }
+    \@@_scan_keyword:nT { pPcC } { \@@_break:w }
+    \@@_scan_keyword:nT { cCmM } { \@@_break:w }
+    \@@_scan_keyword:nT { mMmM } { \@@_break:w }
+    \@@_scan_keyword:nT { bBpP } { \@@_break:w }
+    \@@_scan_keyword:nT { dDdD } { \@@_break:w }
+    \@@_scan_keyword:nT { cCcC } { \@@_break:w }
+    \@@_scan_keyword:nT { nNdD } { \@@_break:w }
+    \@@_scan_keyword:nT { nNcC } { \@@_break:w }
+    \@@_scan_keyword:nT { sSpP } { \@@_break:w }
     \@@_break_point:
   }
 \cs_new_protected_nopar:Npn \@@_scan_inf_unit_loop:
@@ -3389,9 +3389,9 @@
     \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
     \seq_gput_right:Nn \g_@@_prev_input_seq { }
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \@@_scan_keyword:nT { pP lL uU sS }
+    \@@_scan_keyword:nT { pPlLuUsS }
       { \@@_scan_dimen:nN {#1} \c_true_bool }
-    \@@_scan_keyword:nT { mM iI nN uU sS }
+    \@@_scan_keyword:nT { mMiInNuUsS }
       { \@@_scan_dimen:nN {#1} \c_true_bool }
     \@@_break_point:
     \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
@@ -3665,9 +3665,9 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_spec:
   {
-    \@@_scan_keyword:nTF { tT oO } { \@@_scan_normal_dimen: }
+    \@@_scan_keyword:nTF { tToO } { \@@_scan_normal_dimen: }
       {
-        \@@_scan_keyword:nT { sS pP rR eE aA dD }
+        \@@_scan_keyword:nT { sSpPrReEaAdD }
           { \@@_scan_normal_dimen: }
       }
     \@@_scan_left_brace:
@@ -3753,7 +3753,7 @@
         { 3 } % vsplit
           {
             \@@_scan_int:
-            \@@_scan_keyword:nF { tT oO }
+            \@@_scan_keyword:nF { tToO }
               {
                 \msg_error:nn { unravel } { missing-to }
                 \@@_prev_input:n { to }
@@ -5298,24 +5298,24 @@
           }
         { 6 } % pdfliteral
           {
-            \@@_scan_keyword:nF { dD iI rR eE cC tT }
-              { \@@_scan_keyword:n { pP aA gG eE } }
+            \@@_scan_keyword:nF { dDiIrReEcCtT }
+              { \@@_scan_keyword:n { pPaAgGeE } }
             \@@_scan_pdf_ext_toks:
           }
         { 7 } % pdfobj
           {
             \@@_scan_keyword:nTF
-              { rR eE sS eE rR vV eE oO bB jJ nN uU mM }
+              { rReEsSeErRvVeEoObBjJnNuUmM }
               { \@@_skip_optional_space: }
               {
-                \@@_scan_keyword:nF { uU sS eE oO bB jJ nN uU mM }
+                \@@_scan_keyword:nF { uUsSeEoObBjJnNuUmM }
                   { \@@_scan_int: }
-                \@@_scan_keyword:nT { sS tT rR eE aA mM }
+                \@@_scan_keyword:nT { sStTrReEaAmM }
                   {
-                    \@@_scan_keyword:nT { aA tT tT rR }
+                    \@@_scan_keyword:nT { aAtTtTrR }
                       { \@@_scan_pdf_ext_toks: }
                   }
-                \@@_scan_keyword:n { fF iI lL eE }
+                \@@_scan_keyword:n { fFiIlLeE }
                 \@@_scan_pdf_ext_toks:
               }
           }
@@ -5323,9 +5323,9 @@
           { \@@_scan_int: }
         { 9 } % pdfxform
           {
-            \@@_scan_keyword:nT { aA tT tT rR }
+            \@@_scan_keyword:nT { aAtTtTrR }
               { \@@_scan_pdf_ext_toks: }
-            \@@_scan_keyword:nTF { rR eE sS oO uU rR cC eE sS }
+            \@@_scan_keyword:nTF { rReEsSoOuUrRcCeEsS }
               { \@@_scan_pdf_ext_toks: }
             \@@_scan_int:
           }
@@ -5338,10 +5338,10 @@
         { 13 } % pdfannot
           {
             \@@_scan_keyword:nTF
-              { rR eE sS eE rR vV eE oO bB jJ nN uU mM }
+              { rReEsSeErRvVeEoObBjJnNuUmM }
               { \@@_scan_optional_space: }
               {
-                \@@_scan_keyword:nT { uU sS eE oO bB jJ nN uU mM }
+                \@@_scan_keyword:nT { uUsSeEoObBjJnNuUmM }
                   { \@@_scan_int: }
                 \@@_scan_alt_rule:
                 \@@_scan_pdf_ext_toks:
@@ -5363,10 +5363,10 @@
           }
         { 16 } % pdfoutline
           {
-            \@@_scan_keyword:nT { aA tT tT rR }
+            \@@_scan_keyword:nT { aAtTtTrR }
               { \@@_scan_pdf_ext_toks: }
             \@@_scan_action:
-            \@@_scan_keyword:nT { cC oO uU nN tT }
+            \@@_scan_keyword:nT { cCoOuUnNtT }
               { \@@_scan_int: }
             \@@_scan_pdf_ext_toks:
           }
@@ -5385,7 +5385,7 @@
         { 23 } % pdfcatalog
           {
             \@@_scan_pdf_ext_toks:
-            \@@_scan_keyword:n { oO pP eE nN aA cC tT iI oO nN }
+            \@@_scan_keyword:n { oOpPeEnNaAcCtTiIoOnN }
               { \@@_scan_action: }
           }
         { 24 } % pdfnames
@@ -5475,7 +5475,7 @@
 \cs_new_protected_nopar:Npn \@@_scan_rule_attr:
   {
     \@@_scan_alt_rule:
-    \@@_scan_keyword:nT { aA tT tT rR }
+    \@@_scan_keyword:nT { aAtTtTrR }
       { \@@_scan_pdf_ext_toks: }
   }
 %    \end{macrocode}
@@ -5892,7 +5892,7 @@
     \@@_scan_keyword:nTF { aAtT }
       { \@@_scan_normal_dimen: }
       {
-        \@@_scan_keyword:nT { sS cC aA lL eE dD }
+        \@@_scan_keyword:nT { sScCaAlLeEdD }
           { \@@_scan_int: }
       }
     \bool_gset_false:N \g_@@_name_in_progress_bool
@@ -6433,7 +6433,7 @@
         { 23 } \@@_scan_pdf_ext_toks:
         { 24 }
           {
-            \@@_scan_keyword:n { fF iI lL eE }
+            \@@_scan_keyword:n { fFiIlLeE }
             \@@_scan_pdf_ext_toks:
           }
         { 25 } \@@_scan_pdffiledump:
@@ -6455,23 +6455,23 @@
   { \@@_scan_int: \@@_scan_int: }
 \cs_new_protected_nopar:Npn \@@_scan_pdfcolorstackinit:
   {
-    \@@_scan_keyword:nTF { pP aA gG eE }
+    \@@_scan_keyword:nTF { pPaAgGeE }
       { \bool_set_true:N \l_@@_tmpa_bool }
       { \bool_set_false:N \l_@@_tmpb_bool }
-    \@@_scan_keyword:nF { dD iI rR eE cC tT }
-      { \@@_scan_keyword:n { pP aA gG eE } }
+    \@@_scan_keyword:nF { dDiIrReEcCtT }
+      { \@@_scan_keyword:n { pPaAgGeE } }
     \@@_scan_toks_to_str:
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdffiledump:
   {
-    \@@_scan_keyword:nT { oO fF fF sS eE tT } \@@_scan_int:
-    \@@_scan_keyword:nT { lL eE nN gG tT hH } \@@_scan_int:
+    \@@_scan_keyword:nT { oOfFfFsSeEtT } \@@_scan_int:
+    \@@_scan_keyword:nT { lLeEnNgGtThH } \@@_scan_int:
     \@@_scan_pdf_ext_toks:
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdfmatch:
   {
-    \@@_scan_keyword:n { iI cC aA sS eE }
-    \@@_scan_keyword:nT { sS uU bB cC oO uU nN tT }
+    \@@_scan_keyword:n { iIcCaAsSeE }
+    \@@_scan_keyword:nT { sSuUbBcCoOuUnNtT }
       { \@@_scan_int: }
     \@@_scan_pdf_ext_toks:
     \@@_scan_pdf_ext_toks:
