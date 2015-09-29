@@ -114,3 +114,79 @@ Defining \g__unravel_input_4_gtl on line ...
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 2: \unravel : \read in \nonstopmode 
+============================================================
+[===== Start =====]
+|| 
+|> \nonstopmode \global \read 16to\foo \scrollmode \show \foo \global \edef
+|> \foo {\expandafter \empty }
+[==========] \nonstopmode 
+|| 
+|> \global \read 16to\foo \scrollmode \show \foo \global \edef \foo
+|> {\expandafter \empty }
+[==========] \global 
+|| \global 
+|> \read 16to\foo \scrollmode \show \foo \global \edef \foo {\expandafter
+|> \empty }
+[==========] \read 
+|| \global \read 
+|> 16to\foo \scrollmode \show \foo \global \edef \foo {\expandafter \empty }
+[==========] 1
+|| \global \read 1
+|> 6to\foo \scrollmode \show \foo \global \edef \foo {\expandafter \empty }
+[==========] 6
+|| \global \read 16
+|> to\foo \scrollmode \show \foo \global \edef \foo {\expandafter \empty }
+[==========] to
+|| \global \read 16to
+|> \foo \scrollmode \show \foo \global \edef \foo {\expandafter \empty }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-fatal"
+! 
+! TeX sees "\global \read 16to\foo " and throws a fatal error:
+! 
+!     *** (cannot \read from terminal in nonstop modes)
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX provides no further help for this error.
+|...............................................
+[==========] \scrollmode 
+|| 
+|> \show \foo \global \edef \foo {\expandafter \empty }
+[==========] \show = \show
+|| \show 
+|> \foo \global \edef \foo {\expandafter \empty }
+> \foo=undefined.
+<argument> \foo 
+l. ...  }
+[==========] \global 
+|| \global 
+|> \edef \foo {\expandafter \empty }
+[==========] \expandafter \empty 
+|| \global 
+|| \edef \foo {
+|| \expandafter \empty 
+|> }
+[==========] back_input: \expandafter \empty 
+|| \global 
+|| \edef \foo {
+|> \empty }
+[==========] \empty = macro:->
+|| \global 
+|| \edef \foo {
+|> }
+[==========] \edef \foo {}
+|| \global \edef \foo {}
+|> 
+[==========] Set \foo=macro:->
+|| 
+|> 
+[===== End =====]
+============================================================

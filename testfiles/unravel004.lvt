@@ -24,4 +24,16 @@
       }
   }
 
+\TEST { \unravel ~ : ~ \read ~ in ~ \nonstopmode }
+  {
+    \unravel
+      {
+        \nonstopmode
+        \global \read 16 to \foo % causes a fatal_error
+        \scrollmode
+        \show \foo
+        \global \edef \foo { \expandafter \empty }
+      } % do something non-trivial to see if things are broken after the fatal_error
+  }
+
 \END

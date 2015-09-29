@@ -239,6 +239,12 @@
 % \item Allow to replay steps that have already been run.
 % \item Fix the display for \tn{if} and \tn{ifcat} (remove extraneous
 %   \cs{exp_not:N}).
+% \item Use the |file-error| fatal error message: first implement
+%   \cs{@@_file_if_exist:nTF} and use it to determine whether
+%   \tn{input} will throw a fatal error in \tn{batchmode} and
+%   \tn{nonstopmode}.
+% \item Use the |interwoven-preambles| fatal error message once
+%   alignments are implemented.
 % \end{itemize}
 %
 % \end{documentation}
@@ -591,6 +597,49 @@
       }
   }
 \exp_args:No \@@_tmp:w { \token_to_str:N : : }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int, EXP]{\@@_tl_first_int:N}
+% \begin{macro}[aux, EXP]{\@@_tl_first_int_aux:Nn}
+%   Function that finds an explicit number in a token list.  This is
+%   used for instance when implementing \tn{read}, to find the stream
+%   \meta{number} within the whole \tn{read} \meta{number} |to|
+%   \meta{cs} construction.  The auxiliary initially has itself as a
+%   first argument, and once a first digit is found it has
+%   \cs{use_none_delimit_by_q_stop:w}.  That first argument is used
+%   whenever what follows is not a digit, hence initially we loop,
+%   while after the first digit is found any non-digit stops the
+%   recursion.  If no integer is found, $0$ is left in the token list.
+%   The surrounding \cs{int_eval:n} lets us dump digits in the input
+%   stream while keeping the function fully expandable.
+%    \begin{macrocode}
+\cs_new:Npn \@@_tl_first_int:N #1
+  {
+    \int_eval:n
+      {
+        \exp_after:wN \@@_tl_first_int_aux:Nn
+        \exp_after:wN \@@_tl_first_int_aux:Nn
+        #1 ? 0 ? \q_stop
+      }
+  }
+\cs_new:Npn \@@_tl_first_int_aux:Nn #1#2
+  {
+    \tl_if_single:nT {#2}
+      {
+        \token_if_eq_catcode:NNT + #2
+          {
+            \if_int_compare:w 1 < 1 #2 \exp_stop_f:
+              #2
+              \exp_after:wN \use_i_ii:nnn
+              \exp_after:wN \@@_tl_first_int_aux:Nn
+              \exp_after:wN \use_none_delimit_by_q_stop:w
+            \fi:
+          }
+      }
+    #1
+  }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -6203,17 +6252,55 @@
   }
 %    \end{macrocode}
 %
+% \begin{macro}[aux, EXP]{\@@_read_to_cs_safe:nTF, \@@_read_to_cs_safe:fTF}
+%   After \tn{read} or \tn{readline}, find an int, the mandatory
+%   keyword |to|, and an assignable token.  The \tn{read} and
+%   \tn{readline} primitives throw a fatal error in \tn{nonstopmode}
+%   and in \tn{batchmode} when trying to read from a stream that is
+%   outside $[0,15]$ or that is not open (according to \tn{ifeof}).  We
+%   detect this situation using \cs{@@_read_to_cs_safe:nTF} after
+%   grabbing all arguments of the primitives.  If reading is unsafe,
+%   let the user know that \TeX{} would have thrown a fatal error.
 %    \begin{macrocode}
 \@@_prefixed_new:nn { read_to_cs }                          % 96
   {
-    \@@_prev_input:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_int:
     \@@_scan_to:
     \@@_scan_r_token:
-    \@@_assign_token:n { }
+    \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_read_to_cs_safe:fTF
+      { \@@_tl_first_int:N \l_@@_tmpa_tl }
+      { \@@_assign_token:n { } }
+      {
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_tex_fatal_error:nV { cannot-read } \l_@@_head_tl
+      }
   }
+\prg_new_conditional:Npnn \@@_read_to_cs_safe:n #1 { TF }
+  {
+    \int_compare:nNnTF { \etex_interactionmode:D } > { 1 }
+      { \prg_return_true: }
+      {
+        \int_compare:nNnTF {#1} < { 0 }
+          { \prg_return_false: }
+          {
+            \int_compare:nNnTF {#1} > { 15 }
+              { \prg_return_false: }
+              {
+                \tex_ifeof:D #1 \exp_stop_f:
+                  \prg_return_false:
+                \else:
+                  \prg_return_true:
+                \fi:
+              }
+          }
+      }
+  }
+\cs_generate_variant:Nn \@@_read_to_cs_safe:nTF { f }
 %    \end{macrocode}
+% \end{macro}
 %
 %    \begin{macrocode}
 \@@_prefixed_new:nn { def }                                 % 97
@@ -7579,6 +7666,35 @@
 %
 % ^^A todo: I suspect a bug if given 'a' twice in a row
 %
+% \subsubsection{Errors}
+%
+% \begin{macro}[int]{\@@_tex_msg_new:nnn}
+%   This stores a \TeX{} error message.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tex_msg_new:nnn #1#2#3
+  {
+    \cs_new_nopar:cpn { @@_tex_msg_error_#1: } {#2}
+    \cs_new_nopar:cpn { @@_tex_msg_help_#1: } {#3}
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_tex_fatal_error:nn, \@@_tex_fatal_error:nV}
+%   Throw the |tex-fatal| error message, with arguments: |#2| which
+%   triggered the fatal error, \TeX{}'s error message, and \TeX{}'s
+%   help text.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tex_fatal_error:nn #1#2
+  {
+    \msg_error:nnxxx { unravel } { tex-fatal }
+      { \tl_to_str:n {#2} }
+      { \use:c { @@_tex_msg_error_#1: } }
+      { \use:c { @@_tex_msg_help_#1: } }
+  }
+\cs_generate_variant:Nn \@@_tex_fatal_error:nn { nV }
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsection{Keys}
 %
 % Each key needs to be defined twice: for its default setting and for
@@ -7837,6 +7953,26 @@
   { The~following~feature~is~not~implemented:~'#1'. }
 \msg_new:nnn { unravel } { endinput-ignored }
   { The~primitive~\iow_char:N\\endinput~was~ignored. }
+\msg_new:nnnn { unravel } { tex-fatal }
+  { TeX~sees~"#1"~and~throws~a~fatal~error:\\\\ \iow_indent:n {#2} }
+  {
+    \tl_if_empty:nTF {#3}
+      { TeX~provides~no~further~help~for~this~error. }
+      { TeX's~advice~is:\\\\ \iow_indent:n {#3} }
+  }
+%    \end{macrocode}
+%
+% Some error messages from \TeX{} itself.
+%    \begin{macrocode}
+\@@_tex_msg_new:nnn { cannot-read }
+  { ***~(cannot~\iow_char:N\\read~from~terminal~in~nonstop~modes) }
+  { }
+\@@_tex_msg_new:nnn { file-error }
+  { ***~(job~aborted,~file~error~in~nonstop~mode) }
+  { }
+\@@_tex_msg_new:nnn { interwoven-preambles }
+  { (interwoven~alignment~preambles~are~not~allowed) }
+  { }
 %    \end{macrocode}
 %
 % Restore catcodes to their original values.
