@@ -10,6 +10,9 @@
 
 \def\next#1{#1\advance\mag1 \ifnum\mag<256 \next{#1}\fi}
 \mag=0 \next{\catcode\mag=15 }
+\endlinechar=123
+\escapechar=45
+\newlinechar=67
 \catcode`\%=14
 \catcode`\0=12
 \catcode`\1=12

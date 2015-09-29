@@ -262,7 +262,7 @@
 % for short, set the catcode of space to be 10 (using |\fam| to avoid
 % needing a space or an equal sign to separate the two integer
 % arguments of |\catcode|) and that of |%| to be 14 (using |\fam| again
-% to avoid needing the digit 7 to have catcode other (we need the digit
+% to avoid needing the digit 7 to have catcode other: we need the digit
 % 5 anyway in two steps).  Then make |-|, |6|, |7|, |8|, |9| other (we
 % must assume that |0| through |5| are already other), and make |:|,
 % |_|, |h|, |j|, |k|, |q|, |s|, |w|, |x|, |y|, |z| letters (other
@@ -306,9 +306,10 @@
 \endinput\expandafter\expandafter\expandafter\endgroup\fi\fi
 %    \end{macrocode}
 %
-% Make spaces ignored, as that is easier to work with.
+% Make spaces ignored and make |~| a space, to prettify code.
 %    \begin{macrocode}
 \catcode 32 = 9 \relax
+\catcode 126 = 10 \relax
 %    \end{macrocode}
 %
 % \begin{variable}{\l_@@_setup_restore_tl}
@@ -332,79 +333,90 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[int]{\@@_setup:nn}
-%   Save in \cs{l_@@_setup_restore_tl} the value of |#1| and sets it to
-%   |#2|.  This is used directly for \tn{escapechar}, \tn{endlinechar},
-%   \tn{newlinechar}, and through \cs{@@_setup_catcode:nn} for catcodes.
+% \begin{macro}[int]{\@@_setup_save:}
+% \begin{macro}[aux, EXP]{\@@_setup_save_aux:n}
+%   This saves into \cs{l_@@_setup_restore_tl} the current catcodes
+%   (from $0$ to $255$ only), \tn{endlinechar}, \tn{escapechar},
+%   \tn{newlinechar}.
 %    \begin{macrocode}
-\protected \gdef \@@_setup:nn #1#2
+\protected \gdef \@@_setup_save:
   {
     \edef \l_@@_setup_restore_tl
       {
-        \l_@@_setup_restore_tl
-        #1 = \the #1 \relax
+        \@@_setup_save_aux:w 0 =
+        \endlinechar = \the \endlinechar
+        \escapechar = \the \escapechar
+        \newlinechar = \the \newlinechar
+        \relax
       }
-    #1 = #2 \relax
+  }
+\long \gdef \@@_setup_save_aux:w #1 =
+  {
+    \catcode #1 = \the \catcode #1 ~
+    \ifnum 255 > #1 ~
+      \expandafter \@@_setup_save_aux:w
+      \the \numexpr #1 + 1 \expandafter =
+    \fi
   }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
 %
-% \begin{macro}[int]{\@@_setup_catcode:nn, \@@_setup_catcodes:nnn}
-%   The two-argument function uses \cs{@@_setup:nn} to save the current
-%   catcode of the character |#1| (given as an explicit integer) and
-%   change it to |#2|.  The three-argument function does the same for
-%   all integers from |#1| to |#2| inclusive.
+% \begin{macro}[int]{\@@_setup_catcodes:nnn}
+%   This sets all characters from |#1| to |#2| (inclusive) to have
+%   catcode |#3|.
 %    \begin{macrocode}
-\protected \long \gdef \@@_setup_catcode:nn #1 #2
-  { \@@_setup:nn { \catcode #1 } {#2} }
 \protected \long \gdef \@@_setup_catcodes:nnn #1 #2 #3
   {
-    \ifnum #1 > #2 \relax \else
-    \@@_setup_catcode:nn {#1} {#3}
-    \expandafter \@@_setup_catcodes:nnn \expandafter
-      { \the \numexpr #1 + 1 } {#2} {#3}
+    \ifnum #1 > #2 ~ \else
+      \catcode #1 = #3 ~
+      \expandafter \@@_setup_catcodes:nnn \expandafter
+        { \the \numexpr #1 + 1 } {#2} {#3}
     \fi
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_setup_latexe:}
-%   Normal catcodes for a \LaTeXe{} package (in particular, |@| is a
-%   letter).
+%   This saves the catcodes and related parameters, then sets them to
+%   the value they normally have in a \LaTeXe{} package (in particular,
+%   |@| is a letter).
 %    \begin{macrocode}
 \protected \gdef \@@_setup_latexe:
   {
-    \@@_setup:nn { \escapechar } {92}
-    \@@_setup:nn { \endlinechar } {13}
-    \@@_setup:nn { \newlinechar } {10}
+    \@@_setup_save:
     \@@_setup_catcodes:nnn {0} {8} {15}
-    \@@_setup_catcode:nn {9} {10}
-    \@@_setup_catcode:nn {10} {12}
-    \@@_setup_catcode:nn {11} {15}
-    \@@_setup_catcode:nn {12} {13}
-    \@@_setup_catcode:nn {13} {5}
+    \catcode 9 = 10 ~
+    \catcode 10 = 12 ~
+    \catcode 11 = 15 ~
+    \catcode 12 = 13 ~
+    \catcode 13 = 5 ~
     \@@_setup_catcodes:nnn {14} {31} {15}
-    \@@_setup_catcode:nn {32} {10}
-    \@@_setup_catcode:nn {33} {12}
-    \@@_setup_catcode:nn {34} {12}
-    \@@_setup_catcode:nn {35} {6}
-    \@@_setup_catcode:nn {36} {3}
-    \@@_setup_catcode:nn {37} {14}
-    \@@_setup_catcode:nn {38} {4}
+    \catcode 32 = 10 ~
+    \catcode 33 = 12 ~
+    \catcode 34 = 12 ~
+    \catcode 35 = 6 ~
+    \catcode 36 = 3 ~
+    \catcode 37 = 14 ~
+    \catcode 38 = 4 ~
     \@@_setup_catcodes:nnn {39} {63} {12}
     \@@_setup_catcodes:nnn {64} {90} {11}
-    \@@_setup_catcode:nn {91} {12}
-    \@@_setup_catcode:nn {92} {0}
-    \@@_setup_catcode:nn {93} {12}
-    \@@_setup_catcode:nn {94} {7}
-    \@@_setup_catcode:nn {95} {8}
-    \@@_setup_catcode:nn {96} {12}
+    \catcode 91 = 12 ~
+    \catcode 92 = 0 ~
+    \catcode 93 = 12 ~
+    \catcode 94 = 7 ~
+    \catcode 95 = 8 ~
+    \catcode 96 = 12 ~
     \@@_setup_catcodes:nnn {97} {122} {11}
-    \@@_setup_catcode:nn {123} {1}
-    \@@_setup_catcode:nn {124} {12}
-    \@@_setup_catcode:nn {125} {2}
-    \@@_setup_catcode:nn {126} {13}
-    \@@_setup_catcode:nn {127} {15}
+    \catcode 123 = 1 ~
+    \catcode 124 = 12 ~
+    \catcode 125 = 2 ~
+    \catcode 126 = 13 ~
+    \catcode 127 = 15 ~
+    \@@_setup_catcodes:nnn {128} {255} {12}
+    \endlinechar = 13 ~
+    \escapechar = 92 ~
+    \newlinechar = 10 ~
   }
 %    \end{macrocode}
 % \end{macro}
@@ -415,39 +427,41 @@
 %    \begin{macrocode}
 \protected \gdef \@@_setup_unravel:
   {
-    \@@_setup:nn { \escapechar } {92}
-    \@@_setup:nn { \endlinechar } {32}
-    \@@_setup:nn { \newlinechar } {10}
+    \@@_setup_save:
     \@@_setup_catcodes:nnn {0} {8} {15}
-    \@@_setup_catcode:nn {9} {9}
-    \@@_setup_catcode:nn {10} {12}
-    \@@_setup_catcode:nn {11} {15}
-    \@@_setup_catcode:nn {12} {13}
-    \@@_setup_catcode:nn {13} {5}
+    \catcode 9 = 9 ~
+    \catcode 10 = 12 ~
+    \catcode 11 = 15 ~
+    \catcode 12 = 13 ~
+    \catcode 13 = 5 ~
     \@@_setup_catcodes:nnn {14} {31} {15}
-    \@@_setup_catcode:nn {32} {9}
-    \@@_setup_catcode:nn {33} {12}
-    \@@_setup_catcode:nn {34} {12}
-    \@@_setup_catcode:nn {35} {6}
-    \@@_setup_catcode:nn {36} {3}
-    \@@_setup_catcode:nn {37} {14}
-    \@@_setup_catcode:nn {38} {4}
+    \catcode 32 = 9 ~
+    \catcode 33 = 12 ~
+    \catcode 34 = 12 ~
+    \catcode 35 = 6 ~
+    \catcode 36 = 3 ~
+    \catcode 37 = 14 ~
+    \catcode 38 = 4 ~
     \@@_setup_catcodes:nnn {39} {57} {12}
-    \@@_setup_catcode:nn {58} {11}
+    \catcode 58 = 11 ~
     \@@_setup_catcodes:nnn {59} {64} {12}
     \@@_setup_catcodes:nnn {65} {90} {11}
-    \@@_setup_catcode:nn {91} {12}
-    \@@_setup_catcode:nn {92} {0}
-    \@@_setup_catcode:nn {93} {12}
-    \@@_setup_catcode:nn {94} {7}
-    \@@_setup_catcode:nn {95} {11}
-    \@@_setup_catcode:nn {96} {12}
+    \catcode 91 = 12 ~
+    \catcode 92 = 0 ~
+    \catcode 93 = 12 ~
+    \catcode 94 = 7 ~
+    \catcode 95 = 11 ~
+    \catcode 96 = 12 ~
     \@@_setup_catcodes:nnn {97} {122} {11}
-    \@@_setup_catcode:nn {123} {1}
-    \@@_setup_catcode:nn {124} {12}
-    \@@_setup_catcode:nn {125} {2}
-    \@@_setup_catcode:nn {126} {10}
-    \@@_setup_catcode:nn {127} {15}
+    \catcode 123 = 1 ~
+    \catcode 124 = 12 ~
+    \catcode 125 = 2 ~
+    \catcode 126 = 10 ~
+    \catcode 127 = 15 ~
+    \@@_setup_catcodes:nnn {128} {255} {12}
+    \escapechar  = 92 ~
+    \endlinechar  = 32 ~
+    \newlinechar  = 10 ~
   }
 %    \end{macrocode}
 % \end{macro}
