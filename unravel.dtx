@@ -4266,11 +4266,11 @@
 % ^^A todo: implement \@@_end_disc_group:
 % ^^A todo: implement \@@_end_math_choice_group:
 %
-% \begin{macro}[aux]{\@@_handle_left_brace:}
+% \begin{macro}[aux]{\@@_handle_right_brace:}
 %   When an end-group character is sensed, the result depends on the
 %   current group type.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_handle_left_brace:
+\cs_new_protected_nopar:Npn \@@_handle_right_brace:
   {
     \int_compare:nTF { 1 <= \@@_currentgrouptype: <= 13 }
       {
@@ -4548,7 +4548,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { end-group_char }                       % 2
-  { \@@_handle_left_brace: }
+  { \@@_handle_right_brace: }
 %    \end{macrocode}
 %
 % Math shift characters quit vertical mode, and start math mode.
