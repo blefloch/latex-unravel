@@ -1,0 +1,107 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+============================================================
+TEST 1: \unravel and \font 
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \font \A =cmti10 at 10pt\font \B =cmti10\relax \show \A \show \B \showthe
+|> \A \showthe \B \A \B 
+Defining \g__unravel_input_2_gtl on line ...
+[==========] \font \A 
+|| \font \A 
+|> =cmti10 at 10pt\font \B =cmti10\relax \show \A \show \B \showthe \A
+|> \showthe \B \A \B 
+[==========] =
+|| \font \A =
+|> cmti10 at 10pt\font \B =cmti10\relax \show \A \show \B \showthe \A \showthe
+|> \B \A \B 
+[==========] at
+|| \font \A =cmti10 at
+|>  10pt\font \B =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B
+|> 
+Defining \g__unravel_input_3_gtl on line ...
+[==========] 1
+|| \font \A =cmti10 at
+|| 1
+|> 0pt\font \B =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B 
+[==========] 0
+|| \font \A =cmti10 at
+|| 10
+|> pt\font \B =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B 
+Defining \g__unravel_input_4_gtl on line ...
+Defining \g__unravel_input_5_gtl on line ...
+Defining \g__unravel_input_6_gtl on line ...
+Defining \g__unravel_input_7_gtl on line ...
+[==========] pt
+|| \font \A =cmti10 at
+|| 10pt
+|> \font \B =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B 
+[==========] Set \A=select font cmti10
+|| 
+|> \font \B =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B 
+[==========] \font \B 
+|| \font \B 
+|> =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B 
+[==========] =
+|| \font \B =
+|> cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B 
+Defining \g__unravel_input_8_gtl on line ...
+Defining \g__unravel_input_9_gtl on line ...
+[==========] Set \B=select font cmti10
+|| 
+|> \relax \show \A \show \B \showthe \A \showthe \B \A \B 
+[==========] \relax = \relax
+|| 
+|> \show \A \show \B \showthe \A \showthe \B \A \B 
+[==========] \show = \show
+|| \show 
+|> \A \show \B \showthe \A \showthe \B \A \B 
+> \A=select font cmti10.
+<argument> \A 
+l. ...  }
+[==========] \show = \show
+|| \show 
+|> \B \showthe \A \showthe \B \A \B 
+> \B=select font cmti10.
+<argument> \B 
+l. ...  }
+[==========] \showthe = \showthe
+|| \showthe 
+|> \A \showthe \B \A \B 
+> \A .
+<argument> \etex_showtokens:D {\A }
+l. ...  }
+[==========] \showthe = \showthe
+|| \showthe 
+|> \B \A \B 
+> \B .
+<argument> \etex_showtokens:D {\B }
+l. ...  }
+[==========] \A = select font cmti10
+<| \A 
+|| 
+|> \B 
+[==========] \B = select font cmti10
+<| \A \B 
+|| 
+|> 
+[===== End =====]
+============================================================
