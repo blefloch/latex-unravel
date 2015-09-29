@@ -1,0 +1,27 @@
+%
+% Copyright (C) 2015 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[log-functions,check-declarations]{expl3}
+
+\RequirePackage{unravel}
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { machine }
+
+\TEST { \unravel ~ : ~ \newlinechar ~ and ~ \escapechar }
+  {
+    \unravel
+      {
+        \newlinechar = -1 \message { \the \newlinechar }
+        \escapechar = -1 \message { \the \escapechar }
+        \prg_do_nothing: \prg_do_nothing: \prg_do_nothing: % to go beyond a line
+      }
+  }
+
+\END

@@ -7380,12 +7380,15 @@
 \cs_new_protected_nopar:Npn \@@_print_assigned_register:
   {
     \@@_after_assignment: % ^^A todo: simplify
-    \@@_print_action:x
+    \exp_args:Nx \@@_print_action:x
       {
-        Set~ \exp_after:wN \token_to_str:N \l_@@_defined_tl
-        \tl_if_single:NT \l_@@_defined_tl
-          { ( \exp_after:wN \token_to_meaning:N \l_@@_defined_tl ) }
-        = \exp_after:wN \@@_the:w \l_@@_defined_tl
+        \exp_not:n
+          {
+            Set~ \exp_after:wN \token_to_str:N \l_@@_defined_tl
+            \tl_if_single:NT \l_@@_defined_tl
+              { ( \exp_after:wN \token_to_meaning:N \l_@@_defined_tl ) }
+          }
+        = \exp_not:N \tl_to_str:n { \@@_the:w \l_@@_defined_tl }
       }
     \@@_omit_after_assignment:w
   }
