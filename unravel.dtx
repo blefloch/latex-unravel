@@ -245,6 +245,8 @@
 %   \tn{nonstopmode}.
 % \item Use the |interwoven-preambles| fatal error message once
 %   alignments are implemented.
+% \item Look at all places where \TeX{}'s procedure |prepare_mag| is
+%   called.
 % \end{itemize}
 %
 % \end{documentation}
@@ -529,6 +531,7 @@
 \cs_new_eq:NN \@@_everyeof:w             \etex_everyeof:D
 \cs_new_eq:NN \@@_everypar:w             \tex_everypar:D
 \cs_new_eq:NN \@@_hbox:w                 \tex_hbox:D
+\cs_new_eq:NN \@@_mag:                   \tex_mag:D
 \cs_new_eq:NN \@@_nullfont:              \tex_nullfont:D
 \cs_new_eq:NN \@@_the:w                  \tex_the:D
 %    \end{macrocode}
@@ -642,6 +645,29 @@
   }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_prepare_mag:}
+%   Used whenever \TeX{} needs the value of \tn{mag}.  ^^A todo: move
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_prepare_mag:
+  {
+    \int_compare:nNnT { \g_@@_mag_set_int } > { 0 }
+      {
+        \int_compare:nNnF { \@@_mag: } = { \g_@@_mag_set_int }
+          {
+            \@@_tex_error:nn { incompatible-mag } { }
+            \int_gset_eq:NN \@@_mag: \g_@@_mag_set_int
+          }
+      }
+    \int_compare:nF { 1 <= \@@_mag: <= 32768 }
+      {
+        \@@_tex_error:nV { illegal-mag } \l_@@_head_tl
+        \int_gset:Nn \@@_mag: { 1000 }
+      }
+    \int_gset_eq:NN \g_@@_mag_set_int \@@_mag:
+  }
+%    \end{macrocode}
 % \end{macro}
 %
 % \subsubsection{String helpers}
@@ -1339,6 +1365,19 @@
 %   \TeX{}'s |frozen_relax|, inserted by \cs{@@_insert_relax:}.
 %    \begin{macrocode}
 \gtl_const:Nx \c_@@_frozen_relax_gtl { \if_int_compare:w 0 = 0 \fi: }
+%    \end{macrocode}
+% \end{variable}
+%
+% \subsubsection{\TeX{} parameters}
+%
+% \begin{variable}{\g_@@_mag_set_int}
+%   The first time \TeX{} uses the value of \tn{mag}, it stores it in a
+%   global parameter |mag_set| (initially $0$ to denote not being set).
+%   Any time \TeX{} needs the value of \tn{mag}, it checks that the
+%   value matches |mag_set|.  This is done in \pkg{unravel} by
+%   \cs{@@_prepare_mag:}, storing |mag_set| in \cs{g_@@_mag_set_int}.
+%    \begin{macrocode}
+\int_new:N \g_@@_mag_set_int
 %    \end{macrocode}
 % \end{variable}
 %
@@ -3535,8 +3574,8 @@
                 { 3 } { }
               }
               {
-                \msg_error:nn { unravel } { incompatible-units }
-                % ^^A todo: error recovery
+                \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+                \@@_tex_error:nV { incompatible-units } \l_@@_head_tl
               }
           }
           {
@@ -3545,7 +3584,10 @@
               {
                 { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
                 { 3 } % ^^A todo: error recovery
-                { \msg_error:nn { unravel } { incompatible-units } }
+                {
+                  \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+                  \@@_tex_error:nV { incompatible-units } \l_@@_head_tl
+                }
               }
               { }
           }
@@ -3614,7 +3656,8 @@
     \@@_scan_keyword:nT { eEmM } { \@@_break:w }
     \@@_scan_keyword:nT { eExX } { \@@_break:w }
     \@@_scan_keyword:nT { pPxX } { \@@_break:w }
-    \@@_scan_keyword:n { tTrRuUeE }
+    \@@_scan_keyword:nT { tTrRuUeE }
+      { \@@_prepare_mag: }
     \@@_scan_keyword:nT { pPtT } { \@@_break:w }
     \@@_scan_keyword:nT { iInN } { \@@_break:w }
     \@@_scan_keyword:nT { pPcC } { \@@_break:w }
@@ -3676,7 +3719,10 @@
           }
           {
             \int_compare:nNnF { \g_@@_val_level_int + #1 } = 3
-              { \msg_error:nn { unravel } { incompatible-units } }
+              {
+                \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+                \@@_tex_error:nV { incompatible-units } \l_@@_head_tl
+              }
           }
       }
       { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
@@ -4061,12 +4107,16 @@
 %   For leaders, we need to fetch a glue.  In all cases, retrieve the
 %   box construction (such as |\raise3pt\vsplit7to5em|).  Finally, let
 %   \TeX{} run the code and print what we have done.
+%   In the case of \tn{shipout}, check that \tn{mag} has a value
+%   between $1$ and $32768$.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_simple_box:N #1
   {
     \bool_if:NTF #1 { \@@_do_leaders_fetch_skip: }
       {
         \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_shipout:D
+          { \@@_prepare_mag: }
         \tl_use:N \l_@@_head_tl \scan_stop:
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -7679,6 +7729,21 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[int]{\@@_tex_error:nn, \@@_tex_error:nV}
+%   Throw the |tex-error| message, with arguments: |#2| which triggered
+%   the error, \TeX{}'s error message, and \TeX{}'s help text.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tex_error:nn #1#2
+  {
+    \msg_error:nnxxx { unravel } { tex-error }
+      { \tl_to_str:n {#2} }
+      { \use:c { @@_tex_msg_error_#1: } }
+      { \use:c { @@_tex_msg_help_#1: } }
+  }
+\cs_generate_variant:Nn \@@_tex_error:nn { nV }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[int]{\@@_tex_fatal_error:nn, \@@_tex_fatal_error:nV}
 %   Throw the |tex-fatal| error message, with arguments: |#2| which
 %   triggered the fatal error, \TeX{}'s error message, and \TeX{}'s
@@ -7895,8 +7960,6 @@
   { Missing~font~identifier.~\iow_char:N\\nullfont~inserted. }
 \msg_new:nnn { unravel } { missing-rparen }
   { Missing~right~parenthesis~inserted~for~expression. }
-\msg_new:nnn { unravel } { incompatible-units }
-  { Mu~glue/dimen~used~as~a~normal~glue/dimen~or~vice-versa. }
 \msg_new:nnn { unravel } { missing-mudim }
   { Missing~mu~unit. }
 \msg_new:nnn { unravel } { missing-cs }
@@ -7963,6 +8026,29 @@
 %    \end{macrocode}
 %
 % Some error messages from \TeX{} itself.
+%    \begin{macrocode}
+\@@_tex_msg_new:nnn { incompatible-mag }
+  {
+    Incompatible~magnification~
+    ( \int_to_arabic:n { \@@_mag: } ); \\
+    \ the~previous~value~will~be~retained
+  }
+  {
+    I~can~handle~only~one~magnification~ratio~per~job.~So~I've\\
+    reverted~to~the~magnification~you~used~earlier~on~this~run.
+  }
+\@@_tex_msg_new:nnn { illegal-mag }
+  {
+    Illegal~magnification~has~been~changed~to~1000~
+    ( \int_to_arabic:n { \@@_mag: } )
+  }
+  { The~magnification~ratio~must~be~between~1~and~32768. }
+\@@_tex_msg_new:nnn { incompatible-units }
+  { Incompatible~glue~units }
+  { I'm~going~to~assume~that~1mu=1pt~when~they're~mixed. }
+%    \end{macrocode}
+%
+% Fatal \TeX{} error messages.
 %    \begin{macrocode}
 \@@_tex_msg_new:nnn { cannot-read }
   { ***~(cannot~\iow_char:N\\read~from~terminal~in~nonstop~modes) }

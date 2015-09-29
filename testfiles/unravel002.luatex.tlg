@@ -162,6 +162,7 @@ TEST 3: RequirePackage with no group
 \g__unravel_if_depth_int=\count125
 \l__unravel_if_nesting_int=\count126
 \g__unravel_ends_int=\count127
+\g__unravel_mag_set_int=\count128
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
