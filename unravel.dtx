@@ -3175,7 +3175,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: redoc
 % ^^A todo: rename this function because all other scan functions do get_x_next themselves.
 % \begin{macro}[aux]{\@@_scan_something_internal:n}
 % \begin{macro}[aux]{\@@_scan_something_aux:nwn}
@@ -3186,33 +3185,40 @@
 %   \item |glue_val=2| for glue specifications;
 %   \item |mu_val=3| for math glue specifications;
 %   \item |ident_val=4| for font identifiers (this never happens);
-%   \item |tok_val=5| for token lists.
+%   \item |tok_val=5| for token lists (after |\the| or |\showthe|).
 %   \end{itemize}
 %   Scans something internal, and places its value, converted to the
 %   given level, to the right of the last item of
 %   \cs{g_@@_prev_input_seq}, then sets \cs{g_@@_val_level_int} to the
 %   found level (level before conversion, so this may be higher than
-%   requested).  Get in one go the information about what level is
+%   requested).
+%
+%   From \cs{@@_thing_case:}, get the information about what level is
 %   produced by the given token once it has received all its operands
 %   (head of \cs{l_@@_tmpa_tl}), and about what to do to find those
-%   operands (tail of \cs{l_@@_tmpa_tl}).  If the first token is not
-%   between |min_internal=68| and |max_internal=89|, this step claims a
-%   level of~$8$.  If the level that will be produced is $4$ or~$5$, but
-%   the argument~|#1| is not, or if the level is~$8$ (exercise: check
-%   that the conditional indeed checks for this case, given that \eTeX{}
-%   rounds ``to nearest, ties away from zero''), then complain.
-%   Otherwise, fetch arguments if there are any: the scanning is
-%   performed after placing the current token in a new level of
-%   |prev_input| and telling the user about it.  Once done with this
-%   step, \cs{l_@@_head_tl} contains the tokens found.  Convert them to
-%   the wanted level with \cs{@@_thing_use_get:nnNN} (at this stage, \TeX{}
-%   may complain about a missing number or incompatible glue units), and
-%   place the result in |prev_input|.  Finally, tell the user the tokens
-%   that have been found and their value (and, if there was a single
-%   token, its meaning).  Use |=>| rather than |=| because the value
-%   displayed is the value used, not the actual value (this matters in
-%   constructions such as |\parindent=\parskip| where a skip or a dimen
-%   is downgraded to a dimen or an int).
+%   operands (tail of \cs{l_@@_tmpa_tl}).  If the first token may not
+%   appear after \tn{the} at all, \cs{@@_thing_case:} gives level~$8$.
+%
+%   If the argument (|#3|~in the auxiliary) is $<4$ but the level that
+%   will be produced (|#1|~in the auxiliary) is $\geq 4$ (that is,
+%   $4$, $5$, or $8$) complain about a missing number and insert a
+%   zero dimension, to get exactly \TeX{}'s error recovery.  If the
+%   level produced is~$8$, complain that |\the| cannot do this.
+%
+%   Otherwise, scan the arguments (in a new input level).  If both the
+%   argument and the level produced are $<4$, then get the value with
+%   \cs{@@_thing_use_get:nnNN} which downgrades from glue to dimension
+%   to integer and produces the |incompatible-units| error if needed.
+%   The only remaining case is that the argument is $5$ (since $4$ is
+%   never used) and the level produced is that or less: then the value
+%   found is used with \cs{@@_the:w}.
+%
+%   Finally, tell the user the tokens that have been found (if there
+%   was a single token, its meaning as well) and their value.  Use |=>|
+%   rather than |=| because the value displayed is the value used, not
+%   the actual value (this matters in constructions such as
+%   |\parindent=\parskip| where a skip or a dimen is downgraded to a
+%   dimen or an int, or when there was an error).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_something_internal:n #1
   {
@@ -3224,34 +3230,48 @@
   }
 \cs_new_protected:Npn \@@_scan_something_aux:nwn #1#2 \q_stop #3
   {
-    \int_compare:nNnTF
-      { ( #1 + \c_two ) / \c_four } > { ( #3 + \c_two ) / \c_four }
+    \int_compare:nT { #3 < 4 <= #1 }
       {
         \@@_back_input:
-        \msg_error:nn { unravel } { missing-something }
-        \tl_clear:N \l_@@_tmpa_tl
+        \@@_tex_error:nV { missing-number } \l_@@_head_tl
+        \@@_thing_use_get:nnNN { 1 } {#3} \c_zero_dim \l_@@_tmpa_tl
+        \@@_scan_something_internal_auxii:Vn \l_@@_tmpa_tl { 1 }
+        \@@_break:w
       }
+    \int_compare:nNnT {#1} = { 8 }
       {
-        \tl_if_empty:nF {#2}
-          {
-            \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
-            \@@_print_action:
-            #2
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-          }
-        \@@_thing_use_get:nnNN {#1} {#3} \l_@@_head_tl \l_@@_tmpa_tl
+        \@@_tex_error:nV { the-cannot } \l_@@_head_tl
+        \@@_scan_something_internal_auxii:Vn \c_zero { 0 }
+        \@@_break:w
       }
-    \@@_prev_input_silent:V \l_@@_tmpa_tl
+    \tl_if_empty:nF {#2}
+      {
+        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_print_action:
+        #2
+        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+      }
+    \int_compare:nNnTF {#3} < { 4 }
+      { \@@_thing_use_get:nnNN {#1} {#3} \l_@@_head_tl \l_@@_tmpa_tl }
+      { \tl_set:Nx \l_@@_tmpa_tl { \@@_the:w \l_@@_head_tl } }
+    \@@_scan_something_internal_auxii:Vn \l_@@_tmpa_tl {#1}
+    \@@_break_point:
+    \int_compare:nNnT {#3} < { 4 } { \@@_print_action: }
+  }
+\cs_new_protected:Npn \@@_scan_something_internal_auxii:nn #1#2
+  {
+    \@@_prev_input_silent:n {#1}
     \@@_set_action_text:
     \@@_set_action_text:x
-      { \g_@@_action_text_str \use:n { ~ => ~ } \tl_to_str:N \l_@@_tmpa_tl }
-    \int_compare:nNnF {#3} > { 3 } { \@@_print_action: }
-    \int_gset:Nn \g_@@_val_level_int {#1}
+      { \g_@@_action_text_str \use:n { ~ => ~ } \tl_to_str:n {#1} }
+    \int_gset:Nn \g_@@_val_level_int {#2}
   }
+\cs_generate_variant:Nn \@@_scan_something_internal_auxii:nn { V }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
+% ^^A todo: \the can be followed by ignore_spaces
 % \begin{macro}[aux, EXP]
 %   {\@@_thing_case:, \@@_thing_last_item:, \@@_thing_register:}
 %   This expands to a digit (the level generated by whatever token is
@@ -3290,6 +3310,8 @@
         { 87 } { 4                         } % set_font
         { 88 } { 4                         } % def_font
         { 89 } { \@@_thing_register:       } % register
+        {101 } { 4                         } % letterspace_font
+        {102 } { 4                         } % pdf_copy_font
       }
       { 8 }
   }
@@ -3359,11 +3381,9 @@
 % \end{macro}
 %
 % \begin{macro}[aux]{\@@_thing_use_get:nnNN}
-%   Given a level found~|#1| and a target level~|#2| (with |#1| in
-%   $[0,3]$ or |#1| and |#2| in $[4,5]$), turn the token list |#3| into
-%   the desired level, and store the result in |#4|.  This step may
-%   trigger \TeX{} errors, which should precisely match the expected
-%   ones.
+%   Given a level found~|#1| and a target level~|#2| (both in $[0,3]$),
+%   turn the token list |#3| into the desired level or less, and store
+%   the result in |#4|.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_thing_use_get:nnNN #1#2#3#4
   {
@@ -3383,19 +3403,15 @@
           }
       }
       {
-        \int_compare:nNnTF {#2} = { 3 }
+        \int_case:nnF {#1}
           {
-            \int_case:nnF {#1}
-              {
-                { 0 } { \tl_set:Nx #4 { \int_eval:n {#3} } }
-                { 3 } { \tl_set:Nx #4 { \muskip_eval:n {#3} } }
-              }
-              {
-                \@@_tex_error:nV { incompatible-units } #3
-                \tl_set:Nx #4 { \muskip_eval:n { \etex_gluetomu:D #3 } }
-              }
+            { 0 } { \tl_set:Nx #4 { \int_eval:n {#3} } }
+            { 3 } { \tl_set:Nx #4 { \muskip_eval:n {#3} } }
           }
-          { \tl_set:Nx #4 { \@@_the:w #3 } }
+          {
+            \@@_tex_error:nV { incompatible-units } #3
+            \tl_set:Nx #4 { \muskip_eval:n { \etex_gluetomu:D #3 } }
+          }
       }
   }
 %    \end{macrocode}
@@ -3522,16 +3538,16 @@
           {
             \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_next:
-            \@@_scan_int_explicit:n { ' }
+            \@@_scan_int_explicit:Nn \c_false_bool { ' }
           }
         \c_@@_dq_tl
           {
             \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_next:
-            \@@_scan_int_explicit:n { " }
+            \@@_scan_int_explicit:Nn \c_false_bool { " }
           }
       }
-      { \@@_scan_int_explicit:n { } }
+      { \@@_scan_int_explicit:Nn \c_false_bool { } }
   }
 \cs_new_protected_nopar:Npn \@@_scan_int_lq:
   {
@@ -3548,10 +3564,10 @@
       { ` \gtl_to_str:N \l_@@_head_gtl = \l_@@_tmpa_tl }
     \@@_skip_optional_space:
   }
-\cs_new_protected:Npn \@@_scan_int_explicit:n #1
+\cs_new_protected:Npn \@@_scan_int_explicit:Nn #1#2
   {
     \if_int_compare:w \c_one
-        < #1 1 \exp_after:wN \exp_not:N \l_@@_head_tl \exp_stop_f:
+        < #2 1 \exp_after:wN \exp_not:N \l_@@_head_tl \exp_stop_f:
       \exp_after:wN \use_i:nn
     \else:
       \exp_after:wN \use_ii:nn
@@ -3559,11 +3575,16 @@
     {
       \@@_prev_input:V \l_@@_head_tl
       \@@_get_x_next:
-      \@@_scan_int_explicit:n {#1}
+      \@@_scan_int_explicit:Nn \c_true_bool {#2}
     }
     {
       \token_if_eq_catcode:NNF \l_@@_head_token \c_space_token
         { \@@_back_input: }
+      \bool_if:NF #1
+        {
+          \@@_tex_error:nV { missing-number } \l_@@_head_tl
+          \@@_prev_input:n { 0 }
+        }
     }
   }
 %    \end{macrocode}
@@ -3585,7 +3606,7 @@
 %   \TeX{}'s own |scan_dimen| procedure, in which |mu| is |bool(#1=3)|
 %   and |inf| is |#2|.  The third argument of this procedure is omitted
 %   here, as the corresponding shortcut is provided as a separate
-%   function, \cs{@@_scan_dimen_unit:nN}.
+%   function, \cs{@@_scan_dim_unit:nN}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_dimen:nN #1#2
   {
@@ -3658,7 +3679,8 @@
     \int_compare:nNnT {#1} = { 3 }
       {
         \@@_scan_keyword:nT { mMuU } { \@@_break:w }
-        \msg_error:nn { unravel } { missing-mudim }
+        \@@_tex_error:nV { missing-mu } \l_@@_head_tl
+        \@@_prev_input:n { mu }
         \@@_break:w
       }
     \@@_scan_keyword:nT { eEmM } { \@@_break:w }
@@ -3677,6 +3699,8 @@
     \@@_scan_keyword:nT { nNdD } { \@@_break:w }
     \@@_scan_keyword:nT { nNcC } { \@@_break:w }
     \@@_scan_keyword:nT { sSpP } { \@@_break:w }
+    \@@_tex_error:nV { missing-pt } \l_@@_head_tl
+    \@@_prev_input:n { pt }
     \@@_break_point:
   }
 \cs_new_protected_nopar:Npn \@@_scan_inf_unit_loop:
@@ -3722,7 +3746,7 @@
         \@@_scan_something_internal:n {#1}
         \int_case:nnF \g_@@_val_level_int
           {
-            { 0 } { \@@_scan_dimen:nN {#1} \c_false_bool }
+            { 0 } { \@@_scan_dim_unit:nN {#1} \c_false_bool }
             { 1 } { }
           }
           { \@@_break:w }
@@ -7962,8 +7986,6 @@
   { Missing~font~identifier.~\iow_char:N\\nullfont~inserted. }
 \msg_new:nnn { unravel } { missing-rparen }
   { Missing~right~parenthesis~inserted~for~expression. }
-\msg_new:nnn { unravel } { missing-mudim }
-  { Missing~mu~unit. }
 \msg_new:nnn { unravel } { missing-cs }
   { Missing~control~sequence.~\iow_char:N\\inaccessible~inserted. }
 \msg_new:nnn { unravel } { missing-box }
@@ -8041,11 +8063,11 @@
 \@@_tex_msg_new:nnn { incompatible-mag }
   {
     Incompatible~magnification~
-    ( \int_to_arabic:n { \@@_mag: } ); \\
-    \ the~previous~value~will~be~retained
+    ( \int_to_arabic:n { \@@_mag: } );~
+    the~previous~value~will~be~retained
   }
   {
-    I~can~handle~only~one~magnification~ratio~per~job.~So~I've\\
+    I~can~handle~only~one~magnification~ratio~per~job.~So~I've~
     reverted~to~the~magnification~you~used~earlier~on~this~run.
   }
 \@@_tex_msg_new:nnn { illegal-mag }
@@ -8054,9 +8076,37 @@
     ( \int_to_arabic:n { \@@_mag: } )
   }
   { The~magnification~ratio~must~be~between~1~and~32768. }
+\@@_tex_msg_new:nnn { missing-number }
+  { Missing~number,~treated~as~zero }
+  {
+    A~number~should~have~been~here;~I~inserted~`0'.~
+    If~you~can't~figure~out~why~I~needed~to~see~a~number,~
+    look~up~`weird~error'~in~the~index~to~The~TeXbook.
+  }
+\@@_tex_msg_new:nnn { the-cannot }
+  { You~can't~use~`\tl_to_str:N\l_@@_head_tl'~after~\iow_char:N\\the }
+  { I'm~forgetting~what~you~said~and~using~zero~instead. }
 \@@_tex_msg_new:nnn { incompatible-units }
   { Incompatible~glue~units }
   { I'm~going~to~assume~that~1mu=1pt~when~they're~mixed. }
+\@@_tex_msg_new:nnn { missing-mu }
+  { Illegal~unit~of~measure~(mu~inserted) }
+  {
+    The~unit~of~measurement~in~math~glue~must~be~mu.~
+    To~recover~gracefully~from~this~error,~it's~best~to~
+    delete~the~erroneous~units;~e.g.,~type~`2'~to~delete~
+    two~letters.~(See~Chapter~27~of~The~TeXbook.)
+  }
+\@@_tex_msg_new:nnn { missing-pt }
+  { Illegal~unit~of~measure~(pt~inserted) }
+  {
+    Dimensions~can~be~in~units~of~em,~ex,~in,~pt,~pc,~
+    cm,~mm,~dd,~cc,~nd,~nc,~bp,~or~sp;~but~yours~is~a~new~one!~
+    I'll~assume~that~you~meant~to~say~pt,~for~printer's~points.~
+    To~recover~gracefully~from~this~error,~it's~best~to~
+    delete~the~erroneous~units;~e.g.,~type~`2'~to~delete~
+    two~letters.~(See~Chapter~27~of~The~TeXbook.)
+  }
 %    \end{macrocode}
 %
 % Fatal \TeX{} error messages.

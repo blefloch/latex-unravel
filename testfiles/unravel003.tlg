@@ -208,6 +208,81 @@ l. ...  }
 [===== End =====]
 [===== Start =====]
 || 
+|> \C \T {}
+[==========] \C = \count0
+|| \C 
+|> \T {}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\T " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] \T = \toks0 => 0
+|| \C =0
+|> \T {}
+[==========] Set \C(\count0)=0
+|| 
+|> \T {}
+[==========] \T = \toks0
+|| \T 
+|> {}
+[==========] Set \T(\toks0)=
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \C \relax 
+[==========] \C = \count0
+|| \C 
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] 0
+|| \C =0
+|> \relax 
+[==========] Set \C(\count0)=0
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
 |> \D \C pt\relax 
 [==========] \D = \dimen0
 || \D 
@@ -314,6 +389,122 @@ l. ...  }
 [===== End =====]
 [===== Start =====]
 || 
+|> \D \T {}
+[==========] \D = \dimen0
+|| \D 
+|> \T {}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\T " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] \T = \toks0 => 0.0pt
+|| \D =
+|| 0.0pt
+|> \T {}
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \T {}
+[==========] \T = \toks0
+|| \T 
+|> {}
+[==========] Set \T(\toks0)=
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \D \relax 
+[==========] \D = \dimen0
+|| \D 
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] 0
+|| \D =
+|| 0
+|> \relax 
+Defining \g__unravel_input_10_gtl on line ...
+Defining \g__unravel_input_11_gtl on line ...
+Defining \g__unravel_input_12_gtl on line ...
+Defining \g__unravel_input_13_gtl on line ...
+Defining \g__unravel_input_14_gtl on line ...
+Defining \g__unravel_input_15_gtl on line ...
+Defining \g__unravel_input_16_gtl on line ...
+Defining \g__unravel_input_17_gtl on line ...
+Defining \g__unravel_input_18_gtl on line ...
+Defining \g__unravel_input_19_gtl on line ...
+Defining \g__unravel_input_20_gtl on line ...
+Defining \g__unravel_input_21_gtl on line ...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Illegal unit of measure (pt inserted)
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd,
+|     nc, bp, or sp; but yours is a new one! I'll assume that you meant to say
+|     pt, for printer's points. To recover gracefully from this error, it's
+|     best to delete the erroneous units; e.g., type `2' to delete two
+|     letters. (See Chapter 27 of The TeXbook.)
+|...............................................
+[==========] pt
+|| \D =
+|| 0pt
+|> \relax 
+Defining \g__unravel_input_22_gtl on line ...
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
 |> \S \C ptplus1fil\relax 
 [==========] \S = \skip0
 || \S 
@@ -328,8 +519,7 @@ l. ...  }
 |> ptplus1fil\relax 
 [==========] pt
 || \S =
-|| 0
-|| pt
+|| 0pt
 |> plus1fil\relax 
 [==========] plus
 || \S =
@@ -526,6 +716,112 @@ l. ...  }
 [===== End =====]
 [===== Start =====]
 || 
+|> \S \T {}
+[==========] \S = \skip0
+|| \S 
+|> \T {}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\T " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] \T = \toks0 => 0.0pt
+|| \S =
+|| 0.0pt
+|> \T {}
+[==========] Set \S(\skip0)=0.0pt
+|| 
+|> \T {}
+[==========] \T = \toks0
+|| \T 
+|> {}
+[==========] Set \T(\toks0)=
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \S \relax 
+[==========] \S = \skip0
+|| \S 
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] 0
+|| \S =
+|| 0
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Illegal unit of measure (pt inserted)
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd,
+|     nc, bp, or sp; but yours is a new one! I'll assume that you meant to say
+|     pt, for printer's points. To recover gracefully from this error, it's
+|     best to delete the erroneous units; e.g., type `2' to delete two
+|     letters. (See Chapter 27 of The TeXbook.)
+|...............................................
+[==========] pt
+|| \S =
+|| 0pt
+|> \relax 
+Defining \g__unravel_input_23_gtl on line ...
+Defining \g__unravel_input_24_gtl on line ...
+Defining \g__unravel_input_25_gtl on line ...
+[==========] Set \S(\skip0)=0.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
 |> \M \C muplus1fil\relax 
 [==========] \M = \muskip0
 || \M 
@@ -540,8 +836,7 @@ l. ...  }
 |> muplus1fil\relax 
 [==========] mu
 || \M =
-|| 0
-|| mu
+|| 0mu
 |> plus1fil\relax 
 [==========] plus
 || \M =
@@ -748,6 +1043,138 @@ l. ...  }
 |> \relax 
 [==========] \relax = \relax
 <| minus1fil
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \M \T {}
+[==========] \M = \muskip0
+|| \M 
+|> \T {}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\T " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "0.0pt" and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \T = \toks0 => 0.0mu
+|| \M =
+|| 0.0mu
+|> \T {}
+[==========] Set \M(\muskip0)=0.0mu
+|| 
+|> \T {}
+[==========] \T = \toks0
+|| \T 
+|> {}
+[==========] Set \T(\toks0)=
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \M \relax 
+[==========] \M = \muskip0
+|| \M 
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] 0
+|| \M =
+|| 0
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\relax " and throws an error:
+! 
+!     Illegal unit of measure (mu inserted)
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     The unit of measurement in math glue must be mu. To recover gracefully
+|     from this error, it's best to delete the erroneous units; e.g., type `2'
+|     to delete two letters. (See Chapter 27 of The TeXbook.)
+|...............................................
+[==========] mu
+|| \M =
+|| 0mu
+|> \relax 
+[==========] Set \M(\muskip0)=0.0mu
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \T \T 
+[==========] \T = \toks0
+|| \T 
+|> \T 
+[==========] \T 
+|| \T =\T 
+|> 
+[==========] Set \T(\toks0)=
 || 
 |> 
 [===== End =====]
