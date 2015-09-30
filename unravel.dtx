@@ -7419,15 +7419,9 @@
       \tl_use:N \g_@@_before_print_state_tl
       \int_compare:nNnT \g_@@_noise_int > \c_zero
         {
-          \exp_args:Nx \@@_print_state_output:n
-            { \gtl_to_str:N \g_@@_output_gtl }
-          \seq_set_map:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
-            { \@@_to_str:n {##1} }
-          \seq_remove_all:Nn \l_@@_tmpa_seq { }
-          \exp_args:Nx \@@_print_state_prev:n
-            { \seq_use:Nn \l_@@_tmpa_seq { \\ } }
-          \exp_args:Nx \@@_print_state_input:n
-            { \@@_input_to_str: }
+          \@@_print_state_output:
+          \@@_print_state_prev:
+          \@@_print_state_input:
         }
     \group_end:
     \@@_prompt:
@@ -7435,11 +7429,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_state_output:n}
+% \begin{macro}[aux]{\@@_print_state_output:, \@@_print_state_output:n}
 %   Unless empty, print |#1| with each line starting with \verb*+<|~+.
 %   The \cs{@@_str_truncate_left:nn} function trims |#1| if needed, to
 %   fit in a maximum of \cs{g_@@_max_output_int} characters.
 %    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_print_state_output:
+  {
+    \exp_args:Nx \@@_print_state_output:n
+      { \gtl_to_str:N \g_@@_output_gtl }
+  }
 \cs_new_protected:Npn \@@_print_state_output:n #1
   {
     \tl_if_empty:nF {#1}
@@ -7451,19 +7450,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_state_prev:n}
-%   Never trim~|#1|.
+% \begin{macro}[aux]{\@@_print_state_prev:}
+%   Never trim~|##1|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_print_state_prev:n #1
-  { \@@_print_message:nn { || ~ } {#1} }
+\cs_new_protected_nopar:Npn \@@_print_state_prev:
+  {
+    \seq_set_map:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
+      { \@@_to_str:n {##1} }
+    \seq_remove_all:Nn \l_@@_tmpa_seq { }
+    \seq_if_empty:NTF \l_@@_tmpa_seq
+      { \@@_print_message:nn { || ~ } { } }
+      {
+        \seq_map_inline:Nn \l_@@_tmpa_seq
+          {
+            \@@_print_message:nn { || ~ } {##1}
+          }
+      }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_state_input:n}
+% \begin{macro}[aux]{\@@_print_state_input:, \@@_print_state_input:n}
 %   Print |#1| with each line starting with \verb*+|>~+.  The
 %   \cs{@@_str_truncate_right:nn} function trims |#1| if needed, to fit
 %   in a maximum of \cs{g_@@_max_input_int} characters.
 %    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_print_state_input:
+  {
+    \exp_args:Nx \@@_print_state_input:n
+      { \@@_input_to_str: }
+  }
 \cs_new_protected:Npn \@@_print_state_input:n #1
   {
     \@@_print_message:nn { |> ~ }
