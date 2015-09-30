@@ -5601,10 +5601,12 @@
   }
 %    \end{macrocode}
 %
-% Let \TeX{} cause the error.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { end_cs_name }                          % 67
-  { \l_@@_head_token \@@_print_action: }
+  {
+    \@@_tex_error:nV { extra-endcsname } \l_@@_head_tl
+    \@@_print_action:
+  }
 %    \end{macrocode}
 %
 % See |the_char| and |other_char|.
@@ -6783,19 +6785,19 @@
     \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
     \@@_print_action:
     \@@_csname_loop:
-    \@@_prev_input:V \l_@@_head_tl
+    \@@_prev_input_silent:V \l_@@_head_tl
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
     \@@_back_input_tl_o:
   }
 \cs_new_protected_nopar:Npn \@@_csname_loop:
   {
     \@@_get_x_next:
-    \token_if_cs:NTF \l_@@_head_token
+    \@@_gtl_if_head_is_definable:NTF \l_@@_head_gtl
       {
         \cs_if_eq:NNF \l_@@_head_token \tex_endcsname:D
           {
-            \msg_error:nn { unravel } { missing-endcsname }
             \@@_back_input:
+            \@@_tex_error:nV { missing-endcsname } \l_@@_head_tl
             \tl_set:Nn \l_@@_head_tl { \tex_endcsname:D }
           }
       }
@@ -8024,8 +8026,6 @@
   }
 \msg_new:nnn { unravel } { bad-unless }
   { \iow_char:N\\unless~not~followed~by~conditional. }
-\msg_new:nnn { unravel } { missing-endcsname }
-  { Missing~\iow_char:N\\endcsname~inserted. }
 \msg_new:nnn { unravel } { runaway-if }
   { Runaway~\iow_char:N\\if... }
 \msg_new:nnn { unravel } { runaway-macro-parameter }
@@ -8117,6 +8117,15 @@
     You~might~want~to~delete~and/or~insert~some~corrections~
     so~that~I~will~find~a~matching~right~brace~soon.~
     (If~you're~confused~by~all~this,~try~typing~`I\iow_char:N\}'~now.)
+  }
+\@@_tex_msg_new:nnn { extra-endcsname }
+  { Extra~\token_to_str:c{endcsname} }
+  { I'm~ignoring~this,~since~I~wasn't~doing~a~\token_to_str:c{csname}. }
+\@@_tex_msg_new:nnn { missing-endcsname }
+  { Missing~\token_to_str:c{endcsname}~inserted }
+  {
+    The~control~sequence~marked~<to~be~read~again>~should~
+    not~appear~between~\token_to_str:c{csname}~and~\token_to_str:c{endcsname}.
   }
 %    \end{macrocode}
 %

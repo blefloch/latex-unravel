@@ -36,4 +36,14 @@
       } % do something non-trivial to see if things are broken after the fatal_error
   }
 
+\TEST { \unravel ~ : ~ \csname ~ subtleties }
+  {
+    \everypar { \use_none:n }
+    \unravel
+      {
+        \let \* +
+        \csname \* \endcsname
+      }
+  }
+
 \END

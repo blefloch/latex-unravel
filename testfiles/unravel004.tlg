@@ -190,3 +190,72 @@ l. ...  }
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 3: \unravel : \csname subtleties
+============================================================
+[===== Start =====]
+|| 
+|> \let \*+\csname \*\endcsname 
+[==========] \let \*
+|| \let \*
+|> +\csname \*\endcsname 
+[==========] Set \*=the character +
+|| 
+|> \csname \*\endcsname 
+[==========] \csname = \csname
+|| \csname 
+|> \*\endcsname 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\*" and throws an error:
+! 
+!     Missing \endcsname inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     The control sequence marked <to be read again> should not appear between
+|     \csname and \endcsname.
+|...............................................
+[==========] \csname \tex_endcsname:D =\csname\endcsname
+|| 
+|> \csname\endcsname\*\endcsname 
+[==========] \csname\endcsname= \relax
+|| 
+|> \*\endcsname 
+[==========] \*= the character + : \everypar={\use_none:n }
+|| 
+|> \use_none:n \*\endcsname 
+[==========] \use_none:n = \long macro:#1->
+|| 
+|> \endcsname 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\endcsname " and throws an error:
+! 
+!     Extra \endcsname
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm ignoring this, since I wasn't doing a \csname.
+|...............................................
+[==========] \endcsname = \endcsname
+|| 
+|> 
+[===== End =====]
+============================================================
