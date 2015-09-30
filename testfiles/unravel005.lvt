@@ -20,6 +20,7 @@
 \skipdef  \S 0 \relax
 \muskipdef\M 0 \relax
 \toksdef  \T 0 \relax
+\font \tenrm = cmr10 \relax
 \TIMO
 
 \TEST { \unravel ~ and ~ scan_something_internal }
@@ -30,29 +31,34 @@
     \unravel { \C \M \relax }
     \unravel { \C \T { } }
     \unravel { \C \relax }
+    \unravel { \C \tenrm }
     \unravel { \D \C pt \relax }
     \unravel { \D \D \relax }
     \unravel { \D \S \relax }
     \unravel { \D \M \relax }
     \unravel { \D \T { } }
     \unravel { \D \relax }
+    \unravel { \D \tenrm }
     \unravel { \S \C pt plus 1fil \relax }
     \unravel { \S \D plus 1fil \relax }
     \unravel { \S \S minus 1fil \relax }
     \unravel { \S \M minus 1fil \relax }
     \unravel { \S \T { } }
     \unravel { \S \relax }
+    \unravel { \S \tenrm }
     \unravel { \M \C mu plus 1fil \relax }
     \unravel { \M \D plus 1fil \relax }
     \unravel { \M \S minus 1fil \relax }
     \unravel { \M \M minus 1fil \relax }
     \unravel { \M \T { } }
     \unravel { \M \relax }
+    \unravel { \M \tenrm }
     \unravel { \iffalse { \fi \T \C \relax } }
     \unravel { \iffalse { \fi \T \D \relax } }
     \unravel { \iffalse { \fi \T \S \relax } }
     \unravel { \iffalse { \fi \T \M \relax } }
     \unravel { \T \T }
+    \unravel { \iffalse { \fi \T \tenrm } }
   }
 
 \END

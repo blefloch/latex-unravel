@@ -198,6 +198,43 @@ l. ...  }
 [===== End =====]
 [===== Start =====]
 || 
+|> \C \tenrm 
+[==========] \C = \count0
+|| \C 
+|> \tenrm 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\tenrm " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] \tenrm = select font cmr10 => 0
+|| \C =0
+|> \tenrm 
+[==========] Set \C(\count0)=0
+|| 
+|> \tenrm 
+[==========] \tenrm = select font cmr10
+<| \tenrm 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
 |> \D \C pt\relax 
 [==========] \D = \dimen0
 || \D 
@@ -420,6 +457,44 @@ Defining \g__unravel_input_22_gtl on line ...
 || 
 |> \relax 
 [==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \D \tenrm 
+[==========] \D = \dimen0
+|| \D 
+|> \tenrm 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\tenrm " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] \tenrm = select font cmr10 => 0.0pt
+|| \D =
+|| 0.0pt
+|> \tenrm 
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \tenrm 
+[==========] \tenrm = select font cmr10
+<| \tenrm 
 || 
 |> 
 [===== End =====]
@@ -737,6 +812,44 @@ Defining \g__unravel_input_25_gtl on line ...
 || 
 |> \relax 
 [==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \S \tenrm 
+[==========] \S = \skip0
+|| \S 
+|> \tenrm 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\tenrm " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+[==========] \tenrm = select font cmr10 => 0.0pt
+|| \S =
+|| 0.0pt
+|> \tenrm 
+[==========] Set \S(\skip0)=0.0pt
+|| 
+|> \tenrm 
+[==========] \tenrm = select font cmr10
+<| \tenrm 
 || 
 |> 
 [===== End =====]
@@ -1087,6 +1200,62 @@ l. ...  }
 [===== End =====]
 [===== Start =====]
 || 
+|> \M \tenrm 
+[==========] \M = \muskip0
+|| \M 
+|> \tenrm 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\tenrm " and throws an error:
+! 
+!     Missing number, treated as zero
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A number should have been here; I inserted `0'. If you can't figure out
+|     why I needed to see a number, look up `weird error' in the index to The
+|     TeXbook.
+|...............................................
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "0.0pt" and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \tenrm = select font cmr10 => 0.0mu
+|| \M =
+|| 0.0mu
+|> \tenrm 
+[==========] Set \M(\muskip0)=0.0mu
+|| 
+|> \tenrm 
+[==========] \tenrm = select font cmr10
+<| \tenrm 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
 |> \iffalse {\fi \T \C \relax }
 [==========] \iffalse = \iffalse
 || \iffalse 
@@ -1251,6 +1420,45 @@ l. ...  }
 || \T =\T 
 |> 
 [==========] Set \T(\toks0)=\M \relax 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \iffalse {\fi \T \tenrm }
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \T \tenrm }
+[==========] \iffalse =false
+|| 
+|> \T \tenrm }
+[==========] \T = \toks0
+|| \T 
+|> \tenrm }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\tenrm " and throws an error:
+! 
+!     Missing { inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A left brace was mandatory here, so I've put one in. You might want to
+|     delete and/or insert some corrections so that I will find a matching
+|     right brace soon. (If you're confused by all this, try typing `I}' now.)
+|...............................................
+[==========] \T = \toks0
+|| \T =
+|> {\tenrm }
+[==========] Set \T(\toks0)=\tenrm 
 || 
 |> 
 [===== End =====]
