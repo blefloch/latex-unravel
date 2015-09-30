@@ -48,10 +48,10 @@
     \unravel { \M \M minus 1fil \relax }
     \unravel { \M \T { } }
     \unravel { \M \relax }
-    % \unravel { \iffalse { \fi \T \C \relax } }
-    % \unravel { \iffalse { \fi \T \D \relax } }
-    % \unravel { \iffalse { \fi \T \S \relax } }
-    % \unravel { \iffalse { \fi \T \M \relax } }
+    \unravel { \iffalse { \fi \T \C \relax } }
+    \unravel { \iffalse { \fi \T \D \relax } }
+    \unravel { \iffalse { \fi \T \S \relax } }
+    \unravel { \iffalse { \fi \T \M \relax } }
     \unravel { \T \T }
   }
 

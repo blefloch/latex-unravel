@@ -1087,6 +1087,162 @@ l. ...  }
 [===== End =====]
 [===== Start =====]
 || 
+|> \iffalse {\fi \T \C \relax }
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \T \C \relax }
+[==========] \iffalse =false
+|| 
+|> \T \C \relax }
+[==========] \T = \toks0
+|| \T 
+|> \C \relax }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\C " and throws an error:
+! 
+!     Missing { inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A left brace was mandatory here, so I've put one in. You might want to
+|     delete and/or insert some corrections so that I will find a matching
+|     right brace soon. (If you're confused by all this, try typing `I}' now.)
+|...............................................
+[==========] \T = \toks0
+|| \T =
+|> {\C \relax }
+[==========] Set \T(\toks0)=\C \relax 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \iffalse {\fi \T \D \relax }
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \T \D \relax }
+[==========] \iffalse =false
+|| 
+|> \T \D \relax }
+[==========] \T = \toks0
+|| \T 
+|> \D \relax }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\D " and throws an error:
+! 
+!     Missing { inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A left brace was mandatory here, so I've put one in. You might want to
+|     delete and/or insert some corrections so that I will find a matching
+|     right brace soon. (If you're confused by all this, try typing `I}' now.)
+|...............................................
+[==========] \T = \toks0
+|| \T =
+|> {\D \relax }
+[==========] Set \T(\toks0)=\D \relax 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \iffalse {\fi \T \S \relax }
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \T \S \relax }
+[==========] \iffalse =false
+|| 
+|> \T \S \relax }
+[==========] \T = \toks0
+|| \T 
+|> \S \relax }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\S " and throws an error:
+! 
+!     Missing { inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A left brace was mandatory here, so I've put one in. You might want to
+|     delete and/or insert some corrections so that I will find a matching
+|     right brace soon. (If you're confused by all this, try typing `I}' now.)
+|...............................................
+[==========] \T = \toks0
+|| \T =
+|> {\S \relax }
+[==========] Set \T(\toks0)=\S \relax 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \iffalse {\fi \T \M \relax }
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \T \M \relax }
+[==========] \iffalse =false
+|| 
+|> \T \M \relax }
+[==========] \T = \toks0
+|| \T 
+|> \M \relax }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\M " and throws an error:
+! 
+!     Missing { inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     A left brace was mandatory here, so I've put one in. You might want to
+|     delete and/or insert some corrections so that I will find a matching
+|     right brace soon. (If you're confused by all this, try typing `I}' now.)
+|...............................................
+[==========] \T = \toks0
+|| \T =
+|> {\M \relax }
+[==========] Set \T(\toks0)=\M \relax 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
 |> \T \T 
 [==========] \T = \toks0
 || \T 
@@ -1094,7 +1250,7 @@ l. ...  }
 [==========] \T 
 || \T =\T 
 |> 
-[==========] Set \T(\toks0)=
+[==========] Set \T(\toks0)=\M \relax 
 || 
 |> 
 [===== End =====]

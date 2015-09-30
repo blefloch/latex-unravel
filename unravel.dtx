@@ -2723,10 +2723,11 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_insert_group_begin_error:
   {
-    \msg_error:nn { unravel  } { missing-lbrace }
+    \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
     \@@_back_input:
     \gtl_set_eq:NN \l_@@_head_gtl \c_group_begin_gtl
     \@@_back_input:
+    \@@_tex_error:nV { missing-lbrace } \l_@@_tmpa_tl
     \@@_print_action:
   }
 %    \end{macrocode}
@@ -2980,14 +2981,18 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_scan_left_brace:}
-%   The presence of \tn{relax} is allowed before a begin-group
-%   character.
+%   The presence of \tn{relax} is allowed before a begin-group token.
+%   If there is no begin-group token, insert one, produce an error, and
+%   scan that begin-group using \cs{@@_get_next:}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_left_brace:
   {
     \@@_get_x_non_relax:
     \token_if_eq_catcode:NNF \l_@@_head_token \c_group_begin_token
-      { \@@_insert_group_begin_error: }
+      {
+        \@@_insert_group_begin_error:
+        \@@_get_next:
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7976,8 +7981,6 @@
   { Internal~error:~the~primitive~'#1'~is~not~known. }
 \msg_new:nnn { unravel } { extra-fi-or-else }
   { Extra~fi,~or,~or~else. }
-\msg_new:nnn { unravel } { missing-lbrace }
-  { Missing~left~brace~inserted. }
 \msg_new:nnn { unravel } { missing-dollar }
   { Missing~dollar~inserted. }
 \msg_new:nnn { unravel } { unknown-expandable }
@@ -8106,6 +8109,14 @@
     To~recover~gracefully~from~this~error,~it's~best~to~
     delete~the~erroneous~units;~e.g.,~type~`2'~to~delete~
     two~letters.~(See~Chapter~27~of~The~TeXbook.)
+  }
+\@@_tex_msg_new:nnn { missing-lbrace }
+  { Missing~\iow_char:N\{~inserted }
+  {
+    A~left~brace~was~mandatory~here,~so~I've~put~one~in.~
+    You~might~want~to~delete~and/or~insert~some~corrections~
+    so~that~I~will~find~a~matching~right~brace~soon.~
+    (If~you're~confused~by~all~this,~try~typing~`I\iow_char:N\}'~now.)
   }
 %    \end{macrocode}
 %
