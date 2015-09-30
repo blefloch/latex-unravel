@@ -957,6 +957,51 @@
 %
 % \subsubsection{Helpers for previous input}
 %
+% \begin{macro}[aux, EXP]{\@@_prev_input_count:, \@@_prev_input_count_aux:n}
+%    \begin{macrocode}
+\cs_new_nopar:Npn \@@_prev_input_count:
+  {
+    \int_eval:n
+      {
+        0
+        \seq_map_function:NN \g_@@_prev_input_seq
+          \@@_prev_input_count_aux:n
+      }
+  }
+\cs_new:Npn \@@_prev_input_count_aux:n #1
+  { \tl_if_empty:nF {#1} { + 1 } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]
+%   {
+%     \@@_prev_input_get:N,
+%     \@@_prev_input_gpush:,
+%     \@@_prev_input_gpush:N,
+%     \@@_prev_input_gpop:N,
+%     \@@_prev_input_gpush_gtl:,
+%     \@@_prev_input_gpush_gtl:N,
+%     \@@_prev_input_gpop_gtl:N,
+%   }
+% ^^A todo: doc and add optional sanity checking
+%    \begin{macrocode}
+\cs_new_protected_nopar:Npn \@@_prev_input_get:N
+  { \seq_get_right:NN \g_@@_prev_input_seq }
+\cs_new_protected_nopar:Npn \@@_prev_input_gpush:
+  { \seq_gput_right:Nn \g_@@_prev_input_seq { } }
+\cs_new_protected_nopar:Npn \@@_prev_input_gpush:N
+  { \seq_gput_right:NV \g_@@_prev_input_seq }
+\cs_new_protected_nopar:Npn \@@_prev_input_gpop:N
+  { \seq_gpop_right:NN \g_@@_prev_input_seq }
+\cs_new_protected_nopar:Npn \@@_prev_input_gpush_gtl:
+  { \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl }
+\cs_new_protected_nopar:Npn \@@_prev_input_gpush_gtl:N
+  { \seq_gput_right:NV \g_@@_prev_input_seq }
+\cs_new_protected_nopar:Npn \@@_prev_input_gpop_gtl:N
+  { \seq_gpop_right:NN \g_@@_prev_input_seq }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[int]
 %   {
 %     \@@_prev_input_silent:n,
@@ -972,9 +1017,9 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prev_input_silent:n #1
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_tl
+    \@@_prev_input_gpop:N \l_@@_prev_input_tl
     \tl_put_right:Nn \l_@@_prev_input_tl {#1}
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_tl
+    \@@_prev_input_gpush:N \l_@@_prev_input_tl
   }
 \cs_generate_variant:Nn \@@_prev_input_silent:n { V , x }
 \cs_new_protected:Npn \@@_prev_input:n #1
@@ -991,16 +1036,16 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prev_input_gtl:N #1
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_prev_input_gtl
+    \@@_prev_input_gpop_gtl:N \l_@@_prev_input_gtl
     \gtl_concat:NNN \l_@@_prev_input_gtl \l_@@_prev_input_gtl #1
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_prev_input_gtl
+    \@@_prev_input_gpush_gtl:N \l_@@_prev_input_gtl
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_prev_input_join_get:nN}
 % \begin{macro}[aux]{\@@_join_get_aux:NNN}
-%   Pops \cs{g_@@_prev_input_seq} twice to get some value in
+%   Pops the previous-input sequence twice to get some value in
 %   \cs{l_@@_head_tl} and some sign or decimal number in
 %   \cs{l_@@_tmpa_tl}.  Combines them into a value, using
 %   the appropriate evaluation function, determined based
@@ -1020,8 +1065,8 @@
   }
 \cs_new_protected:Npn \@@_join_get_aux:NNN #1#2#3
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_set:Nx #3 { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl } }
   }
 %    \end{macrocode}
@@ -1227,7 +1272,7 @@
 % \begin{variable}{\l_@@_defined_tl, \l_@@_defining_tl}
 %   The token that is defined by the prefixed command (such as
 %   \tn{chardef} or \tn{futurelet}), and the code to define it.  We do
-%   not use the \cs{g_@@_prev_input_seq} to store that code: rather,
+%   not use the the previous-input sequence to store that code: rather,
 %   this sequence contains a string representation of the code, which is
 %   not suitable for the definition.  This is safe, as definitions
 %   cannot be nested.  This is needed for expanding assignments, as
@@ -2965,7 +3010,7 @@
 %   See \TeX{}'s |scan_optional_equals|.  In all cases we forcefully
 %   insert an equal sign in the output, because this sign is required,
 %   as \cs{@@_scan_something_internal:n} leaves raw numbers in
-%   \cs{g_@@_prev_input_seq}.
+%   the previous-input sequence.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_optional_equals:
   {
@@ -3024,7 +3069,7 @@
 %   at the first character only; spaces become an empty string, but this
 %   works out because no keyword contains a space.  So, at each
 %   iteration, if the token is the correct non-active character, add it
-%   to \cs{g_@@_prev_input_seq} (as a generalized token list since
+%   to the previous-input sequence (as a generalized token list since
 %   keywords may match begin-group or end-group characters), and
 %   otherwise break with \cs{@@_scan_keyword_false:w}, unless we are
 %   still at the beginning of the keyword and the token is a space.
@@ -3045,7 +3090,7 @@
 \prg_new_protected_conditional:Npnn \@@_scan_keyword:n #1
   { T , F , TF }
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
+    \@@_prev_input_gpush_gtl:
     \@@_scan_keyword_loop:NNN \c_true_bool
       #1 \q_recursion_tail \q_recursion_tail \q_recursion_stop
   }
@@ -3088,7 +3133,7 @@
   }
 \cs_new_protected_nopar:Npn \@@_scan_keyword_true:
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
+    \@@_prev_input_gpop_gtl:N \l_@@_tmpb_gtl
     \@@_prev_input:x { \gtl_to_str:N \l_@@_tmpb_gtl }
     \prg_return_true:
   }
@@ -3096,7 +3141,7 @@
     #1 \q_recursion_stop
   {
     \@@_back_input:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
+    \@@_prev_input_gpop_gtl:N \l_@@_tmpb_gtl
     \@@_back_input_gtl:N \l_@@_tmpb_gtl
     \prg_return_false:
   }
@@ -3194,7 +3239,7 @@
 %   \end{itemize}
 %   Scans something internal, and places its value, converted to the
 %   given level, to the right of the last item of
-%   \cs{g_@@_prev_input_seq}, then sets \cs{g_@@_val_level_int} to the
+%   the previous-input sequence, then sets \cs{g_@@_val_level_int} to the
 %   found level (level before conversion, so this may be higher than
 %   requested).
 %
@@ -3251,10 +3296,10 @@
       }
     \tl_if_empty:nF {#2}
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         #2
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
       }
     \int_compare:nNnTF {#3} < { 4 }
       { \@@_thing_use_get:nnNN {#1} {#3} \l_@@_head_tl \l_@@_tmpa_tl }
@@ -3616,7 +3661,7 @@
 \cs_new_protected:Npn \@@_scan_dimen:nN #1#2
   {
     \@@_scan_signs:
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_set_cmd:
     \@@_cmd_if_internal:TF
       {
@@ -3627,7 +3672,7 @@
           { \@@_scan_dim_unit:nN {#1} #2 }
       }
       { \@@_scan_dimen_char:nN {#1} #2 }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_prev_input_silent:V \l_@@_head_tl
   }
 \cs_new_protected:Npn \@@_scan_dimen_char:nN #1#2
@@ -3674,10 +3719,10 @@
     \@@_set_cmd:
     \@@_cmd_if_internal:TF
       {
-        \seq_gput_right:Nn \g_@@_prev_input_seq { }
+        \@@_prev_input_gpush:
         \@@_scan_something_internal:n {#1}
         \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_prev_input_gpush:N \l_@@_tmpa_tl
         \@@_break:w
       }
       { \@@_back_input: }
@@ -3742,9 +3787,9 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_glue:n #1
   {
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_scan_signs:
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_set_cmd:
     \@@_cmd_if_internal:TF
       {
@@ -3758,8 +3803,8 @@
       }
       { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
     \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpush:
+    \@@_prev_input_gpush:N \l_@@_tmpa_tl
     \@@_scan_keyword:nT { pPlLuUsS }
       { \@@_scan_dimen:nN {#1} \c_true_bool }
     \@@_scan_keyword:nT { mMiInNuUsS }
@@ -3828,9 +3873,9 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks_to_str:
   {
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_scan_toks:NN \c_false_bool \c_true_bool
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \@@_prev_input_silent:x
       { { \exp_after:wN \tl_to_str:n \l_@@_tmpa_tl } }
   }
@@ -3908,10 +3953,10 @@
         \@@_scan_group_xdef:n { 1 }
       }
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl
+        \@@_prev_input_gpush_gtl:
         \@@_prev_input_gtl:N \l_@@_head_gtl
         \@@_scan_group_x:n { 1 }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpb_gtl
+        \@@_prev_input_gpop_gtl:N \l_@@_tmpb_gtl
         \@@_prev_input_silent:x
           { \gtl_left_tl:N \l_@@_tmpb_gtl }
       }
@@ -4050,7 +4095,7 @@
 %
 % \begin{macro}[aux]{\@@_do_box:N}
 %   When this procedure is called, the last item in
-%   \cs{g_@@_prev_input_seq} is
+%   the previous-input sequence is
 %   \begin{itemize}
 %   \item empty if the box is meant to be put in the input stream,
 %   \item \tn{setbox}\meta{int} if it is meant to be stored somewhere,
@@ -4091,7 +4136,7 @@
 % \begin{macro}[aux]{\@@_do_box_error:}
 %   Put the (non-|make_box|) command back into the input and complain.
 %   Then recover by throwing away the action (last item of
-%   \cs{g_@@_prev_input_seq}).  For some reason (this appears to be what
+%   the previous-input sequence).  For some reason (this appears to be what
 %   \TeX{} does), there is no need to remove the after assignment token
 %   here.
 %    \begin{macrocode}
@@ -4099,7 +4144,7 @@
   {
     \@@_back_input:
     \msg_error:nn { unravel } { missing-box }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
@@ -4107,7 +4152,7 @@
 %
 % \begin{macro}[aux]{\@@_do_begin_box:N}
 %   We have just found a |make_box| command and placed it into the last
-%   item of \cs{g_@@_prev_input_seq}.  If it is ``simple''
+%   item of the previous-input sequence.  If it is ``simple''
 %   (\tn{box}\meta{int}, \tn{copy}\meta{int}, \tn{lastbox},
 %   \tn{vsplit}\meta{int} \texttt{to} \meta{dim}) then we grab its
 %   operands, then call \cs{@@_do_simple_box:N} to finish up.  If it is
@@ -4145,7 +4190,7 @@
   {
     \bool_if:NTF #1 { \@@_do_leaders_fetch_skip: }
       {
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \tl_if_head_eq_meaning:VNT \l_@@_head_tl \tex_shipout:D
           { \@@_prepare_mag: }
         \tl_use:N \l_@@_head_tl \scan_stop:
@@ -4165,14 +4210,14 @@
     \int_compare:nNnTF \l_@@_head_cmd_int
       = { \@@_tex_use:n { \mode_if_vertical:TF { vskip } { hskip } } }
       {
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_prev_input_gpop:N \l_@@_tmpa_tl
         \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
         \@@_do_append_glue:
       }
       {
         \@@_back_input:
         \msg_error:nn { unravel } { improper-leaders }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
       }
   }
@@ -4181,7 +4226,7 @@
 %
 % ^^A todo: less intrusive hooking into \everyhbox/\everyvbox?
 % \begin{macro}[aux]{\@@_do_box_explicit:N}
-%   At this point, the last item in \cs{g_@@_prev_input_seq} is
+%   At this point, the last item in the previous-input sequence is
 %   typically |\setbox0\hbox| or |\raise 3pt\hbox|.  Scan for keywords
 %   |to| and |spread| and a left brace.  Install a hook in
 %   \tn{everyhbox} or \tn{everyvbox} (whichever \TeX{} is going to
@@ -4189,7 +4234,7 @@
 %   the current box into \cs{l_@@_head_tl} in order to print it, then
 %   let \TeX{} perform the box operation (here we need to provide the
 %   begin-group token, as it was scanned but not placed in
-%   \cs{g_@@_prev_input_seq}).  \TeX{} inserts \tn{everyhbox} or
+%   the previous-input sequence).  \TeX{} inserts \tn{everyhbox} or
 %   \tn{everyvbox} just after the begin-group token, and the hook we did
 %   is such that all that material is collected and put into the input
 %   that we will study.
@@ -4204,7 +4249,7 @@
       { \@@_box_hook:N \tex_everyvbox:D }
       % ^^A todo: TeX calls |normal_paragraph| here.
     \@@_scan_spec:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_set_action_text:x
       { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
     \seq_push:Nx \l_@@_leaders_box_seq
@@ -4735,7 +4780,7 @@
   { \@@_mode_math:n { \@@_sub_sup: } }
 \cs_new_protected_nopar:Npn \@@_sub_sup:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_get_x_non_relax:
     \@@_set_cmd:
@@ -4763,14 +4808,14 @@
           { \@@_prev_input:V \l_@@_head_tl \@@_scan_int: }
       }
       {
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
       }
       {
         \@@_back_input:
         \@@_scan_left_brace:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \gtl_gconcat:NNN \g_@@_output_gtl
           \g_@@_output_gtl \c_group_begin_gtl
@@ -4870,10 +4915,10 @@
   {
     \@@_mode_math:n
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \@@_scan_int:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
       }
@@ -4916,10 +4961,10 @@
   {
     \@@_mode_non_vertical:n
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \@@_scan_int:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \mode_if_math:TF
           { \@@_char_in_mmode:x { \tl_tail:N \l_@@_head_tl } }
           { \@@_char:x { \tl_tail:N \l_@@_head_tl } }
@@ -4935,10 +4980,10 @@
   {
     \@@_mode_math:n
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \@@_scan_int:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_mathchar:x { \tl_tail:N \l_@@_head_tl }
       }
   }
@@ -4947,14 +4992,14 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { mark }                                 % 18
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \int_compare:nNnF \l_@@_head_char_int = \c_zero
       { \@@_scan_int: }
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_scan_toks:NN \c_false_bool \c_true_bool
-    \seq_gpop_right:Nn \g_@@_prev_input_seq \l_@@_tmpa_tl
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_action:x
       { \tl_to_str:N \l_@@_head_tl \tl_to_str:N \l_@@_tmpa_tl }
     \tl_put_right:Nx \l_@@_head_tl
@@ -4969,26 +5014,26 @@
 % Those with operands print first, then scan their operands, then are
 % sent to \TeX{}.  The case of \tn{show} is a bit special, as its
 % operand is a single token, which cannot easily be put into the
-% \cs{g_@@_prev_input_seq} in general.  Since no expansion can occur,
+% the previous-input sequence in general.  Since no expansion can occur,
 % simply grab the token and show it.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { xray }                                 % 19
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \int_case:nnF \l_@@_head_char_int
       {
         { 0 }
           { % show
             \@@_get_next:
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+            \@@_prev_input_gpop:N \l_@@_tmpa_tl
             \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl
           }
         { 2 }
           { % showthe
             \@@_get_x_next:
             \@@_scan_something_internal:n { 5 }
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+            \@@_prev_input_gpop:N \l_@@_head_tl
             \exp_args:Nx \etex_showtokens:D
               { \tl_tail:N \l_@@_head_tl }
           }
@@ -4998,7 +5043,7 @@
           { \@@_scan_int: }
         \int_compare:nNnT \l_@@_head_char_int = \c_five % showtokens
           { \@@_scan_toks:NN \c_false_bool \c_false_bool }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
       }
   }
@@ -5009,7 +5054,7 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { make_box }                             % 20
   {
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_back_input:
     \@@_do_box:N \c_false_bool
   }
@@ -5023,7 +5068,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_move:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_normal_dimen:
     \@@_do_box:N \c_false_bool
@@ -5053,10 +5098,10 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_unpackage:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_int:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5104,11 +5149,11 @@
     \int_compare:nNnTF \l_@@_head_char_int < { 4 }
       { \tl_use:N \l_@@_head_tl \@@_print_action: }
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \exp_args:Nf \@@_scan_glue:n
           { \int_eval:n { \l_@@_head_char_int - 2 } }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
       }
@@ -5142,12 +5187,12 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_append_kern:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_kern:D
       { \@@_scan_dimen:nN { 2 } \c_false_bool }
       { \@@_scan_dimen:nN { 3 } \c_false_bool }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5171,7 +5216,7 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { leader_ship }                          % 31
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_do_box:N \c_true_bool
   }
@@ -5216,10 +5261,10 @@
   { \@@_mode_vertical:n { \@@_do_rule: } }
 \cs_new_protected_nopar:Npn \@@_do_rule:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_alt_rule:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5296,10 +5341,10 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { break_penalty }                        % 42
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_int:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5337,7 +5382,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_accent:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_int:
     \@@_do_assignments:
@@ -5361,7 +5406,7 @@
           }
           { \@@_break:w }
       }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -5376,11 +5421,11 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_math_accent:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_int:
     \@@_scan_math:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -5490,9 +5535,9 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { case_shift }                           % 57
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_scan_toks:NN \c_false_bool \c_false_bool
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \exp_after:wN \@@_case_shift:Nn \l_@@_tmpa_tl
   }
 \cs_new_protected:Npn \@@_case_shift:Nn #1#2
@@ -5506,10 +5551,10 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { message }                              % 58
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_toks_to_str:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5519,10 +5564,10 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { extension }                            % 59
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_extension_operands:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5531,7 +5576,7 @@
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { in_stream }                            % 60
   {
-    \seq_put_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_openin:D
       {
@@ -5540,7 +5585,7 @@
         \@@_scan_file_name:
       }
       { \@@_scan_int: }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -5589,11 +5634,11 @@
   {
     \@@_mode_math:n
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \@@_scan_int:
         \@@_scan_math:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -5943,9 +5988,9 @@
 \cs_new_protected_nopar:Npn \@@_scan_immediate_operands_bad:
   {
     \@@_back_input:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl ignored }
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
   }
 
 %    \end{macrocode}
@@ -6017,7 +6062,7 @@
 %    \begin{macrocode}
 \cs_set_protected_nopar:Npn \@@_tmp:w
   {
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_prefixed_command:
   }
 \int_step_inline:nnnn
@@ -6029,7 +6074,7 @@
 %
 % \begin{macro}[int]{\@@_prefixed_command:}
 %   Accumulated prefix codes so far are stored as the last item of
-%   \cs{g_@@_prev_input_seq}.
+%   the previous-input sequence.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_prefixed_command:
   {
@@ -6042,7 +6087,7 @@
         \int_compare:nNnF \l_@@_head_cmd_int
           > { \@@_tex_use:n { max_non_prefixed_command } }
           {
-            \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+            \@@_prev_input_gpop:N \l_@@_tmpa_tl
             \msg_error:nnxx { unravel  } { erroneous-prefixes }
               { \tl_to_str:N \l_@@_tmpa_tl }
               { \tl_to_str:N l_@@_head_tl }
@@ -6094,7 +6139,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_assign_token:n #1
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     #1
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_assigned_token:
@@ -6106,7 +6151,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_assign_register:
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_assigned_register:
   }
@@ -6119,10 +6164,10 @@
   {
     \tl_if_empty:nF {#1}
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
         #1
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
       }
     \@@_prev_input:V \l_@@_head_tl
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
@@ -6139,10 +6184,10 @@
   {
     \int_compare:nNnT \l_@@_head_char_int = \c_zero
       { % \toks
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \@@_scan_int:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
       }
     \@@_assign_toks:
   }
@@ -6245,7 +6290,7 @@
   }
 \@@_prefixed_new:nn { set_font }                            % 87
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
@@ -6280,11 +6325,11 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { let }                                 % 94
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_let:D
       { % |let|
         \@@_scan_r_token:
-        \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_prev_input_get:N \l_@@_tmpa_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
         \@@_get_next:
         \bool_while_do:nn
@@ -6297,7 +6342,7 @@
       }
       { % |futurelet|
         \@@_scan_r_token:
-        \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_prev_input_get:N \l_@@_tmpa_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
         \@@_get_next:
         \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
@@ -6306,9 +6351,9 @@
         \gtl_set_eq:NN \l_@@_head_gtl \l_@@_tmpb_gtl
         \@@_back_input:
       }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_put_right:Nn \l_@@_tmpa_tl { = ~ \l_@@_head_token }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \use:x
       {
         \exp_not:V \l_@@_head_tl
@@ -6352,12 +6397,12 @@
     \@@_scan_int:
     \@@_scan_to:
     \@@_scan_r_token:
-    \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_get:N \l_@@_tmpa_tl
     \@@_read_to_cs_safe:fTF
       { \@@_tl_first_int:N \l_@@_tmpa_tl }
       { \@@_assign_token:n { } }
       {
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_tex_fatal_error:nV { cannot-read } \l_@@_head_tl
       }
   }
@@ -6388,10 +6433,10 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { def }                                 % 97
   {
-    \seq_get_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_get:N \l_@@_tmpa_tl
     \tl_set:NV \l_@@_defining_tl \l_@@_tmpa_tl
     \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \int_compare:nNnTF \l_@@_head_char_int < \c_two
       { % def/gdef
         \@@_scan_r_token:
@@ -6403,7 +6448,7 @@
         \tl_put_right:NV \l_@@_defining_tl \l_@@_defined_tl
         \@@_scan_toks:NN \c_true_bool \c_true_bool
       }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_prev_input:V \l_@@_head_tl
     \@@_assign_token:n
       { \tl_set_eq:NN \l_@@_head_tl \l_@@_defining_tl }
@@ -6411,7 +6456,7 @@
 %    \end{macrocode}
 %
 % \tn{setbox} is a bit special: directly put it in
-% \cs{g_@@_prev_input_seq} with the prefixes; the box code will take
+% the previous-input sequence with the prefixes; the box code will take
 % care of things, and expects a single item containing what it needs to
 % do.
 %    \begin{macrocode}
@@ -6424,7 +6469,7 @@
       { \@@_do_box:N \c_false_bool }
       {
         \msg_error:nn { unravel } { improper-setbox }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+        \@@_prev_input_gpop:N \l_@@_tmpa_tl
         \@@_omit_after_assignment:w
       }
   }
@@ -6444,7 +6489,7 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { set_interaction }                     % 100
   {
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
@@ -6533,7 +6578,7 @@
 \cs_new_protected_nopar:Npn \@@_do_operation_fail:w
   {
     \msg_error:nn { unravel } { after-advance }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \@@_omit_after_assignment:w
   }
 %    \end{macrocode}
@@ -6550,10 +6595,10 @@
   {
     \int_compare:nNnTF { \tl_tail:n {#2} } = \c_zero
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \@@_scan_int:
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_prev_input_silent:V \l_@@_head_tl
       }
       {
@@ -6607,7 +6652,7 @@
       > { \@@_tex_use:n { max_non_prefixed_command } }
       {
         \bool_gset_false:N \g_@@_set_box_allowed_bool
-        \seq_gput_right:Nn \g_@@_prev_input_seq { }
+        \@@_prev_input_gpush:
         \@@_prefixed_command:
         \bool_gset_true:N \g_@@_set_box_allowed_bool
         \@@_do_assignments:
@@ -6672,13 +6717,13 @@
     \@@_get_next:
     \gtl_concat:NNN \l_@@_head_gtl
       \l_@@_tmpb_gtl \l_@@_head_gtl
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_gtl
+    \@@_prev_input_gpush_gtl:N \l_@@_head_gtl
     \@@_print_action:x { \gtl_to_str:N \l_@@_head_gtl }
     \@@_get_next:
     \@@_token_if_expandable:NTF \l_@@_head_token
       { \@@_expand: }
       { \@@_back_input: }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_gtl
+    \@@_prev_input_gpop:N \l_@@_head_gtl
     \@@_set_action_text:x
       { back_input: ~ \gtl_to_str:N \l_@@_head_gtl }
     \gtl_pop_left:N \l_@@_head_gtl
@@ -6758,18 +6803,18 @@
   }
 \cs_new_protected_nopar:Npn \@@_scantokens:
   {
-    \seq_gput_right:Nn \g_@@_prev_input_seq { }
+    \@@_prev_input_gpush:
     \@@_scan_toks:NN \c_false_bool \c_false_bool
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_set_rescan:Nno \l_@@_head_tl { } \l_@@_tmpa_tl
     \@@_back_input:V \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
 \cs_new_protected_nopar:Npn \@@_input:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_scan_file_name:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_set:Nx \l_@@_tmpa_tl { \tl_tail:N \l_@@_head_tl }
     \@@_file_get:nN \l_@@_tmpa_tl \l_@@_tmpa_tl
     \@@_back_input:V \l_@@_tmpa_tl
@@ -6782,11 +6827,11 @@
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { cs_name }                       % 109
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_csname_loop:
     \@@_prev_input_silent:V \l_@@_head_tl
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:
   }
 \cs_new_protected_nopar:Npn \@@_csname_loop:
@@ -6813,7 +6858,7 @@
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { convert }                       % 110
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \int_case:nn \l_@@_head_char_int
       {
@@ -6849,7 +6894,7 @@
         { 30 } \@@_scan_int:
         { 31 } \@@_scan_pdfximagebbox:
       }
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:
   }
 \cs_new_protected_nopar:Npn \@@_scan_pdfstrcmp:
@@ -6895,18 +6940,18 @@
   }
 \cs_new_protected_nopar:Npn \@@_get_the:
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \int_if_odd:nTF \l_@@_head_char_int
       { % \unexpanded, \detokenize
         \@@_scan_toks:NN \c_false_bool \c_false_bool
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
       }
       { % \the
         \@@_get_x_next:
         \@@_scan_something_internal:n { 5 }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_set_action_text:x
           {
             \tl_head:N \l_@@_head_tl
@@ -7082,7 +7127,7 @@
         { 21 } { \@@_test_pdfprimitive:n {#1} } % ^^A todo and \unless
       }
       {
-        \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
         \int_case:nn \l_@@_head_char_int
           {
@@ -7113,7 +7158,7 @@
             { 23 } % ifpdfabsdim
               { \@@_test_two_vals:N \@@_scan_normal_dimen: }
           }
-        \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
         \l_@@_head_tl \scan_stop:
           \exp_after:wN \@@_cond_true:n
@@ -7220,12 +7265,12 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_ifx:n #1
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_get_next:
     \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
     \@@_get_next:
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_tmpa_tl
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \@@_set_action_text:x
       {
         Compare:~ \tl_to_str:N \l_@@_tmpa_tl
@@ -7248,15 +7293,15 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_case:n #1
   {
-    \seq_gput_right:NV \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \bool_if:NT \g_@@_internal_debug_bool { \iow_term:n { {\ifcase level~#1} } }
     \@@_scan_int:
-    \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_get:N \l_@@_head_tl
     \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
     % ^^A does text_case_aux use prev_input_seq?
     \exp_args:No \@@_test_case_aux:nn { \l_@@_head_tl } {#1}
-    \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
+    \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
 \cs_new_protected:Npn \@@_test_case_aux:nn #1#2
@@ -7730,8 +7775,8 @@
     \tl_gset:Nf \g_@@_before_print_state_tl
       {
         \exp_args:NNf \exp_stop_f: \int_compare:nNnTF
-          { \int_eval:n { \seq_count:N \g_@@_prev_input_seq - #2 } }
-          #1 { \seq_count:N \g_@@_prev_input_seq }
+          { \int_eval:n { \@@_prev_input_count: - #2 } }
+          #1 { \@@_prev_input_count: }
           {
             \int_gset:Nn \g_@@_nonstop_int
               { \int_max:nn { \g_@@_nonstop_int } { 2 } }
