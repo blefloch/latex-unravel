@@ -105,3 +105,650 @@ l. ...  }
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 2: \unravel and incompatible glue units
+============================================================
+[===== Start =====]
+|| 
+|> \C \C \relax 
+[==========] \C = \count0
+|| \C 
+|> \C \relax 
+[==========] \C = \count0
+|| \C =
+|| \C 
+|> \relax 
+[==========] \C = \count0 => 1
+|| \C =1
+|> \relax 
+[==========] Set \C(\count0)=1
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \C \D \relax 
+[==========] \C = \count0
+|| \C 
+|> \D \relax 
+[==========] \D = \dimen0
+|| \C =
+|| \D 
+|> \relax 
+[==========] \D = \dimen0 => 1630536
+|| \C =1630536
+|> \relax 
+[==========] Set \C(\count0)=1630536
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \C \S \relax 
+[==========] \C = \count0
+|| \C 
+|> \S \relax 
+[==========] \S = \skip0
+|| \C =
+|| \S 
+|> \relax 
+[==========] \S = \skip0 => 0
+|| \C =0
+|> \relax 
+[==========] Set \C(\count0)=0
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \C \M \relax 
+[==========] \C = \count0
+|| \C 
+|> \M \relax 
+[==========] \M = \muskip0
+|| \C =
+|| \M 
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\M " and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \M = \muskip0 => 0
+|| \C =0
+|> \relax 
+[==========] Set \C(\count0)=0
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \D \C pt\relax 
+[==========] \D = \dimen0
+|| \D 
+|> \C pt\relax 
+[==========] \C = \count0
+|| \D =
+|| \C 
+|> pt\relax 
+[==========] \C = \count0 => 0
+|| \D =
+|| 0
+|> pt\relax 
+[==========] pt
+|| \D =
+|| 0pt
+|> \relax 
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \D \D \relax 
+[==========] \D = \dimen0
+|| \D 
+|> \D \relax 
+[==========] \D = \dimen0
+|| \D =
+|| \D 
+|> \relax 
+[==========] \D = \dimen0 => 0.0pt
+|| \D =
+|| 0.0pt
+|> \relax 
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \D \S \relax 
+[==========] \D = \dimen0
+|| \D 
+|> \S \relax 
+[==========] \S = \skip0
+|| \D =
+|| \S 
+|> \relax 
+[==========] \S = \skip0 => 0.0pt
+|| \D =
+|| 0.0pt
+|> \relax 
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \D \M \relax 
+[==========] \D = \dimen0
+|| \D 
+|> \M \relax 
+[==========] \M = \muskip0
+|| \D =
+|| \M 
+|> \relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\M " and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \M = \muskip0 => 0.0pt
+|| \D =
+|| 0.0pt
+|> \relax 
+[==========] Set \D(\dimen0)=0.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \S \C ptplus1fil\relax 
+[==========] \S = \skip0
+|| \S 
+|> \C ptplus1fil\relax 
+[==========] \C = \count0
+|| \S =
+|| \C 
+|> ptplus1fil\relax 
+[==========] \C = \count0 => 0
+|| \S =
+|| 0
+|> ptplus1fil\relax 
+[==========] pt
+|| \S =
+|| 0
+|| pt
+|> plus1fil\relax 
+[==========] plus
+|| \S =
+|| 0.0ptplus
+|> 1fil\relax 
+[==========] 1
+|| \S =
+|| 0.0ptplus
+|| 1
+|> fil\relax 
+[==========] fil
+|| \S =
+|| 0.0ptplus
+|| 1fil
+|> \relax 
+[==========] Set \S(\skip0)=0.0pt plus 1.0fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \S \D plus1fil\relax 
+[==========] \S = \skip0
+|| \S 
+|> \D plus1fil\relax 
+[==========] \D = \dimen0
+|| \S =
+|| \D 
+|> plus1fil\relax 
+[==========] \D = \dimen0 => 0.0pt
+|| \S =
+|| 0.0pt
+|> plus1fil\relax 
+[==========] plus
+|| \S =
+|| 0.0ptplus
+|> 1fil\relax 
+[==========] 1
+|| \S =
+|| 0.0ptplus
+|| 1
+|> fil\relax 
+[==========] fil
+|| \S =
+|| 0.0ptplus
+|| 1fil
+|> \relax 
+[==========] Set \S(\skip0)=0.0pt plus 1.0fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \S \S minus1fil\relax 
+[==========] \S = \skip0
+|| \S 
+|> \S minus1fil\relax 
+[==========] \S = \skip0
+|| \S =
+|| \S 
+|> minus1fil\relax 
+[==========] \S = \skip0 => 0.0pt plus 1.0fil
+|| \S =
+|| 0.0pt plus 1.0fil
+|> minus1fil\relax 
+[==========] Set \S(\skip0)=0.0pt plus 1.0fil
+|| 
+|> minus1fil\relax 
+[==========] m= the letter m : \everypar={}
+|| 
+|> minus1fil\relax 
+[==========] m
+<| m
+|| 
+|> inus1fil\relax 
+[==========] i
+<| mi
+|| 
+|> nus1fil\relax 
+[==========] n
+<| min
+|| 
+|> us1fil\relax 
+[==========] u
+<| minu
+|| 
+|> s1fil\relax 
+[==========] s
+<| minus
+|| 
+|> 1fil\relax 
+[==========] 1
+<| minus1
+|| 
+|> fil\relax 
+[==========] f
+<| minus1f
+|| 
+|> il\relax 
+[==========] i
+<| minus1fi
+|| 
+|> l\relax 
+[==========] l
+<| minus1fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+<| minus1fil
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \S \M minus1fil\relax 
+[==========] \S = \skip0
+|| \S 
+|> \M minus1fil\relax 
+[==========] \M = \muskip0
+|| \S =
+|| \M 
+|> minus1fil\relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\M " and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \M = \muskip0 => 0.0pt
+|| \S =
+|| 0.0pt
+|> minus1fil\relax 
+[==========] Set \S(\skip0)=0.0pt
+|| 
+|> minus1fil\relax 
+[==========] m
+<| m
+|| 
+|> inus1fil\relax 
+[==========] i
+<| mi
+|| 
+|> nus1fil\relax 
+[==========] n
+<| min
+|| 
+|> us1fil\relax 
+[==========] u
+<| minu
+|| 
+|> s1fil\relax 
+[==========] s
+<| minus
+|| 
+|> 1fil\relax 
+[==========] 1
+<| minus1
+|| 
+|> fil\relax 
+[==========] f
+<| minus1f
+|| 
+|> il\relax 
+[==========] i
+<| minus1fi
+|| 
+|> l\relax 
+[==========] l
+<| minus1fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+<| minus1fil
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \M \C muplus1fil\relax 
+[==========] \M = \muskip0
+|| \M 
+|> \C muplus1fil\relax 
+[==========] \C = \count0
+|| \M =
+|| \C 
+|> muplus1fil\relax 
+[==========] \C = \count0 => 0
+|| \M =
+|| 0
+|> muplus1fil\relax 
+[==========] mu
+|| \M =
+|| 0
+|| mu
+|> plus1fil\relax 
+[==========] plus
+|| \M =
+|| 0.0muplus
+|> 1fil\relax 
+[==========] 1
+|| \M =
+|| 0.0muplus
+|| 1
+|> fil\relax 
+[==========] fil
+|| \M =
+|| 0.0muplus
+|| 1fil
+|> \relax 
+[==========] Set \M(\muskip0)=0.0mu plus 1.0fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \M \D plus1fil\relax 
+[==========] \M = \muskip0
+|| \M 
+|> \D plus1fil\relax 
+[==========] \D = \dimen0
+|| \M =
+|| \D 
+|> plus1fil\relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\D " and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \D = \dimen0 => 0.0mu
+|| \M =
+|| 0.0mu
+|> plus1fil\relax 
+[==========] plus
+|| \M =
+|| 0.0muplus
+|> 1fil\relax 
+[==========] 1
+|| \M =
+|| 0.0muplus
+|| 1
+|> fil\relax 
+[==========] fil
+|| \M =
+|| 0.0muplus
+|| 1fil
+|> \relax 
+[==========] Set \M(\muskip0)=0.0mu plus 1.0fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \M \S minus1fil\relax 
+[==========] \M = \muskip0
+|| \M 
+|> \S minus1fil\relax 
+[==========] \S = \skip0
+|| \M =
+|| \S 
+|> minus1fil\relax 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\S " and throws an error:
+! 
+!     Incompatible glue units
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     I'm going to assume that 1mu=1pt when they're mixed.
+|...............................................
+[==========] \S = \skip0 => 0.0mu
+|| \M =
+|| 0.0mu
+|> minus1fil\relax 
+[==========] Set \M(\muskip0)=0.0mu
+|| 
+|> minus1fil\relax 
+[==========] m
+<| m
+|| 
+|> inus1fil\relax 
+[==========] i
+<| mi
+|| 
+|> nus1fil\relax 
+[==========] n
+<| min
+|| 
+|> us1fil\relax 
+[==========] u
+<| minu
+|| 
+|> s1fil\relax 
+[==========] s
+<| minus
+|| 
+|> 1fil\relax 
+[==========] 1
+<| minus1
+|| 
+|> fil\relax 
+[==========] f
+<| minus1f
+|| 
+|> il\relax 
+[==========] i
+<| minus1fi
+|| 
+|> l\relax 
+[==========] l
+<| minus1fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+<| minus1fil
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \M \M minus1fil\relax 
+[==========] \M = \muskip0
+|| \M 
+|> \M minus1fil\relax 
+[==========] \M = \muskip0
+|| \M =
+|| \M 
+|> minus1fil\relax 
+[==========] \M = \muskip0 => 0.0mu
+|| \M =
+|| 0.0mu
+|> minus1fil\relax 
+[==========] Set \M(\muskip0)=0.0mu
+|| 
+|> minus1fil\relax 
+[==========] m
+<| m
+|| 
+|> inus1fil\relax 
+[==========] i
+<| mi
+|| 
+|> nus1fil\relax 
+[==========] n
+<| min
+|| 
+|> us1fil\relax 
+[==========] u
+<| minu
+|| 
+|> s1fil\relax 
+[==========] s
+<| minus
+|| 
+|> 1fil\relax 
+[==========] 1
+<| minus1
+|| 
+|> fil\relax 
+[==========] f
+<| minus1f
+|| 
+|> il\relax 
+[==========] i
+<| minus1fi
+|| 
+|> l\relax 
+[==========] l
+<| minus1fil
+|| 
+|> \relax 
+[==========] \relax = \relax
+<| minus1fil
+|| 
+|> 
+[===== End =====]
+============================================================

@@ -247,6 +247,8 @@
 %   alignments are implemented.
 % \item Look at all places where \TeX{}'s procedure |prepare_mag| is
 %   called.
+% \item Find out why so many input levels are used (see the log of the
+%   |unravel003| testfile for instance)
 % \end{itemize}
 %
 % \end{documentation}
@@ -3203,7 +3205,7 @@
 %   performed after placing the current token in a new level of
 %   |prev_input| and telling the user about it.  Once done with this
 %   step, \cs{l_@@_head_tl} contains the tokens found.  Convert them to
-%   the wanted level with \cs{@@_thing_use:nN} (at this stage, \TeX{}
+%   the wanted level with \cs{@@_thing_use_get:nnNN} (at this stage, \TeX{}
 %   may complain about a missing number or incompatible glue units), and
 %   place the result in |prev_input|.  Finally, tell the user the tokens
 %   that have been found and their value (and, if there was a single
@@ -3224,7 +3226,11 @@
   {
     \int_compare:nNnTF
       { ( #1 + \c_two ) / \c_four } > { ( #3 + \c_two ) / \c_four }
-      { \@@_back_input: }
+      {
+        \@@_back_input:
+        \msg_error:nn { unravel } { missing-something }
+        \tl_clear:N \l_@@_tmpa_tl
+      }
       {
         \tl_if_empty:nF {#2}
           {
@@ -3233,9 +3239,8 @@
             #2
             \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
           }
+        \@@_thing_use_get:nnNN {#1} {#3} \l_@@_head_tl \l_@@_tmpa_tl
       }
-    \tl_set:Nx \l_@@_tmpa_tl
-      { \@@_thing_use:nnN {#1} {#3} \l_@@_head_tl }
     \@@_prev_input_silent:V \l_@@_tmpa_tl
     \@@_set_action_text:
     \@@_set_action_text:x
@@ -3353,21 +3358,45 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux,EXP]{\@@_thing_use:nnN}
-%   Given a level~|#1|, call a function to convert the token list~|#2|
-%   to the correct level.  This step may trigger \TeX{} errors, which
-%   should precisely match the expected ones.
+% \begin{macro}[aux]{\@@_thing_use_get:nnNN}
+%   Given a level found~|#1| and a target level~|#2| (with |#1| in
+%   $[0,3]$ or |#1| and |#2| in $[4,5]$), turn the token list |#3| into
+%   the desired level, and store the result in |#4|.  This step may
+%   trigger \TeX{} errors, which should precisely match the expected
+%   ones.
 %    \begin{macrocode}
-\cs_new:Npn \@@_thing_use:nnN #1#2
+\cs_new_protected:Npn \@@_thing_use_get:nnNN #1#2#3#4
   {
-    \int_case:nnF { \int_min:nn {#1} {#2} }
+    \int_compare:nNnTF {#2} < { 3 }
       {
-        { 0 } \int_eval:n
-        { 1 } \dim_eval:n
-        { 2 } \skip_eval:n
-        { 3 } \muskip_eval:n
+        \int_compare:nNnT {#1} = { 3 }
+          { \@@_tex_error:nV { incompatible-units } #3 }
+        \tl_set:Nx #4
+          {
+            \int_case:nn { \int_min:nn {#1} {#2} }
+              {
+                { 0 } \int_eval:n
+                { 1 } \dim_eval:n
+                { 2 } \skip_eval:n
+              }
+            { \int_compare:nNnT {#1} = { 3 } \etex_mutoglue:D #3 }
+          }
       }
-      { \@@_the:w }
+      {
+        \int_compare:nNnTF {#2} = { 3 }
+          {
+            \int_case:nnF {#1}
+              {
+                { 0 } { \tl_set:Nx #4 { \int_eval:n {#3} } }
+                { 3 } { \tl_set:Nx #4 { \muskip_eval:n {#3} } }
+              }
+              {
+                \@@_tex_error:nV { incompatible-units } #3
+                \tl_set:Nx #4 { \muskip_eval:n { \etex_gluetomu:D #3 } }
+              }
+          }
+          { \tl_set:Nx #4 { \@@_the:w #3 } }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3566,31 +3595,10 @@
     \@@_cmd_if_internal:TF
       {
         \int_compare:nNnTF {#1} = { 3 }
-          {
-            \@@_scan_something_internal:n { 3 }
-            \int_case:nnF \g_@@_val_level_int
-              {
-                { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
-                { 3 } { }
-              }
-              {
-                \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-                \@@_tex_error:nV { incompatible-units } \l_@@_head_tl
-              }
-          }
-          {
-            \@@_scan_something_internal:n { 1 }
-            \int_case:nnF \g_@@_val_level_int
-              {
-                { 0 } { \@@_scan_dim_unit:nN {#1} #2 }
-                { 3 } % ^^A todo: error recovery
-                {
-                  \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-                  \@@_tex_error:nV { incompatible-units } \l_@@_head_tl
-                }
-              }
-              { }
-          }
+          { \@@_scan_something_internal:n { 3 } }
+          { \@@_scan_something_internal:n { 1 } }
+        \int_compare:nNnT \g_@@_val_level_int = { 0 }
+          { \@@_scan_dim_unit:nN {#1} #2 }
       }
       { \@@_scan_dimen_char:nN {#1} #2 }
     \seq_gpop_right:NN \g_@@_prev_input_seq \l_@@_head_tl
@@ -3715,15 +3723,9 @@
         \int_case:nnF \g_@@_val_level_int
           {
             { 0 } { \@@_scan_dimen:nN {#1} \c_false_bool }
-            {#1} { \@@_break:w }
+            { 1 } { }
           }
-          {
-            \int_compare:nNnF { \g_@@_val_level_int + #1 } = 3
-              {
-                \seq_get_right:NN \g_@@_prev_input_seq \l_@@_head_tl
-                \@@_tex_error:nV { incompatible-units } \l_@@_head_tl
-              }
-          }
+          { \@@_break:w }
       }
       { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
     \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
@@ -8016,6 +8018,15 @@
   { The~following~feature~is~not~implemented:~'#1'. }
 \msg_new:nnn { unravel } { endinput-ignored }
   { The~primitive~\iow_char:N\\endinput~was~ignored. }
+\msg_new:nnn { unravel } { missing-something }
+  { Something~is~missing,~sorry! }
+\msg_new:nnnn { unravel } { tex-error }
+  { TeX~sees~"#1"~and~throws~an~error:\\\\ \iow_indent:n {#2} }
+  {
+    \tl_if_empty:nTF {#3}
+      { TeX~provides~no~further~help~for~this~error. }
+      { TeX's~advice~is:\\\\ \iow_indent:n {#3} }
+  }
 \msg_new:nnnn { unravel } { tex-fatal }
   { TeX~sees~"#1"~and~throws~a~fatal~error:\\\\ \iow_indent:n {#2} }
   {
