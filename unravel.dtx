@@ -23,7 +23,7 @@
 %
 % \title{The \textsf{unravel} package: \\
 %   watching TeX digest tokens\thanks{This
-%     file has version number 0.2c, last revised 2015/09/30.}}
+%     file has version number 0.2d, last revised 2015/09/30.}}
 % \author{Bruno Le Floch}
 % \date{2015/09/30}
 %
@@ -507,7 +507,7 @@
   {%
     \csname @@_setup_restore:\endcsname
     \ProvidesExplPackage
-      {unravel} {2015/09/30} {0.2c} {Watching TeX digest tokens}%
+      {unravel} {2015/09/30} {0.2d} {Watching TeX digest tokens}%
     \csname @@_setup_unravel:\endcsname
   }%
 %    \end{macrocode}
@@ -5286,6 +5286,7 @@
   {
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_ignorespaces:D
       {
+        \@@_print_action:
         \@@_get_x_non_blank:
         \@@_set_cmd:
         \@@_do_step:
