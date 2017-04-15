@@ -1,21 +1,5 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
-%% \CharacterTable
-%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
-%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
-%%   Digits        \0\1\2\3\4\5\6\7\8\9
-%%   Exclamation   \!     Double quote  \"     Hash (number) \#
-%%   Dollar        \$     Percent       \%     Ampersand     \&
-%%   Acute accent  \'     Left paren    \(     Right paren   \)
-%%   Asterisk      \*     Plus          \+     Comma         \,
-%%   Minus         \-     Point         \.     Solidus       \/
-%%   Colon         \:     Semicolon     \;     Less than     \<
-%%   Equals        \=     Greater than  \>     Question mark \?
-%%   Commercial at \@     Left bracket  \[     Backslash     \\
-%%   Right bracket \]     Circumflex    \^     Underscore    \_
-%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
-%%   Right brace   \}     Tilde         \~}
-%%
 ============================================================
 TEST 1: \unravel and scan_something_internal
 ============================================================
@@ -1285,6 +1269,7 @@ l. ...  }
 |     A left brace was mandatory here, so I've put one in. You might want to
 |     delete and/or insert some corrections so that I will find a matching
 |     right brace soon. (If you're confused by all this, try typing `I}' now.)
+| 
 |...............................................
 [==========] \T = \toks0
 || \T =
@@ -1324,6 +1309,7 @@ l. ...  }
 |     A left brace was mandatory here, so I've put one in. You might want to
 |     delete and/or insert some corrections so that I will find a matching
 |     right brace soon. (If you're confused by all this, try typing `I}' now.)
+| 
 |...............................................
 [==========] \T = \toks0
 || \T =
@@ -1363,6 +1349,7 @@ l. ...  }
 |     A left brace was mandatory here, so I've put one in. You might want to
 |     delete and/or insert some corrections so that I will find a matching
 |     right brace soon. (If you're confused by all this, try typing `I}' now.)
+| 
 |...............................................
 [==========] \T = \toks0
 || \T =
@@ -1402,6 +1389,7 @@ l. ...  }
 |     A left brace was mandatory here, so I've put one in. You might want to
 |     delete and/or insert some corrections so that I will find a matching
 |     right brace soon. (If you're confused by all this, try typing `I}' now.)
+| 
 |...............................................
 [==========] \T = \toks0
 || \T =
@@ -1454,6 +1442,7 @@ l. ...  }
 |     A left brace was mandatory here, so I've put one in. You might want to
 |     delete and/or insert some corrections so that I will find a matching
 |     right brace soon. (If you're confused by all this, try typing `I}' now.)
+| 
 |...............................................
 [==========] \T = \toks0
 || \T =

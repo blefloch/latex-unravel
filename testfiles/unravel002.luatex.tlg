@@ -1,21 +1,5 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
-%% \CharacterTable
-%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
-%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
-%%   Digits        \0\1\2\3\4\5\6\7\8\9
-%%   Exclamation   \!     Double quote  \"     Hash (number) \#
-%%   Dollar        \$     Percent       \%     Ampersand     \&
-%%   Acute accent  \'     Left paren    \(     Right paren   \)
-%%   Asterisk      \*     Plus          \+     Comma         \,
-%%   Minus         \-     Point         \.     Solidus       \/
-%%   Colon         \:     Semicolon     \;     Less than     \<
-%%   Equals        \=     Greater than  \>     Question mark \?
-%%   Commercial at \@     Left bracket  \[     Backslash     \\
-%%   Right bracket \]     Circumflex    \^     Underscore    \_
-%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
-%%   Right brace   \}     Tilde         \~}
-%%
 ============================================================
 TEST 1: RequirePackage in a group
 ============================================================
@@ -45,19 +29,20 @@ l. ......vel>1 \errmessage{unravel loaded in a group}
 TEST 3: RequirePackage with no group
 ============================================================
 ============================================================
-(../expl3.sty
+(unravel.sty (../expl3.sty
 (../expl3-code.tex
+\ucharcat@table=\catcodetable5
 \c_max_int=\count80
 \l_tmpa_int=\count81
 \l_tmpb_int=\count82
 \g_tmpa_int=\count83
 \g_tmpb_int=\count84
 \g__prg_map_int=\count85
-\l_iow_line_count_int=\count86
-\l__iow_target_count_int=\count87
-\l__iow_current_line_int=\count88
-\l__iow_current_word_int=\count89
-\l__iow_current_indentation_int=\count90
+\c_log_iow=\count86
+\l_iow_line_count_int=\count87
+\l__iow_line_target_int=\count88
+\l__iow_one_indent_int=\count89
+\l__iow_indent_int=\count90
 \c_zero_dim=\dimen102
 \c_max_dim=\dimen103
 \l_tmpa_dim=\dimen104
@@ -76,50 +61,63 @@ TEST 3: RequirePackage with no group
 \l_tmpb_muskip=\muskip13
 \g_tmpa_muskip=\muskip14
 \g_tmpb_muskip=\muskip15
-\g__keyval_level_int=\count91
-\l_keys_choice_int=\count92
-\c__fp_leading_shift_int=\count93
-\c__fp_middle_shift_int=\count94
-\c__fp_trailing_shift_int=\count95
-\c__fp_big_leading_shift_int=\count96
-\c__fp_big_middle_shift_int=\count97
-\c__fp_big_trailing_shift_int=\count98
-\c__fp_Bigg_leading_shift_int=\count99
-\c__fp_Bigg_middle_shift_int=\count100
-\c__fp_Bigg_trailing_shift_int=\count101
+\l_keys_choice_int=\count91
+\c__fp_leading_shift_int=\count92
+\c__fp_middle_shift_int=\count93
+\c__fp_trailing_shift_int=\count94
+\c__fp_big_leading_shift_int=\count95
+\c__fp_big_middle_shift_int=\count96
+\c__fp_big_trailing_shift_int=\count97
+\c__fp_Bigg_leading_shift_int=\count98
+\c__fp_Bigg_middle_shift_int=\count99
+\c__fp_Bigg_trailing_shift_int=\count100
+\c__fp_rand_size_int=\count101
+\c__fp_rand_four_int=\count102
+\c__fp_rand_eight_int=\count103
+\l__sort_length_int=\count104
+\l__sort_min_int=\count105
+\l__sort_top_int=\count106
+\l__sort_max_int=\count107
+\l__sort_true_max_int=\count108
+\l__sort_block_int=\count109
+\l__sort_begin_int=\count110
+\l__sort_end_int=\count111
+\l__sort_A_int=\count112
+\l__sort_B_int=\count113
+\l__sort_C_int=\count114
 \c_empty_box=\box26
 \l_tmpa_box=\box27
 \l_tmpb_box=\box28
 \g_tmpa_box=\box29
 \g_tmpb_box=\box30
-\l__coffin_internal_box=\box31
-\l__coffin_internal_dim=\dimen108
-\l__coffin_offset_x_dim=\dimen109
-\l__coffin_offset_y_dim=\dimen110
-\l__coffin_x_dim=\dimen111
-\l__coffin_y_dim=\dimen112
-\l__coffin_x_prime_dim=\dimen113
-\l__coffin_y_prime_dim=\dimen114
-\c_empty_coffin=\box32
-\l__coffin_aligned_coffin=\box33
-\l__coffin_aligned_internal_coffin=\box34
-\l_tmpa_coffin=\box35
-\l_tmpb_coffin=\box36
-\l__coffin_display_coffin=\box37
-\l__coffin_display_coord_coffin=\box38
-\l__coffin_display_pole_coffin=\box39
-\l__coffin_display_offset_dim=\dimen115
-\l__coffin_display_x_dim=\dimen116
-\l__coffin_display_y_dim=\dimen117
-\l__box_top_dim=\dimen118
-\l__box_bottom_dim=\dimen119
-\l__box_left_dim=\dimen120
-\l__box_right_dim=\dimen121
-\l__box_top_new_dim=\dimen122
-\l__box_bottom_new_dim=\dimen123
-\l__box_left_new_dim=\dimen124
-\l__box_right_new_dim=\dimen125
-\l__box_internal_box=\box40
+\l__box_top_dim=\dimen108
+\l__box_bottom_dim=\dimen109
+\l__box_left_dim=\dimen110
+\l__box_right_dim=\dimen111
+\l__box_top_new_dim=\dimen112
+\l__box_bottom_new_dim=\dimen113
+\l__box_left_new_dim=\dimen114
+\l__box_right_new_dim=\dimen115
+\l__box_internal_box=\box31
+\l__coffin_internal_box=\box32
+\l__coffin_internal_dim=\dimen116
+\l__coffin_offset_x_dim=\dimen117
+\l__coffin_offset_y_dim=\dimen118
+\l__coffin_x_dim=\dimen119
+\l__coffin_y_dim=\dimen120
+\l__coffin_x_prime_dim=\dimen121
+\l__coffin_y_prime_dim=\dimen122
+\c_empty_coffin=\box33
+\l__coffin_aligned_coffin=\box34
+\l__coffin_aligned_internal_coffin=\box35
+\l_tmpa_coffin=\box36
+\l_tmpb_coffin=\box37
+\l__coffin_display_coffin=\box38
+\l__coffin_display_coord_coffin=\box39
+\l__coffin_display_pole_coffin=\box40
+\l__coffin_display_offset_dim=\dimen123
+\l__coffin_display_x_dim=\dimen124
+\l__coffin_display_y_dim=\dimen125
 \l__coffin_bounding_shift_dim=\dimen126
 \l__coffin_left_corner_dim=\dimen127
 \l__coffin_right_corner_dim=\dimen128
@@ -128,41 +126,40 @@ TEST 3: RequirePackage with no group
 \l__coffin_scaled_total_height_dim=\dimen131
 \l__coffin_scaled_width_dim=\dimen132
 )
-(../l3unicode-data.def
-)
 (../l3pdfmode.def
-\l__driver_color_stack_int=\count102
+\l__driver_color_stack_int=\count115
+\l__driver_tmp_box=\box41
 ))
 (../xparse.sty
-\l__xparse_current_arg_int=\count103
-\l__xparse_m_args_int=\count104
-\l__xparse_mandatory_args_int=\count105
-\l__xparse_processor_int=\count106
-\l__xparse_v_nesting_int=\count107
+\l__xparse_current_arg_int=\count116
+\g__xparse_grabber_int=\count117
+\l__xparse_m_args_int=\count118
+\l__xparse_mandatory_args_int=\count119
+\l__xparse_v_nesting_int=\count120
 )
 (../gtl.sty
 )
-\l__unravel_prompt_tmpa_int=\count108
-\g__unravel_nonstop_int=\count109
-\g__unravel_noise_int=\count110
-\g__unravel_step_int=\count111
-\g__unravel_default_max_action_int=\count112
-\g__unravel_default_max_output_int=\count113
-\g__unravel_default_max_input_int=\count114
-\g__unravel_max_action_int=\count115
-\g__unravel_max_output_int=\count116
-\g__unravel_max_input_int=\count117
-\l__unravel_print_int=\count118
-\g__unravel_input_int=\count119
-\g__unravel_input_tmpa_int=\count120
-\l__unravel_head_cmd_int=\count121
-\l__unravel_head_char_int=\count122
-\g__unravel_val_level_int=\count123
-\g__unravel_if_limit_int=\count124
-\g__unravel_if_depth_int=\count125
-\l__unravel_if_nesting_int=\count126
-\g__unravel_ends_int=\count127
-\g__unravel_mag_set_int=\count128
+\l__unravel_prompt_tmpa_int=\count121
+\g__unravel_nonstop_int=\count122
+\g__unravel_noise_int=\count123
+\g__unravel_step_int=\count124
+\g__unravel_default_max_action_int=\count125
+\g__unravel_default_max_output_int=\count126
+\g__unravel_default_max_input_int=\count127
+\g__unravel_max_action_int=\count128
+\g__unravel_max_output_int=\count129
+\g__unravel_max_input_int=\count130
+\l__unravel_print_int=\count131
+\g__unravel_input_int=\count132
+\g__unravel_input_tmpa_int=\count133
+\l__unravel_head_cmd_int=\count134
+\l__unravel_head_char_int=\count135
+\g__unravel_val_level_int=\count136
+\g__unravel_if_limit_int=\count137
+\g__unravel_if_depth_int=\count138
+\l__unravel_if_nesting_int=\count139
+\g__unravel_ends_int=\count140
+\g__unravel_mag_set_int=\count141
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
@@ -173,9 +170,9 @@ TEST 3: RequirePackage with no group
 . 
 . Defining command \unravelsetup with sig. 'm' on line ....
 .................................................
-) 37:14 48:12 49:12 50:12 51:12 52:12
-53:12 92:0 97:11 98:11 99:11 100:11 101:11 102:11 103:11 105:11 108:11 109:11
-110:11 111:11 112:11 114:11 116:11 117:11 118:11
+) 37:14 48:12 49:12 50:12 51:12
+52:12 53:12 92:0 97:11 98:11 99:11 100:11 101:11 102:11 103:11 105:11 108:11
+109:11 110:11 111:11 112:11 114:11 116:11 117:11 118:11
 ============================================================
 TEST 4: input with no group
 ============================================================

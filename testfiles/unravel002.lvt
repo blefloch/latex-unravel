@@ -63,6 +63,7 @@
 \input unravel.sty
 \showcatcodes
 
+\newlinechar=10
 \END
 
 }
