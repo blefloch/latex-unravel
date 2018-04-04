@@ -5063,8 +5063,8 @@
             \@@_get_x_next:
             \@@_scan_something_internal:n { 5 }
             \@@_prev_input_gpop:N \l_@@_head_tl
-            \@@_exp_args:Nx \etex_showtokens:D
-              { \tl_tail:N \l_@@_head_tl }
+            \@@_exp_args:Nx \use:n
+              { \etex_showtokens:D { \tl_tail:N \l_@@_head_tl } }
           }
       }
       { % no operand for showlists, showgroups, showifs
