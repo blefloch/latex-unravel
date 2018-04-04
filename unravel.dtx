@@ -343,7 +343,7 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_setup_save:}
-% \begin{macro}[aux, EXP]{\@@_setup_save_aux:n}
+% \begin{macro}[EXP]{\@@_setup_save_aux:n}
 %   This saves into \cs{l_@@_setup_restore_tl} the current catcodes
 %   (from $0$ to $255$ only), \tn{endlinechar}, \tn{escapechar},
 %   \tn{newlinechar}.
@@ -538,7 +538,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\c_@@_prompt_ior, \c_@@_noprompt_ior}
+% \begin{macro}{\c_@@_prompt_ior, \c_@@_noprompt_ior}
 %   These are not quite primitives, but are very low-level
 %   |ior| streams to prompt the user explicitly or not.
 %    \begin{macrocode}
@@ -587,20 +587,21 @@
     \cs_set_nopar:Npx \l_@@_exp_tl { \exp_not:N #1 \exp_not:N #2 {#3} }
     \l_@@_exp_tl
   }
+%    \end{macrocode}
 % \end{macro}
 % \end{variable}
 %
 % \subsubsection{Miscellanous helpers}
 %
-% \begin{macro}[aux]{\@@_tmp:w}
+% \begin{macro}{\@@_tmp:w}
 %   Temporary function used to define other functions.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_tmp:w { }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_file_get:nN}
-% \begin{macro}[aux]{\@@_file_get_aux:wN}
+% \begin{macro}{\@@_file_get:nN}
+% \begin{macro}{\@@_file_get_aux:wN}
 %    \begin{macrocode}
 \cs_set_protected:Npn \@@_tmp:w #1
   {
@@ -625,7 +626,7 @@
 % \end{macro}
 %
 % \begin{macro}[int, EXP]{\@@_tl_first_int:N}
-% \begin{macro}[aux, EXP]{\@@_tl_first_int_aux:Nn}
+% \begin{macro}[EXP]{\@@_tl_first_int_aux:Nn}
 %   Function that finds an explicit number in a token list.  This is
 %   used for instance when implementing \tn{read}, to find the stream
 %   \meta{number} within the whole \tn{read} \meta{number} |to|
@@ -693,7 +694,7 @@
 % \subsubsection{String helpers}
 %
 % \begin{macro}[int]{\@@_strip_escape:w}
-% \begin{macro}[aux]{\@@_strip_escape_aux:N, \@@_strip_escape_aux:w}
+% \begin{macro}{\@@_strip_escape_aux:N, \@@_strip_escape_aux:w}
 %   This is based on the 2013-07-19 (and earlier) version of
 %   \cs{cs_to_str:N}.  There are three cases.  If the escape character
 %   is printable, the charcode test is false, and
@@ -753,7 +754,7 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_str_truncate_left:nn}
-% \begin{macro}[aux]{\@@_str_truncate_left_aux:nnn}
+% \begin{macro}{\@@_str_truncate_left_aux:nnn}
 %   Truncate the string |#1| to a maximum of |#2| characters.  If it is
 %   longer, replace some characters on the left of the string by
 %   |(123~more~chars)~| with the appropriate number instead of~|123|.
@@ -778,7 +779,7 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_str_truncate_right:nn}
-% \begin{macro}[aux]{\@@_str_truncate_right_aux:nnn}
+% \begin{macro}{\@@_str_truncate_right_aux:nnn}
 %   Truncate the string |#1| to a maximum of |#2| characters.  If it is
 %   longer, replace some characters on the right of the string by
 %   |~(123~more~chars)| with the appropriate number instead of~|123|.
@@ -845,7 +846,7 @@
 %
 % \begin{macro}[int]{\@@_token_to_char:N}
 % \begin{macro}[int]{\@@_meaning_to_char:n, \@@_meaning_to_char:o}
-% \begin{macro}[aux]
+% \begin{macro}
 %   {\@@_meaning_to_char_auxi:w, \@@_meaning_to_char_auxii:w}
 %   From the meaning of a character token (with arbitrary character
 %   code, except active), extract the character itself (with string
@@ -974,7 +975,7 @@
 %
 % \subsubsection{Helpers for previous input}
 %
-% \begin{macro}[aux, EXP]{\@@_prev_input_count:, \@@_prev_input_count_aux:n}
+% \begin{macro}[EXP]{\@@_prev_input_count:, \@@_prev_input_count_aux:n}
 %    \begin{macrocode}
 \cs_new_nopar:Npn \@@_prev_input_count:
   {
@@ -990,7 +991,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]
+% \begin{macro}
 %   {
 %     \@@_prev_input_get:N,
 %     \@@_prev_input_gpush:,
@@ -1065,7 +1066,7 @@
 % \end{macro}
 %
 % \begin{macro}[int]{\@@_prev_input_join_get:nN}
-% \begin{macro}[aux]{\@@_join_get_aux:NNN}
+% \begin{macro}{\@@_join_get_aux:NNN}
 %   Pops the previous-input sequence twice to get some value in
 %   \cs{l_@@_head_tl} and some sign or decimal number in
 %   \cs{l_@@_tmpa_tl}.  Combines them into a value, using
@@ -2198,7 +2199,7 @@
 % \cs{l_@@_head_token}.
 %
 % \begin{macro}[int]{\@@_get_next:}
-% \begin{macro}[aux]{\@@_get_next_aux:w}
+% \begin{macro}{\@@_get_next_aux:w}
 %   If the input is empty, forcefully exit.  Otherwise,
 %   remove the first token in the input, and store it in
 %   \cs{l_@@_head_gtl}.  Set \cs{l_@@_head_token} equal in meaning to
@@ -2273,7 +2274,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_set_cmd_aux_meaning:}
+% \begin{macro}{\@@_set_cmd_aux_meaning:}
 % \begin{macro}[aux,EXP]{\@@_set_cmd_aux_meaning:w}
 %   Remove the leading escape character (\cs{@@_strip_escape:w} takes
 %   care of special cases there) from the \tn{meaning} of the first
@@ -2304,9 +2305,9 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]
+% \begin{macro}
 %   {\@@_set_cmd_aux_primitive:nTF, \@@_set_cmd_aux_primitive:oTF}
-% \begin{macro}[aux]{\@@_set_cmd_aux_primitive:nn}
+% \begin{macro}{\@@_set_cmd_aux_primitive:nn}
 %   Test if there is any information about the given (cleaned-up)
 %   \tn{meaning}.  If there is, use that as the command and character
 %   integers.
@@ -2330,7 +2331,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_set_cmd_aux_macro:}
+% \begin{macro}{\@@_set_cmd_aux_macro:}
 %   The token is a macro.  There is no need to determine whether the
 %   macro is long/outer.
 %    \begin{macrocode}
@@ -2342,7 +2343,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_set_cmd_aux_unknown:}
+% \begin{macro}{\@@_set_cmd_aux_unknown:}
 %   Complain about an unknown primitive, and consider it as if it were
 %   \tn{relax}.
 %    \begin{macrocode}
@@ -2356,7 +2357,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_set_cmd_aux_cs:}
+% \begin{macro}{\@@_set_cmd_aux_cs:}
 %   If the \tn{meaning} contains \verb*|elect font|, the control
 %   sequence is \tn{nullfont} or similar (note that we do not search for
 %   \verb*|select font|, as the code to trim the escape character from
@@ -2379,7 +2380,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]
+% \begin{macro}
 %   {
 %     \@@_set_cmd_aux_numeric:,
 %     \@@_set_cmd_aux_numeric:w,
@@ -2441,8 +2442,8 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_set_cmd_aux_char:}
-% \begin{macro}[aux]{\@@_set_cmd_aux_char:w}
+% \begin{macro}{\@@_set_cmd_aux_char:}
+% \begin{macro}{\@@_set_cmd_aux_char:w}
 %   At this point, the \tn{meaning} token list has been shortened by the
 %   code meant to remove the escape character.  We thus set it again to
 %   the \tn{meaning} of the leading token.  The command is then the
@@ -2613,7 +2614,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_input_merge:}
+% \begin{macro}{\@@_input_merge:}
 %   Merge the top two levels of input.  This requires, but does not
 %   check, that \cs{g_@@_input_int} is at least~$2$.
 %    \begin{macrocode}
@@ -2631,7 +2632,7 @@
 % \end{macro}
 %
 % \begin{macro}[int,TF]{\@@_input_gpop_item:N}
-% \begin{macro}[aux]{\@@_input_gpop_item_aux:NN}
+% \begin{macro}{\@@_input_gpop_item_aux:NN}
 %   If there is no input, we cannot pop an item.  Othewise, try to pop
 %   from the top of the input stack.  If this succeeds, or if this
 %   failed and the top of stack has extra end-group characters, or if
@@ -2848,7 +2849,7 @@
 %
 % ^^A todo: redoc
 % \begin{macro}[int]{\@@_macro_call:}
-% \begin{macro}[aux]
+% \begin{macro}
 %   {
 %     \@@_macro_call_safe:,
 %     \@@_macro_call_quick:,
@@ -2991,7 +2992,7 @@
 % ^^A todo: implement |test_no_ligatures|?
 % ^^A todo: implement |get_tag_code|?
 %
-% \begin{macro}[aux]{\@@_get_x_non_blank:}
+% \begin{macro}{\@@_get_x_non_blank:}
 %   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_get_x_non_blank:
@@ -3003,7 +3004,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_x_non_relax:}
+% \begin{macro}{\@@_get_x_non_relax:}
 %   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_get_x_non_relax:
@@ -3019,7 +3020,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_skip_optional_space:}
+% \begin{macro}{\@@_skip_optional_space:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_skip_optional_space:
   {
@@ -3030,7 +3031,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_optional_equals:}
+% \begin{macro}{\@@_scan_optional_equals:}
 %   See \TeX{}'s |scan_optional_equals|.  In all cases we forcefully
 %   insert an equal sign in the output, because this sign is required,
 %   as \cs{@@_scan_something_internal:n} leaves raw numbers in
@@ -3068,7 +3069,7 @@
 %
 % \begin{macro}[int]{\@@_scan_keyword:n}
 % \begin{macro}[int,TF]{\@@_scan_keyword:n}
-% \begin{macro}[aux]
+% \begin{macro}
 %   {
 %     \@@_scan_keyword_loop:NNN,
 %     \@@_scan_keyword_test:NNTF,
@@ -3174,7 +3175,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_to:}
+% \begin{macro}{\@@_scan_to:}
 %   Used when |to| is mandatory: after \tn{read} or \tn{readline} and
 %   after \tn{vsplit}.
 %    \begin{macrocode}
@@ -3189,7 +3190,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_font_ident:}
+% \begin{macro}{\@@_scan_font_ident:}
 %   Find a font identifier.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_font_ident:
@@ -3221,7 +3222,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_font_int:}
+% \begin{macro}{\@@_scan_font_int:}
 %   Find operands for one of \tn{hyphenchar}'s friends (command code
 %   |assign_font_int=78|).
 %    \begin{macrocode}
@@ -3238,7 +3239,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_font_dimen:}
+% \begin{macro}{\@@_scan_font_dimen:}
 %   Find operands for \tn{fontdimen}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_font_dimen:
@@ -3250,8 +3251,8 @@
 % \end{macro}
 %
 % ^^A todo: rename this function because all other scan functions do get_x_next themselves.
-% \begin{macro}[aux]{\@@_scan_something_internal:n}
-% \begin{macro}[aux]{\@@_scan_something_aux:nwn}
+% \begin{macro}{\@@_scan_something_internal:n}
+% \begin{macro}{\@@_scan_something_aux:nwn}
 %   Receives an (explicit) \enquote{level} argument:
 %   \begin{itemize}
 %   \item |int_val=0| for integer values;
@@ -3346,7 +3347,7 @@
 % \end{macro}
 %
 % ^^A todo: \the can be followed by ignore_spaces
-% \begin{macro}[aux, EXP]
+% \begin{macro}[EXP]
 %   {\@@_thing_case:, \@@_thing_last_item:, \@@_thing_register:}
 %   This expands to a digit (the level generated by whatever token is
 %   the current |head|), followed by some code to fetch necessary
@@ -3443,7 +3444,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_toks_register:}
+% \begin{macro}{\@@_scan_toks_register:}
 %   A case where getting operands is not completely trivial.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks_register:
@@ -3454,7 +3455,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_thing_use_get:nnNN}
+% \begin{macro}{\@@_thing_use_get:nnNN}
 %   Given a level found~|#1| and a target level~|#2| (both in $[0,3]$),
 %   turn the token list |#3| into the desired level or less, and store
 %   the result in |#4|.
@@ -3492,8 +3493,8 @@
 % \end{macro}
 %
 % ^^A todo: comment
-% \begin{macro}[aux]{\@@_scan_expr:N}
-% \begin{macro}[aux]{\@@_scan_expr_aux:NN, \@@_scan_factor:N}
+% \begin{macro}{\@@_scan_expr:N}
+% \begin{macro}{\@@_scan_expr_aux:NN, \@@_scan_factor:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_expr:N #1
   { \@@_scan_expr_aux:NN #1 \c_false_bool }
@@ -3568,7 +3569,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_signs:}
+% \begin{macro}{\@@_scan_signs:}
 %   Skips blanks, scans signs, and places them to the right of the last
 %   item of \cs{@@_prev_input:n}.
 %    \begin{macrocode}
@@ -3591,8 +3592,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_int:}
-% \begin{macro}[aux]
+% \begin{macro}{\@@_scan_int:}
+% \begin{macro}
 %   {\@@_scan_int_char:, \@@_scan_int_lq:, \@@_scan_int_explicit:n}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_int:
@@ -3893,7 +3894,7 @@
 % \end{macro}
 %
 % ^^A todo: hash doubling is wrong
-% \begin{macro}[aux]{\@@_scan_toks_to_str:}
+% \begin{macro}{\@@_scan_toks_to_str:}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks_to_str:
   {
@@ -3907,7 +3908,7 @@
 % \end{macro}
 %
 % ^^A todo: provide separate functions for defs (avoid hash doubling).
-% \begin{macro}[aux]{\@@_scan_toks:NN}
+% \begin{macro}{\@@_scan_toks:NN}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks:NN #1#2
   {
@@ -3920,8 +3921,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_param:}
-% \begin{macro}[aux]{\@@_scan_param_aux:}
+% \begin{macro}{\@@_scan_param:}
+% \begin{macro}{\@@_scan_param_aux:}
 %   Collect the parameter text into \cs{l_@@_tmpa_tl}, and when seeing
 %   either a begin-group or an end-group character, put it back into the
 %   input, stop looping, and put what we collected into
@@ -3946,7 +3947,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_group_n:N}
+% \begin{macro}{\@@_scan_group_n:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_n:N #1
   {
@@ -3964,7 +3965,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_group_x:N}
+% \begin{macro}{\@@_scan_group_x:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_x:N #1
   {
@@ -3988,7 +3989,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_group_xdef:n}
+% \begin{macro}{\@@_scan_group_xdef:n}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_xdef:n #1
   {
@@ -4019,7 +4020,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_group_x:n}
+% \begin{macro}{\@@_scan_group_x:n}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_x:n #1
   {
@@ -4040,7 +4041,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_get_token_x:N}
+% \begin{macro}{\@@_get_token_x:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_get_token_x:N #1
   {
@@ -4072,7 +4073,7 @@
 %
 % ^^A todo: catch runaway expand/get_x_next. (get_next too, probably)
 %
-% \begin{macro}[aux]{\@@_scan_alt_rule:}
+% \begin{macro}{\@@_scan_alt_rule:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_alt_rule:
   {
@@ -4099,7 +4100,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_spec:}
+% \begin{macro}{\@@_scan_spec:}
 %   Some \TeX{} primitives accept the keywords |to| and |spread|,
 %   followed by a dimension.
 %    \begin{macrocode}
@@ -4117,7 +4118,7 @@
 %
 % \subsection{Working with boxes}
 %
-% \begin{macro}[aux]{\@@_do_box:N}
+% \begin{macro}{\@@_do_box:N}
 %   When this procedure is called, the last item in
 %   the previous-input sequence is
 %   \begin{itemize}
@@ -4157,7 +4158,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_box_error:}
+% \begin{macro}{\@@_do_box_error:}
 %   Put the (non-|make_box|) command back into the input and complain.
 %   Then recover by throwing away the action (last item of
 %   the previous-input sequence).  For some reason (this appears to be what
@@ -4174,7 +4175,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_begin_box:N}
+% \begin{macro}{\@@_do_begin_box:N}
 %   We have just found a |make_box| command and placed it into the last
 %   item of the previous-input sequence.  If it is ``simple''
 %   (\tn{box}\meta{int}, \tn{copy}\meta{int}, \tn{lastbox},
@@ -4203,7 +4204,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_simple_box:N}
+% \begin{macro}{\@@_do_simple_box:N}
 %   For leaders, we need to fetch a glue.  In all cases, retrieve the
 %   box construction (such as |\raise3pt\vsplit7to5em|).  Finally, let
 %   \TeX{} run the code and print what we have done.
@@ -4225,7 +4226,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_leaders_fetch_skip:}
+% \begin{macro}{\@@_do_leaders_fetch_skip:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_leaders_fetch_skip:
   {
@@ -4249,7 +4250,7 @@
 % \end{macro}
 %
 % ^^A todo: less intrusive hooking into \everyhbox/\everyvbox?
-% \begin{macro}[aux]{\@@_do_box_explicit:N}
+% \begin{macro}{\@@_do_box_explicit:N}
 %   At this point, the last item in the previous-input sequence is
 %   typically |\setbox0\hbox| or |\raise 3pt\hbox|.  Scan for keywords
 %   |to| and |spread| and a left brace.  Install a hook in
@@ -4287,8 +4288,8 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_box_hook:N}
-% \begin{macro}[aux]{\@@_box_hook:w, \@@_box_hook_end:}
+% \begin{macro}{\@@_box_hook:N}
+% \begin{macro}{\@@_box_hook:w, \@@_box_hook_end:}
 %   Used to capture the contents of an \tn{everyhbox} or similar,
 %   without altering \tn{everyhbox} too much (just add one token at the
 %   start).  The various \texttt{o}-expansions remove
@@ -4324,7 +4325,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_leaders_rule:}
+% \begin{macro}{\@@_do_leaders_rule:}
 %   After finding a |vrule| or |hrule| command and looking for |depth|,
 %   |heigh| and |width| keywords, we are in the same situation as after
 %   finding a box.  Fetch the required skip accordingly.
@@ -4357,7 +4358,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_char:n, \@@_char:V, \@@_char:x}
+% \begin{macro}{\@@_char:n, \@@_char:V, \@@_char:x}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_char:n #1
   {
@@ -4377,7 +4378,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]
+% \begin{macro}
 %   {\@@_char_in_mmode:n, \@@_char_in_mmode:V, \@@_char_in_mmode:x}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_char_in_mmode:n #1
@@ -4396,7 +4397,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_mathchar:n, \@@_mathchar:x}
+% \begin{macro}{\@@_mathchar:n, \@@_mathchar:x}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_mathchar:n #1
   {
@@ -4470,7 +4471,7 @@
 % ^^A todo: implement \@@_end_disc_group:
 % ^^A todo: implement \@@_end_math_choice_group:
 %
-% \begin{macro}[aux]{\@@_handle_right_brace:}
+% \begin{macro}{\@@_handle_right_brace:}
 %   When an end-group character is sensed, the result depends on the
 %   current group type.
 %    \begin{macrocode}
@@ -4506,7 +4507,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_end_simple_group:}
+% \begin{macro}{\@@_end_simple_group:}
 %   This command is used to simply end a group, when there are no
 %   specific operations to perform.
 %    \begin{macrocode}
@@ -4518,7 +4519,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_end_box_group:}
+% \begin{macro}{\@@_end_box_group:}
 %   The end of an explicit box (generated by \tn{vtop}, \tn{vbox}, or
 %   \tn{hbox}) can either be simple, or can mean that we need to find a
 %   skip for a \tn{leaders}/\tn{cleaders}/\tn{xleaders} construction.
@@ -4551,7 +4552,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_off_save:}
+% \begin{macro}{\@@_off_save:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_off_save:
   {
@@ -4606,7 +4607,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_head_for_vmode:}
+% \begin{macro}{\@@_head_for_vmode:}
 %   See \TeX{}'s |head_for_vmode|.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_head_for_vmode:
@@ -4630,7 +4631,7 @@
 % \end{macro}
 %
 % ^^A todo: should push_math be provided?
-% \begin{macro}[aux]{\@@_goto_inner_math:}
+% \begin{macro}{\@@_goto_inner_math:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_goto_inner_math:
   {
@@ -4641,7 +4642,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_goto_display_math:}
+% \begin{macro}{\@@_goto_display_math:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_goto_display_math:
   {
@@ -4652,7 +4653,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_after_math:}
+% \begin{macro}{\@@_after_math:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_after_math:
   {
@@ -5091,7 +5092,7 @@
 %
 % ^^A todo: implement \@@_forbidden_case:
 %
-% \begin{macro}[aux]{\@@_do_move:}
+% \begin{macro}{\@@_do_move:}
 %   Scan a dimension and a box, and perform the shift, printing the
 %   appropriate action.
 %    \begin{macrocode}
@@ -5123,7 +5124,7 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_do_unpackage:}
+% \begin{macro}{\@@_do_unpackage:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_unpackage:
   {
@@ -5166,7 +5167,7 @@
   { \l_@@_head_token \@@_print_action: }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_do_append_glue:}
+% \begin{macro}{\@@_do_append_glue:}
 %   For \tn{hfil}, \tn{hfill}, \tn{hss}, \tn{hfilneg} and their vertical
 %   analogs, simply call the primitive then print the action.  For
 %   \tn{hskip}, \tn{vskip} and \tn{mskip}, read a normal glue or a mu
@@ -5210,7 +5211,7 @@
   { \@@_mode_math:n { \@@_do_append_glue: } }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_do_append_kern:}
+% \begin{macro}{\@@_do_append_kern:}
 %   See \cs{@@_do_append_glue:}.  This function is used for the
 %   primitives \tn{kern} and \tn{mkern} only.
 %    \begin{macrocode}
@@ -5408,7 +5409,7 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_do_accent:}
+% \begin{macro}{\@@_do_accent:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_do_accent:
   {
@@ -5445,7 +5446,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_math_accent:}
+% \begin{macro}{\@@_do_math_accent:}
 %   \TeX{} will complain if \cs{l_@@_head_tl} happens to start with
 %   \tn{accent} (the user used \tn{accent} in math mode).
 %    \begin{macrocode}
@@ -5894,7 +5895,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_pdfcolorstack_operands:}
+% \begin{macro}{\@@_scan_pdfcolorstack_operands:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_pdfcolorstack_operands:
   {
@@ -5917,7 +5918,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_rule_attr:}
+% \begin{macro}{\@@_scan_rule_attr:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_rule_attr:
   {
@@ -5967,7 +5968,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_image:}
+% \begin{macro}{\@@_scan_image:}
 %   Used by \tn{pdfximage}.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_image:
@@ -6026,7 +6027,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_scan_pdfdest_operands:}
+% \begin{macro}{\@@_scan_pdfdest_operands:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_scan_pdfdest_operands:
   {
@@ -6141,8 +6142,8 @@
 % range $[71,102]$, with the exception of |prefix=93|, which would have
 % been collected by the \cs{@@_prefixed_command:} loop.
 %
-% \begin{macro}[aux]{\@@_after_assignment:}
-% \begin{macro}[aux]{\@@_omit_after_assignment:w}
+% \begin{macro}{\@@_after_assignment:}
+% \begin{macro}{\@@_omit_after_assignment:w}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_after_assignment:
   {
@@ -6208,7 +6209,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_assign_toks:}
+% \begin{macro}{\@@_assign_toks:}
 %    \begin{macrocode}
 \@@_prefixed_new:nn { toks_register }                       % 71
   {
@@ -6410,7 +6411,7 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}[aux, EXP]{\@@_read_to_cs_safe:nTF, \@@_read_to_cs_safe:fTF}
+% \begin{macro}[EXP]{\@@_read_to_cs_safe:nTF, \@@_read_to_cs_safe:fTF}
 %   After \tn{read} or \tn{readline}, find an int, the mandatory
 %   keyword |to|, and an assignable token.  The \tn{read} and
 %   \tn{readline} primitives throw a fatal error in \tn{nonstopmode}
@@ -6572,7 +6573,7 @@
   { \@@_do_operation:N \c_three }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_do_operation:N, \@@_do_operation_fail:w}
+% \begin{macro}{\@@_do_operation:N, \@@_do_operation_fail:w}
 %   \begin{macrocode}
 \cs_new_protected:Npn \@@_do_operation:N #1
   {
@@ -6614,7 +6615,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_register:N, \@@_do_register_aux:Nn}
+% \begin{macro}{\@@_do_register:N, \@@_do_register_aux:Nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_register:N #1
   {
@@ -6642,7 +6643,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_do_register_set:Nn}
+% \begin{macro}{\@@_do_register_set:Nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_register_set:Nn #1#2
   {
@@ -6734,7 +6735,7 @@
   { \tl_use:N \l_@@_head_tl \@@_print_action: }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_expandafter:, \@@_unless:, \@@_unless_bad:}
+% \begin{macro}{\@@_expandafter:, \@@_unless:, \@@_unless_bad:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { expand_after }                  % 104
   {
@@ -6784,7 +6785,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_noexpand:, \@@_pdfprimitive:}
+% \begin{macro}{\@@_noexpand:, \@@_pdfprimitive:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { no_expand }                     % 105
   {
@@ -6812,7 +6813,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_endinput:, \@@_scantokens:, \@@_input:}
+% \begin{macro}{\@@_endinput:, \@@_scantokens:, \@@_input:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { input }                       % 106
   {
@@ -6853,7 +6854,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_csname_loop:}
+% \begin{macro}{\@@_csname_loop:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { cs_name }                       % 109
   {
@@ -6959,7 +6960,7 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_get_the:}
+% \begin{macro}{\@@_get_the:}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { the }                           % 111
   {
@@ -7012,7 +7013,7 @@
 %
 % ^^A todo: simply use \cs{@@_input_gpop:N} right away.
 % \begin{macro}[int]{\@@_pass_text:}
-% \begin{macro}[aux]{\@@_pass_text_done:w}
+% \begin{macro}{\@@_pass_text_done:w}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_pass_text:
   {
@@ -7044,7 +7045,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_pass_text_nested:}
+% \begin{macro}{\@@_pass_text_nested:}
 %   Again, if there is no more input we are in trouble.  The
 %   construction otherwise essentially results in
 %   \begin{quote}
@@ -7086,7 +7087,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_pass_text_empty:}
+% \begin{macro}{\@@_pass_text_empty:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_pass_text_empty:
   {
@@ -7116,7 +7117,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_change_if_limit:nn}
+% \begin{macro}{\@@_change_if_limit:nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_change_if_limit:nn #1#2
   {
@@ -7146,7 +7147,7 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}[aux]{\@@_cond_aux:nn}
+% \begin{macro}{\@@_cond_aux:nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cond_aux:n #1
   {
@@ -7201,7 +7202,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_cond_true:n}
+% \begin{macro}{\@@_cond_true:n}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cond_true:n #1
   {
@@ -7211,7 +7212,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]
+% \begin{macro}
 %   {\@@_cond_false:n, \@@_cond_false_loop:n, \@@_cond_false_common:}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cond_false:n #1
@@ -7246,7 +7247,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_test_two_vals:N}
+% \begin{macro}{\@@_test_two_vals:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_two_vals:N #1
   {
@@ -7266,7 +7267,7 @@
 %
 % ^^A todo: fix interaction with noexpand and active chars
 % ^^A todo: fix non-brace begin-group and end-group tokens
-% \begin{macro}[aux]{\@@_test_two_chars:, \@@_test_two_chars_aux:}
+% \begin{macro}{\@@_test_two_chars:, \@@_test_two_chars_aux:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_test_two_chars:
   {
@@ -7291,7 +7292,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_test_ifx:n, \@@_test_ifx_aux:w}
+% \begin{macro}{\@@_test_ifx:n, \@@_test_ifx_aux:w}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_ifx:n #1
   {
@@ -7319,7 +7320,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_test_case:n, \@@_test_case_aux:nn}
+% \begin{macro}{\@@_test_case:n, \@@_test_case_aux:nn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_case:n #1
   {
@@ -7359,7 +7360,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_test_ifdefined:}
+% \begin{macro}{\@@_test_ifdefined:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_test_ifdefined:
   {
@@ -7383,7 +7384,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_test_ifcsname:}
+% \begin{macro}{\@@_test_ifcsname:}
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_test_ifcsname:
   {
@@ -7530,7 +7531,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_state_output:, \@@_print_state_output:n}
+% \begin{macro}{\@@_print_state_output:, \@@_print_state_output:n}
 %   Unless empty, print |#1| with each line starting with \verb*+<|~+.
 %   The \cs{@@_str_truncate_left:nn} function trims |#1| if needed, to
 %   fit in a maximum of \cs{g_@@_max_output_int} characters.
@@ -7551,7 +7552,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_state_prev:}
+% \begin{macro}{\@@_print_state_prev:}
 %   Never trim~|##1|.
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_state_prev:
@@ -7571,7 +7572,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_state_input:, \@@_print_state_input:n}
+% \begin{macro}{\@@_print_state_input:, \@@_print_state_input:n}
 %   Print |#1| with each line starting with \verb*+|>~+.  The
 %   \cs{@@_str_truncate_right:nn} function trims |#1| if needed, to fit
 %   in a maximum of \cs{g_@@_max_input_int} characters.
@@ -7589,7 +7590,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_print_meaning:}
+% \begin{macro}{\@@_print_meaning:}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_meaning:
   {
@@ -8019,7 +8020,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_init_key_vars:}
+% \begin{macro}{\@@_init_key_vars:}
 %   Give variables that are affected by keys their default values (also
 %   controlled by keys).
 %    \begin{macrocode}
@@ -8036,7 +8037,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[aux]{\@@_init_vars:}
+% \begin{macro}{\@@_init_vars:}
 %   Give initial values to variables used during the processing.  These
 %   have no reason to be modified by the user: neither directly nor
 %   through keys.
@@ -8072,7 +8073,7 @@
 % \end{macro}
 %
 % ^^A todo: improve error message
-% \begin{macro}[aux]{\@@_final_test:, \@@_final_bad:}
+% \begin{macro}{\@@_final_test:, \@@_final_bad:}
 %   Make sure that the \cs{unravel} finished correctly.  The error
 %   message is a bit primitive.
 %    \begin{macrocode}
