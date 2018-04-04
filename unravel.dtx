@@ -132,8 +132,8 @@
 %
 % Given all the work that \pkg{unravel} has to do to emulate \TeX{}, it
 % is not fast on very large pieces of code.  For instance, running it on
-% |\documentclass{article}| takes about ten minutes on my machine, and
-% finishes after slightly more than $20000$ steps.
+% |\documentclass{article}| takes about one minute on my machine, and
+% finishes after somewhat less than $21000$ steps.
 % \begin{verbatim}
 % \RequirePackage{unravel}
 % \unravel{\documentclass{article}\relax}
@@ -148,12 +148,11 @@
 % would if your file ended just after |\documentclass{article}|.  After
 % running the above through \pdfTeX{}, one can check that the result is
 % identical to that without \pkg{unravel}.  Note that
-% \cs{unravel}|\usepackage{lipsum}\relax|, despite taking as many steps
-% to complete, is four times slower, because \tn{newcommand} uses
+% \cs{unravel}|{\usepackage{lipsum}\relax}|, despite taking as many steps
+% to complete, is much slower, because \tn{newcommand} uses
 % delimited arguments, which prevent some optimizations that
 % \pkg{unravel} can otherwise obtain.  For comparison,
-% |\unravel{\lipsum[1-30]}|, which also takes $20000$ step, takes
-% $8$~minutes to complete.
+% |\unravel{\lipsum[1-30]}| also takes $20000$ step.
 %
 % \subsection{Options}
 % \label{sec:options}
