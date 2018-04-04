@@ -702,8 +702,8 @@
 %   character is a space, the charcode test is true, and if there is no
 %   escape charcter, the test is unfinished after |\token_to_str:N \ |.
 %   In both of those cases, \cs{@@_strip_escape_aux:w} inserts
-%   |-\__int_value:w \fi: \c_zero|.  If the escape character was a
-%   space, the test was true, and \cs{__int_value:w} converts
+%   |-\int_value:w \fi: \c_zero|.  If the escape character was a
+%   space, the test was true, and \cs{int_value:w} converts
 %   \cs{c_zero} to~|0|, hence the leading roman numeral expansion
 %   removes a space from what follows (it is important that what follows
 %   cannot start with a digit).  Otherwise, the test takes~|-| as its
@@ -718,7 +718,7 @@
   }
 \cs_new:Npn \@@_strip_escape_aux:N #1 { \c_zero }
 \cs_new:Npn \@@_strip_escape_aux:w #1#2
-  { - \__int_value:w #1 \c_zero }
+  { - \int_value:w #1 \c_zero }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
