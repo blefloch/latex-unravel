@@ -552,6 +552,7 @@
 %
 % Variants that we need.
 %    \begin{macrocode}
+\cs_generate_variant:Nn \seq_push:Nn { Nf }
 \cs_generate_variant:Nn \str_head:n { f }
 \cs_generate_variant:Nn \tl_to_str:n { o }
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
@@ -559,7 +560,6 @@
 \cs_generate_variant:Nn \tl_if_in:nnTF { nV }
 \cs_generate_variant:Nn \tl_if_in:NnTF { No , NV }
 \cs_generate_variant:Nn \tl_if_single_token:nT { V }
-\cs_generate_variant:Nn \tl_gset_rescan:Nnn { Nnx }
 \cs_generate_variant:Nn \gtl_gput_right:Nn { NV }
 \cs_generate_variant:Nn \ior_str_get:NN { Nc }
 \cs_generate_variant:Nn \gtl_if_empty:NTF { c }
@@ -571,6 +571,25 @@
 \cs_generate_variant:Nn \gtl_gclear:N { c }
 \cs_generate_variant:Nn \gtl_gclear_new:N { c }
 %    \end{macrocode}
+%
+% \begin{variable}{\l_@@_exp_tl}
+% \begin{macro}{\@@_exp_args:Nx, \@@_exp_args:NNx}
+%   Low-level because \cs{exp_args:Nx} redefines an internal
+%   \pkg{l3expan} variable which may be appearing in code that we debug.
+%    \begin{macrocode}
+\tl_new:N \l_@@_exp_tl
+\cs_new_protected:Npn \@@_exp_args:Nx #1#2
+  {
+    \cs_set_nopar:Npx \l_@@_exp_tl { \exp_not:N #1 {#2} }
+    \l_@@_exp_tl
+  }
+\cs_new_protected:Npn \@@_exp_args:NNx #1#2#3
+  {
+    \cs_set_nopar:Npx \l_@@_exp_tl { \exp_not:N #1 \exp_not:N #2 {#3} }
+    \l_@@_exp_tl
+  }
+% \end{macro}
+% \end{variable}
 %
 % \subsubsection{Miscellanous helpers}
 %
@@ -943,8 +962,7 @@
       {
         \gtl_if_head_is_N_type:NTF #1
           {
-            \exp_last_unbraced:Nx \@@_token_if_definable:NTF
-              { \gtl_head:N #1 }
+            \gtl_head_do:NN #1 \@@_token_if_definable:NTF
               { \prg_return_true: }
               { \prg_return_false: }
           }
@@ -1021,13 +1039,17 @@
     \tl_put_right:Nn \l_@@_prev_input_tl {#1}
     \@@_prev_input_gpush:N \l_@@_prev_input_tl
   }
-\cs_generate_variant:Nn \@@_prev_input_silent:n { V , x }
+\cs_generate_variant:Nn \@@_prev_input_silent:n { V }
+\cs_new_protected:Npn \@@_prev_input_silent:x
+  { \@@_exp_args:Nx \@@_prev_input_silent:n }
 \cs_new_protected:Npn \@@_prev_input:n #1
   {
     \@@_prev_input_silent:n {#1}
     \@@_print_action:x { \tl_to_str:n {#1} }
   }
-\cs_generate_variant:Nn \@@_prev_input:n { V , x }
+\cs_generate_variant:Nn \@@_prev_input:n { V }
+\cs_new_protected:Npn \@@_prev_input:x
+  { \@@_exp_args:Nx \@@_prev_input:n }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -2438,7 +2460,7 @@
       { \tl_set:Nn \l_@@_head_meaning_tl { other~ } }
     \exp_after:wN \@@_set_cmd_aux_char:w
       \l_@@_head_meaning_tl \q_stop
-    \exp_args:NNx \int_set:Nn \l_@@_head_char_int
+    \@@_exp_args:NNx \int_set:Nn \l_@@_head_char_int
       { ` \@@_token_to_char:N \l_@@_head_token }
   }
 \cs_new_protected:Npn \@@_set_cmd_aux_char:w #1 ~ #2 \q_stop
@@ -2515,8 +2537,9 @@
         \gtl_if_head_is_N_type:NT #1
           {
             \tl_set:Nx \l_@@_input_tmpa_tl { \gtl_left_tl:N #1 }
-            \exp_last_unbraced:Nx \@@_input_split_auxii:N
-              { \tl_head:N \l_@@_input_tmpa_tl }
+            \@@_exp_args:NNx \use:nn
+                \@@_input_split_auxii:N
+                { \tl_head:N \l_@@_input_tmpa_tl }
           }
       }
   }
@@ -2701,7 +2724,9 @@
     \gtl_gclear_new:c { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
     \gtl_gset:cn { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
   }
-\cs_generate_variant:Nn \@@_back_input:n { x , V , o }
+\cs_generate_variant:Nn \@@_back_input:n { V , o }
+\cs_new_protected:Npn \@@_back_input:x
+  { \@@_exp_args:Nx \@@_back_input:n }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2893,7 +2918,7 @@
     \bool_if:NT \g_@@_internal_debug_bool
       {
         \@@_set_cmd:
-        \iow_term:x { Exp:~\int_to_arabic:n { \l_@@_head_cmd_int } }
+        \@@_exp_args:Nx \iow_term:n { Exp:~\int_to_arabic:n { \l_@@_head_cmd_int } }
       }
     \token_if_macro:NTF \l_@@_head_token
       { \@@_macro_call: }
@@ -4034,7 +4059,7 @@
                 \@@_prev_input:V \l_@@_head_tl
               }
               {
-                \gtl_set:Nx \l_@@_tmpb_gtl { \l_@@_head_tl }
+                \@@_exp_args:NNx \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
                 \@@_prev_input_gtl:N \l_@@_tmpb_gtl
                 \@@_print_action:
               }
@@ -4252,7 +4277,7 @@
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_set_action_text:x
       { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
-    \seq_push:Nx \l_@@_leaders_box_seq
+    \seq_push:Nf \l_@@_leaders_box_seq
       { \bool_if:NTF #1 { \mode_if_vertical:TF { v } { h } } { Z } }
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
     \gtl_gconcat:NNN \g_@@_output_gtl
@@ -4276,7 +4301,7 @@
     \str_if_eq_x:nnF
       { \tl_head:N \l_@@_tmpa_tl } { \exp_not:N \@@_box_hook:w }
       {
-        \exp_args:Nx #1
+        \@@_exp_args:Nx #1
           {
             \exp_not:n { \@@_box_hook:w \prg_do_nothing: }
             \exp_not:V #1
@@ -4347,7 +4372,9 @@
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
-\cs_generate_variant:Nn \@@_char:n { V , x }
+\cs_generate_variant:Nn \@@_char:n { V }
+\cs_new_protected:Npn \@@_char:x
+  { \@@_exp_args:Nx \@@_char:n }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4358,13 +4385,15 @@
   {
     \int_compare:nNnTF { \tex_mathcode:D #1 } = { "8000 }
       { % math active
-        \gtl_set:Nx \l_@@_head_gtl
+        \@@_exp_args:NNx \gtl_set:Nn \l_@@_head_gtl
           { \char_generate:nn {#1} { 12 } }
         \@@_back_input:
       }
       { \@@_char:n {#1} }
   }
-\cs_generate_variant:Nn \@@_char_in_mmode:n { V , x }
+\cs_generate_variant:Nn \@@_char_in_mmode:n { V }
+\cs_new_protected:Npn \@@_char_in_mmode:x
+  { \@@_exp_args:Nx \@@_char_in_mmode:n }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4378,7 +4407,8 @@
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
-\cs_generate_variant:Nn \@@_mathchar:n { x }
+\cs_new_protected:Npn \@@_mathchar:x
+  { \@@_exp_args:Nx \@@_mathchar:n }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4662,7 +4692,7 @@
   {
     \@@_set_action_text:
     \bool_if:NT \g_@@_internal_debug_bool
-      { \iow_term:x { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
+      { \@@_exp_args:Nx \iow_term:n { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
     \cs_if_exist_use:cF
       { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
       { \msg_error:nnx { unravel } { internal } { unknown-command } }
@@ -5034,7 +5064,7 @@
             \@@_get_x_next:
             \@@_scan_something_internal:n { 5 }
             \@@_prev_input_gpop:N \l_@@_head_tl
-            \exp_args:Nx \etex_showtokens:D
+            \@@_exp_args:Nx \etex_showtokens:D
               { \tl_tail:N \l_@@_head_tl }
           }
       }
@@ -6355,7 +6385,7 @@
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_put_right:Nn \l_@@_tmpa_tl { = ~ \l_@@_head_token }
     \@@_prev_input_gpop:N \l_@@_head_tl
-    \use:x
+    \@@_exp_args:Nx \use:n
       {
         \exp_not:V \l_@@_head_tl
         \tex_let:D \tl_tail:N \l_@@_tmpa_tl
@@ -7439,9 +7469,10 @@
   {
     \tl_set:Nn \l_@@_print_tl {#1}
     \@@_print_normalize_null:
-    \iow_term:x { \l_@@_print_tl }
+    \@@_exp_args:Nx \iow_term:n { \l_@@_print_tl }
   }
-\cs_generate_variant:Nn \@@_print:n { x }
+\cs_new_protected:Npn \@@_print:x
+  { \@@_exp_args:Nx \@@_print:n }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7507,7 +7538,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_state_output:
   {
-    \exp_args:Nx \@@_print_state_output:n
+    \@@_exp_args:Nx \@@_print_state_output:n
       { \gtl_to_str:N \g_@@_output_gtl }
   }
 \cs_new_protected:Npn \@@_print_state_output:n #1
@@ -7548,7 +7579,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_print_state_input:
   {
-    \exp_args:Nx \@@_print_state_input:n
+    \@@_exp_args:Nx \@@_print_state_input:n
       { \@@_input_to_str: }
   }
 \cs_new_protected:Npn \@@_print_state_input:n #1
@@ -7637,7 +7668,7 @@
 \cs_new_protected_nopar:Npn \@@_print_assigned_register:
   {
     \@@_after_assignment: % ^^A todo: simplify
-    \exp_args:Nx \@@_print_action:x
+    \@@_exp_args:Nx \@@_print_action:x
       {
         \exp_not:n
           {
@@ -7718,7 +7749,7 @@
   {
     \tl_if_empty:nF {#1}
       {
-        \exp_args:Nx \str_case:nnF { \tl_head:n {#1} }
+        \@@_exp_args:Nx \str_case:nnF { \tl_head:n {#1} }
           {
             { m } { \@@_print_meaning: \@@_prompt_aux: }
             { q }
@@ -7738,8 +7769,11 @@
               { \int_gset:Nn \g_@@_noise_int } }
             { C }
               {
-                \tl_gset_rescan:Nnx \g_@@_tmpc_tl
-                  { \ExplSyntaxOn } { \tl_tail:n {#1} }
+                \@@_exp_args:Nx \use:n
+                  {
+                    \tl_gset_rescan:Nnn \exp_not:N \g_@@_tmpc_tl
+                      { \exp_not:N \ExplSyntaxOn } { \tl_tail:n {#1} }
+                  }
                 \tl_gput_left:Nn \g_@@_tmpc_tl
                   { \tl_gclear:N \g_@@_tmpc_tl }
                 \group_insert_after:N \g_@@_tmpc_tl
