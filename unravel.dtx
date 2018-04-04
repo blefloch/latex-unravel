@@ -7413,9 +7413,34 @@
 % Let us start with the procedure which prints to the terminal: this
 % will help me test the code while I'm writing it.
 %
+% \begin{macro}{\@@_print_normalize_null:}
+% \begin{variable}{\l_@@_print_tl}
+%   Change the null character to an explicit |^||^||@| in \LuaTeX{} to
+%   avoid a bug whereby a null character ends a string prematurely.
+%    \begin{macrocode}
+\tl_new:N \l_@@_print_tl
+\sys_if_engine_luatex:TF
+  {
+    \cs_new_protected:Npx \@@_print_normalize_null:
+      {
+        \tl_replace_all:Nnn \exp_not:N \l_@@_print_tl
+          { \char_generate:nn { 0 } { 12 } }
+          { \tl_to_str:n { ^ ^ @ } }
+      }
+  }
+  { \cs_new_protected:Npn \@@_print_normalize_null: { } }
+%    \end{macrocode}
+% \end{variable}
+% \end{macro}
+%
 % \begin{macro}[int]{\@@_print:n, \@@_print:x}
 %    \begin{macrocode}
-\cs_new_eq:NN \@@_print:n \iow_term:n
+\cs_new_protected:Npn \@@_print:n #1
+  {
+    \tl_set:Nn \l_@@_print_tl {#1}
+    \@@_print_normalize_null:
+    \iow_term:x { \l_@@_print_tl }
+  }
 \cs_generate_variant:Nn \@@_print:n { x }
 %    \end{macrocode}
 % \end{macro}
