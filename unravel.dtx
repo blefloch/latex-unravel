@@ -535,6 +535,7 @@
 \cs_new_eq:NN \@@_mag:                   \tex_mag:D
 \cs_new_eq:NN \@@_nullfont:              \tex_nullfont:D
 \cs_new_eq:NN \@@_the:w                  \tex_the:D
+\cs_new_eq:NN \@@_number:w               \tex_number:D
 %    \end{macrocode}
 % \end{macro}
 %
@@ -702,7 +703,7 @@
 %   character is a space, the charcode test is true, and if there is no
 %   escape charcter, the test is unfinished after |\token_to_str:N \ |.
 %   In both of those cases, \cs{@@_strip_escape_aux:w} inserts
-%   |-\int_value:w \fi: \c_zero|.  If the escape character was a
+%   |-\@@_number:w \fi: \c_zero|.  If the escape character was a
 %   space, the test was true, and \cs{int_value:w} converts
 %   \cs{c_zero} to~|0|, hence the leading roman numeral expansion
 %   removes a space from what follows (it is important that what follows
@@ -718,7 +719,7 @@
   }
 \cs_new:Npn \@@_strip_escape_aux:N #1 { \c_zero }
 \cs_new:Npn \@@_strip_escape_aux:w #1#2
-  { - \int_value:w #1 \c_zero }
+  { - \@@_number:w #1 \c_zero }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
