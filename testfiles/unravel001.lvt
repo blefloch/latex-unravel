@@ -1,9 +1,12 @@
 %
-% Copyright (C) 2015 Bruno Le Floch
+% Copyright (C) 2015,2018 Bruno Le Floch
 %
 \documentclass{minimal}
 \input{regression-test}
 \RequirePackage[log-functions,check-declarations]{expl3}
+\ExplSyntaxOn
+\debug_on:n { check-expressions , deprecation }
+\ExplSyntaxOff
 
 \RequirePackage{unravel}
 
@@ -15,6 +18,7 @@
 \TEST { \unravel }
   {
     \unravel { \exp_after:wN \c_space_tl \c_space_tl }
+    \debug_off:n { check-expressions } % keep output sane
     \unravel { \prg_replicate:nn { 12 } { } }
   }
 
@@ -26,6 +30,7 @@
 \TEST { \unravel ~ and ~ glue ~ sign }
   {
     \skip_set:Nn \l_tmpa_skip { 2pt plus 3pt minus 4pt }
+    \debug_off:n { check-expressions } % keep output sane
     \unravel { \tl_set:Nx \l_tmpa_tl { \skip_eval:n { - \l_tmpa_skip } } }
   }
 

@@ -544,7 +544,7 @@
 %   |ior| streams to prompt the user explicitly or not.
 %    \begin{macrocode}
 \cs_new_eq:NN \c_@@_prompt_ior \c_sixteen
-\cs_new_eq:NN \c_@@_noprompt_ior \c_minus_one
+\int_const:Nn \c_@@_noprompt_ior { -1 }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7729,7 +7729,7 @@
       {
         \group_begin:
           \@@_set_escapechar:n { -1 }
-          \int_set_eq:NN \tex_endlinechar:D \c_minus_one
+          \int_set:Nn \tex_endlinechar:D { -1 }
           \tl_use:N \g_@@_before_prompt_tl
           \@@_prompt_aux:
         \group_end:
@@ -7755,7 +7755,7 @@
             { m } { \@@_print_meaning: \@@_prompt_aux: }
             { q }
               {
-                \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+                \int_gset:Nn \g_@@_noise_int { -1 }
                 \int_gzero:N \g_@@_nonstop_int
               }
             { x }
@@ -7815,7 +7815,7 @@
   {
     \int_compare:nNnF {#1} < \c_zero
       {
-        \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+        \int_gset:Nn \g_@@_noise_int { -1 }
         \tl_gset:Nn \g_@@_before_prompt_tl
           {
             \int_gset_eq:NN \g_@@_noise_int \c_one
@@ -7832,7 +7832,7 @@
   }
 \cs_new_protected:Npn \@@_prompt_vert:Nn #1#2
   {
-    \int_gset_eq:NN \g_@@_noise_int \c_minus_one
+    \int_gset:Nn \g_@@_noise_int { -1 }
     \tl_gset:Nf \g_@@_before_print_state_tl
       {
         \exp_args:NNf \exp_stop_f: \int_compare:nNnTF
