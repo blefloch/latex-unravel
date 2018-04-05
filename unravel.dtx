@@ -1,5 +1,5 @@
 % \iffalse
-%% File: unravel.dtx Copyright (C) 2013, 2015 Bruno Le Floch
+%% File: unravel.dtx Copyright (C) 2013, 2015, 2018 Bruno Le Floch
 %%
 %% It may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License (LPPL), either version 1.3c of this
@@ -488,7 +488,7 @@
 % an error.
 %    \begin{macrocode}
 \RequirePackage{expl3,xparse}[2015/09/11]
-\RequirePackage{gtl}[2015/09/21]
+\RequirePackage{gtl}[2018/04/04]
 \csname cs_if_exist:cF\endcsname{str_range:nnn}{\RequirePackage{l3str}}
 %    \end{macrocode}
 %
@@ -725,10 +725,9 @@
 %
 % ^^A todo: change approach: this abuses future l3obj.
 % \begin{macro}[int,EXP]{\@@_to_str:n}
-% \begin{macro}[aux,EXP]
+% \begin{macro}[EXP]
 %   {\@@_to_str_auxi:w, \@@_to_str_auxii:w, \@@_gtl_to_str:n}
 %   Use the type-appropriate conversion to string.
-%   This unavoidably uses an internal function of \pkg{gtl}.
 %    \begin{macrocode}
 \cs_new:Npn \@@_to_str:n #1
   {
@@ -747,8 +746,8 @@
     \cs_new:Npn \@@_to_str_auxii:w ##1 #1 ##2 \q_mark ##3 \q_stop
       { \cs_if_exist_use:cF { @@_ ##2 _to_str:n } { \tl_to_str:n } }
   }
-\exp_args:No \@@_tmp:w { \tl_to_str:n { s__ } }
-\cs_new:Npn \@@_gtl_to_str:n #1 { \__gtl_to_str:w #1 }
+\exp_args:No \@@_tmp:w { \tl_to_str:n { s _ _ } }
+\cs_new:Npn \@@_gtl_to_str:n { \gtl_to_str:n }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -1081,7 +1080,7 @@
         { 3 } { \@@_join_get_aux:NNN \muskip_eval:n \etex_muexpr:D }
       }
       {
-        \msg_error:nnn { unravel } { internal } { join-factor }
+        \@@_error:nnnnn { internal } { join-factor } { } { } { }
         \@@_join_get_aux:NNN \use:n \prg_do_nothing:
       }
   }
@@ -2275,7 +2274,7 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_set_cmd_aux_meaning:}
-% \begin{macro}[aux,EXP]{\@@_set_cmd_aux_meaning:w}
+% \begin{macro}[EXP]{\@@_set_cmd_aux_meaning:w}
 %   Remove the leading escape character (\cs{@@_strip_escape:w} takes
 %   care of special cases there) from the \tn{meaning} of the first
 %   token, then remove anything after the first~|:|, which is present
@@ -2351,8 +2350,8 @@
   {
     \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
       \c_@@_tex_relax_tl
-    \msg_error:nnx { unravel } { unknown-primitive }
-      { \l_@@_head_meaning_tl }
+    \@@_error:nxxxx { unknown-primitive }
+      { \l_@@_head_meaning_tl } { } { } { }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2386,7 +2385,7 @@
 %     \@@_set_cmd_aux_numeric:w,
 %     \@@_set_cmd_aux_given:n
 %   }
-% \begin{macro}[aux,rEXP]{\@@_set_cmd_aux_numeric:N}
+% \begin{macro}[rEXP]{\@@_set_cmd_aux_numeric:N}
 %   Insert \cs{q_mark} before the first non-letter (in fact, anything
 %   less than~|A|) in the \tn{meaning} by looping one character at a
 %   time (skipping spaces, but there should be none).  We expect the
@@ -2809,7 +2808,7 @@
   {
     \@@_back_input:
     \@@_back_input:n { $ } % $
-    \msg_error:nn { unravel } { missing-dollar }
+    \@@_error:nnnnn { missing-dollar } { } { } { } { }
     \@@_print_action:
   }
 %    \end{macrocode}
@@ -2817,7 +2816,7 @@
 %
 % \subsubsection{Macro calls}
 %
-% \begin{macro}[aux,EXP]
+% \begin{macro}[EXP]
 %   {
 %     \@@_macro_prefix:N,
 %     \@@_macro_parameter:N,
@@ -2897,8 +2896,8 @@
   }
 \cs_new_protected:Npn \@@_macro_call_quick_runaway:Nw #1#2 \q_stop
   {
-    \msg_error:nnxx { unravel } { runaway-macro-parameter }
-      { \tl_to_str:N \l_@@_head_tl } { \tl_to_str:n {#1} }
+    \@@_error:nxxxx { runaway-macro-parameter }
+      { \tl_to_str:N \l_@@_head_tl } { \tl_to_str:n {#1} } { } { }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2942,11 +2941,11 @@
       {
         \cs_if_exist_use:cF
           { @@_expandable_ \int_use:N \l_@@_head_cmd_int : }
-          { \msg_error:nnx { unravel } { internal } { expandable } }
+          { \@@_error:nxxxx { internal } { expandable } { } { } { } }
       }
       {
-        \msg_error:nnx { unravel } { unknown-primitive }
-          { \l_@@_head_meaning_tl }
+        \@@_error:nxxxx { unknown-primitive }
+          { \l_@@_head_meaning_tl } { } { } { }
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_print_action:
       }
@@ -3124,7 +3123,7 @@
     \quark_if_recursion_tail_stop_do:nn {#2}
       { \@@_scan_keyword_true: }
     \quark_if_recursion_tail_stop_do:nn {#3}
-      { \msg_error:nnx { unravel } { internal } { odd-keyword-length } }
+      { \@@_error:nxxxx { internal } { odd-keyword-length } { } { } { } }
     \@@_get_x_next:
     \@@_scan_keyword_test:NNTF #2#3
       {
@@ -3183,7 +3182,7 @@
   {
     \@@_scan_keyword:nF { tToO }
       {
-        \msg_error:nn { unravel } { missing-to }
+        \@@_error:nnnnn { missing-to } { } { } { } { }
         \@@_prev_input:n { to }
       }
   }
@@ -3214,7 +3213,7 @@
           }
       }
       {
-        \msg_error:nn { unravel } { missing-font-id }
+        \@@_error:nnnnn { missing-font-id } { } { } { } { }
         \@@_back_input:
         \@@_prev_input:n { \@@_nullfont: }
       }
@@ -3543,7 +3542,7 @@
       {
         \bool_if:NTF #2
           {
-            \msg_error:nn { unravel } { missing-rparen }
+            \@@_error:nnnnn { missing-rparen } { } { } { } { }
             \@@_back_input:
             \@@_prev_input:V \c_@@_rp_tl
           }
@@ -3883,7 +3882,7 @@
       { \@@_get_next: }
     \@@_gtl_if_head_is_definable:NF \l_@@_head_gtl
       {
-        \msg_error:nn { unravel } { missing-cs }
+        \@@_error:nnnnn { missing-cs } { } { } { } { }
         \@@_back_input:
         \tl_set:Nn \l_@@_head_tl { \@@_inaccessible:w }
       }
@@ -3954,7 +3953,7 @@
     \@@_back_input:
     \@@_input_gpop_item:NF \l_@@_head_tl
       {
-        \msg_error:nn { unravel } { runaway-text }
+        \@@_error:nnnnn { runaway-text } { } { } { } { }
         \@@_exit:w
       }
     \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
@@ -4168,7 +4167,7 @@
 \cs_new_protected_nopar:Npn \@@_do_box_error:
   {
     \@@_back_input:
-    \msg_error:nn { unravel } { missing-box }
+    \@@_error:nnnnn { missing-box } { } { } { } { }
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
   }
@@ -4241,7 +4240,7 @@
       }
       {
         \@@_back_input:
-        \msg_error:nn { unravel } { improper-leaders }
+        \@@_error:nnnnn { improper-leaders } { } { } { } { }
         \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
       }
@@ -4558,8 +4557,8 @@
   {
     \int_compare:nNnTF \@@_currentgrouptype: = { 0 }
       { % bottom-level
-        \msg_error:nnx { unravel } { extra-close }
-          { \token_to_meaning:N \l_@@_head_token }
+        \@@_error:nxxxx { extra-close }
+          { \token_to_meaning:N \l_@@_head_token } { } { } { }
       }
       {
         \@@_back_input:
@@ -4574,8 +4573,8 @@
           }
           { \gtl_set_eq:NN \l_@@_head_gtl \c_group_end_gtl }
         \@@_back_input:
-        \msg_error:nnx { unravel } { off-save }
-          { \gtl_to_str:N \l_@@_head_gtl }
+        \@@_error:nxxxx { off-save }
+          { \gtl_to_str:N \l_@@_head_gtl } { } { } { }
       }
   }
 %    \end{macrocode}
@@ -4616,7 +4615,7 @@
       {
         \token_if_eq_meaning:NNTF \l_@@_head_token \tex_hrule:D
           {
-            \msg_error:nn { unravel } { hrule-bad-mode }
+            \@@_error:nnnnn { hrule-bad-mode } { } { } { } { }
             \@@_print_action:
           }
           { \@@_off_save: }
@@ -4671,7 +4670,7 @@
           {
             \@@_back_input:
             \tl_set:Nn \l_@@_head_tl { $ } % $
-            \msg_error:nn { unravel } { missing-dollar }
+            \@@_error:nnnnn { missing-dollar } { } { } { } { }
           }
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_back_input_gtl:N \l_@@_after_group_gtl
@@ -4695,7 +4694,7 @@
       { \@@_exp_args:Nx \iow_term:n { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
     \cs_if_exist_use:cF
       { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
-      { \msg_error:nnx { unravel } { internal } { unknown-command } }
+      { \@@_error:nxxxx { internal } { unknown-command } { } { } { } }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -4857,7 +4856,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { endv }                                 % 9
-  { \msg_error:nn { unravel } { not-implemented } { alignments } }
+  { \@@_not_implemented:n { alignments } }
 %    \end{macrocode}
 %
 % Blank spaces are ignored in vertical and math modes in the same way as
@@ -5277,11 +5276,11 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { halign }                               % 32
-  { \msg_fatal:nnx { unravel } { not-implemented } { halign } }
+  { \@@_not_implemented:n { halign } }
 \@@_new_tex_cmd:nn { valign }                               % 33
-  { \msg_fatal:nnx { unravel } { not-implemented } { valign } }
+  { \@@_not_implemented:n { valign } }
 \@@_new_tex_cmd:nn { no_align }                             % 34
-  { \msg_fatal:nnx { unravel } { not-implemented } { noalign } }
+  { \@@_not_implemented:n { noalign } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -5321,7 +5320,7 @@
         \@@_set_cmd:
         \@@_do_step:
       }
-      { \msg_error:nn { unravel } { not-implemented } { pdfprimitive } }
+      { \@@_not_implemented:n { pdfprimitive } }
   }
 %    \end{macrocode}
 %
@@ -5482,7 +5481,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { discretionary }                        % 47
-  { \msg_error:nnx { unravel } { not-implemented } { discretionary } }
+  { \@@_not_implemented:n { discretionary } }
 %    \end{macrocode}
 %
 % \subsubsection{Maths: from 48 to 56}
@@ -5501,47 +5500,47 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { eq_no }                                % 48
-  { \msg_error:nnx { unravel } { not-implemented } { eqno } }
+  { \@@_not_implemented:n { eqno } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { left_right }                           % 49
-  { \msg_error:nnx { unravel } { not-implemented } { left/right } }
+  { \@@_not_implemented:n { left/right } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_comp }                            % 50
-  { \msg_error:nnx { unravel } { not-implemented } { math~comp } }
+  { \@@_not_implemented:n { math~comp } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { limit_switch }                         % 51
-  { \msg_error:nnx { unravel } { not-implemented } { limits } }
+  { \@@_not_implemented:n { limits } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { above }                                % 52
-  { \msg_error:nnx { unravel } { not-implemented } { above } }
+  { \@@_not_implemented:n { above } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_style }                           % 53
-  { \msg_error:nnx { unravel } { not-implemented } { math~style } }
+  { \@@_not_implemented:n { math~style } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_choice }                          % 54
-  { \msg_error:nnx { unravel } { not-implemented } { math~choice } }
+  { \@@_not_implemented:n { math~choice } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { non_script }                           % 55
-  { \msg_error:nnx { unravel } { not-implemented } { non~script } }
+  { \@@_not_implemented:n { non~script } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { vcenter }                              % 56
-  { \msg_error:nnx { unravel } { not-implemented } { vcenter } }
+  { \@@_not_implemented:n { vcenter } }
 %    \end{macrocode}
 %
 % \subsubsection{From 57 to 70}
@@ -5641,7 +5640,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { omit }                                 % 63
-  { \msg_error:nn { unravel } { not-implemented } { omit } }
+  { \@@_not_implemented:n { omit } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -5742,7 +5741,7 @@
           {
             \mode_if_horizontal:TF
               { \@@_scan_int: }
-              { \msg_error:nn { unravel } { invalid-mode } }
+              { \@@_error:nnnnn { invalid-mode } { } { } { } { } }
           }
         { 6 } % pdfliteral
           {
@@ -5798,7 +5797,7 @@
         { 14 } % pdfstartlink
           {
             \mode_if_vertical:TF
-              { \msg_error:nn { unravel } { invalid-mode } }
+              { \@@_error:nnnnn { invalid-mode } { } { } { } { } }
               {
                 \@@_scan_rule_attr:
                 \@@_scan_action:
@@ -5807,7 +5806,7 @@
         { 15 } % pdfendlink
           {
             \mode_if_vertical:T
-              { \msg_error:nn { unravel } { invalid-mode } }
+              { \@@_error:nnnnn { invalid-mode } { } { } { } { } }
           }
         { 16 } % pdfoutline
           {
@@ -5908,8 +5907,8 @@
               {
                 \@@_scan_keyword:nF { cCuUrRrReEnNtT }
                   {
-                    \msg_error:nn { unravel }
-                      { color-stack-action-missing }
+                    \@@_error:nnnnn { color-stack-action-missing }
+                      { } { } { } { }
                   }
               }
           }
@@ -5939,7 +5938,7 @@
         \@@_scan_keyword:nF { gGoOtToO }
           {
             \@@_scan_keyword:nF { tThHrReEaAdD }
-              { \msg_error:nn { unravel } { action-type-missing } }
+              { \@@_error:nnnnn { action-type-missing } { } { } { } { } }
           }
       }
     \@@_scan_keyword:nT { fFiIlLeE }
@@ -5955,7 +5954,7 @@
           {
             \@@_scan_keyword:nTF { nNuUmM }
               { \@@_scan_int: }
-              { \msg_error:nn { unravel } { identifier-type-missing } }
+              { \@@_error:nnnnn { identifier-type-missing } { } { } { } { } }
           }
       }
     \@@_scan_keyword:nTF { nNeEwWwWiInNdDoOwW }
@@ -6036,7 +6035,7 @@
       {
         \@@_scan_keyword:nTF { nNaAmMeE }
           { \@@_scan_pdf_ext_toks: }
-          { \msg_error:nn { unravel } { identifier-type-missing } }
+          { \@@_error:nnnnn { identifier-type-missing } { } { } { } { } }
       }
     \@@_scan_keyword:nTF { xXyYzZ }
       {
@@ -6065,10 +6064,8 @@
                                 \@@_scan_keyword:nF
                                   { fFiItT }
                                   {
-                                    \msg_error:nn { unravel }
-                                      {
-                                        destination-type-missing
-                                      }
+                                    \@@_error:nnnnn { destination-type-missing }
+                                      { } { } { } { }
                                   }
                               }
                           }
@@ -6119,9 +6116,10 @@
           > { \@@_tex_use:n { max_non_prefixed_command } }
           {
             \@@_prev_input_gpop:N \l_@@_tmpa_tl
-            \msg_error:nnxx { unravel  } { erroneous-prefixes }
+            \@@_error:nxxxx { erroneous-prefixes }
               { \tl_to_str:N \l_@@_tmpa_tl }
               { \tl_to_str:N l_@@_head_tl }
+              { } { }
             \@@_back_input:
             \@@_omit_after_assignment:w
           }
@@ -6131,7 +6129,7 @@
     \cs_if_exist_use:cF
       { @@_prefixed_ \int_use:N \l_@@_head_cmd_int : }
       {
-        \msg_error:nnx { unravel } { internal } { prefixed }
+        \@@_error:nnnnn { internal } { prefixed } { } { } { }
         \@@_omit_after_assignment:w
       }
     \@@_after_assignment:
@@ -6499,7 +6497,7 @@
     \bool_if:NTF \g_@@_set_box_allowed_bool
       { \@@_do_box:N \c_false_bool }
       {
-        \msg_error:nn { unravel } { improper-setbox }
+        \@@_error:nnnnn { improper-setbox } { } { } { } { }
         \@@_prev_input_gpop:N \l_@@_tmpa_tl
         \@@_omit_after_assignment:w
       }
@@ -6608,7 +6606,7 @@
   }
 \cs_new_protected_nopar:Npn \@@_do_operation_fail:w
   {
-    \msg_error:nn { unravel } { after-advance }
+    \@@_error:nnnnn { after-advance } { } { } { } { }
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \@@_omit_after_assignment:w
   }
@@ -6664,7 +6662,7 @@
             { 3 } { \@@_scan_normal_glue:  } % glue
             { 4 } { \@@_scan_mu_glue:      } % muglue
           }
-          { \msg_error:nnx { unravel } { internal } { do-reg=#2 } }
+          { \@@_error:nxxxx { internal } { do-reg=#2 } { } { } { } }
       }
       { \@@_scan_int: }
     \@@_assign_register:
@@ -6779,7 +6777,7 @@
   }
 \cs_new_protected_nopar:Npn \@@_unless_bad:
   {
-    \msg_error:nn { unravel } { bad-unless }
+    \@@_error:nnnnn { bad-unless } { } { } { } { }
     \@@_back_input:
   }
 %    \end{macrocode}
@@ -6809,7 +6807,7 @@
       }
   }
 \cs_new_protected_nopar:Npn \@@_pdfprimitive:
-  { \msg_error:nnx { unravel } { not-implemented } { pdfprimitive } }
+  { \@@_not_implemented:n { pdfprimitive } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6829,7 +6827,9 @@
   }
 \cs_new_protected_nopar:Npn \@@_endinput:
   {
-    \msg_warning:nn { unravel } { endinput-ignored }
+    \group_begin:
+      \msg_warning:nn { unravel } { endinput-ignored }
+    \group_end:
     \@@_print_action:
   }
 \cs_new_protected_nopar:Npn \@@_scantokens:
@@ -7003,7 +7003,7 @@
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { end_template }                  % 117
   {
-    \msg_error:nn { unravel } { not-implemented } { end-template }
+    \@@_not_implemented:n { end-template } { } { } { }
     \@@_back_input_tl_o:
   }
 %    \end{macrocode}
@@ -7091,7 +7091,7 @@
 %    \begin{macrocode}
 \cs_new_protected_nopar:Npn \@@_pass_text_empty:
   {
-    \msg_error:nn { unravel } { runaway-if }
+    \@@_error:nnnnn { runaway-if } { } { } { } { }
     \@@_exit:w
   }
 %    \end{macrocode}
@@ -7228,7 +7228,7 @@
       {
         \token_if_eq_meaning:NNT \l_@@_head_token \or:
           {
-            \msg_error:nn { unravel } { extra-or }
+            \@@_error:nnnnn { extra-or } { } { } { } { }
             \@@_cond_false_loop:n {#1}
           }
       }
@@ -7255,7 +7255,7 @@
     \@@_get_x_non_blank:
     \tl_if_in:nVF { < = > } \l_@@_head_tl
       {
-        \msg_error:nn { unravel } { missing-equals }
+        \@@_error:nnnnn { missing-equals } { } { } { } { }
         \@@_back_input:
         \tl_set:Nn \l_@@_head_tl { = }
       }
@@ -7402,10 +7402,10 @@
         \int_compare:nNnTF \g_@@_if_limit_int = \c_zero
           {
             \int_compare:nNnTF \g_@@_if_depth_int = \c_zero
-              { \msg_error:nn { unravel } { extra-fi-or-else } }
+              { \@@_error:nnnnn { extra-fi-or-else } { } { } { } { } }
               { \@@_insert_relax: }
           }
-          { \msg_error:nn { unravel } { extra-fi-or-else } }
+          { \@@_error:nnnnn { extra-fi-or-else } { } { } { } { } }
       }
       {
         \@@_set_action_text:
@@ -7872,6 +7872,33 @@
 %
 % \subsubsection{Errors}
 %
+% \begin{macro}{\@@_not_implemented:n}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_not_implemented:n #1
+  { \@@_error:nnnnn { not-implemented } {#1} { } { } { } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[int]{\@@_error:nnnnn, \@@_error:nxxxx}
+%   Errors within a group to make sure that none of the \pkg{l3msg}
+%   variables (or others) that may be currently in use in the code being
+%   debugged are modified.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_error:nnnnn #1#2#3#4#5
+  {
+    \group_begin:
+    \msg_error:nnnnnn { unravel } {#1} {#2} {#3} {#4} {#5}
+    \group_end:
+  }
+\cs_new_protected:Npn \@@_error:nxxxx #1#2#3#4#5
+  {
+    \group_begin:
+    \msg_error:nnxxxx { unravel } {#1} {#2} {#3} {#4} {#5}
+    \group_end:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[int]{\@@_tex_msg_new:nnn}
 %   This stores a \TeX{} error message.
 %    \begin{macrocode}
@@ -7889,10 +7916,12 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_error:nn #1#2
   {
+    \group_begin:
     \msg_error:nnxxx { unravel } { tex-error }
       { \tl_to_str:n {#2} }
       { \use:c { @@_tex_msg_error_#1: } }
       { \use:c { @@_tex_msg_help_#1: } }
+    \group_end:
   }
 \cs_generate_variant:Nn \@@_tex_error:nn { nV }
 %    \end{macrocode}
@@ -7905,10 +7934,11 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_fatal_error:nn #1#2
   {
-    \msg_error:nnxxx { unravel } { tex-fatal }
+    \@@_error:nxxxx { tex-fatal }
       { \tl_to_str:n {#2} }
       { \use:c { @@_tex_msg_error_#1: } }
       { \use:c { @@_tex_msg_help_#1: } }
+      { }
   }
 \cs_generate_variant:Nn \@@_tex_fatal_error:nn { nV }
 %    \end{macrocode}
@@ -8091,8 +8121,8 @@
   }
 \cs_new_protected_nopar:Npn \@@_final_bad:
   {
-    \msg_error:nnx { unravel } { internal }
-      { the-last-unravel-finished-badly }
+    \@@_error:nnnnn { internal }
+      { the-last-unravel-finished-badly } { } { } { }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8246,7 +8276,8 @@
   { Missing~\token_to_str:c{endcsname}~inserted }
   {
     The~control~sequence~marked~<to~be~read~again>~should~
-    not~appear~between~\token_to_str:c{csname}~and~\token_to_str:c{endcsname}.
+    not~appear~between~\token_to_str:c{csname}~and~
+    \token_to_str:c{endcsname}.
   }
 %    \end{macrocode}
 %
