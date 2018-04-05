@@ -527,7 +527,7 @@
 %   a token against that of a primitive).
 %    \begin{macrocode}
 \cs_new_eq:NN \@@_currentgrouptype:      \etex_currentgrouptype:D
-\cs_new_protected_nopar:Npn \@@_set_escapechar:n
+\cs_new_protected:Npn \@@_set_escapechar:n
   { \int_set:Nn \tex_escapechar:D }
 \cs_new_eq:NN \@@_everyeof:w             \etex_everyeof:D
 \cs_new_eq:NN \@@_everypar:w             \tex_everypar:D
@@ -597,7 +597,7 @@
 % \begin{macro}{\@@_tmp:w}
 %   Temporary function used to define other functions.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_tmp:w { }
+\cs_new_protected:Npn \@@_tmp:w { }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -672,7 +672,7 @@
 % \begin{macro}{\@@_prepare_mag:}
 %   Used whenever \TeX{} needs the value of \tn{mag}.  ^^A todo: move
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_prepare_mag:
+\cs_new_protected:Npn \@@_prepare_mag:
   {
     \int_compare:nNnT { \g_@@_mag_set_int } > { 0 }
       {
@@ -711,7 +711,7 @@
 %   second operand, is false, and the roman numeral expansion only sees
 %   \cs{c_zero}, thus does not remove anything from what follows.
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_strip_escape:w
+\cs_new:Npn \@@_strip_escape:w
   {
     \tex_romannumeral:D
       \if_charcode:w \token_to_str:N \ \@@_strip_escape_aux:w \fi:
@@ -977,7 +977,7 @@
 %
 % \begin{macro}[EXP]{\@@_prev_input_count:, \@@_prev_input_count_aux:n}
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_prev_input_count:
+\cs_new:Npn \@@_prev_input_count:
   {
     \int_eval:n
       {
@@ -1003,19 +1003,19 @@
 %   }
 % ^^A todo: doc and add optional sanity checking
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_prev_input_get:N
+\cs_new_protected:Npn \@@_prev_input_get:N
   { \seq_get_right:NN \g_@@_prev_input_seq }
-\cs_new_protected_nopar:Npn \@@_prev_input_gpush:
+\cs_new_protected:Npn \@@_prev_input_gpush:
   { \seq_gput_right:Nn \g_@@_prev_input_seq { } }
-\cs_new_protected_nopar:Npn \@@_prev_input_gpush:N
+\cs_new_protected:Npn \@@_prev_input_gpush:N
   { \seq_gput_right:NV \g_@@_prev_input_seq }
-\cs_new_protected_nopar:Npn \@@_prev_input_gpop:N
+\cs_new_protected:Npn \@@_prev_input_gpop:N
   { \seq_gpop_right:NN \g_@@_prev_input_seq }
-\cs_new_protected_nopar:Npn \@@_prev_input_gpush_gtl:
+\cs_new_protected:Npn \@@_prev_input_gpush_gtl:
   { \seq_gput_right:NV \g_@@_prev_input_seq \c_empty_gtl }
-\cs_new_protected_nopar:Npn \@@_prev_input_gpush_gtl:N
+\cs_new_protected:Npn \@@_prev_input_gpush_gtl:N
   { \seq_gput_right:NV \g_@@_prev_input_seq }
-\cs_new_protected_nopar:Npn \@@_prev_input_gpop_gtl:N
+\cs_new_protected:Npn \@@_prev_input_gpop_gtl:N
   { \seq_gpop_right:NN \g_@@_prev_input_seq }
 %    \end{macrocode}
 % \end{macro}
@@ -1482,7 +1482,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_new_tex_cmd:nn #1#2
   {
-    \cs_new_protected_nopar:cpn
+    \cs_new_protected:cpn
       { @@_cmd_ \@@_tex_use:n {#1} : } {#2}
   }
 \cs_new_protected:Npn \@@_new_eq_tex_cmd:nn #1#2
@@ -1498,7 +1498,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_new_tex_expandable:nn #1#2
   {
-    \cs_new_protected_nopar:cpn
+    \cs_new_protected:cpn
       { @@_expandable_ \@@_tex_use:n {#1} : } {#2}
   }
 %    \end{macrocode}
@@ -2207,7 +2207,7 @@
 %   unless it is a begin-group or end-group character, in which case
 %   this token list is emptied.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_next:
+\cs_new_protected:Npn \@@_get_next:
   {
     \@@_input_if_empty:TF
       { \@@_exit:w }
@@ -2222,7 +2222,7 @@
           { \tl_clear:N \l_@@_head_tl }
       }
   }
-\cs_new_protected_nopar:Npn \@@_get_next_aux:w
+\cs_new_protected:Npn \@@_get_next_aux:w
   { \cs_set_eq:NN \l_@@_head_token }
 %    \end{macrocode}
 % \end{macro}
@@ -2233,7 +2233,7 @@
 %   and \cs{l_@@_head_token}, then call \cs{@@_set_cmd:} to set
 %   \cs{l_@@_head_cmd_int} and \cs{l_@@_head_char_int}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_token:
+\cs_new_protected:Npn \@@_get_token:
   {
     \@@_get_next:
     \@@_set_cmd:
@@ -2252,7 +2252,7 @@
 %   (\emph{e.g.}, an expandable \XeTeX{} or \LuaTeX{} primitive
 %   perhaps).  Otherwise, it can be a control sequence or a character.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd:
+\cs_new_protected:Npn \@@_set_cmd:
   {
     \@@_set_cmd_aux_meaning:
     \@@_set_cmd_aux_primitive:oTF { \l_@@_head_meaning_tl }
@@ -2282,7 +2282,7 @@
 %   for macros, for marks, and for that character too.  For any
 %   primitive except \tn{nullfont}, this leaves the primitive's name.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd_aux_meaning:
+\cs_new_protected:Npn \@@_set_cmd_aux_meaning:
   {
     \tl_set:Nx \l_@@_head_meaning_tl
       {
@@ -2335,7 +2335,7 @@
 %   The token is a macro.  There is no need to determine whether the
 %   macro is long/outer.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd_aux_macro:
+\cs_new_protected:Npn \@@_set_cmd_aux_macro:
   {
     \int_set:Nn \l_@@_head_cmd_int { \@@_tex_use:n { call } }
     \int_zero:N \l_@@_head_char_int
@@ -2347,7 +2347,7 @@
 %   Complain about an unknown primitive, and consider it as if it were
 %   \tn{relax}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd_aux_unknown:
+\cs_new_protected:Npn \@@_set_cmd_aux_unknown:
   {
     \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
       \c_@@_tex_relax_tl
@@ -2367,7 +2367,7 @@
 %   \tn{dimen}, \tn{skip}, \tn{muskip} or \tn{toks} followed by a
 %   decimal number.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd_aux_cs:
+\cs_new_protected:Npn \@@_set_cmd_aux_cs:
   {
     \tl_if_in:NoTF \l_@@_head_meaning_tl
       { \tl_to_str:n { elect~font } }
@@ -2400,7 +2400,7 @@
 %   \cs{q_mark} is inserted at their end, and is followed by~|+0|, so
 %   nothing breaks.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd_aux_numeric:
+\cs_new_protected:Npn \@@_set_cmd_aux_numeric:
   {
     \tl_set:Nx \l_@@_tmpa_tl
       {
@@ -2452,7 +2452,7 @@
 %   the character code, there is a need to expand
 %   \cs{@@_token_to_char:N} before placing~|`|.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_cmd_aux_char:
+\cs_new_protected:Npn \@@_set_cmd_aux_char:
   {
     \tl_set:Nx \l_@@_head_meaning_tl
       { \token_to_meaning:N \l_@@_head_token }
@@ -2479,7 +2479,7 @@
 % \begin{macro}[rEXP]{\@@_input_to_str:}
 %   Map \cs{gtl_to_str:c} through the input stack.
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_input_to_str:
+\cs_new:Npn \@@_input_to_str:
   {
     \int_step_function:nnnN \g_@@_input_int { -1 } { 1 }
       \@@_input_to_str_aux:n
@@ -2522,7 +2522,7 @@
 %   an |N|-type token, try to unflatten it by splitting at each
 %   occurence of that first character
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_input_split:
+\cs_new_protected:Npn \@@_input_split:
   {
     \int_compare:nNnT \g_@@_input_int = \c_one
       {
@@ -2559,7 +2559,7 @@
         \l_@@_input_tmpa_tl \@@_input_split_end:
       }
   }
-\cs_new_nopar:Npn \@@_input_split_end: { }
+\cs_new:Npn \@@_input_split_end: { }
 \cs_new_protected:Npn \@@_input_split_auxiii:w
     #1 \@@_input_split_end:
   {
@@ -2575,7 +2575,7 @@
 % \begin{macro}{\@@_input_gset:n}
 %   At first, all of the input is in the same~\texttt{gtl}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_input_gset:n
+\cs_new_protected:Npn \@@_input_gset:n
   {
     \int_gzero:N \g_@@_input_int
     \@@_back_input:n
@@ -2618,7 +2618,7 @@
 %   Merge the top two levels of input.  This requires, but does not
 %   check, that \cs{g_@@_input_int} is at least~$2$.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_input_merge:
+\cs_new_protected:Npn \@@_input_merge:
   {
     \int_gdecr:N \g_@@_input_int
     \gtl_gconcat:ccc
@@ -2718,7 +2718,7 @@
 %   to define the gtl variable if necessary: this happens whenever a
 %   new largest value of \cs{g_@@_input_int} is reached.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_back_input:n
+\cs_new_protected:Npn \@@_back_input:n
   {
     \int_gincr:N \g_@@_input_int
     \gtl_gclear_new:c { g_@@_input_ \int_use:N \g_@@_input_int _gtl }
@@ -2750,7 +2750,7 @@
 % \begin{macro}{\@@_back_input:}
 %   Insert the last token read back into the input stream.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_back_input:
+\cs_new_protected:Npn \@@_back_input:
   { \@@_back_input_gtl:N \l_@@_head_gtl }
 %    \end{macrocode}
 % \end{macro}
@@ -2760,7 +2760,7 @@
 %   back into the input stream, after expanding it once.  Then print
 %   some diagnostic information.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_back_input_tl_o:
+\cs_new_protected:Npn \@@_back_input_tl_o:
   {
     \tl_set:Nx \l_@@_tmpa_tl
       { \exp_args:NV \exp_not:o \l_@@_head_tl }
@@ -2779,7 +2779,7 @@
 %   corresponding \tn{fi} or \tn{or} or \tn{else}, or when \tn{input}
 %   appears while \cs{g_@@_name_in_progress_bool} is \texttt{true}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_insert_relax:
+\cs_new_protected:Npn \@@_insert_relax:
   {
     \@@_back_input:
     \gtl_set_eq:NN \l_@@_head_gtl \c_@@_frozen_relax_gtl
@@ -2791,7 +2791,7 @@
 %
 % \begin{macro}{\@@_insert_group_begin_error:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_insert_group_begin_error:
+\cs_new_protected:Npn \@@_insert_group_begin_error:
   {
     \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
     \@@_back_input:
@@ -2805,7 +2805,7 @@
 %
 % \begin{macro}{\@@_insert_dollar_error:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_insert_dollar_error:
+\cs_new_protected:Npn \@@_insert_dollar_error:
   {
     \@@_back_input:
     \@@_back_input:n { $ } % $
@@ -2862,7 +2862,7 @@
 %   extracting the longest balanced prefix in the input and working with
 %   that.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_macro_call:
+\cs_new_protected:Npn \@@_macro_call:
   {
     \bool_if:NTF \g_@@_speedup_macros_bool
       {
@@ -2875,12 +2875,12 @@
     \exp_args:NV \@@_back_input:o \l_@@_head_tl
     \@@_print_done:x { \g_@@_action_text_str }
   }
-\cs_new_protected_nopar:Npn \@@_macro_call_safe:
+\cs_new_protected:Npn \@@_macro_call_safe:
   {
     \@@_input_gpop_tl:N \l_@@_tmpa_tl
     \tl_put_right:NV \l_@@_head_tl \l_@@_tmpa_tl
   }
-\cs_new_protected_nopar:Npn \@@_macro_call_quick:
+\cs_new_protected:Npn \@@_macro_call_quick:
   {
     \exp_after:wN \@@_macro_call_quick_loop:NNN \l_@@_tmpa_tl
       { ? \use_none_delimit_by_q_stop:w } \q_stop
@@ -2912,7 +2912,7 @@
 %   structure, distinguishing macros from other commands (not quite sure
 %   why).
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_expand:
+\cs_new_protected:Npn \@@_expand:
   {
     \@@_set_action_text:
     \bool_if:NT \g_@@_internal_debug_bool
@@ -2935,7 +2935,7 @@
 %   then we probably have not implemented it yet, so dump it in the
 %   output as is.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_expand_nonmacro:
+\cs_new_protected:Npn \@@_expand_nonmacro:
   {
     \@@_set_cmd_aux_meaning:
     \@@_set_cmd_aux_primitive:oTF { \l_@@_head_meaning_tl }
@@ -2958,7 +2958,7 @@
 %   Get a token.  If it is expandable, then expand it, and repeat.  This
 %   function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_x_next:
+\cs_new_protected:Npn \@@_get_x_next:
   {
     \@@_get_next:
     \@@_token_if_expandable:NT \l_@@_head_token
@@ -2975,7 +2975,7 @@
 %   it, and repeat.  This function does not set the |cmd| and |char|
 %   integers.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_x_or_protected:
+\cs_new_protected:Npn \@@_get_x_or_protected:
   {
     \@@_get_next:
     \@@_token_if_protected:NF \l_@@_head_token
@@ -2995,7 +2995,7 @@
 % \begin{macro}{\@@_get_x_non_blank:}
 %   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_x_non_blank:
+\cs_new_protected:Npn \@@_get_x_non_blank:
   {
     \@@_get_x_next:
     \token_if_eq_catcode:NNT \l_@@_head_token \c_space_token
@@ -3007,7 +3007,7 @@
 % \begin{macro}{\@@_get_x_non_relax:}
 %   This function does not set the |cmd| and |char| integers.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_get_x_non_relax:
+\cs_new_protected:Npn \@@_get_x_non_relax:
   {
     \@@_get_x_next:
     \token_if_eq_meaning:NNT \l_@@_head_token \scan_stop:
@@ -3022,7 +3022,7 @@
 %
 % \begin{macro}{\@@_skip_optional_space:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_skip_optional_space:
+\cs_new_protected:Npn \@@_skip_optional_space:
   {
     \@@_get_x_next:
     \token_if_eq_catcode:NNF \l_@@_head_token \c_space_token
@@ -3037,7 +3037,7 @@
 %   as \cs{@@_scan_something_internal:n} leaves raw numbers in
 %   the previous-input sequence.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_optional_equals:
+\cs_new_protected:Npn \@@_scan_optional_equals:
   {
     \@@_get_x_non_blank:
     \tl_if_eq:NNTF \l_@@_head_tl \c_@@_eq_tl
@@ -3055,7 +3055,7 @@
 %   If there is no begin-group token, insert one, produce an error, and
 %   scan that begin-group using \cs{@@_get_next:}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_left_brace:
+\cs_new_protected:Npn \@@_scan_left_brace:
   {
     \@@_get_x_non_relax:
     \token_if_eq_catcode:NNF \l_@@_head_token \c_group_begin_token
@@ -3156,13 +3156,13 @@
           }
       }
   }
-\cs_new_protected_nopar:Npn \@@_scan_keyword_true:
+\cs_new_protected:Npn \@@_scan_keyword_true:
   {
     \@@_prev_input_gpop_gtl:N \l_@@_tmpb_gtl
     \@@_prev_input:x { \gtl_to_str:N \l_@@_tmpb_gtl }
     \prg_return_true:
   }
-\cs_new_protected_nopar:Npn \@@_scan_keyword_false:w
+\cs_new_protected:Npn \@@_scan_keyword_false:w
     #1 \q_recursion_stop
   {
     \@@_back_input:
@@ -3179,7 +3179,7 @@
 %   Used when |to| is mandatory: after \tn{read} or \tn{readline} and
 %   after \tn{vsplit}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_to:
+\cs_new_protected:Npn \@@_scan_to:
   {
     \@@_scan_keyword:nF { tToO }
       {
@@ -3193,7 +3193,7 @@
 % \begin{macro}{\@@_scan_font_ident:}
 %   Find a font identifier.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_font_ident:
+\cs_new_protected:Npn \@@_scan_font_ident:
   {
     \@@_get_x_non_blank:
     \@@_set_cmd:
@@ -3226,7 +3226,7 @@
 %   Find operands for one of \tn{hyphenchar}'s friends (command code
 %   |assign_font_int=78|).
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_font_int:
+\cs_new_protected:Npn \@@_scan_font_int:
   {
     \int_case:nnF \l_@@_head_char_int
       {
@@ -3242,7 +3242,7 @@
 % \begin{macro}{\@@_scan_font_dimen:}
 %   Find operands for \tn{fontdimen}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_font_dimen:
+\cs_new_protected:Npn \@@_scan_font_dimen:
   {
     \@@_scan_int:
     \@@_scan_font_ident:
@@ -3359,7 +3359,7 @@
 %   is~$8$, large enough so that the main function knows it is
 %   forbidden.
 %    \begin{macrocode}
-\cs_new_nopar:Npn \@@_thing_case:
+\cs_new:Npn \@@_thing_case:
   {
     \int_case:nnF \l_@@_head_cmd_int
       {
@@ -3390,9 +3390,9 @@
       }
       { 8 }
   }
-\cs_new_nopar:Npn \@@_thing_set_aux:
+\cs_new:Npn \@@_thing_set_aux:
   { \int_compare:nNnTF \l_@@_head_char_int = { 1 } { 1 } { 0 } }
-\cs_new_nopar:Npn \@@_thing_last_item:
+\cs_new:Npn \@@_thing_last_item:
   {
     \int_compare:nNnTF \l_@@_head_char_int < { 26 }
       {
@@ -3435,7 +3435,7 @@
           { }
       }
   }
-\cs_new_nopar:Npn \@@_thing_register:
+\cs_new:Npn \@@_thing_register:
   {
     \int_eval:n { \l_@@_head_char_int / 1 000 000 - 1 }
     \int_compare:nNnT { \tl_tail:V \l_@@_head_char_int } = \c_zero
@@ -3573,7 +3573,7 @@
 %   Skips blanks, scans signs, and places them to the right of the last
 %   item of \cs{@@_prev_input:n}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_signs:
+\cs_new_protected:Npn \@@_scan_signs:
   {
     \@@_get_x_non_blank:
     \tl_if_eq:NNTF \l_@@_head_tl \c_@@_plus_tl
@@ -3596,7 +3596,7 @@
 % \begin{macro}
 %   {\@@_scan_int_char:, \@@_scan_int_lq:, \@@_scan_int_explicit:n}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_int:
+\cs_new_protected:Npn \@@_scan_int:
   {
     \@@_scan_signs:
     \@@_set_cmd:
@@ -3604,7 +3604,7 @@
       { \@@_scan_something_internal:n { 0 } }
       { \@@_scan_int_char: }
   }
-\cs_new_protected_nopar:Npn \@@_scan_int_char:
+\cs_new_protected:Npn \@@_scan_int_char:
   {
     \tl_case:NnF \l_@@_head_tl
       {
@@ -3624,7 +3624,7 @@
       }
       { \@@_scan_int_explicit:Nn \c_false_bool { } }
   }
-\cs_new_protected_nopar:Npn \@@_scan_int_lq:
+\cs_new_protected:Npn \@@_scan_int_lq:
   {
     \@@_get_next:
     \@@_gtl_if_head_is_definable:NF \l_@@_head_gtl
@@ -3668,7 +3668,7 @@
 %
 % \begin{macro}{\@@_scan_normal_dimen:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_normal_dimen:
+\cs_new_protected:Npn \@@_scan_normal_dimen:
   { \@@_scan_dimen:nN { 2 } \c_false_bool }
 %    \end{macrocode}
 % \end{macro}
@@ -3778,9 +3778,9 @@
     \@@_prev_input:n { pt }
     \@@_break_point:
   }
-\cs_new_protected_nopar:Npn \@@_scan_inf_unit_loop:
+\cs_new_protected:Npn \@@_scan_inf_unit_loop:
   { \@@_scan_keyword:nT { lL } { \@@_scan_inf_unit_loop: } }
-\cs_new_protected_nopar:Npn \@@_scan_decimal_loop:
+\cs_new_protected:Npn \@@_scan_decimal_loop:
   {
     \@@_get_x_next:
     \tl_if_empty:NTF \l_@@_head_tl
@@ -3801,9 +3801,9 @@
 %
 % \begin{macro}{\@@_scan_normal_glue:, \@@_scan_mu_glue:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_normal_glue:
+\cs_new_protected:Npn \@@_scan_normal_glue:
   { \@@_scan_glue:n { 2 } }
-\cs_new_protected_nopar:Npn \@@_scan_mu_glue:
+\cs_new_protected:Npn \@@_scan_mu_glue:
   { \@@_scan_glue:n { 3 } }
 %    \end{macrocode}
 % \end{macro}
@@ -3845,7 +3845,7 @@
 % \begin{macro}{\@@_scan_file_name:}
 % ^^A todo: area_delimiter and ext_delimiter ??
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_file_name:
+\cs_new_protected:Npn \@@_scan_file_name:
   {
     \bool_gset_true:N \g_@@_name_in_progress_bool
     \@@_get_x_non_blank:
@@ -3853,7 +3853,7 @@
     \bool_gset_false:N \g_@@_name_in_progress_bool
     \@@_prev_input_silent:n { ~ }
   }
-\cs_new_protected_nopar:Npn \@@_scan_file_name_loop:
+\cs_new_protected:Npn \@@_scan_file_name_loop:
   {
     \@@_gtl_if_head_is_definable:NTF \l_@@_head_gtl
       { \@@_back_input: }
@@ -3876,7 +3876,7 @@
 %   \cs{l_@@_defined_tl} the token which we found, as this is what will
 %   be defined by the next assignment.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_r_token:
+\cs_new_protected:Npn \@@_scan_r_token:
   {
     \bool_do_while:nn
       { \tl_if_eq_p:NN \l_@@_head_tl \c_space_tl }
@@ -3928,14 +3928,14 @@
 %   input, stop looping, and put what we collected into
 %   \cs{l_@@_defining_tl} and into the |prev_input|.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_param:
+\cs_new_protected:Npn \@@_scan_param:
   {
     \tl_clear:N \l_@@_tmpa_tl
     \@@_scan_param_aux:
     \tl_put_right:NV \l_@@_defining_tl \l_@@_tmpa_tl
     \@@_prev_input_silent:V \l_@@_tmpa_tl
   }
-\cs_new_protected_nopar:Npn \@@_scan_param_aux:
+\cs_new_protected:Npn \@@_scan_param_aux:
   {
     \@@_get_next:
     \tl_concat:NNN \l_@@_tmpa_tl
@@ -4075,7 +4075,7 @@
 %
 % \begin{macro}{\@@_scan_alt_rule:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_alt_rule:
+\cs_new_protected:Npn \@@_scan_alt_rule:
   {
     \@@_scan_keyword:nTF { wWiIdDtThH }
       {
@@ -4104,7 +4104,7 @@
 %   Some \TeX{} primitives accept the keywords |to| and |spread|,
 %   followed by a dimension.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_spec:
+\cs_new_protected:Npn \@@_scan_spec:
   {
     \@@_scan_keyword:nTF { tToO } { \@@_scan_normal_dimen: }
       {
@@ -4165,7 +4165,7 @@
 %   \TeX{} does), there is no need to remove the after assignment token
 %   here.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_box_error:
+\cs_new_protected:Npn \@@_do_box_error:
   {
     \@@_back_input:
     \@@_error:nnnnn { missing-box } { } { } { } { }
@@ -4228,7 +4228,7 @@
 %
 % \begin{macro}{\@@_do_leaders_fetch_skip:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_leaders_fetch_skip:
+\cs_new_protected:Npn \@@_do_leaders_fetch_skip:
   {
     \@@_get_x_non_relax:
     \@@_set_cmd:
@@ -4330,7 +4330,7 @@
 %   |heigh| and |width| keywords, we are in the same situation as after
 %   finding a box.  Fetch the required skip accordingly.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_leaders_rule:
+\cs_new_protected:Npn \@@_do_leaders_rule:
   {
     \@@_prev_input:V \l_@@_head_tl
     \@@_scan_alt_rule:
@@ -4437,7 +4437,7 @@
 %
 % \begin{macro}{\@@_end_graf:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_end_graf:
+\cs_new_protected:Npn \@@_end_graf:
   { \mode_if_horizontal:T { \@@_normal_paragraph: } }
 %    \end{macrocode}
 % \end{macro}
@@ -4445,7 +4445,7 @@
 % ^^A todo: Do we need to do more?
 % \begin{macro}{\@@_normal_paragraph:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_normal_paragraph:
+\cs_new_protected:Npn \@@_normal_paragraph:
   {
     \tex_par:D
     \gtl_gput_right:Nn \g_@@_output_gtl { \par }
@@ -4457,7 +4457,7 @@
 % ^^A todo: do something to the \output routine?
 % \begin{macro}{\@@_build_page:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_build_page:
+\cs_new_protected:Npn \@@_build_page:
   {
   }
 %    \end{macrocode}
@@ -4475,7 +4475,7 @@
 %   When an end-group character is sensed, the result depends on the
 %   current group type.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_handle_right_brace:
+\cs_new_protected:Npn \@@_handle_right_brace:
   {
     \int_compare:nTF { 1 <= \@@_currentgrouptype: <= 13 }
       {
@@ -4511,7 +4511,7 @@
 %   This command is used to simply end a group, when there are no
 %   specific operations to perform.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_end_simple_group:
+\cs_new_protected:Npn \@@_end_simple_group:
   {
     \l_@@_head_token
     \@@_print_action:
@@ -4524,7 +4524,7 @@
 %   \tn{hbox}) can either be simple, or can mean that we need to find a
 %   skip for a \tn{leaders}/\tn{cleaders}/\tn{xleaders} construction.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_end_box_group:
+\cs_new_protected:Npn \@@_end_box_group:
   {
     \seq_pop:NN \l_@@_leaders_box_seq \l_@@_tmpa_tl
     \exp_args:No \@@_end_box_group_aux:n { \l_@@_tmpa_tl }
@@ -4554,7 +4554,7 @@
 %
 % \begin{macro}{\@@_off_save:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_off_save:
+\cs_new_protected:Npn \@@_off_save:
   {
     \int_compare:nNnTF \@@_currentgrouptype: = { 0 }
       { % bottom-level
@@ -4610,7 +4610,7 @@
 % \begin{macro}{\@@_head_for_vmode:}
 %   See \TeX{}'s |head_for_vmode|.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_head_for_vmode:
+\cs_new_protected:Npn \@@_head_for_vmode:
   {
     \mode_if_inner:TF
       {
@@ -4633,7 +4633,7 @@
 % ^^A todo: should push_math be provided?
 % \begin{macro}{\@@_goto_inner_math:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_goto_inner_math:
+\cs_new_protected:Npn \@@_goto_inner_math:
   {
     \@@_box_hook:N \tex_everymath:D
     $ % $
@@ -4644,7 +4644,7 @@
 %
 % \begin{macro}{\@@_goto_display_math:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_goto_display_math:
+\cs_new_protected:Npn \@@_goto_display_math:
   {
     \@@_box_hook:N \tex_everydisplay:D
     $ $
@@ -4655,7 +4655,7 @@
 %
 % \begin{macro}{\@@_after_math:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_after_math:
+\cs_new_protected:Npn \@@_after_math:
   {
     \mode_if_inner:TF
       {
@@ -4688,7 +4688,7 @@
 %   Perform the action if the corresponding command exists.  If that
 %   command does not exist, complain, and leave the token in the output.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_step:
+\cs_new_protected:Npn \@@_do_step:
   {
     \@@_set_action_text:
     \bool_if:NT \g_@@_internal_debug_bool
@@ -4808,7 +4808,7 @@
   { \@@_mode_math:n { \@@_sub_sup: } }
 \@@_new_tex_cmd:nn { subscript_char }                       % 8
   { \@@_mode_math:n { \@@_sub_sup: } }
-\cs_new_protected_nopar:Npn \@@_sub_sup:
+\cs_new_protected:Npn \@@_sub_sup:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5096,7 +5096,7 @@
 %   Scan a dimension and a box, and perform the shift, printing the
 %   appropriate action.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_move:
+\cs_new_protected:Npn \@@_do_move:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5126,7 +5126,7 @@
 %
 % \begin{macro}{\@@_do_unpackage:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_unpackage:
+\cs_new_protected:Npn \@@_do_unpackage:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5174,7 +5174,7 @@
 %   glue (\cs{l_@@_head_char_int} is $4$ or~$5$), then call the
 %   primitive with that operand, and print the whole thing as an action.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_append_glue:
+\cs_new_protected:Npn \@@_do_append_glue:
   {
     \int_compare:nNnTF \l_@@_head_char_int < { 4 }
       { \tl_use:N \l_@@_head_tl \@@_print_action: }
@@ -5215,7 +5215,7 @@
 %   See \cs{@@_do_append_glue:}.  This function is used for the
 %   primitives \tn{kern} and \tn{mkern} only.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_append_kern:
+\cs_new_protected:Npn \@@_do_append_kern:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5289,7 +5289,7 @@
   { \@@_mode_non_vertical:n { \@@_do_rule: } }
 \@@_new_tex_cmd:nn { hrule }                                % 36
   { \@@_mode_vertical:n { \@@_do_rule: } }
-\cs_new_protected_nopar:Npn \@@_do_rule:
+\cs_new_protected:Npn \@@_do_rule:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5411,7 +5411,7 @@
 %
 % \begin{macro}{\@@_do_accent:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_accent:
+\cs_new_protected:Npn \@@_do_accent:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5450,7 +5450,7 @@
 %   \TeX{} will complain if \cs{l_@@_head_tl} happens to start with
 %   \tn{accent} (the user used \tn{accent} in math mode).
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_math_accent:
+\cs_new_protected:Npn \@@_do_math_accent:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -5717,7 +5717,7 @@
 %
 % \begin{macro}{\@@_scan_extension_operands:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_extension_operands:
+\cs_new_protected:Npn \@@_scan_extension_operands:
   {
     \int_case:nnF \l_@@_head_char_int
       {
@@ -5897,7 +5897,7 @@
 %
 % \begin{macro}{\@@_scan_pdfcolorstack_operands:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_pdfcolorstack_operands:
+\cs_new_protected:Npn \@@_scan_pdfcolorstack_operands:
   {
     \@@_scan_int:
     \@@_scan_keyword:nF { sSeEtT }
@@ -5920,7 +5920,7 @@
 %
 % \begin{macro}{\@@_scan_rule_attr:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_rule_attr:
+\cs_new_protected:Npn \@@_scan_rule_attr:
   {
     \@@_scan_alt_rule:
     \@@_scan_keyword:nT { aAtTtTrR }
@@ -5931,7 +5931,7 @@
 %
 % \begin{macro}{\@@_scan_action:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_action:
+\cs_new_protected:Npn \@@_scan_action:
   {
     \@@_scan_keyword:nTF { uUsSeErR }
       { \@@_scan_pdf_ext_toks: }
@@ -5971,7 +5971,7 @@
 % \begin{macro}{\@@_scan_image:}
 %   Used by \tn{pdfximage}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_image:
+\cs_new_protected:Npn \@@_scan_image:
   {
     \@@_scan_rule_attr:
     \@@_scan_keyword:nTF { nNaAmMeEdD }
@@ -5989,7 +5989,7 @@
 %
 % \begin{macro}{\@@_scan_immediate_operands:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_immediate_operands:
+\cs_new_protected:Npn \@@_scan_immediate_operands:
   {
     \@@_get_x_next:
     \@@_set_cmd:
@@ -6011,12 +6011,12 @@
       }
       { \@@_scan_immediate_operands_bad: }
   }
-\cs_new_protected_nopar:Npn \@@_scan_immediate_operands_aux:
+\cs_new_protected:Npn \@@_scan_immediate_operands_aux:
   {
     \@@_prev_input:V \l_@@_head_tl
     \@@_scan_extension_operands:
   }
-\cs_new_protected_nopar:Npn \@@_scan_immediate_operands_bad:
+\cs_new_protected:Npn \@@_scan_immediate_operands_bad:
   {
     \@@_back_input:
     \@@_prev_input_gpop:N \l_@@_head_tl
@@ -6029,7 +6029,7 @@
 %
 % \begin{macro}{\@@_scan_pdfdest_operands:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_scan_pdfdest_operands:
+\cs_new_protected:Npn \@@_scan_pdfdest_operands:
   {
     \@@_scan_keyword:nTF { nNuUmM }
       { \@@_scan_int: }
@@ -6089,7 +6089,7 @@
 % We define all those commands in one go, from
 % |max_non_prefixed_command+1=71| to |max_command=102|.
 %    \begin{macrocode}
-\cs_set_protected_nopar:Npn \@@_tmp:w
+\cs_set_protected:Npn \@@_tmp:w
   {
     \@@_prev_input_gpush:
     \@@_prefixed_command:
@@ -6105,7 +6105,7 @@
 %   Accumulated prefix codes so far are stored as the last item of
 %   the previous-input sequence.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_prefixed_command:
+\cs_new_protected:Npn \@@_prefixed_command:
   {
     \int_while_do:nNnn
       \l_@@_head_cmd_int = { \@@_tex_use:n { prefix } }
@@ -6144,12 +6144,12 @@
 % \begin{macro}{\@@_after_assignment:}
 % \begin{macro}{\@@_omit_after_assignment:w}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_after_assignment:
+\cs_new_protected:Npn \@@_after_assignment:
   {
     \@@_back_input_gtl:N \g_@@_after_assignment_gtl
     \gtl_gclear:N \g_@@_after_assignment_gtl
   }
-\cs_new_protected_nopar:Npn \@@_omit_after_assignment:w
+\cs_new_protected:Npn \@@_omit_after_assignment:w
     #1 \@@_after_assignment: { }
 %    \end{macrocode}
 % \end{macro}
@@ -6159,7 +6159,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prefixed_new:nn #1#2
   {
-    \cs_new_protected_nopar:cpn
+    \cs_new_protected:cpn
       { @@_prefixed_ \@@_tex_use:n {#1} : } {#2}
   }
 %    \end{macrocode}
@@ -6179,7 +6179,7 @@
 %
 % \begin{macro}{\@@_assign_register:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_assign_register:
+\cs_new_protected:Npn \@@_assign_register:
   {
     \@@_prev_input_gpop:N \l_@@_head_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
@@ -6223,7 +6223,7 @@
   }
 \@@_prefixed_new:nn { assign_toks }                         % 72
   { \@@_assign_toks: }
-\cs_new_protected_nopar:Npn \@@_assign_toks:
+\cs_new_protected:Npn \@@_assign_toks:
   {
     \@@_prev_input_silent:V \l_@@_head_tl
     \@@_print_action:
@@ -6605,7 +6605,7 @@
           }
       }
   }
-\cs_new_protected_nopar:Npn \@@_do_operation_fail:w
+\cs_new_protected:Npn \@@_do_operation_fail:w
   {
     \@@_error:nnnnn { after-advance } { } { } { } { }
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
@@ -6673,7 +6673,7 @@
 %
 % The following is used for instance when making accents.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_do_assignments:
+\cs_new_protected:Npn \@@_do_assignments:
   {
     \@@_get_x_non_relax:
     \@@_set_cmd:
@@ -6741,7 +6741,7 @@
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_expandafter:D
       { \@@_expandafter: } { \@@_unless: }
   }
-\cs_new_protected_nopar:Npn \@@_expandafter:
+\cs_new_protected:Npn \@@_expandafter:
   {
     \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
     \@@_get_next:
@@ -6760,7 +6760,7 @@
     \@@_back_input:
     \@@_print_action:
   }
-\cs_new_protected_nopar:Npn \@@_unless:
+\cs_new_protected:Npn \@@_unless:
   {
     \@@_get_token:
     \int_compare:nNnTF
@@ -6776,7 +6776,7 @@
       }
       { \@@_unless_bad: }
   }
-\cs_new_protected_nopar:Npn \@@_unless_bad:
+\cs_new_protected:Npn \@@_unless_bad:
   {
     \@@_error:nnnnn { bad-unless } { } { } { } { }
     \@@_back_input:
@@ -6792,22 +6792,22 @@
       { \@@_noexpand: }
       { \@@_pdfprimitive: }
   }
-\cs_new_protected_nopar:Npn \@@_noexpand:
+\cs_new_protected:Npn \@@_noexpand:
   {
     \@@_get_token:
     \@@_back_input:
     \@@_token_if_expandable:NT \l_@@_head_token
       {
-        \cs_gset_protected_nopar:Npx \@@_get_next:
+        \cs_gset_protected:Npx \@@_get_next:
           {
-            \cs_gset_protected_nopar:Npn \@@_get_next:
+            \cs_gset_protected:Npn \@@_get_next:
               { \exp_not:o { \@@_get_next: } }
             \exp_not:o { \@@_get_next: }
             \exp_not:n { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
           }
       }
   }
-\cs_new_protected_nopar:Npn \@@_pdfprimitive:
+\cs_new_protected:Npn \@@_pdfprimitive:
   { \@@_not_implemented:n { pdfprimitive } }
 %    \end{macrocode}
 % \end{macro}
@@ -6826,14 +6826,14 @@
           { \@@_insert_relax: } { \@@_input: }
       }
   }
-\cs_new_protected_nopar:Npn \@@_endinput:
+\cs_new_protected:Npn \@@_endinput:
   {
     \group_begin:
       \msg_warning:nn { unravel } { endinput-ignored }
     \group_end:
     \@@_print_action:
   }
-\cs_new_protected_nopar:Npn \@@_scantokens:
+\cs_new_protected:Npn \@@_scantokens:
   {
     \@@_prev_input_gpush:
     \@@_scan_toks:NN \c_false_bool \c_false_bool
@@ -6842,7 +6842,7 @@
     \@@_back_input:V \l_@@_head_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
-\cs_new_protected_nopar:Npn \@@_input:
+\cs_new_protected:Npn \@@_input:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_scan_file_name:
@@ -6866,7 +6866,7 @@
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:
   }
-\cs_new_protected_nopar:Npn \@@_csname_loop:
+\cs_new_protected:Npn \@@_csname_loop:
   {
     \@@_get_x_next:
     \@@_gtl_if_head_is_definable:NTF \l_@@_head_gtl
@@ -6929,14 +6929,14 @@
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:
   }
-\cs_new_protected_nopar:Npn \@@_scan_pdfstrcmp:
+\cs_new_protected:Npn \@@_scan_pdfstrcmp:
   {
     \@@_scan_toks_to_str:
     \@@_scan_toks_to_str:
   }
-\cs_new_protected_nopar:Npn \@@_scan_pdfximagebbox:
+\cs_new_protected:Npn \@@_scan_pdfximagebbox:
   { \@@_scan_int: \@@_scan_int: }
-\cs_new_protected_nopar:Npn \@@_scan_pdfcolorstackinit:
+\cs_new_protected:Npn \@@_scan_pdfcolorstackinit:
   {
     \@@_scan_keyword:nTF { pPaAgGeE }
       { \bool_set_true:N \l_@@_tmpa_bool }
@@ -6945,13 +6945,13 @@
       { \@@_scan_keyword:n { pPaAgGeE } }
     \@@_scan_toks_to_str:
   }
-\cs_new_protected_nopar:Npn \@@_scan_pdffiledump:
+\cs_new_protected:Npn \@@_scan_pdffiledump:
   {
     \@@_scan_keyword:nT { oOfFfFsSeEtT } \@@_scan_int:
     \@@_scan_keyword:nT { lLeEnNgGtThH } \@@_scan_int:
     \@@_scan_pdf_ext_toks:
   }
-\cs_new_protected_nopar:Npn \@@_scan_pdfmatch:
+\cs_new_protected:Npn \@@_scan_pdfmatch:
   {
     \@@_scan_keyword:n { iIcCaAsSeE }
     \@@_scan_keyword:nT { sSuUbBcCoOuUnNtT }
@@ -6970,7 +6970,7 @@
     \@@_back_input:V \l_@@_tmpa_tl
     \@@_print_action:
   }
-\cs_new_protected_nopar:Npn \@@_get_the:
+\cs_new_protected:Npn \@@_get_the:
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -7016,7 +7016,7 @@
 % \begin{macro}{\@@_pass_text:}
 % \begin{macro}{\@@_pass_text_done:w}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_pass_text:
+\cs_new_protected:Npn \@@_pass_text:
   {
     \@@_input_if_empty:TF
       { \@@_pass_text_empty: }
@@ -7036,7 +7036,7 @@
         \fi:
       }
   }
-\cs_new_protected_nopar:Npn \@@_pass_text_done:w
+\cs_new_protected:Npn \@@_pass_text_done:w
   {
     \@@_get_next:
     \token_if_eq_meaning:NNT \l_@@_head_token \fi: { \if_true: }
@@ -7063,7 +7063,7 @@
 %   \cs{fi:}, the nesting integer is decremented before removing most
 %   \cs{fi:}.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_pass_text_nested:
+\cs_new_protected:Npn \@@_pass_text_nested:
   {
     \@@_input_if_empty:TF
       { \@@_pass_text_empty: }
@@ -7090,7 +7090,7 @@
 %
 % \begin{macro}{\@@_pass_text_empty:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_pass_text_empty:
+\cs_new_protected:Npn \@@_pass_text_empty:
   {
     \@@_error:nnnnn { runaway-if } { } { } { } { }
     \@@_exit:w
@@ -7107,7 +7107,7 @@
     \int_gincr:N \g_@@_if_depth_int
     \int_gzero:N \g_@@_if_limit_int
   }
-\cs_new_protected_nopar:Npn \@@_cond_pop:
+\cs_new_protected:Npn \@@_cond_pop:
   {
     \int_gset:Nn \g_@@_if_limit_int
       { \tl_head:N \g_@@_if_limit_tl }
@@ -7239,7 +7239,7 @@
         \@@_cond_false_loop:n {#1}
       }
   }
-\cs_new_protected_nopar:Npn \@@_cond_false_common:
+\cs_new_protected:Npn \@@_cond_false_common:
   {
     \token_if_eq_meaning:NNTF \l_@@_head_token \fi:
       { \@@_cond_pop: }
@@ -7270,14 +7270,14 @@
 % ^^A todo: fix non-brace begin-group and end-group tokens
 % \begin{macro}{\@@_test_two_chars:, \@@_test_two_chars_aux:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_test_two_chars:
+\cs_new_protected:Npn \@@_test_two_chars:
   {
     \@@_test_two_chars_aux:
     \@@_prev_input:V \l_@@_head_tl
     \@@_test_two_chars_aux:
     \@@_prev_input:V \l_@@_head_tl
   }
-\cs_new_protected_nopar:Npn \@@_test_two_chars_aux:
+\cs_new_protected:Npn \@@_test_two_chars_aux:
   {
     \@@_get_x_next:
     \gtl_if_tl:NF \l_@@_head_gtl
@@ -7316,7 +7316,7 @@
     \fi:
     {#1}
   }
-\cs_new_nopar:Npn \@@_test_ifx_aux:w
+\cs_new:Npn \@@_test_ifx_aux:w
   { \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl }
 %    \end{macrocode}
 % \end{macro}
@@ -7363,7 +7363,7 @@
 %
 % \begin{macro}{\@@_test_ifdefined:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_test_ifdefined:
+\cs_new_protected:Npn \@@_test_ifdefined:
   {
     \@@_input_if_empty:TF
       { \@@_pass_text_empty: }
@@ -7387,7 +7387,7 @@
 %
 % \begin{macro}{\@@_test_ifcsname:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_test_ifcsname:
+\cs_new_protected:Npn \@@_test_ifcsname:
   {
     \@@_csname_loop:
     \@@_prev_input:V \l_@@_head_tl
@@ -7424,7 +7424,7 @@
         \@@_cond_pop:
       }
   }
-\cs_new_protected_nopar:Npn \@@_fi_or_else_loop:
+\cs_new_protected:Npn \@@_fi_or_else_loop:
   {
     \int_compare:nNnF \l_@@_head_char_int = \c_two
       {
@@ -7501,7 +7501,7 @@
 %
 % \begin{macro}{\@@_set_action_text:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_set_action_text:
+\cs_new_protected:Npn \@@_set_action_text:
   {
     \@@_set_action_text:x
       {
@@ -7537,7 +7537,7 @@
 %   The \cs{@@_str_truncate_left:nn} function trims |#1| if needed, to
 %   fit in a maximum of \cs{g_@@_max_output_int} characters.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_print_state_output:
+\cs_new_protected:Npn \@@_print_state_output:
   {
     \@@_exp_args:Nx \@@_print_state_output:n
       { \gtl_to_str:N \g_@@_output_gtl }
@@ -7556,7 +7556,7 @@
 % \begin{macro}{\@@_print_state_prev:}
 %   Never trim~|##1|.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_print_state_prev:
+\cs_new_protected:Npn \@@_print_state_prev:
   {
     \seq_set_map:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
       { \@@_to_str:n {##1} }
@@ -7578,7 +7578,7 @@
 %   \cs{@@_str_truncate_right:nn} function trims |#1| if needed, to fit
 %   in a maximum of \cs{g_@@_max_input_int} characters.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_print_state_input:
+\cs_new_protected:Npn \@@_print_state_input:
   {
     \@@_exp_args:Nx \@@_print_state_input:n
       { \@@_input_to_str: }
@@ -7656,7 +7656,7 @@
 %
 % \begin{macro}{\@@_print_assigned_token:, \@@_print_assigned_register:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_print_assigned_token:
+\cs_new_protected:Npn \@@_print_assigned_token:
   {
     \@@_after_assignment: % ^^A todo: simplify
     \@@_print_action:x
@@ -7666,7 +7666,7 @@
       }
     \@@_omit_after_assignment:w
   }
-\cs_new_protected_nopar:Npn \@@_print_assigned_register:
+\cs_new_protected:Npn \@@_print_assigned_register:
   {
     \@@_after_assignment: % ^^A todo: simplify
     \@@_exp_args:Nx \@@_print_action:x
@@ -7687,7 +7687,7 @@
 % \begin{macro}{\@@_print_welcome:}
 %   Welcome message.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_print_welcome:
+\cs_new_protected:Npn \@@_print_welcome:
   {
     \@@_print_message:nn { }
       {
@@ -7713,7 +7713,7 @@
 % \begin{macro}{\@@_print_outcome:}
 %   Final message.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_print_outcome:
+\cs_new_protected:Npn \@@_print_outcome:
   { \@@_print:n { [=====~End~=====] } }
 %    \end{macrocode}
 % \end{macro}
@@ -7722,7 +7722,7 @@
 %
 % \begin{macro}{\@@_prompt:}
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_prompt:
+\cs_new_protected:Npn \@@_prompt:
   {
     \int_gdecr:N \g_@@_nonstop_int
     \int_compare:nNnF \g_@@_nonstop_int > \c_zero
@@ -7735,7 +7735,7 @@
         \group_end:
       }
   }
-\cs_new_protected_nopar:Npn \@@_prompt_aux:
+\cs_new_protected:Npn \@@_prompt_aux:
   {
     \int_compare:nNnT { \etex_interactionmode:D } = { 3 }
       {
@@ -7848,7 +7848,7 @@
           }
       }
   }
-\cs_new_protected_nopar:Npn \@@_prompt_all:
+\cs_new_protected:Npn \@@_prompt_all:
   {
     \tl_gset:Nx \g_@@_tmpc_tl
       {
@@ -7905,8 +7905,8 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_msg_new:nnn #1#2#3
   {
-    \cs_new_nopar:cpn { @@_tex_msg_error_#1: } {#2}
-    \cs_new_nopar:cpn { @@_tex_msg_help_#1: } {#3}
+    \cs_new:cpn { @@_tex_msg_error_#1: } {#2}
+    \cs_new:cpn { @@_tex_msg_help_#1: } {#3}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8055,7 +8055,7 @@
 %   Give variables that are affected by keys their default values (also
 %   controlled by keys).
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_init_key_vars:
+\cs_new_protected:Npn \@@_init_key_vars:
   {
     \bool_gset_eq:NN \g_@@_explicit_prompt_bool \g_@@_default_explicit_prompt_bool
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
@@ -8073,7 +8073,7 @@
 %   have no reason to be modified by the user: neither directly nor
 %   through keys.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_init_vars:
+\cs_new_protected:Npn \@@_init_vars:
   {
     \seq_gclear:N \g_@@_prev_input_seq
     \gtl_gclear:N \g_@@_output_gtl
@@ -8093,7 +8093,7 @@
 %   Loop forever, getting the next token (with expansion) and
 %   performing the corresponding command.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_main_loop:
+\cs_new_protected:Npn \@@_main_loop:
   {
     \@@_get_x_next:
     \@@_set_cmd:
@@ -8108,7 +8108,7 @@
 %   Make sure that the \cs{unravel} finished correctly.  The error
 %   message is a bit primitive.
 %    \begin{macrocode}
-\cs_new_protected_nopar:Npn \@@_final_test:
+\cs_new_protected:Npn \@@_final_test:
   {
     \bool_if:nTF
       {
@@ -8120,7 +8120,7 @@
       { \@@_input_if_empty:TF { } { \@@_final_bad: } }
       { \@@_final_bad: }
   }
-\cs_new_protected_nopar:Npn \@@_final_bad:
+\cs_new_protected:Npn \@@_final_bad:
   {
     \@@_error:nnnnn { internal }
       { the-last-unravel-finished-badly } { } { } { }
