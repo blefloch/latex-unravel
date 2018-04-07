@@ -243,3 +243,33 @@ l. ...  }
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 4: \unravel escapechar
+============================================================
+[===== Start =====]
+|| 
+|> \escapechar =47\message {\relax }
+[==========] \escapechar 
+|| \escapechar 
+|> =47\message {\relax }
+[==========] =
+|| \escapechar =
+|> 47\message {\relax }
+[==========] 4
+|| \escapechar =4
+|> 7\message {\relax }
+[==========] 7
+|| \escapechar =47
+|> \message {\relax }
+[==========] Set \escapechar(\escapechar)=47
+|| 
+|> \message {\relax }
+[==========] \message = \message
+|| \message 
+|> {\relax }
+/relax 
+[==========] \message {/relax }
+|| 
+|> 
+[===== End =====]
+============================================================

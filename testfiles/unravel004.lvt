@@ -49,4 +49,7 @@
       }
   }
 
+\TEST { \unravel ~ escapechar }
+  { \unravel{\escapechar=47\message{\relax}} }
+
 \END
