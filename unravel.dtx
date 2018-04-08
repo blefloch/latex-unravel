@@ -3909,6 +3909,10 @@
 %
 % ^^A todo: provide separate functions for defs (avoid hash doubling).
 % \begin{macro}{\@@_scan_toks:NN}
+%   The boolean |#1| is true if we are making a definition (then we
+%   start by scanning the parameter text), false if we are simply
+%   scanning a general text.  The boolean |#2| is true if we need to
+%   expand, false otherwise (for instance for \tn{lowercase}).
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks:NN #1#2
   {
@@ -3948,6 +3952,10 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_scan_group_n:N}
+%   The boolean |#1| is true if we are making a definition, false
+%   otherwise.  In both cases put the open brace back and grab the first
+%   item.  The only difference is that when making a definition we store
+%   the data into \cs{l_@@_defining_tl} as well.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_n:N #1
   {
@@ -3966,6 +3974,8 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_scan_group_x:N}
+%   The boolean |#1| is true if we are making a definition, false
+%   otherwise.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_x:N #1
   {
@@ -3990,6 +4000,8 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_scan_group_xdef:n}
+%   This is to scan the replacement text of an \tn{edef} or \tn{xdef}.
+%   The integer |#1| counts the brace balance.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_xdef:n #1
   {
@@ -4042,6 +4054,14 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_get_token_x:N}
+%   This is similar to \cs{@@_get_x_next:}, for use when reading the
+%   replacement text of \tn{edef}/\tn{xdef} (then |#1| is true) or the
+%   argument of a primitive like \tn{message} that should be expanded as
+%   we read tokens.  Loop until finding a non-expandable token (or
+%   protected macro).  When seeing \tn{the}, put its result directly in
+%   the definition or argument using \texttt{prev_input}, and continue
+%   the loop because we still need to find the next non-expandable
+%   token.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_get_token_x:N #1
   {
