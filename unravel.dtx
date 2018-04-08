@@ -1502,7 +1502,7 @@
 \cs_new_protected:Npn \@@_new_tex_expandable:nn #1#2
   {
     \cs_new_protected:cpn
-      { @@_expandable_ \@@_tex_use:n {#1} :N } ##1 {#2}
+      { @@_expandable_ \@@_tex_use:n {#1} : } {#2}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2909,25 +2909,28 @@
 %
 % \subsection{Expand next token}
 %
-% \begin{macro}{\@@_expand:N}
-%   In partial analogy with \LaTeX3 expansion styles the possible
-%   arguments are as follows.
+% \begin{macro}{\@@_expand_do:N}
+%   The argument is a command that will almost always be run to continue
+%   a loop whose aim is to find the next non-expandable token, for
+%   various purposes.  The only case where we will end up grabbing the
+%   argument is to suppress the loop by \cs{@@_noexpand:N}.
 %   \begin{itemize}
-%   \item |f| in \cs{@@_get_x_next:} and \cs{@@_get_x_or_protected:},
-%     namely when \TeX{} is looking for the first non-expandable token
-%     in the main loop or when looking for numbers, optional spaces etc.
-%   \item |x| in \cs{@@_get_token_xdef:}, namely the replacement text of
-%     \tn{edef} and \tn{xdef}.
-%   \item |X| in \cs{@@_get_token_x:}, namely the argument of
-%     \tn{message} and the like.
-%   \item |o| in \cs{@@_expandafter:} namely after \tn{expandafter}.
+%   \item \cs{@@_get_x_next:} when \TeX{} is looking for the first
+%     non-expandable token in the main loop or when looking for numbers,
+%     optional spaces etc.
+%   \item \cs{@@_get_x_or_protected:} at the start of an alignment cell.
+%   \item \cs{@@_get_token_xdef:} in the replacement text of \tn{edef}
+%     and \tn{xdef}.
+%   \item \cs{@@_get_token_x:} in the argument of \tn{message} and the
+%     like.
+%   \item \cs{prg_do_nothing:} in \cs{@@_expandafter:} namely after
+%     \tn{expandafter}.
 %   \end{itemize}
-%   This is similar to \cs{@@_do_step:}, but operates on expandable
-%   tokens rather than (non-expandable) commands.  We mimick \TeX{}'s
-%   structure, distinguishing macros from other commands because we find
-%   macro arguments very differently from primitives.
+%   We mimick \TeX{}'s structure, distinguishing macros from other
+%   commands because we find macro arguments very differently from
+%   primitives.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_expand:N #1
+\cs_new_protected:Npn \@@_expand_do:N
   {
     \@@_set_action_text:
     \bool_if:NT \g_@@_internal_debug_bool
@@ -2937,25 +2940,23 @@
       }
     \token_if_macro:NTF \l_@@_head_token
       { \@@_macro_call: }
-      { \@@_expand_nonmacro:N #1 }
+      { \@@_expand_nonmacro: }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_expand_nonmacro:N}
+% \begin{macro}{\@@_expand_nonmacro:}
 %   The token is a primitive.  We find its (cleaned-up) \tn{meaning},
 %   and call the function implementing that expansion.  If we do not
-%   recognize the meaning then it is probably an unknown primitive.  The
-%   argument |#1| is true exactly when called by \cs{@@_expandafter:}.
+%   recognize the meaning then it is probably an unknown primitive.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_expand_nonmacro:N #1
+\cs_new_protected:Npn \@@_expand_nonmacro:
   {
     \@@_set_cmd_aux_meaning:
     \@@_set_cmd_aux_primitive:oTF { \l_@@_head_meaning_tl }
       {
-        \cs_if_exist_use:cTF
-          { @@_expandable_ \int_use:N \l_@@_head_cmd_int :N }
-          {#1}
+        \cs_if_exist_use:cF
+          { @@_expandable_ \int_use:N \l_@@_head_cmd_int : }
           { \@@_error:nxxxx { internal } { expandable } { } { } { } }
       }
       {
@@ -2980,10 +2981,7 @@
   {
     \@@_get_next:
     \@@_token_if_expandable:NT \l_@@_head_token
-      {
-        \@@_expand:N f
-        \@@_get_x_next:
-      }
+      { \@@_expand_do:N \@@_get_x_next: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2998,10 +2996,7 @@
   {
     \@@_get_next:
     \@@_token_if_protected:NF \l_@@_head_token
-      {
-        \@@_expand:N f
-        \@@_get_x_or_protected:
-      }
+      { \@@_expand_do:N \@@_get_x_or_protected: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3017,19 +3012,13 @@
   {
     \@@_get_next:
     \@@_token_if_protected:NF \l_@@_head_token
-      {
-        \@@_expand:N x
-        \@@_get_token_xdef:
-      }
+      { \@@_expand_do:N \@@_get_token_xdef: }
   }
 \cs_new_protected:Npn \@@_get_token_x:
   {
     \@@_get_next:
     \@@_token_if_protected:NF \l_@@_head_token
-      {
-        \@@_expand:N X
-        \@@_get_token_x:
-      }
+      { \@@_expand_do:N \@@_get_token_x: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6780,7 +6769,7 @@
     \@@_print_action:x { \gtl_to_str:N \l_@@_head_gtl }
     \@@_get_next:
     \@@_token_if_expandable:NTF \l_@@_head_token
-      { \@@_expand:N o }
+      { \@@_expand_do:N \prg_do_nothing: }
       { \@@_back_input: }
     \@@_prev_input_gpop:N \l_@@_head_gtl
     \@@_set_action_text:x
@@ -6800,7 +6789,7 @@
           {
             \tl_put_left:Nn \l_@@_head_tl { \reverse_if:N }
             % \int_add:Nn \l_@@_head_char_int { 32 }
-            \@@_expand_nonmacro:N \c_false_bool
+            \@@_expand_nonmacro:
           }
       }
       { \@@_unless_bad: }
@@ -6814,27 +6803,44 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_noexpand:N, \@@_pdfprimitive:}
-%   The argument of \cs{@@_noexpand:N} is |o| when called by
-%   \cs{@@_expandafter:}.  In that case we need much more care with
-%   no-expansion; currently not implemented.
+%   The argument of \cs{@@_noexpand:N} can be
+%   \begin{itemize}
+%   \item \cs{@@_get_x_next:} when \TeX{} is looking for the first
+%     non-expandable token in the main loop or when looking for numbers,
+%     optional spaces etc.
+%   \item \cs{@@_get_x_or_protected:} at the start of an alignment cell.
+%   \item \cs{@@_get_token_xdef:} in the replacement text of \tn{edef}
+%     and \tn{xdef}.
+%   \item \cs{@@_get_token_x:} in the argument of \tn{message} and the
+%     like.
+%   \item \cs{prg_do_nothing:} in \cs{@@_expandafter:} namely after
+%     \tn{expandafter}.  This is the only case where \tn{noexpand} does
+%     anything to non-expandable tokens since the code that was skipped
+%     by \tn{expandafter} might redefine the next token and make it
+%     expandable; it should then not expand.  On the other hand, if the
+%     \cs[no-index]{notexpanded:} token is taken as the argument of a
+%     macro it should revert to its normal meaning.  Currently not
+%     implemented.
+%   \end{itemize}
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { no_expand }                     % 105
   {
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_noexpand:D
-      { \@@_noexpand:N #1 }
+      { \@@_noexpand:N }
       { \@@_pdfprimitive: }
   }
 \cs_new_protected:Npn \@@_noexpand:N #1
   {
     \@@_get_token:
     \@@_back_input:
-    \token_if_eq_charcode:NNTF #1 o
+    \cs_if_eq:NNTF #1 \prg_do_nothing:
       {
         \@@_error:nnnnn { not-implemented }
           { expandafter~followed~by~noexpand } { } { } { }
+        #1
       }
       {
-        \@@_token_if_expandable:NT \l_@@_head_token
+        \@@_token_if_expandable:NTF \l_@@_head_token
           {
             \cs_gset_protected:Npx \@@_get_next:
               {
@@ -6843,7 +6849,9 @@
                 \exp_not:o { \@@_get_next: }
                 \exp_not:n { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
               }
+            #1
           }
+          {#1}
       }
   }
 \cs_new_protected:Npn \@@_pdfprimitive:
@@ -7000,32 +7008,14 @@
   }
 %    \end{macrocode}
 %
-% \begin{macro}{\@@_get_the:}
-%   |#1| is |x| in \tn{edef} or \tn{xdef}, |X| in \tn{message} and the
-%   like, |o| or |f| otherwise.
+% \begin{macro}{\@@_get_the:N}
+%   |#1| is \cs{@@_get_token_xdef:} in \tn{edef} or \tn{xdef},
+%   \cs{@@_get_token_x:} in \tn{message} and the like, and can be other
+%   commands.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { the }                           % 111
-  {
-    \@@_get_the:
-    \token_if_eq_charcode:NNTF #1 x
-      {
-        \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
-        \@@_prev_input:V \l_@@_head_tl
-      }
-      {
-        \token_if_eq_charcode:NNTF #1 X
-          {
-            \@@_exp_args:NNx \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
-            \@@_prev_input_gtl:N \l_@@_tmpb_gtl
-          }
-          {
-            \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
-            \@@_back_input:V \l_@@_tmpa_tl
-          }
-        \@@_print_action:
-      }
-  }
-\cs_new_protected:Npn \@@_get_the:
+  { \@@_get_the:N }
+\cs_new_protected:Npn \@@_get_the:N #1
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
@@ -7047,6 +7037,24 @@
         \tl_set:Nx \l_@@_head_tl
           { \exp_not:N \exp_not:n { \tl_tail:N \l_@@_head_tl } }
       }
+    \cs_if_eq:NNTF #1 \@@_get_token_xdef:
+      {
+        \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
+        \@@_prev_input:V \l_@@_head_tl
+      }
+      {
+        \cs_if_eq:NNTF #1 \@@_get_token_x:
+          {
+            \@@_exp_args:NNx \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
+            \@@_prev_input_gtl:N \l_@@_tmpb_gtl
+          }
+          {
+            \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
+            \@@_back_input:V \l_@@_tmpa_tl
+          }
+        \@@_print_action:
+      }
+    #1
   }
 %    \end{macrocode}
 % \end{macro}
