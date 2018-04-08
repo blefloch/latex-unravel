@@ -1499,7 +1499,7 @@
 \cs_new_protected:Npn \@@_new_tex_expandable:nn #1#2
   {
     \cs_new_protected:cpn
-      { @@_expandable_ \@@_tex_use:n {#1} : } {#2}
+      { @@_expandable_ \@@_tex_use:n {#1} :N } ##1 {#2}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2906,13 +2906,18 @@
 %
 % \subsection{Expand next token}
 %
-% \begin{macro}{\@@_expand:}
+% \begin{macro}{\@@_expand:N}
 %   This is similar to \cs{@@_do_step:}, but operates on expandable
 %   tokens rather than (non-expandable) commands.  We mimick \TeX{}'s
-%   structure, distinguishing macros from other commands (not quite sure
-%   why).
+%   structure, distinguishing macros from other commands because we have
+%   much less control on what arguments macros take.  This is used in a
+%   loop by \cs{@@_get_x_next:} and \cs{@@_get_x_or_protected:} and
+%   \cs{@@_get_token_x:N} to get the next non-expandable token (with
+%   different treatments of protected macros and of \tn{the} etc.), and
+%   by \cs{@@_expandafter:} to expand the next token once.  The argument
+%   |#1| is true exactly when called by \cs{@@_expandafter:}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_expand:
+\cs_new_protected:Npn \@@_expand:N #1
   {
     \@@_set_action_text:
     \bool_if:NT \g_@@_internal_debug_bool
@@ -2922,26 +2927,25 @@
       }
     \token_if_macro:NTF \l_@@_head_token
       { \@@_macro_call: }
-      { \@@_expand_nonmacro: }
+      { \@@_expand_nonmacro:N #1 }
   }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_expand_nonmacro:}
+% \begin{macro}{\@@_expand_nonmacro:N}
 %   The token is a primitive.  We find its (cleaned-up) \tn{meaning},
 %   and call the function implementing that expansion.  If we do not
-%   recognize the meaning then it is probably an unknown primitive.  If
-%   we recognize the meaning but there is no corresponding function,
-%   then we probably have not implemented it yet, so dump it in the
-%   output as is.
+%   recognize the meaning then it is probably an unknown primitive.  The
+%   argument |#1| is true exactly when called by \cs{@@_expandafter:}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_expand_nonmacro:
+\cs_new_protected:Npn \@@_expand_nonmacro:N #1
   {
     \@@_set_cmd_aux_meaning:
     \@@_set_cmd_aux_primitive:oTF { \l_@@_head_meaning_tl }
       {
-        \cs_if_exist_use:cF
-          { @@_expandable_ \int_use:N \l_@@_head_cmd_int : }
+        \cs_if_exist_use:cTF
+          { @@_expandable_ \int_use:N \l_@@_head_cmd_int :N }
+          {#1}
           { \@@_error:nxxxx { internal } { expandable } { } { } { } }
       }
       {
@@ -2956,14 +2960,18 @@
 %
 % \begin{macro}{\@@_get_x_next:}
 %   Get a token.  If it is expandable, then expand it, and repeat.  This
-%   function does not set the |cmd| and |char| integers.
+%   function does not set the |cmd| and |char| integers.  It is the
+%   basis of all routines that look for keywords, numbers, equal signs,
+%   filenames, optional spaces etc (in the language of \LaTeX3 these are
+%   situations where \TeX{} \enquote{\texttt{f}-expands}).  It is also
+%   the basis of the \cs{@@_main_loop:}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_get_x_next:
   {
     \@@_get_next:
     \@@_token_if_expandable:NT \l_@@_head_token
       {
-        \@@_expand:
+        \@@_expand:N \c_false_bool
         \@@_get_x_next:
       }
   }
@@ -2973,14 +2981,15 @@
 % \begin{macro}{\@@_get_x_or_protected:}
 %   Get a token.  If it is expandable, but not protected, then expand
 %   it, and repeat.  This function does not set the |cmd| and |char|
-%   integers.
+%   integers.  This function is not used at present: it will be used at
+%   the start of alignment cells.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_get_x_or_protected:
   {
     \@@_get_next:
     \@@_token_if_protected:NF \l_@@_head_token
       {
-        \@@_expand:
+        \@@_expand:N \c_false_bool
         \@@_get_x_or_protected:
       }
   }
@@ -4084,7 +4093,7 @@
                 \@@_print_action:
               }
           }
-          { \@@_expand: }
+          { \@@_expand:N \c_false_bool }
         \@@_get_token_x:N #1
       }
   }
@@ -6771,7 +6780,7 @@
     \@@_print_action:x { \gtl_to_str:N \l_@@_head_gtl }
     \@@_get_next:
     \@@_token_if_expandable:NTF \l_@@_head_token
-      { \@@_expand: }
+      { \@@_expand:N \c_true_bool }
       { \@@_back_input: }
     \@@_prev_input_gpop:N \l_@@_head_gtl
     \@@_set_action_text:x
@@ -6791,7 +6800,7 @@
           {
             \tl_put_left:Nn \l_@@_head_tl { \reverse_if:N }
             % \int_add:Nn \l_@@_head_char_int { 32 }
-            \@@_expand_nonmacro:
+            \@@_expand_nonmacro:N \c_false_bool
           }
       }
       { \@@_unless_bad: }
@@ -6804,26 +6813,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_noexpand:, \@@_pdfprimitive:}
+% \begin{macro}{\@@_noexpand:N, \@@_pdfprimitive:}
+%   The argument of \cs{@@_noexpand:N} is true when called by
+%   \cs{@@_expandafter:}.  In that case we need much more care with
+%   no-expansion.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { no_expand }                     % 105
   {
     \token_if_eq_meaning:NNTF \l_@@_head_token \tex_noexpand:D
-      { \@@_noexpand: }
+      { \@@_noexpand:N #1 }
       { \@@_pdfprimitive: }
   }
-\cs_new_protected:Npn \@@_noexpand:
+\cs_new_protected:Npn \@@_noexpand:N #1
   {
     \@@_get_token:
     \@@_back_input:
-    \@@_token_if_expandable:NT \l_@@_head_token
+    \bool_if:NTF #1
       {
-        \cs_gset_protected:Npx \@@_get_next:
+        \@@_error:nnnnn { not-implemented }
+          { expandafter~followed~by~noexpand } { } { } { }
+      }
+      {
+        \@@_token_if_expandable:NT \l_@@_head_token
           {
-            \cs_gset_protected:Npn \@@_get_next:
-              { \exp_not:o { \@@_get_next: } }
-            \exp_not:o { \@@_get_next: }
-            \exp_not:n { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
+            \cs_gset_protected:Npx \@@_get_next:
+              {
+                \cs_gset_protected:Npn \@@_get_next:
+                  { \exp_not:o { \@@_get_next: } }
+                \exp_not:o { \@@_get_next: }
+                \exp_not:n { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
+              }
           }
       }
   }

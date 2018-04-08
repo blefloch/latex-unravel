@@ -27,7 +27,7 @@
     \unravel { \edef \foo { \csname space \noexpand \endcsname } }
     \unravel { \edef \foo { \csname space \noexpand \empty \endcsname } }
     \unravel { \edef \foo { \romannumeral 1 \noexpand 2 \noexpand \noexpand \empty } }
-    \unravel { \edef \foo { \expandafter \ifx \noexpand \empty \empty \csname iftrue \endcsname \fi } }
+    \unravel { \edef \foo { \expandafter \ifx \noexpand \empty \empty a \fi } }
     \unravel { \expandafter \show \noexpand \empty }
   }
 

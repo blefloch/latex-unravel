@@ -65,6 +65,24 @@ Defining \g__unravel_input_4_gtl on line ...
 || \edef \foo {
 || \expandafter a
 |> \noexpand \space b}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "not-implemented"
+! 
+! The following feature is not implemented: 'expandafter followed by
+! noexpand'.
+! 
+! See the unravel documentation for further information.
+! 
+! Type <return> to continue.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| LaTeX does not know anything more about this error, sorry.
+| 
+| Try typing <return> to proceed.
+| If that doesn't work, type X <return> to quit.
+|...............................................
 [==========] back_input: \expandafter a
 || \edef \foo {
 |> a\space b}
@@ -169,42 +187,46 @@ Defining \g__unravel_input_6_gtl on line ...
 [===== End =====]
 [===== Start =====]
 || 
-|> \edef \foo {\expandafter \ifx \noexpand \empty \empty \csname
-|> iftrue\endcsname \fi }
+|> \edef \foo {\expandafter \ifx \noexpand \empty \empty a\fi }
 [==========] \expandafter \ifx 
 || \edef \foo {
 || \expandafter \ifx 
-|> \noexpand \empty \empty \csname iftrue\endcsname \fi }
+|> \noexpand \empty \empty a\fi }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "not-implemented"
+! 
+! The following feature is not implemented: 'expandafter followed by
+! noexpand'.
+! 
+! See the unravel documentation for further information.
+! 
+! Type <return> to continue.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| LaTeX does not know anything more about this error, sorry.
+| 
+| Try typing <return> to proceed.
+| If that doesn't work, type X <return> to quit.
+|...............................................
 [==========] back_input: \expandafter \ifx 
 || \edef \foo {
-|> \ifx \empty \empty \csname iftrue\endcsname \fi }
-[==========] \empty = macro:->
-|| \edef \foo {\ifx 
-|> \empty \csname iftrue\endcsname \fi }
-[==========] \empty = macro:->
-|| \edef \foo {\ifx 
-|> \csname iftrue\endcsname \fi }
-[==========] \csname = \csname
-|| \edef \foo {\ifx 
-|| \csname 
-|> iftrue\endcsname \fi }
-[==========] \csname iftrue\endcsname =\iftrue 
-|| \edef \foo {\ifx 
-|> \iftrue \fi }
-[==========] \iftrue = \iftrue
-|| \edef \foo {\ifx 
-|| \iftrue 
-|> \fi }
-[==========] \iftrue =true
-|| \edef \foo {\ifx 
-|> \fi }
+|> \ifx \empty \empty a\fi }
+[==========] \ifx = \ifx
+|| \edef \foo {
+|| \ifx 
+|> \empty \empty a\fi }
+[==========] Compare: \ifx \empty \empty =true
+|| \edef \foo {
+|> a\fi }
 [==========] \fi = \fi
-|| \edef \foo {\ifx 
+|| \edef \foo {a
 |> }
-[==========] \edef \foo {\ifx }
-|| \edef \foo {\ifx }
+[==========] \edef \foo {a}
+|| \edef \foo {a}
 |> 
-[==========] Set \foo=macro:->\ifx 
+[==========] Set \foo=macro:->a
 || 
 |> 
 [===== End =====]
@@ -214,14 +236,33 @@ Defining \g__unravel_input_6_gtl on line ...
 [==========] \expandafter \show 
 || \expandafter \show 
 |> \noexpand \empty 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "not-implemented"
+! 
+! The following feature is not implemented: 'expandafter followed by
+! noexpand'.
+! 
+! See the unravel documentation for further information.
+! 
+! Type <return> to continue.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| LaTeX does not know anything more about this error, sorry.
+| 
+| Try typing <return> to proceed.
+| If that doesn't work, type X <return> to quit.
+|...............................................
 [==========] back_input: \expandafter \show 
 || 
 |> \show \empty 
 [==========] \show = \show
-|| 
+|| \show 
 |> \empty 
-[==========] \empty = macro:->
-|| 
-|> 
+> \empty=macro:
+->.
+<argument> \empty 
+l. ...  }
 [===== End =====]
 ============================================================
