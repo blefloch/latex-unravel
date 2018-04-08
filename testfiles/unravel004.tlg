@@ -35,7 +35,7 @@ Defining \g__unravel_input_4_gtl on line ...
 || \message 
 |> {\the \newlinechar }\escapechar =-1\message {\the \escapechar
 |> }\prg_do_nothing: \prg_do_nothing: \prg_do_nothing: 
-[==========] \message = \message
+[==========] \the = \the
 || \message 
 || {
 || \the 
@@ -74,7 +74,7 @@ Defining \g__unravel_input_4_gtl on line ...
 [==========] \message = \message
 || \message 
 |> {\the \escapechar }\prg_do_nothing: \prg_do_nothing: \prg_do_nothing: 
-[==========] \message = \message
+[==========] \the = \the
 || \message 
 || {
 || \the 

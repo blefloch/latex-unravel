@@ -2910,15 +2910,22 @@
 % \subsection{Expand next token}
 %
 % \begin{macro}{\@@_expand:N}
+%   In partial analogy with \LaTeX3 expansion styles the possible
+%   arguments are as follows.
+%   \begin{itemize}
+%   \item |f| in \cs{@@_get_x_next:} and \cs{@@_get_x_or_protected:},
+%     namely when \TeX{} is looking for the first non-expandable token
+%     in the main loop or when looking for numbers, optional spaces etc.
+%   \item |x| in \cs{@@_get_token_xdef:}, namely the replacement text of
+%     \tn{edef} and \tn{xdef}.
+%   \item |X| in \cs{@@_get_token_x:}, namely the argument of
+%     \tn{message} and the like.
+%   \item |o| in \cs{@@_expandafter:} namely after \tn{expandafter}.
+%   \end{itemize}
 %   This is similar to \cs{@@_do_step:}, but operates on expandable
 %   tokens rather than (non-expandable) commands.  We mimick \TeX{}'s
-%   structure, distinguishing macros from other commands because we have
-%   much less control on what arguments macros take.  This is used in a
-%   loop by \cs{@@_get_x_next:} and \cs{@@_get_x_or_protected:} and
-%   \cs{@@_get_token_x:N} to get the next non-expandable token (with
-%   different treatments of protected macros and of \tn{the} etc.), and
-%   by \cs{@@_expandafter:} to expand the next token once.  The argument
-%   |#1| is true exactly when called by \cs{@@_expandafter:}.
+%   structure, distinguishing macros from other commands because we find
+%   macro arguments very differently from primitives.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_expand:N #1
   {
@@ -2974,7 +2981,7 @@
     \@@_get_next:
     \@@_token_if_expandable:NT \l_@@_head_token
       {
-        \@@_expand:N \c_false_bool
+        \@@_expand:N f
         \@@_get_x_next:
       }
   }
@@ -2992,8 +2999,36 @@
     \@@_get_next:
     \@@_token_if_protected:NF \l_@@_head_token
       {
-        \@@_expand:N \c_false_bool
+        \@@_expand:N f
         \@@_get_x_or_protected:
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_get_token_xdef:, \@@_get_token_x:}
+%   These are similar to \cs{@@_get_x_next:}, for use when reading the
+%   replacement text of \tn{edef}/\tn{xdef} or the argument of a
+%   primitive like \tn{message} that should be expanded as we read
+%   tokens.  Loop until finding a non-expandable token (or protected
+%   macro).
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_token_xdef:
+  {
+    \@@_get_next:
+    \@@_token_if_protected:NF \l_@@_head_token
+      {
+        \@@_expand:N x
+        \@@_get_token_xdef:
+      }
+  }
+\cs_new_protected:Npn \@@_get_token_x:
+  {
+    \@@_get_next:
+    \@@_token_if_protected:NF \l_@@_head_token
+      {
+        \@@_expand:N X
+        \@@_get_token_x:
       }
   }
 %    \end{macrocode}
@@ -4017,7 +4052,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_xdef:n #1
   {
-    \@@_get_token_x:N \c_true_bool
+    \@@_get_token_xdef:
     \tl_if_empty:NTF \l_@@_head_tl
       {
         \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
@@ -4048,7 +4083,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_x:n #1
   {
-    \@@_get_token_x:N \c_false_bool
+    \@@_get_token_x:
     \@@_prev_input_gtl:N \l_@@_head_gtl
     \tl_if_empty:NTF \l_@@_head_tl
       {
@@ -4062,44 +4097,6 @@
       { \@@_scan_group_x:n {#1} }
   }
 \cs_generate_variant:Nn \@@_scan_group_x:n { f }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_get_token_x:N}
-%   This is similar to \cs{@@_get_x_next:}, for use when reading the
-%   replacement text of \tn{edef}/\tn{xdef} (then |#1| is true) or the
-%   argument of a primitive like \tn{message} that should be expanded as
-%   we read tokens.  Loop until finding a non-expandable token (or
-%   protected macro).  When seeing \tn{the}, put its result directly in
-%   the definition or argument using \texttt{prev_input}, and continue
-%   the loop because we still need to find the next non-expandable
-%   token.
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_get_token_x:N #1
-  {
-    \@@_get_next:
-    \@@_token_if_protected:NF \l_@@_head_token
-      {
-        \@@_set_cmd:
-        \int_compare:nNnTF
-          \l_@@_head_cmd_int = { \@@_tex_use:n { the } }
-          {
-            \@@_get_the:
-            \bool_if:NTF #1
-              {
-                \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
-                \@@_prev_input:V \l_@@_head_tl
-              }
-              {
-                \@@_exp_args:NNx \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
-                \@@_prev_input_gtl:N \l_@@_tmpb_gtl
-                \@@_print_action:
-              }
-          }
-          { \@@_expand:N \c_false_bool }
-        \@@_get_token_x:N #1
-      }
-  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6783,7 +6780,7 @@
     \@@_print_action:x { \gtl_to_str:N \l_@@_head_gtl }
     \@@_get_next:
     \@@_token_if_expandable:NTF \l_@@_head_token
-      { \@@_expand:N \c_true_bool }
+      { \@@_expand:N o }
       { \@@_back_input: }
     \@@_prev_input_gpop:N \l_@@_head_gtl
     \@@_set_action_text:x
@@ -6817,9 +6814,9 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_noexpand:N, \@@_pdfprimitive:}
-%   The argument of \cs{@@_noexpand:N} is true when called by
+%   The argument of \cs{@@_noexpand:N} is |o| when called by
 %   \cs{@@_expandafter:}.  In that case we need much more care with
-%   no-expansion.
+%   no-expansion; currently not implemented.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { no_expand }                     % 105
   {
@@ -6831,7 +6828,7 @@
   {
     \@@_get_token:
     \@@_back_input:
-    \bool_if:NTF #1
+    \token_if_eq_charcode:NNTF #1 o
       {
         \@@_error:nnnnn { not-implemented }
           { expandafter~followed~by~noexpand } { } { } { }
@@ -7004,13 +7001,29 @@
 %    \end{macrocode}
 %
 % \begin{macro}{\@@_get_the:}
+%   |#1| is |x| in \tn{edef} or \tn{xdef}, |X| in \tn{message} and the
+%   like, |o| or |f| otherwise.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { the }                           % 111
   {
     \@@_get_the:
-    \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
-    \@@_back_input:V \l_@@_tmpa_tl
-    \@@_print_action:
+    \token_if_eq_charcode:NNTF #1 x
+      {
+        \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
+        \@@_prev_input:V \l_@@_head_tl
+      }
+      {
+        \token_if_eq_charcode:NNTF #1 X
+          {
+            \@@_exp_args:NNx \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
+            \@@_prev_input_gtl:N \l_@@_tmpb_gtl
+          }
+          {
+            \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
+            \@@_back_input:V \l_@@_tmpa_tl
+          }
+        \@@_print_action:
+      }
   }
 \cs_new_protected:Npn \@@_get_the:
   {

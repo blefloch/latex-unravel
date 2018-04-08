@@ -266,3 +266,92 @@ l. ...  }
 l. ...  }
 [===== End =====]
 ============================================================
+============================================================
+TEST 2: \unravel and the in edef
+============================================================
+[===== Start =====]
+|| 
+|> \toks 0{2}\toks 2{\abc }
+[==========] \toks = \toks
+|| \toks 
+|> 0{2}\toks 2{\abc }
+[==========] 0
+|| \toks 0
+|> {2}\toks 2{\abc }
+[==========] 0
+|| \toks 0
+|> {2}\toks 2{\abc }
+[==========] Set \toks0=2
+|| 
+|> \toks 2{\abc }
+[==========] \toks = \toks
+|| \toks 
+|> 2{\abc }
+[==========] 2
+|| \toks 2
+|> {\abc }
+[==========] 2
+|| \toks 2
+|> {\abc }
+[==========] Set \toks2=\abc 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {a\the \toks 0\the \toks 0b}
+[==========] \the = \the
+|| \edef \foo {a
+|| \the 
+|> \toks 0\the \toks 0b}
+[==========] \toks = \toks
+|| \edef \foo {a
+|| \the 
+|| \toks 
+|> 0\the \toks 0b}
+[==========] 0
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|> \the \toks 0b}
+[==========] \the = \the
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|| \the 
+|> \toks 0b}
+[==========] \toks = \toks
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|| \the 
+|| \toks 
+|> 0b}
+[==========] 0
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|| \the 
+|| \toks 0
+|> b}
+[==========] \the =>2
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|> 2b}
+[==========] 2
+|| \edef \foo {a
+|| \the 
+|| \toks 02
+|> b}
+[==========] \exp_not:n {\abc }
+|| \edef \foo {a\exp_not:n {\abc }
+|> b}
+[==========] \edef \foo {a\exp_not:n {\abc }b}
+|| \edef \foo {a\exp_not:n {\abc }b}
+|> 
+[==========] Set \foo=macro:->a\abc b
+|| 
+|> 
+[===== End =====]
+============================================================

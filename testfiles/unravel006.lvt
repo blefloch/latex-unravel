@@ -31,4 +31,10 @@
     \unravel { \expandafter \show \noexpand \empty }
   }
 
+\TEST { \unravel ~ and ~ the ~ in ~ edef }
+  {
+    \unravel { \toks 0 { 2 } \toks 2 { \abc } }
+    \unravel { \edef \foo { a \the \toks 0 \the \toks 0 b } }
+  }
+
 \END

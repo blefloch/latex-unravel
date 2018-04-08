@@ -647,7 +647,7 @@ Defining \g__unravel_input_10_gtl on line ...
 || \cs_set_nopar:Npx \l_tmpa_tl {
 |> \skip_use:N \etex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip
 |> }\etex_glueexpr:D {}\skip_eval:n \scan_stop: }
-[==========] \skip_eval:n = \long macro:#1->\skip_use:N \etex_glueexpr:D \__kernel_chk_expr:nNnN {#1}\etex_glueexpr:D {}\skip_eval:n \scan_stop: 
+[==========] \skip_use:N = \the
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
 |> \etex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\etex_glueexpr:D
