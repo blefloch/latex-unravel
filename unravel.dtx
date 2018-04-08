@@ -908,24 +908,41 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[TF]{\@@_token_if_active_char:N}
+%   Lowercase the token after setting its \tn{lccode} (more precisely
+%   the \tn{lccode} of the first character in its string representation)
+%   to a known value, then compare the result with that active
+%   character.
+%    \begin{macrocode}
+\group_begin:
+  \char_set_catcode_active:n { `Z }
+  \prg_new_protected_conditional:Npnn \@@_token_if_active_char:N #1
+    { TF }
+    {
+      \group_begin:
+        \@@_exp_args:Nx \char_set_lccode:nn
+          { ` \exp_args:No \str_head:n { \token_to_str:N #1 } }
+          { ` Z }
+        \tex_lowercase:D { \tl_if_eq:nnTF {#1} } { Z }
+          { \group_end: \prg_return_true: }
+          { \group_end: \prg_return_false: }
+    }
+\group_end:
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}[TF]{\@@_token_if_definable:N}
 %   Within a group, set the escape character to a non-space value
 %   (backslash).  Convert the token to a string with
-%   \cs{token_to_str:N}.  The result is multiple characters if the
-%   token is a control sequence, and a single character otherwise (even
-%   for explicit catcode~$6$ character tokens which would be doubled if
-%   we used \cs{tl_to_str:n} instead of \cs{token_to_str:N}).  Thus
+%   \cs{token_to_str:N}.  The result is multiple characters if the token
+%   is a control sequence, and a single character otherwise (even for
+%   explicit catcode~$6$ character tokens which would be doubled if we
+%   used \cs{tl_to_str:n} instead of \cs{token_to_str:N}).  Thus
 %   \cs{str_tail:n} gives a non-empty result exactly for control
 %   sequences.  Those are definable (technically, not always:
 %   |\expandafter\font\csname\endcsname=cmr10|
-%   |\expandafter\def\the\csname\endcsname{}|).  For characters, there
-%   remains to determine if |#1| is an active character.  One option
-%   would be to build the active character with that character code and
-%   compare them using a delimited-argument test, but that needlessly
-%   pollutes the hash table in \XeTeX{} (and \LuaTeX{}?) if the
-%   character was in fact not active.  Instead, use the \tn{lowercase}
-%   primitive to convert the character to a fixed character code~|Z|.
-%   Compare with an active~|Z|.  In all cases, remember to end the
+%   |\expandafter\def\the\csname\endcsname{}|).  For characters just
+%   check for active characters.  In both cases remember to end the
 %   group.
 %    \begin{macrocode}
 \group_begin:
@@ -939,9 +956,7 @@
           { \exp_args:No \str_tail:n { \token_to_str:N #1 } }
         \tl_if_empty:NTF \l_@@_tmpa_tl
           {
-            \exp_args:Nx \char_set_lccode:nn
-              { ` \str_head:n {#1} } { `Z }
-            \tex_lowercase:D { \tl_if_eq:nnTF {#1} } { Z }
+            \@@_token_if_active_char:NTF #1
               { \group_end: \prg_return_true: }
               { \group_end: \prg_return_false: }
           }
@@ -6802,26 +6817,27 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_noexpand:N, \@@_pdfprimitive:}
-%   The argument of \cs{@@_noexpand:N} can be
-%   \begin{itemize}
-%   \item \cs{@@_get_x_next:} when \TeX{} is looking for the first
-%     non-expandable token in the main loop or when looking for numbers,
-%     optional spaces etc.
-%   \item \cs{@@_get_x_or_protected:} at the start of an alignment cell.
-%   \item \cs{@@_get_token_xdef:} in the replacement text of \tn{edef}
-%     and \tn{xdef}.
-%   \item \cs{@@_get_token_x:} in the argument of \tn{message} and the
-%     like.
-%   \item \cs{prg_do_nothing:} in \cs{@@_expandafter:} namely after
-%     \tn{expandafter}.  This is the only case where \tn{noexpand} does
-%     anything to non-expandable tokens since the code that was skipped
-%     by \tn{expandafter} might redefine the next token and make it
-%     expandable; it should then not expand.  On the other hand, if the
-%     \cs[no-index]{notexpanded:} token is taken as the argument of a
-%     macro it should revert to its normal meaning.  Currently not
-%     implemented.
-%   \end{itemize}
+% \begin{macro}{\@@_noexpand:N, \@@_noexpand_after:, \@@_pdfprimitive:}
+%   Currently not fully implemented.
+%
+%   The argument of \cs{@@_noexpand:N} is \cs{prg_do_nothing:} when
+%   \tn{noexpand} is hit by \tn{expandafter}; otherwise it is one of
+%   various loop commands (\cs{@@_get_x_next:},
+%   \cs{@@_get_x_or_protected:}, \cs{@@_get_token_xdef:},
+%   \cs{@@_get_token_x:}) that would call \cs{@@_get_next:} and possibly
+%   expand the token more.  For these cases we simply stop after
+%   \cs{@@_get_next:} and if the token is expandable we pretend its
+%   meaning is \tn{relax}.
+%
+%   The case of \tn{expandafter} (so \cs{prg_do_nothing:}) is tougher.
+%   Do nothing if the next token is an explicit non-active character
+%   (begin-group and end-group characters are detected by
+%   \cs{l_@@_head_tl}, the rest by testing if the token is definable).
+%   Otherwise the token must be marked with \cs{notexpanded:} (even if
+%   the token is currently a non-expandable primitive, as its meaning
+%   can be changed by the code skipped over by \tn{expandafter}).  That
+%   \cs{notexpanded:} marker should be removed if the token is taken as
+%   the argument of a macro, but we fail to do that.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { no_expand }                     % 105
   {
@@ -6835,24 +6851,23 @@
     \@@_back_input:
     \cs_if_eq:NNTF #1 \prg_do_nothing:
       {
-        \@@_error:nnnnn { not-implemented }
-          { expandafter~followed~by~noexpand } { } { } { }
-        #1
+        \tl_if_empty:NF \l_@@_head_tl
+          {
+            \exp_after:wN \@@_token_if_definable:NTF \l_@@_head_tl
+              { \@@_noexpand_after: }
+              { }
+          }
       }
       {
-        \@@_token_if_expandable:NTF \l_@@_head_token
-          {
-            \cs_gset_protected:Npx \@@_get_next:
-              {
-                \cs_gset_protected:Npn \@@_get_next:
-                  { \exp_not:o { \@@_get_next: } }
-                \exp_not:o { \@@_get_next: }
-                \exp_not:n { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
-              }
-            #1
-          }
-          {#1}
+        \@@_get_next:
+        \@@_token_if_expandable:NT \l_@@_head_token
+          { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
       }
+  }
+\cs_new_protected:Npn \@@_noexpand_after:
+  {
+    \@@_error:nnnnn { not-implemented }
+      { expandafter~followed~by~noexpand } { } { } { }
   }
 \cs_new_protected:Npn \@@_pdfprimitive:
   { \@@_not_implemented:n { pdfprimitive } }
