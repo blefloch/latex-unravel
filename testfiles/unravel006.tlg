@@ -1,0 +1,227 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: \unravel and noexpand
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \space \noexpand \space 
+Defining \g__unravel_input_2_gtl on line ...
+Defining \g__unravel_input_3_gtl on line ...
+[==========] \space = macro:-> 
+|| 
+|>  \noexpand \space 
+[==========]  = blank space  
+|| 
+|> \noexpand \space 
+[==========] \space = macro:-> 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \undefined \noexpand \undefined 
+! Undefined control sequence.
+\l__unravel_head_tl ->\undefined 
+l. ...  }
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+[==========] \undefined = undefined
+|| 
+|> \noexpand \undefined 
+[==========] \undefined = undefined
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \noexpand \hfil 
+Defining \g__unravel_input_4_gtl on line ...
+[==========] \hfil = \hfil : \everypar={}
+|| 
+|> \hfil 
+[==========] \hfil = \hfil
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {a\noexpand \space b}
+[==========] \edef \foo {a\space b}
+|| \edef \foo {a\space b}
+|> 
+[==========] Set \foo=macro:->a\space b
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\expandafter a\noexpand \space b}
+[==========] \expandafter a
+|| \edef \foo {
+|| \expandafter a
+|> \noexpand \space b}
+[==========] back_input: \expandafter a
+|| \edef \foo {
+|> a\space b}
+[==========] \space = macro:-> 
+|| \edef \foo {a
+|>  b}
+[==========] \edef \foo {a b}
+|| \edef \foo {a b}
+|> 
+[==========] Set \foo=macro:->a b
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\csname space\noexpand \endcsname }
+[==========] \csname = \csname
+|| \edef \foo {
+|| \csname 
+|> space\noexpand \endcsname }
+[==========] \csname space\endcsname =\space 
+|| \edef \foo {
+|> \space }
+Defining \g__unravel_input_5_gtl on line ...
+[==========] \space = macro:-> 
+|| \edef \foo {
+|>  }
+[==========] \edef \foo { }
+|| \edef \foo { }
+|> 
+[==========] Set \foo=macro:-> 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\csname space\noexpand \empty \endcsname }
+[==========] \csname = \csname
+|| \edef \foo {
+|| \csname 
+|> space\noexpand \empty \endcsname }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\empty " and throws an error:
+! 
+!     Missing \endcsname inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     The control sequence marked <to be read again> should not appear between
+|     \csname and \endcsname.
+|...............................................
+[==========] \csname space\tex_endcsname:D =\space 
+|| \edef \foo {
+|> \space \empty \endcsname }
+Defining \g__unravel_input_6_gtl on line ...
+[==========] \space = macro:-> 
+|| \edef \foo {
+|>  \empty \endcsname }
+[==========] \empty = macro:->
+|| \edef \foo { 
+|> \endcsname }
+[==========] \edef \foo { \endcsname }
+|| \edef \foo { \endcsname }
+|> 
+[==========] Set \foo=macro:-> \endcsname 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\romannumeral 1\noexpand 2\noexpand \noexpand \empty }
+[==========] \romannumeral = \romannumeral
+|| \edef \foo {
+|| \romannumeral 
+|> 1\noexpand 2\noexpand \noexpand \empty }
+[==========] 1
+|| \edef \foo {
+|| \romannumeral 1
+|> \noexpand 2\noexpand \noexpand \empty }
+[==========] 2
+|| \edef \foo {
+|| \romannumeral 12
+|> \noexpand \noexpand \empty }
+[==========] \romannumeral 12=xii
+|| \edef \foo {
+|> xii\noexpand \empty }
+[==========] \edef \foo {xii\empty }
+|| \edef \foo {xii\empty }
+|> 
+[==========] Set \foo=macro:->xii\empty 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\expandafter \ifx \noexpand \empty \empty \csname
+|> iftrue\endcsname \fi }
+[==========] \expandafter \ifx 
+|| \edef \foo {
+|| \expandafter \ifx 
+|> \noexpand \empty \empty \csname iftrue\endcsname \fi }
+[==========] back_input: \expandafter \ifx 
+|| \edef \foo {
+|> \ifx \empty \empty \csname iftrue\endcsname \fi }
+[==========] \empty = macro:->
+|| \edef \foo {\ifx 
+|> \empty \csname iftrue\endcsname \fi }
+[==========] \empty = macro:->
+|| \edef \foo {\ifx 
+|> \csname iftrue\endcsname \fi }
+[==========] \csname = \csname
+|| \edef \foo {\ifx 
+|| \csname 
+|> iftrue\endcsname \fi }
+[==========] \csname iftrue\endcsname =\iftrue 
+|| \edef \foo {\ifx 
+|> \iftrue \fi }
+[==========] \iftrue = \iftrue
+|| \edef \foo {\ifx 
+|| \iftrue 
+|> \fi }
+[==========] \iftrue =true
+|| \edef \foo {\ifx 
+|> \fi }
+[==========] \fi = \fi
+|| \edef \foo {\ifx 
+|> }
+[==========] \edef \foo {\ifx }
+|| \edef \foo {\ifx }
+|> 
+[==========] Set \foo=macro:->\ifx 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \expandafter \show \noexpand \empty 
+[==========] \expandafter \show 
+|| \expandafter \show 
+|> \noexpand \empty 
+[==========] back_input: \expandafter \show 
+|| 
+|> \show \empty 
+[==========] \show = \show
+|| 
+|> \empty 
+[==========] \empty = macro:->
+|| 
+|> 
+[===== End =====]
+============================================================

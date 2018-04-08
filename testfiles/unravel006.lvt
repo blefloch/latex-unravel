@@ -1,0 +1,34 @@
+%
+% Copyright (C) 2018 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[log-functions,check-declarations]{expl3}
+\ExplSyntaxOn
+\debug_on:n { check-expressions , deprecation }
+\ExplSyntaxOff
+
+\RequirePackage{unravel}
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { machine }
+
+\TEST { \unravel ~ and ~ noexpand } % TODO: this is wrong
+  {
+    \unravel { \space \noexpand \space }
+    \unravel { \undefined \noexpand \undefined }
+    \unravel { \noexpand \hfil }
+    \unravel { \edef \foo { a \noexpand \space b } }
+    \unravel { \edef \foo { \expandafter a \noexpand \space b } }
+    \unravel { \edef \foo { \csname space \noexpand \endcsname } }
+    \unravel { \edef \foo { \csname space \noexpand \empty \endcsname } }
+    \unravel { \edef \foo { \romannumeral 1 \noexpand 2 \noexpand \noexpand \empty } }
+    \unravel { \edef \foo { \expandafter \ifx \noexpand \empty \empty \csname iftrue \endcsname \fi } }
+    \unravel { \expandafter \show \noexpand \empty }
+  }
+
+\END
