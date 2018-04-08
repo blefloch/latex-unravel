@@ -198,6 +198,8 @@
 %
 % Differences.
 % \begin{itemize}
+% \item Kerning between letters of a word is omitted, which can lead to
+%   incorrect widths.
 % \item Some primitives are not implemented yet: alignments
 %   (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit}, \tn{span},
 %   \tn{cr}, \tn{crcr},~|&|), many math mode primitives, and
@@ -229,6 +231,7 @@
 %   to implement it in a way similar to \TeX{}'s, and as it is most
 %   often used at the very end of files, in a redundant way.
 % \item \tn{outer} is not supported.
+% \item \cs{unravel} cannot be nested.
 % \end{itemize}
 %
 % \subsection{Future perhaps}
