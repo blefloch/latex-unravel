@@ -65,34 +65,16 @@ Defining \g__unravel_input_4_gtl on line ...
 || \edef \foo {
 || \expandafter a
 |> \noexpand \space b}
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "not-implemented"
-! 
-! The following feature is not implemented: 'expandafter followed by
-! noexpand'.
-! 
-! See the unravel documentation for further information.
-! 
-! Type <return> to continue.
-!...............................................  
-l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| LaTeX does not know anything more about this error, sorry.
-| 
-| Try typing <return> to proceed.
-| If that doesn't work, type X <return> to quit.
-|...............................................
 [==========] back_input: \expandafter a
 || \edef \foo {
-|> a\space b}
-[==========] \space = macro:-> 
+|> a\notexpanded:\space b}
+[==========] back_input: \expandafter a
 || \edef \foo {a
-|>  b}
-[==========] \edef \foo {a b}
-|| \edef \foo {a b}
+|> b}
+[==========] \edef \foo {a\space b}
+|| \edef \foo {a\space b}
 |> 
-[==========] Set \foo=macro:->a b
+[==========] Set \foo=macro:->a\space b
 || 
 |> 
 [===== End =====]
@@ -192,41 +174,20 @@ Defining \g__unravel_input_6_gtl on line ...
 || \edef \foo {
 || \expandafter \ifx 
 |> \noexpand \empty \empty a\fi }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "not-implemented"
-! 
-! The following feature is not implemented: 'expandafter followed by
-! noexpand'.
-! 
-! See the unravel documentation for further information.
-! 
-! Type <return> to continue.
-!...............................................  
-l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| LaTeX does not know anything more about this error, sorry.
-| 
-| Try typing <return> to proceed.
-| If that doesn't work, type X <return> to quit.
-|...............................................
 [==========] back_input: \expandafter \ifx 
 || \edef \foo {
-|> \ifx \empty \empty a\fi }
+|> \ifx \notexpanded:\empty \empty a\fi }
 [==========] \ifx = \ifx
 || \edef \foo {
 || \ifx 
-|> \empty \empty a\fi }
-[==========] Compare: \ifx \empty \empty =true
+|> \notexpanded:\empty \empty a\fi }
+[==========] Compare: \ifx \notexpanded:\empty \empty =false
 || \edef \foo {
-|> a\fi }
-[==========] \fi = \fi
-|| \edef \foo {a
 |> }
-[==========] \edef \foo {a}
-|| \edef \foo {a}
+[==========] \edef \foo {}
+|| \edef \foo {}
 |> 
-[==========] Set \foo=macro:->a
+[==========] Set \foo=macro:->
 || 
 |> 
 [===== End =====]
@@ -236,33 +197,14 @@ l. ...  }
 [==========] \expandafter \show 
 || \expandafter \show 
 |> \noexpand \empty 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "not-implemented"
-! 
-! The following feature is not implemented: 'expandafter followed by
-! noexpand'.
-! 
-! See the unravel documentation for further information.
-! 
-! Type <return> to continue.
-!...............................................  
-l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| LaTeX does not know anything more about this error, sorry.
-| 
-| Try typing <return> to proceed.
-| If that doesn't work, type X <return> to quit.
-|...............................................
 [==========] back_input: \expandafter \show 
 || 
-|> \show \empty 
+|> \show \notexpanded:\empty 
 [==========] \show = \show
 || \show 
-|> \empty 
-> \empty=macro:
-->.
-<argument> \empty 
+|> \notexpanded:\empty 
+> \notexpanded:\empty=\relax.
+<argument> \notexpanded:\empty 
 l. ...  }
 [===== End =====]
 ============================================================
@@ -351,6 +293,80 @@ TEST 2: \unravel and the in edef
 || \edef \foo {a\exp_not:n {\abc }b}
 |> 
 [==========] Set \foo=macro:->a\abc b
+|| 
+|> 
+[===== End =====]
+============================================================
+============================================================
+TEST 3: \unravel and token_if_expandable
+============================================================
+[===== Start =====]
+|| 
+|> \token_if_expandable:NTF \if_meaning:w {}{}
+[==========] \token_if_expandable:NTF = \long macro:#1->\exp_after:wN \if_meaning:w \exp_not:N #1#1\prg_return_false: \else: \if_cs_exist:N #1\prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: 
+|| 
+|> \exp_after:wN \if_meaning:w \exp_not:N \if_meaning:w \if_meaning:w
+|> \prg_return_false: \else: \if_cs_exist:N \if_meaning:w \prg_return_true:
+|> \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \if_meaning:w 
+|> \exp_not:N \if_meaning:w \if_meaning:w \prg_return_false: \else:
+|> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
+|> \fi: \fi: \exp_end: {}{}
+[==========] back_input: \exp_after:wN \if_meaning:w 
+|| 
+|> \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w \prg_return_false:
+|> \else: \if_cs_exist:N \if_meaning:w \prg_return_true: \else:
+|> \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \if_meaning:w = \ifx
+|| \if_meaning:w 
+|> \notexpanded:\if_meaning:w \if_meaning:w \prg_return_false: \else:
+|> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
+|> \fi: \fi: \exp_end: {}{}
+[==========] Compare: \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w =false
+|| 
+|> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
+|> \fi: \fi: \exp_end: {}{}
+[==========] \if_cs_exist:N = \ifdefined
+|| \if_cs_exist:N 
+|> \if_meaning:w \prg_return_true: \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{}
+[==========] \if_meaning:w 
+|| \if_cs_exist:N \if_meaning:w 
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \if_cs_exist:N \if_meaning:w =true
+|| 
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \prg_return_true: = \long macro:->\exp_after:wN \use_i:nn \exp:w 
+|| 
+|> \exp_after:wN \use_i:nn \exp:w \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{}
+[==========] \exp_after:wN \use_i:nn 
+|| \exp_after:wN \use_i:nn 
+|> \exp:w \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp:w = \romannumeral
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \else: = \else => skipped to \fi: 
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \fi: \exp_end: {}{}
+[==========] \fi: = \fi
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \exp_end: {}{}
+[==========] \exp_end: = \char"0 => 0
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 0
+|> {}{}
+[==========] \exp:w 0=
+|| \exp_after:wN \use_i:nn 
+|> {}{}
+[==========] back_input: \exp_after:wN \use_i:nn 
+|| 
+|> \use_i:nn {}{}
+[==========] \use_i:nn = \long macro:#1#2->#1
 || 
 |> 
 [===== End =====]

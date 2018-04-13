@@ -37,4 +37,9 @@
     \unravel { \edef \foo { a \the \toks 0 \the \toks 0 b } }
   }
 
+\TEST { \unravel ~ and ~ token_if_expandable }
+  {
+    \unravel { \token_if_expandable:NTF \if_meaning:w { } { } }
+  }
+
 \END
