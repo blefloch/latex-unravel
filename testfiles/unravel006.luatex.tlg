@@ -1,0 +1,483 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: \unravel and noexpand
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \space \noexpand \space 
+Defining \g__unravel_input_2_gtl on line ...
+Defining \g__unravel_input_3_gtl on line ...
+[==========] \space = macro:-> 
+|| 
+|>  \noexpand \space 
+[==========]  = blank space  
+|| 
+|> \noexpand \space 
+[==========] \notexpanded:\space = [unknown command code! (0, 1)]
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \undefined \noexpand \undefined 
+! Undefined control sequence.
+\l__unravel_head_tl ->\undefined 
+l. ...  }
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+[==========] \undefined = undefined
+|| 
+|> \noexpand \undefined 
+[==========] \notexpanded:\undefined = [unknown command code! (0, 1)]
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \noexpand \hfil 
+Defining \g__unravel_input_4_gtl on line ...
+[==========] \hfil = \hfil : \everypar={}
+|| 
+|> \hfil 
+[==========] \hfil = \hfil
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {a\noexpand \space b}
+[==========] \edef \foo {a\space b}
+|| \edef \foo {a\space b}
+|> 
+[==========] Set \foo=macro:->a\space b
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\expandafter a\noexpand \space b}
+[==========] \expandafter a
+|| \edef \foo {
+|| \expandafter a
+|> \noexpand \space b}
+[==========] back_input: \expandafter a
+|| \edef \foo {
+|> a\notexpanded:\space b}
+[==========] \edef \foo {a\space b}
+|| \edef \foo {a\space b}
+|> 
+[==========] Set \foo=macro:->a\space b
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\csname space\noexpand \endcsname }
+[==========] \csname = \csname
+|| \edef \foo {
+|| \csname 
+|> space\noexpand \endcsname }
+[==========] \csname space\endcsname =\space 
+|| \edef \foo {
+|> \space }
+Defining \g__unravel_input_5_gtl on line ...
+[==========] \space = macro:-> 
+|| \edef \foo {
+|>  }
+[==========] \edef \foo { }
+|| \edef \foo { }
+|> 
+[==========] Set \foo=macro:-> 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\csname space\noexpand \empty \endcsname }
+[==========] \csname = \csname
+|| \edef \foo {
+|| \csname 
+|> space\noexpand \empty \endcsname }
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+! unravel error: "tex-error"
+! 
+! TeX sees "\empty " and throws an error:
+! 
+!     Missing \endcsname inserted
+! 
+! See the unravel documentation for further information.
+! 
+! For immediate help type H <return>.
+!...............................................  
+l. ...  }
+|'''''''''''''''''''''''''''''''''''''''''''''''
+| TeX's advice is:
+| 
+|     The control sequence marked <to be read again> should not appear between
+|     \csname and \endcsname.
+|...............................................
+[==========] \csname space\tex_endcsname:D =\space 
+|| \edef \foo {
+|> \space \empty \endcsname }
+Defining \g__unravel_input_6_gtl on line ...
+[==========] \space = macro:-> 
+|| \edef \foo {
+|>  \empty \endcsname }
+[==========] \empty = macro:->
+|| \edef \foo { 
+|> \endcsname }
+[==========] \edef \foo { \endcsname }
+|| \edef \foo { \endcsname }
+|> 
+[==========] Set \foo=macro:-> \endcsname 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\romannumeral 1\noexpand 2\noexpand \noexpand \empty }
+[==========] \romannumeral = \romannumeral
+|| \edef \foo {
+|| \romannumeral 
+|> 1\noexpand 2\noexpand \noexpand \empty }
+[==========] 1
+|| \edef \foo {
+|| \romannumeral 1
+|> \noexpand 2\noexpand \noexpand \empty }
+[==========] 2
+|| \edef \foo {
+|| \romannumeral 12
+|> \noexpand \noexpand \empty }
+[==========] \romannumeral 12=xii
+|| \edef \foo {
+|> xii\noexpand \empty }
+[==========] \edef \foo {xii\empty }
+|| \edef \foo {xii\empty }
+|> 
+[==========] Set \foo=macro:->xii\empty 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {\expandafter \ifx \noexpand \empty \empty a\fi }
+[==========] \expandafter \ifx 
+|| \edef \foo {
+|| \expandafter \ifx 
+|> \noexpand \empty \empty a\fi }
+[==========] back_input: \expandafter \ifx 
+|| \edef \foo {
+|> \ifx \notexpanded:\empty \empty a\fi }
+[==========] \ifx = \ifx
+|| \edef \foo {
+|| \ifx 
+|> \notexpanded:\empty \empty a\fi }
+[==========] Compare: \ifx \notexpanded:\empty \empty =false
+|| \edef \foo {
+|> }
+[==========] \edef \foo {}
+|| \edef \foo {}
+|> 
+[==========] Set \foo=macro:->
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \expandafter \show \noexpand \empty 
+[==========] \expandafter \show 
+|| \expandafter \show 
+|> \noexpand \empty 
+[==========] back_input: \expandafter \show 
+|| 
+|> \show \notexpanded:\empty 
+[==========] \show = \show
+|| \show 
+|> \notexpanded:\empty 
+> \empty=[unknown command code! (0, 1)].
+<recently read> \notexpanded: \empty 
+l. ...  }
+[===== End =====]
+[===== Start =====]
+|| 
+|> \expandafter \def \noexpand \foo {}\foo 
+[==========] \expandafter \def 
+|| \expandafter \def 
+|> \noexpand \foo {}\foo 
+[==========] back_input: \expandafter \def 
+|| 
+|> \def \notexpanded:\foo {}\foo 
+[==========] \def \foo {}
+|| \def \foo {}
+|> \foo 
+[==========] Set \foo=macro:->
+|| 
+|> \foo 
+[==========] \foo = macro:->
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \expandafter \ifdefined \noexpand \foobar \else \fi 
+[==========] \expandafter \ifdefined 
+|| \expandafter \ifdefined 
+|> \noexpand \foobar \else \fi 
+[==========] back_input: \expandafter \ifdefined 
+|| 
+|> \ifdefined \notexpanded:\foobar \else \fi 
+[==========] \ifdefined = \ifdefined
+|| \ifdefined 
+|> \notexpanded:\foobar \else \fi 
+[==========] \notexpanded:\foobar 
+|| \ifdefined \notexpanded:\foobar 
+|> \else \fi 
+[==========] \ifdefined \notexpanded:\foobar =true
+|| 
+|> \else \fi 
+[==========] \else = \else => skipped to \fi 
+|| 
+|> 
+[===== End =====]
+============================================================
+============================================================
+TEST 2: \unravel and the in edef
+============================================================
+[===== Start =====]
+|| 
+|> \toks 0{2}\toks 2{\abc }
+[==========] \toks = \toks
+|| \toks 
+|> 0{2}\toks 2{\abc }
+[==========] 0
+|| \toks 0
+|> {2}\toks 2{\abc }
+[==========] 0
+|| \toks 0
+|> {2}\toks 2{\abc }
+[==========] Set \toks0=2
+|| 
+|> \toks 2{\abc }
+[==========] \toks = \toks
+|| \toks 
+|> 2{\abc }
+[==========] 2
+|| \toks 2
+|> {\abc }
+[==========] 2
+|| \toks 2
+|> {\abc }
+[==========] Set \toks2=\abc 
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \foo {a\the \toks 0\the \toks 0b}
+[==========] \the = \the
+|| \edef \foo {a
+|| \the 
+|> \toks 0\the \toks 0b}
+[==========] \toks = \toks
+|| \edef \foo {a
+|| \the 
+|| \toks 
+|> 0\the \toks 0b}
+[==========] 0
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|> \the \toks 0b}
+[==========] \the = \the
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|| \the 
+|> \toks 0b}
+[==========] \toks = \toks
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|| \the 
+|| \toks 
+|> 0b}
+[==========] 0
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|| \the 
+|| \toks 0
+|> b}
+[==========] \the =>2
+|| \edef \foo {a
+|| \the 
+|| \toks 0
+|> 2b}
+[==========] 2
+|| \edef \foo {a
+|| \the 
+|| \toks 02
+|> b}
+[==========] \exp_not:n {\abc }
+|| \edef \foo {a\exp_not:n {\abc }
+|> b}
+[==========] \edef \foo {a\exp_not:n {\abc }b}
+|| \edef \foo {a\exp_not:n {\abc }b}
+|> 
+[==========] Set \foo=macro:->a\abc b
+|| 
+|> 
+[===== End =====]
+============================================================
+============================================================
+TEST 3: \unravel and token_if_expandable
+============================================================
+[===== Start =====]
+|| 
+|> \token_if_expandable:NTF \if_meaning:w {}{}
+[==========] \token_if_expandable:NTF = \long macro:#1->\exp_after:wN \if_meaning:w \exp_not:N #1#1\prg_return_false: \else: \if_cs_exist:N #1\prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: 
+|| 
+|> \exp_after:wN \if_meaning:w \exp_not:N \if_meaning:w \if_meaning:w
+|> \prg_return_false: \else: \if_cs_exist:N \if_meaning:w \prg_return_true:
+|> \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \if_meaning:w 
+|> \exp_not:N \if_meaning:w \if_meaning:w \prg_return_false: \else:
+|> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
+|> \fi: \fi: \exp_end: {}{}
+[==========] back_input: \exp_after:wN \if_meaning:w 
+|| 
+|> \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w \prg_return_false:
+|> \else: \if_cs_exist:N \if_meaning:w \prg_return_true: \else:
+|> \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \if_meaning:w = \ifx
+|| \if_meaning:w 
+|> \notexpanded:\if_meaning:w \if_meaning:w \prg_return_false: \else:
+|> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
+|> \fi: \fi: \exp_end: {}{}
+[==========] Compare: \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w =false
+|| 
+|> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
+|> \fi: \fi: \exp_end: {}{}
+[==========] \if_cs_exist:N = \ifdefined
+|| \if_cs_exist:N 
+|> \if_meaning:w \prg_return_true: \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{}
+[==========] \if_meaning:w 
+|| \if_cs_exist:N \if_meaning:w 
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \if_cs_exist:N \if_meaning:w =true
+|| 
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \prg_return_true: = \long macro:->\exp_after:wN \use_i:nn \exp:w 
+|| 
+|> \exp_after:wN \use_i:nn \exp:w \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{}
+[==========] \exp_after:wN \use_i:nn 
+|| \exp_after:wN \use_i:nn 
+|> \exp:w \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp:w = \romannumeral
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \else: = \else => skipped to \fi: 
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \fi: \exp_end: {}{}
+[==========] \fi: = \fi
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 
+|> \exp_end: {}{}
+[==========] \exp_end: = \char"0 => 0
+|| \exp_after:wN \use_i:nn 
+|| \exp:w 0
+|> {}{}
+[==========] \exp:w 0=
+|| \exp_after:wN \use_i:nn 
+|> {}{}
+[==========] back_input: \exp_after:wN \use_i:nn 
+|| 
+|> \use_i:nn {}{}
+[==========] \use_i:nn = \long macro:#1#2->#1
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \token_if_expandable:NTF \def {}{}
+[==========] \token_if_expandable:NTF = \long macro:#1->\exp_after:wN \if_meaning:w \exp_not:N #1#1\prg_return_false: \else: \if_cs_exist:N #1\prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: 
+|| 
+|> \exp_after:wN \if_meaning:w \exp_not:N \def \def \prg_return_false: \else:
+|> \if_cs_exist:N \def \prg_return_true: \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{}
+[==========] \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \if_meaning:w 
+|> \exp_not:N \def \def \prg_return_false: \else: \if_cs_exist:N \def
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] back_input: \exp_after:wN \if_meaning:w 
+|| 
+|> \if_meaning:w \notexpanded:\def \def \prg_return_false: \else:
+|> \if_cs_exist:N \def \prg_return_true: \else: \prg_return_false: \fi: \fi:
+|> \exp_end: {}{}
+[==========] \if_meaning:w = \ifx
+|| \if_meaning:w 
+|> \notexpanded:\def \def \prg_return_false: \else: \if_cs_exist:N \def
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] Compare: \if_meaning:w \notexpanded:\def \def =true
+|| 
+|> \prg_return_false: \else: \if_cs_exist:N \def \prg_return_true: \else:
+|> \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \prg_return_false: = \long macro:->\exp_after:wN \use_ii:nn \exp:w 
+|| 
+|> \exp_after:wN \use_ii:nn \exp:w \else: \if_cs_exist:N \def
+|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp_after:wN \use_ii:nn 
+|| \exp_after:wN \use_ii:nn 
+|> \exp:w \else: \if_cs_exist:N \def \prg_return_true: \else:
+|> \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp:w = \romannumeral
+|| \exp_after:wN \use_ii:nn 
+|| \exp:w 
+|> \else: \if_cs_exist:N \def \prg_return_true: \else: \prg_return_false: \fi:
+|> \fi: \exp_end: {}{}
+[==========] \else: = \else => skipped to \fi: 
+|| \exp_after:wN \use_ii:nn 
+|| \exp:w 
+|> \exp_end: {}{}
+[==========] \exp_end: = \char"0 => 0
+|| \exp_after:wN \use_ii:nn 
+|| \exp:w 0
+|> {}{}
+[==========] \exp:w 0=
+|| \exp_after:wN \use_ii:nn 
+|> {}{}
+[==========] back_input: \exp_after:wN \use_ii:nn 
+|| 
+|> \use_ii:nn {}{}
+[==========] \use_ii:nn = \long macro:#1#2->#2
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \exp_after:wN \if_meaning:w \exp_not:N \undefined \undefined \fi: 
+[==========] \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \if_meaning:w 
+|> \exp_not:N \undefined \undefined \fi: 
+[==========] back_input: \exp_after:wN \if_meaning:w 
+|| 
+|> \if_meaning:w \notexpanded:\undefined \undefined \fi: 
+[==========] \if_meaning:w = \ifx
+|| \if_meaning:w 
+|> \notexpanded:\undefined \undefined \fi: 
+[==========] Compare: \if_meaning:w \notexpanded:\undefined \undefined =false
+|| 
+|> 
+[===== End =====]
+============================================================

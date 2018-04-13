@@ -1677,7 +1677,17 @@
 % \item |def_code| and |def_family| is shifted by |cat_code_base=3983|.
 % \item In \TeX{}, |inputlineno.char=3| and |badness.char=4|.
 % \end{itemize}
+% A special case for \LuaTeX{} deals with the fact that the
+% \cs{@@_special_relax:} has a strange meaning \enquote{[unknown command
+% code! (0, 1)]}.  For instance \tn{expandafter} \tn{show} \tn{noexpand}
+% \tn{undefined} shows this.
 %    \begin{macrocode}
+\sys_if_engine_luatex:T
+  {
+    \@@_tex_primitive:nnn
+      { \exp_after:wN \use_none:n \token_to_meaning:N \@@_special_relax: }
+      { relax } { 1 }
+  }
 \@@_tex_primitive:nnn { relax             } { relax    } { 256 }
 \@@_tex_primitive:nnn { span              } { tab_mark } { 256 }
 \@@_tex_primitive:nnn { cr                } { car_ret  } { 257 }
