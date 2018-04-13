@@ -464,4 +464,20 @@ TEST 3: \unravel and token_if_expandable
 || 
 |> 
 [===== End =====]
+[===== Start =====]
+|| 
+|> \exp_after:wN \if_meaning:w \exp_not:N \undefined \undefined \fi: 
+[==========] \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \if_meaning:w 
+|> \exp_not:N \undefined \undefined \fi: 
+[==========] back_input: \exp_after:wN \if_meaning:w 
+|| 
+|> \if_meaning:w \notexpanded:\undefined \undefined \fi: 
+[==========] \if_meaning:w = \ifx
+|| \if_meaning:w 
+|> \notexpanded:\undefined \undefined \fi: 
+[==========] Compare: \if_meaning:w \notexpanded:\undefined \undefined =false
+|| 
+|> 
+[===== End =====]
 ============================================================

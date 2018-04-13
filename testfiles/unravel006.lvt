@@ -43,6 +43,7 @@
   {
     \unravel { \token_if_expandable:NTF \if_meaning:w { } { } }
     \unravel { \token_if_expandable:NTF \def { } { } }
+    \unravel { \exp_after:wN \if_meaning:w \exp_not:N \undefined \undefined \fi: }
   }
 
 \END

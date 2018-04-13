@@ -2311,7 +2311,10 @@
               \@@_notexpanded_expand:N ^^@
             }
         }
-        { \exp_args:Nc \@@_notexpanded_expand:N { \use_none:n #1 } }
+        {
+          \group_begin: \exp_args:NNc \group_end:
+          \@@_notexpanded_expand:N { \use_none:n #1 }
+        }
     }
 \group_end:
 \cs_new_protected:Npn \@@_notexpanded_expand:N #1
@@ -7522,7 +7525,7 @@
   {
     \token_if_eq_meaning:NNTF #1 \@@_special_relax:
       {
-        \gtl_head_do:NN #2 \token_if_expandable:NTF
+        \gtl_head_do:NN #2 \@@_token_if_expandable:NTF
           { #3 #1 } { \gtl_head_do:NN #2 #3 }
       }
       { \gtl_head_do:NN #2 #3 }
