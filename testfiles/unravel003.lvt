@@ -3,12 +3,11 @@
 %
 \documentclass{minimal}
 \input{regression-test}
-\RequirePackage[log-functions,check-declarations]{expl3}
-\ExplSyntaxOn
-\debug_on:n { check-expressions , deprecation }
-\ExplSyntaxOff
-
+\RequirePackage[enable-debug]{expl3}
 \RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
 
 \begin{document}
 
