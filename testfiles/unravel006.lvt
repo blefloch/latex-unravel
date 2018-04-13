@@ -29,6 +29,8 @@
     \unravel { \edef \foo { \romannumeral 1 \noexpand 2 \noexpand \noexpand \empty } }
     \unravel { \edef \foo { \expandafter \ifx \noexpand \empty \empty a \fi } }
     \unravel { \expandafter \show \noexpand \empty }
+    \unravel { \expandafter \def \noexpand \foo { } \foo }
+    \unravel { \expandafter \ifdefined \noexpand \foobar \else \fi }
   }
 
 \TEST { \unravel ~ and ~ the ~ in ~ edef }
@@ -40,6 +42,7 @@
 \TEST { \unravel ~ and ~ token_if_expandable }
   {
     \unravel { \token_if_expandable:NTF \if_meaning:w { } { } }
+    \unravel { \token_if_expandable:NTF \def { } { } }
   }
 
 \END

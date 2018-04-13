@@ -1311,8 +1311,7 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}
-%   {\l_@@_tmpa_tl, \l_@@_tmpb_gtl, \g_@@_tmpc_tl, \l_@@_tmpa_seq, \l_@@_unused_gtl}
+% \begin{variable}{\l_@@_tmpa_tl, \l_@@_tmpb_gtl, \g_@@_tmpc_tl, \l_@@_tmpa_seq, \l_@@_unused_gtl, \l_@@_tmpb_token}
 %   Temporary storage.  The \cs{l_@@_unused_gtl} is only used once,
 %   to ignore some unwanted tokens.
 %    \begin{macrocode}
@@ -1321,6 +1320,7 @@
 \gtl_new:N \l_@@_tmpb_gtl
 \tl_new:N \g_@@_tmpc_tl
 \seq_new:N \l_@@_tmpa_seq
+\cs_new_eq:NN \l_@@_tmpb_token ?
 %    \end{macrocode}
 % \end{variable}
 %
@@ -2251,12 +2251,75 @@
           {
             \tl_set:Nx \l_@@_head_tl
               { \gtl_head:N \l_@@_head_gtl }
+            \token_if_eq_meaning:NNT
+              \l_@@_head_token \@@_special_relax:
+              \@@_get_next_notexpanded:
           }
           { \tl_clear:N \l_@@_head_tl }
       }
   }
 \cs_new_protected:Npn \@@_get_next_aux:w
   { \cs_set_eq:NN \l_@@_head_token }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@@_get_next_notexpanded:}
+% \begin{macro}{\@@_notexpanded_test:w, \@@_notexpanded_expand:nN, \@@_notexpanded_expand:NN}
+%   At this point we have likely encountered a special \tn{relax} marker
+%   that we use to mark cases where \tn{noexpand} acts on a control
+%   sequence or an active character.  To make sure of that check the
+%   control sequence has the form \cs{notexpanded:\ldots{}}.  Since we
+%   don't know the escape character we must use \cs{cs_to_str:N}, but
+%   that function is not meant for active characters and has a runaway
+%   argument if its argument is a space (active since we know its
+%   meaning is the special \tn{relax}).  To avoid the runaway we include
+%   an arbitrary delimiter~|Z|.  If the token in \cs{l_@@_head_tl} is
+%   not \cs{notexpanded:\ldots{}} we do nothing.  Otherwise
+%   \cs{@@_notexpanded_expand:n} reconstructs the token that was hit
+%   with \tn{noexpand} (an active character if the argument is a single
+%   character) and do the job of \cs{@@_get_next:}, setting
+%   \cs{l_@@_head_token} to the special \tn{relax} marker for expandable
+%   commands, as \tn{noexpand} would.
+%    \begin{macrocode}
+\cs_set_protected:Npn \@@_tmp:w #1
+  {
+    \cs_new_protected:Npn \@@_get_next_notexpanded:
+      {
+        \@@_exp_args:NNx \use:nn \@@_notexpanded_test:w
+          { \scan_stop: \exp_after:wN \cs_to_str:N \l_@@_head_tl Z }
+          \q_mark \@@_notexpanded_expand:n
+          #1 Z \q_mark \use_none:n
+          \q_stop
+      }
+    \cs_new_protected:Npn \@@_notexpanded_test:w
+        ##1 #1 ##2 Z \q_mark ##3##4 \q_stop
+      { ##3 {##2} }
+  }
+\exp_args:Nx \@@_tmp:w { \scan_stop: \tl_to_str:n { notexpanded: } }
+\group_begin:
+  \char_set_catcode_active:n { 0 }
+  \cs_new_protected:Npn \@@_notexpanded_expand:n #1
+    {
+      \@@_exp_args:Nx \tl_if_empty:nTF { \str_tail:n {#1} }
+        {
+          \group_begin:
+          \char_set_lccode:nn { 0 } { `#1 }
+          \tex_lowercase:D
+            {
+              \group_end:
+              \@@_notexpanded_expand:N ^^@
+            }
+        }
+        { \exp_args:Nc \@@_notexpanded_expand:N { \use_none:n #1 } }
+    }
+\group_end:
+\cs_new_protected:Npn \@@_notexpanded_expand:N #1
+  {
+    \gtl_set:Nn \l_@@_head_gtl {#1}
+    \tl_set:Nn \l_@@_head_tl {#1}
+    \cs_set_eq:NN \l_@@_head_token \@@_special_relax:
+  }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -2999,73 +3062,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_get_test_notexpanded:N}
-% \begin{macro}{\@@_notexpanded_test:w, \@@_notexpanded_expand:nN, \@@_notexpanded_expand:NN}
-%   When looking for the first non-expandable token (in
-%   \cs{@@_get_x_next:} and similar) we may encounter a special
-%   \cs{notexpanded:\ldots} marker (equal in meaning to
-%   \cs{@@_special_relax:}) that came from acting with \tn{noexpand}.
-%   The rest of the name is the active character or control sequence
-%   that was hit with \tn{noexpand}.  We reconstruct it and put it back
-%   into the input.  The argument |#2| of \cs{@@_notexpanded_expand:NN}
-%   is \cs{prg_do_nothing:} if the expansion of that
-%   \cs{notexpanded:\ldots{}} control sequence was triggered by
-%   \tn{expandafter}.  In all other cases (main loop, numbers,
-%   \tn{edef}, \tn{message} etc.\@), read the token back and set its
-%   meaning to \tn{relax} if it is expandable, so that it is ignored for
-%   instance by \cs{@@_get_x_non_relax:}.
-%    \begin{macrocode}
-\cs_set_protected:Npn \@@_tmp:w #1
-  {
-    \cs_new_protected:Npn \@@_get_test_notexpanded:N
-      {
-        \token_if_eq_meaning:NNTF \l_@@_head_token \@@_special_relax:
-          {
-            \@@_exp_args:NNx \use:nn \@@_notexpanded_test:w
-              { \scan_stop: \exp_after:wN \cs_to_str:N \l_@@_head_tl }
-              \q_mark \@@_notexpanded_expand:nN
-              #1 \q_mark \use_none:nn
-              \q_stop
-          }
-          { \use_none:n }
-      }
-    \cs_new_protected:Npn \@@_notexpanded_test:w
-        ##1 #1 ##2 \q_mark ##3##4 \q_stop
-      { ##3 {##2} }
-  }
-\exp_args:No \@@_tmp:w { \tl_to_str:n { notexpanded: } }
-\group_begin:
-  \char_set_catcode_active:n { 0 }
-  \cs_new_protected:Npn \@@_notexpanded_expand:nN #1
-    {
-      \tl_if_single:nTF {#1}
-        {
-          \group_begin:
-          \char_set_lccode:nn { 0 } { `#1 }
-          \tex_lowercase:D
-            {
-              \group_end:
-              \@@_notexpanded_expand:NN ^^@
-            }
-        }
-        { \exp_args:Nc \@@_notexpanded_expand:NN { \use_none:n #1 } }
-    }
-\group_end:
-\cs_new_protected:Npn \@@_notexpanded_expand:NN #1#2
-  {
-    \@@_back_input:n {#1}
-    \cs_if_eq:NNF #2 \prg_do_nothing:
-      {
-        \@@_get_next:
-        \@@_token_if_expandable:NT \l_@@_head_token
-          { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
-      }
-    \@@_print_action:
-  }
-%    \end{macrocode}
-% \end{macro}
-% \end{macro}
-%
 % \begin{macro}{\@@_get_x_next:}
 %   Get a token.  If it is expandable, then expand it, and repeat.  This
 %   function does not set the |cmd| and |char| integers.  It is the
@@ -3077,10 +3073,8 @@
 \cs_new_protected:Npn \@@_get_x_next:
   {
     \@@_get_next:
-    \@@_token_if_expandable:NTF \l_@@_head_token
-      \@@_expand_do:N
-      \@@_get_test_notexpanded:N
-    \@@_get_x_next:
+    \@@_token_if_expandable:NT \l_@@_head_token
+      { \@@_expand_do:N \@@_get_x_next: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3094,10 +3088,8 @@
 \cs_new_protected:Npn \@@_get_x_or_protected:
   {
     \@@_get_next:
-    \@@_token_if_protected:NTF \l_@@_head_token
-      \@@_get_test_notexpanded:N
-      \@@_expand_do:N
-    \@@_get_x_or_protected:
+    \@@_token_if_protected:NF \l_@@_head_token
+      { \@@_expand_do:N \@@_get_x_or_protected: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3112,18 +3104,14 @@
 \cs_new_protected:Npn \@@_get_token_xdef:
   {
     \@@_get_next:
-    \@@_token_if_protected:NTF \l_@@_head_token
-      \@@_get_test_notexpanded:N
-      \@@_expand_do:N
-    \@@_get_token_xdef:
+    \@@_token_if_protected:NF \l_@@_head_token
+      { \@@_expand_do:N \@@_get_token_xdef: }
   }
 \cs_new_protected:Npn \@@_get_token_x:
   {
     \@@_get_next:
-    \@@_token_if_protected:NTF \l_@@_head_token
-      \@@_get_test_notexpanded:N
-      \@@_expand_do:N
-    \@@_get_token_x:
+    \@@_token_if_protected:NF \l_@@_head_token
+      { \@@_expand_do:N \@@_get_token_x: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -4857,7 +4845,14 @@
 % \tn{relax} does nothing.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { relax }                                % 0
-  { \@@_print_action: }
+  {
+    \token_if_eq_meaning:NNT \l_@@_head_token \@@_special_relax:
+      {
+        \@@_set_action_text:x
+          { \iow_char:N \\notexpanded: \g_@@_action_text_str }
+      }
+    \@@_print_action:
+  }
 %    \end{macrocode}
 %
 % Begin-group characters are sent to the output, as their grouping
@@ -5180,7 +5175,13 @@
           { % show
             \@@_get_next:
             \@@_prev_input_gpop:N \l_@@_tmpa_tl
-            \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl
+            \token_if_eq_meaning:NNTF
+              \l_@@_head_token \@@_special_relax:
+              {
+                \exp_after:wN \exp_after:wN \exp_after:wN \l_@@_tmpa_tl
+                \exp_after:wN \exp_not:N \l_@@_head_tl
+              }
+              { \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl }
           }
         { 2 }
           { % showthe
@@ -6927,7 +6928,10 @@
 %   the token is currently a non-expandable primitive, as its meaning
 %   can be changed by the code skipped over by \tn{expandafter}).  That
 %   \cs{notexpanded:} marker should be removed if the token is taken as
-%   the argument of a macro, but we fail to do that.
+%   the argument of a macro, but we fail to do that.  We set the
+%   \cs{notexpanded:\ldots{}} command to be a special \tn{relax} marker
+%   to make it quickly recognizable in \cs{@@_get_next:}.  This is
+%   incidentally the same meaning used by \TeX{} for expandable commands.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { no_expand }                     % 105
   {
@@ -6952,7 +6956,7 @@
         \@@_back_input:
         \@@_get_next:
         \@@_token_if_expandable:NT \l_@@_head_token
-          { \cs_set_eq:NN \l_@@_head_token \tex_relax:D }
+          { \cs_set_eq:NN \l_@@_head_token \@@_special_relax: }
       }
   }
 \cs_new_protected:Npn \@@_noexpand_after:
@@ -7472,6 +7476,18 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_test_ifx:n, \@@_test_ifx_aux:w}
+%   The token equal to \tn{ifx} is pushed as a previous input to show an
+%   action nicely, then retrieved as \cs{l_@@_tmpa_tl} after getting the
+%   next two tokens as |tmpb| and |head|.  Then we call
+%   \cs{l_@@_tmpa_tl} followed by these two tokens.  A previous
+%   implementation made sure to get these tokens from unpacking the
+%   |gtl|, presumably (I should have documented, now I might be missing
+%   something) to deal nicely with the master counter in case these
+%   tokens are braces.  On the other hand we must take care of tokens
+%   affected by \tn{noexpand}, in which case the trustworthy
+%   \tn{meaning} is that of the \cs{l_@@_head_token} or
+%   \cs{l_@@_tmpb_token} rather than that of the token in
+%   \cs{l_@@_head_gtl} or \cs{l_@@_tmpb_gtl}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_ifx:n #1
   {
@@ -7479,15 +7495,18 @@
     \@@_print_action:
     \@@_get_next:
     \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
+    \cs_set_eq:NN \l_@@_tmpb_token \l_@@_head_token
     \@@_get_next:
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \@@_set_action_text:x
       {
         Compare:~ \tl_to_str:N \l_@@_tmpa_tl
-        \gtl_to_str:N \l_@@_tmpb_gtl
-        \gtl_to_str:N \l_@@_head_gtl
+        \@@_test_ifx_str:NN \l_@@_tmpb_token \l_@@_tmpb_gtl
+        \@@_test_ifx_str:NN \l_@@_head_token \l_@@_head_gtl
       }
-    \gtl_head_do:NN \l_@@_tmpb_gtl \@@_test_ifx_aux:w
+    \token_if_eq_meaning:NNTF \l_@@_tmpb_token \@@_special_relax:
+      { \@@_test_ifx_aux:w \l_@@_tmpb_token }
+      { \gtl_head_do:NN \l_@@_tmpb_gtl \@@_test_ifx_aux:w }
       \exp_after:wN \@@_cond_true:n
     \else:
       \exp_after:wN \@@_cond_false:n
@@ -7495,7 +7514,17 @@
     {#1}
   }
 \cs_new:Npn \@@_test_ifx_aux:w
-  { \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl }
+  {
+    \token_if_eq_meaning:NNTF \l_@@_head_token \@@_special_relax:
+      { \l_@@_tmpa_tl \l_@@_head_token }
+      { \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl }
+  }
+\cs_new:Npn \@@_test_ifx_str:NN #1#2
+  {
+    \token_if_eq_meaning:NNT #1 \@@_special_relax:
+      { \iow_char:N \\notexpanded: }
+    \gtl_to_str:N #2
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7685,7 +7714,7 @@
       {
         \tl_to_str:N \l_@@_head_tl
         \tl_if_single_token:VT \l_@@_head_tl
-          { = ~ \exp_after:wN \token_to_meaning:N \l_@@_head_tl }
+          { = ~ \token_to_meaning:N \l_@@_head_token }
       }
   }
 %    \end{macrocode}
