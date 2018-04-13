@@ -1,0 +1,51 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: \unravel scanning general text
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \iffalse {\fi \toks 0\bgroup abc}
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \toks 0\bgroup abc}
+[==========] \iffalse =false
+|| 
+|> \toks 0\bgroup abc}
+[==========] \toks = \toks
+|| \toks 
+|> 0\bgroup abc}
+[==========] 0
+|| \toks 0
+|> \bgroup abc}
+Defining \g__unravel_input_2_gtl on line ...
+[==========] 0
+|| \toks 0
+|> \bgroup abc}
+Defining \g__unravel_input_3_gtl on line ...
+Defining \g__unravel_input_4_gtl on line ...
+[==========] Set \toks0=abc
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \iffalse {\fi \unexpanded \bgroup \empty }
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> {\fi \unexpanded \bgroup \empty }
+[==========] \iffalse =false
+|| 
+|> \unexpanded \bgroup \empty }
+[==========] \unexpanded = \unexpanded
+|| \unexpanded 
+|> \bgroup \empty }
+[==========] \unexpanded {\empty }
+|| 
+|> \empty 
+[==========] \empty = macro:->
+|| 
+|> 
+[===== End =====]
+============================================================

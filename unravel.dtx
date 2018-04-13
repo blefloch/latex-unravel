@@ -4101,6 +4101,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_group_n:N #1
   {
+    \gtl_set_eq:NN \l_@@_head_gtl \c_group_begin_gtl
     \@@_back_input:
     \@@_input_gpop_item:NF \l_@@_head_tl
       {

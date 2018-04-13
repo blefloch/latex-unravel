@@ -1,0 +1,25 @@
+%
+% Copyright (C) 2018 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { machine }
+
+\TEST { \unravel ~ scanning ~ general ~ text }
+  {
+    \unravel { \iffalse { \fi \toks 0 \bgroup abc } }
+    \unravel { \iffalse { \fi \unexpanded \bgroup \empty } }
+  }
+
+\END
