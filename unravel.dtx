@@ -7475,7 +7475,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_test_ifx:n, \@@_test_ifx_aux:w}
+% \begin{macro}{\@@_test_ifx:n, \@@_test_ifx_str:NN, \@@_test_ifx_aux:NNN, \@@_test_ifx_aux:w}
 %   The token equal to \tn{ifx} is pushed as a previous input to show an
 %   action nicely, then retrieved as \cs{l_@@_tmpa_tl} after getting the
 %   next two tokens as |tmpb| and |head|.  Then we call
@@ -7484,10 +7484,10 @@
 %   |gtl|, presumably (I should have documented, now I might be missing
 %   something) to deal nicely with the master counter in case these
 %   tokens are braces.  On the other hand we must take care of tokens
-%   affected by \tn{noexpand}, in which case the trustworthy
-%   \tn{meaning} is that of the \cs{l_@@_head_token} or
-%   \cs{l_@@_tmpb_token} rather than that of the token in
-%   \cs{l_@@_head_gtl} or \cs{l_@@_tmpb_gtl}.
+%   affected by \tn{noexpand} and whose current definition is
+%   expandable, in which case the trustworthy \tn{meaning} is that of
+%   the \cs{l_@@_head_token} or \cs{l_@@_tmpb_token} rather than that of
+%   the token in \cs{l_@@_head_gtl} or \cs{l_@@_tmpb_gtl}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_ifx:n #1
   {
@@ -7504,26 +7504,33 @@
         \@@_test_ifx_str:NN \l_@@_tmpb_token \l_@@_tmpb_gtl
         \@@_test_ifx_str:NN \l_@@_head_token \l_@@_head_gtl
       }
-    \token_if_eq_meaning:NNTF \l_@@_tmpb_token \@@_special_relax:
-      { \@@_test_ifx_aux:w \l_@@_tmpb_token }
-      { \gtl_head_do:NN \l_@@_tmpb_gtl \@@_test_ifx_aux:w }
+    \@@_test_ifx_aux:NNN \l_@@_tmpb_token \l_@@_tmpb_gtl
+      \@@_test_ifx_aux:w
       \exp_after:wN \@@_cond_true:n
     \else:
       \exp_after:wN \@@_cond_false:n
     \fi:
     {#1}
   }
-\cs_new:Npn \@@_test_ifx_aux:w
-  {
-    \token_if_eq_meaning:NNTF \l_@@_head_token \@@_special_relax:
-      { \l_@@_tmpa_tl \l_@@_head_token }
-      { \gtl_head_do:NN \l_@@_head_gtl \l_@@_tmpa_tl }
-  }
 \cs_new:Npn \@@_test_ifx_str:NN #1#2
   {
     \token_if_eq_meaning:NNT #1 \@@_special_relax:
       { \iow_char:N \\notexpanded: }
     \gtl_to_str:N #2
+  }
+\cs_new_protected:Npn \@@_test_ifx_aux:NNN #1#2#3
+  {
+    \token_if_eq_meaning:NNTF #1 \@@_special_relax:
+      {
+        \gtl_head_do:NN #2 \token_if_expandable:NTF
+          { #3 #1 } { \gtl_head_do:NN #2 #3 }
+      }
+      { \gtl_head_do:NN #2 #3 }
+  }
+\cs_new:Npn \@@_test_ifx_aux:w
+  {
+    \@@_test_ifx_aux:NNN \l_@@_head_token \l_@@_head_gtl
+      \l_@@_tmpa_tl
   }
 %    \end{macrocode}
 % \end{macro}

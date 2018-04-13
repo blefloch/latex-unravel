@@ -429,49 +429,38 @@ TEST 3: \unravel and token_if_expandable
 || \if_meaning:w 
 |> \notexpanded:\def \def \prg_return_false: \else: \if_cs_exist:N \def
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
-[==========] Compare: \if_meaning:w \notexpanded:\def \def =false
+[==========] Compare: \if_meaning:w \notexpanded:\def \def =true
 || 
-|> \if_cs_exist:N \def \prg_return_true: \else: \prg_return_false: \fi: \fi:
-|> \exp_end: {}{}
-[==========] \if_cs_exist:N = \ifdefined
-|| \if_cs_exist:N 
-|> \def \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
-[==========] \def 
-|| \if_cs_exist:N \def 
+|> \prg_return_false: \else: \if_cs_exist:N \def \prg_return_true: \else:
+|> \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \prg_return_false: = \long macro:->\exp_after:wN \use_ii:nn \exp:w 
+|| 
+|> \exp_after:wN \use_ii:nn \exp:w \else: \if_cs_exist:N \def
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
-[==========] \if_cs_exist:N \def =true
-|| 
-|> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
-[==========] \prg_return_true: = \long macro:->\exp_after:wN \use_i:nn \exp:w 
-|| 
-|> \exp_after:wN \use_i:nn \exp:w \else: \prg_return_false: \fi: \fi:
-|> \exp_end: {}{}
-[==========] \exp_after:wN \use_i:nn 
-|| \exp_after:wN \use_i:nn 
-|> \exp:w \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
+[==========] \exp_after:wN \use_ii:nn 
+|| \exp_after:wN \use_ii:nn 
+|> \exp:w \else: \if_cs_exist:N \def \prg_return_true: \else:
+|> \prg_return_false: \fi: \fi: \exp_end: {}{}
 [==========] \exp:w = \romannumeral
-|| \exp_after:wN \use_i:nn 
+|| \exp_after:wN \use_ii:nn 
 || \exp:w 
-|> \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
-[==========] \else: = \else => skipped to \fi: 
-|| \exp_after:wN \use_i:nn 
-|| \exp:w 
+|> \else: \if_cs_exist:N \def \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{}
-[==========] \fi: = \fi
-|| \exp_after:wN \use_i:nn 
+[==========] \else: = \else => skipped to \fi: 
+|| \exp_after:wN \use_ii:nn 
 || \exp:w 
 |> \exp_end: {}{}
 [==========] \exp_end: = \char"0 => 0
-|| \exp_after:wN \use_i:nn 
+|| \exp_after:wN \use_ii:nn 
 || \exp:w 0
 |> {}{}
 [==========] \exp:w 0=
-|| \exp_after:wN \use_i:nn 
+|| \exp_after:wN \use_ii:nn 
 |> {}{}
-[==========] back_input: \exp_after:wN \use_i:nn 
+[==========] back_input: \exp_after:wN \use_ii:nn 
 || 
-|> \use_i:nn {}{}
-[==========] \use_i:nn = \long macro:#1#2->#1
+|> \use_ii:nn {}{}
+[==========] \use_ii:nn = \long macro:#1#2->#2
 || 
 |> 
 [===== End =====]

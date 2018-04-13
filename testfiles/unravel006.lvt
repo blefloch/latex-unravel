@@ -17,7 +17,7 @@
 
 \unravelsetup { machine }
 
-\TEST { \unravel ~ and ~ noexpand } % TODO: this is wrong
+\TEST { \unravel ~ and ~ noexpand }
   {
     \unravel { \space \noexpand \space }
     \unravel { \undefined \noexpand \undefined }
