@@ -2276,6 +2276,10 @@
     \@@_tex_primitive:nnn { expanded        } { convert } { 34 }
     \@@_tex_primitive:nnn { luaescapestring } { convert } { 35 }
   }
+\sys_if_engine_xetex:T
+  {
+    \@@_tex_primitive:nnn { Ucharcat        } { convert } { 40 }
+  }
 \@@_tex_primitive:nnn { the               } { the } { 0 }
 \@@_tex_primitive:nnn { unexpanded        } { the } { 1 }
 \@@_tex_primitive:nnn { detokenize        } { the } { 5 }
@@ -7223,6 +7227,12 @@
         { 33 } \@@_scan_directlua:
         { 34 } \@@_scan_pdf_ext_toks:
         { 35 } \@@_scan_pdf_ext_toks:
+        { 40 }
+          {
+            \@@_scan_int:
+            \@@_prev_input_silent:n { ~ }
+            \@@_scan_int:
+          }
       }
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:

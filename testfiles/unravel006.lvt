@@ -45,4 +45,12 @@
     \unravel { \exp_after:wN \if_meaning:w \exp_not:N \undefined \undefined \fi: }
   }
 
+
+\TEST { \unravel ~ and ~ noexpand ~ again }
+  {
+    \unravel [mute]
+      { \tl_set:Nx \l_tmpa_tl { \char_generate:nn {65} {11} } }
+    \tl_if_eq:onTF \l_tmpa_tl { A } { \TRUE } { \ERROR }
+  }
+
 \END
