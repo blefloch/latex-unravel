@@ -3247,11 +3247,15 @@
 \cs_new_protected:Npn \@@_get_x_non_relax:
   {
     \@@_get_x_next:
-    \token_if_eq_meaning:NNT \l_@@_head_token \scan_stop:
+    \token_if_eq_meaning:NNTF \l_@@_head_token \scan_stop:
       { \@@_get_x_non_relax: }
       {
-        \token_if_eq_catcode:NNT \l_@@_head_token \c_space_token
+        \token_if_eq_meaning:NNTF \l_@@_head_token \@@_special_relax:
           { \@@_get_x_non_relax: }
+          {
+            \token_if_eq_catcode:NNT \l_@@_head_token \c_space_token
+              { \@@_get_x_non_relax: }
+          }
       }
   }
 %    \end{macrocode}
