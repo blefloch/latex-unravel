@@ -2588,8 +2588,9 @@
 %   Insert \cs{q_mark} before the first non-letter (in fact, anything
 %   less than~|A|) in the \tn{meaning} by looping one character at a
 %   time (skipping spaces, but there should be none).  We expect the
-%   first part to be |char| or~|mathchar|, or one of |count|, |dimen|,
-%   |skip|, |muskip|, or |toks|.  In the first two cases, the command is
+%   first part to be |char| or~|mathchar| (or |kchar| in up\TeX{}),
+%   or one of |count|, |dimen|,
+%   |skip|, |muskip|, or |toks|.  In the first two (three) cases, the command is
 %   |char_given| or |math_given|.  It is otherwise identical to the
 %   corresponding primitive (\tn{count} \emph{etc.}).  We then keep
 %   track of the associated number (part after \cs{q_mark}) in
@@ -2621,6 +2622,7 @@
     \str_case:nnF {#1}
       {
         { char }     { \@@_set_cmd_aux_given:n { char_given } }
+        { kchar }    { \@@_set_cmd_aux_given:n { char_given } }
         { mathchar } { \@@_set_cmd_aux_given:n { math_given } }
       }
       {
