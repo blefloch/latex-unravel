@@ -4980,8 +4980,12 @@
   {
     \token_if_eq_meaning:NNT \l_@@_head_token \@@_special_relax:
       {
-        \@@_set_action_text:x
-          { \iow_char:N \\notexpanded: \g_@@_action_text_str }
+        \exp_after:wN \@@_token_if_expandable:NTF \l_@@_head_tl
+          {
+            \@@_set_action_text:x
+              { \iow_char:N \\notexpanded: \g_@@_action_text_str }
+          }
+          { }
       }
     \@@_print_action:
   }
