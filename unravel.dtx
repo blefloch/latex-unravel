@@ -2270,6 +2270,12 @@
 \@@_tex_primitive:nnn { pdfinsertht       } { convert } { 30 }
 \@@_tex_primitive:nnn { pdfximagebbox     } { convert } { 31 }
 \@@_tex_primitive:nnn { jobname           } { convert } { 32 }
+\sys_if_engine_luatex:T
+  {
+    \@@_tex_primitive:nnn { directlua       } { convert } { 33 }
+    \@@_tex_primitive:nnn { expanded        } { convert } { 34 }
+    \@@_tex_primitive:nnn { luaescapestring } { convert } { 35 }
+  }
 \@@_tex_primitive:nnn { the               } { the } { 0 }
 \@@_tex_primitive:nnn { unexpanded        } { the } { 1 }
 \@@_tex_primitive:nnn { detokenize        } { the } { 5 }
@@ -4134,6 +4140,19 @@
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \@@_prev_input_silent:x
       { { \exp_after:wN \tl_to_str:n \l_@@_tmpa_tl } }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_scan_pdf_ext_toks:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_pdf_ext_toks:
+  {
+    \@@_prev_input_gpush:
+    \@@_scan_toks:NN \c_false_bool \c_true_bool
+    \@@_prev_input_gpop:N \l_@@_tmpa_tl
+    \@@_prev_input_silent:x
+      { { \exp_not:N \exp_not:n \exp_not:V \l_@@_tmpa_tl } }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6945,7 +6964,8 @@
 %   \tn{pdffilemoddate}, \tn{pdffilesize}, \tn{pdfmdfivesum},
 %   \tn{pdffiledump}, \tn{pdfmatch}, \tn{pdflastmatch},
 %   \tn{pdfuniformdeviate}, \tn{pdfnormaldeviate}, \tn{pdfinsertht},
-%   \tn{pdfximagebbox}, and \tn{jobname}.
+%   \tn{pdfximagebbox}, \tn{jobname}, and in
+%   \LuaTeX{} \tn{directlua}, \tn{expanded}, \tn{luaescapestring}.
 % \item |the=111| for \tn{the}, \tn{unexpanded}, and \tn{detokenize}.
 % \item |top_bot_mark=112| \tn{topmark}, \tn{firstmark}, \tn{botmark},
 %   \tn{splitfirstmark}, \tn{splitbotmark}, \tn{topmarks},
@@ -7194,6 +7214,9 @@
         { 28 } \@@_scan_int:
         { 30 } \@@_scan_int:
         { 31 } \@@_scan_pdfximagebbox:
+        { 33 } \@@_scan_directlua:
+        { 34 } \@@_scan_pdf_ext_toks:
+        { 35 } \@@_scan_pdf_ext_toks:
       }
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:
@@ -7227,6 +7250,20 @@
       { \@@_scan_int: }
     \@@_scan_pdf_ext_toks:
     \@@_scan_pdf_ext_toks:
+  }
+\sys_if_engine_luatex:T
+  {
+    \cs_new_protected:Npn \@@_scan_directlua:
+      {
+        \@@_get_x_non_relax:
+        \token_if_eq_catcode:NNTF \l_@@_head_token \c_group_begin_token
+          { \@@_back_input: }
+          {
+            \@@_scan_int:
+            \@@_get_x_non_relax:
+          }
+        \@@_scan_pdf_ext_toks:
+     }
   }
 %    \end{macrocode}
 %
