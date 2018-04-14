@@ -2253,7 +2253,8 @@
 \@@_tex_primitive:nnn { pdfescapename     } { convert } { 14 }
 \@@_tex_primitive:nnn { leftmarginkern    } { convert } { 15 }
 \@@_tex_primitive:nnn { rightmarginkern   } { convert } { 16 }
-\@@_tex_primitive:nnn { pdfstrcmp         } { convert } { 17 }
+\@@_tex_primitive:nnn
+  { \sys_if_engine_xetex:F { pdf } strcmp } { convert } { 17 }
 \@@_tex_primitive:nnn { pdfcolorstackinit } { convert } { 18 }
 \@@_tex_primitive:nnn { pdfescapehex      } { convert } { 19 }
 \@@_tex_primitive:nnn { pdfunescapehex    } { convert } { 20 }
