@@ -72,6 +72,15 @@
 %   See \cs{unravel}.
 % \end{function}
 %
+% \begin{function}{\unravel_get:nnN}
+%   \begin{syntax}
+%     \cs{unravel_get:nnN} \Arg{options} \Arg{code} \meta{tl var}
+%   \end{syntax}
+%   Performs \cs{unravel:nn} with the \meta{options} and \meta{code}
+%   then saves the output into the \meta{tl var}.  The option
+%   |trace=false| is useful in this case.
+% \end{function}
+%
 % \begin{function}{\unravel_setup:n}
 %   \begin{syntax}
 %     \cs{unravel_setup:n} \Arg{options}
@@ -8322,6 +8331,11 @@
     \@@_print_outcome:
     \@@_final_test:
     \@@_exit_point:
+  }
+\cs_new_protected:Npn \unravel_get:nnN #1#2#3
+  {
+    \unravel:nn {#1} {#2}
+    \tl_set:Nx #3 { \gtl_left_tl:N \g_@@_output_gtl }
   }
 %    \end{macrocode}
 % \end{macro}
