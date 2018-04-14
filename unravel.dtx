@@ -191,6 +191,13 @@
 %   number steps.
 % \end{function}
 %
+% \begin{function}{trace, trace-assigns, trace-expansion, trace-other}
+%   Boolean options (default \texttt{true}) controlling what steps
+%   produce any output at all.  The |trace| key sets |trace-assigns|,
+%   |trace-expansion|, |trace-other| (and |welcome-message|) to the same
+%   value; these three keys control tracing of different types of steps.
+% \end{function}
+%
 % \begin{function}{welcome-message}
 %   Boolean option (default \texttt{true}) determining whether to
 %   display the welcome message.
@@ -1165,10 +1172,13 @@
 %     \g_@@_default_explicit_prompt_bool , \g_@@_explicit_prompt_bool ,
 %     \g_@@_default_internal_debug_bool  , \g_@@_internal_debug_bool  ,
 %     \g_@@_default_number_steps_bool    , \g_@@_number_steps_bool    ,
+%     \g_@@_default_trace_assigns_bool   , \g_@@_trace_assigns_bool   ,
+%     \g_@@_default_trace_expansion_bool , \g_@@_trace_expansion_bool ,
+%     \g_@@_default_trace_other_bool     , \g_@@_trace_other_bool     ,
 %     \g_@@_default_welcome_message_bool , \g_@@_welcome_message_bool ,
 %   }
 %   Variables for the options |explicit-prompt|,
-%   |internal-debug|, |number-steps|.  The
+%   |internal-debug|, |number-steps|, and so on.  The
 %   \texttt{default_} booleans store the default value of these
 %   options, and are affected by \cs{unravelsetup} or
 %   \cs{unravel_setup:n}.
@@ -1176,12 +1186,21 @@
 \bool_new:N \g_@@_default_explicit_prompt_bool
 \bool_new:N \g_@@_default_internal_debug_bool
 \bool_new:N \g_@@_default_number_steps_bool
-\bool_gset_true:N \g_@@_default_number_steps_bool
+\bool_new:N \g_@@_default_trace_assigns_bool
+\bool_new:N \g_@@_default_trace_expansion_bool
+\bool_new:N \g_@@_default_trace_other_bool
 \bool_new:N \g_@@_default_welcome_message_bool
+\bool_gset_true:N \g_@@_default_number_steps_bool
+\bool_gset_true:N \g_@@_default_trace_assigns_bool
+\bool_gset_true:N \g_@@_default_trace_expansion_bool
+\bool_gset_true:N \g_@@_default_trace_other_bool
 \bool_gset_true:N \g_@@_default_welcome_message_bool
 \bool_new:N \g_@@_explicit_prompt_bool
 \bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
+\bool_new:N \g_@@_trace_assigns_bool
+\bool_new:N \g_@@_trace_expansion_bool
+\bool_new:N \g_@@_trace_other_bool
 \bool_new:N \g_@@_welcome_message_bool
 %    \end{macrocode}
 % \end{variable}
@@ -2879,7 +2898,7 @@
     \tl_set:Nx \l_@@_tmpa_tl
       { \exp_args:NV \exp_not:o \l_@@_head_tl }
     \@@_back_input:V \l_@@_tmpa_tl
-    \@@_print_done:x
+    \@@_print_expansion:x
       { \tl_to_str:N \l_@@_head_tl = \tl_to_str:N \l_@@_tmpa_tl }
   }
 %    \end{macrocode}
@@ -2987,7 +3006,7 @@
       }
       { \@@_macro_call_safe: }
     \exp_args:NV \@@_back_input:o \l_@@_head_tl
-    \@@_print_done:x { \g_@@_action_text_str }
+    \@@_print_expansion:x { \g_@@_action_text_str }
   }
 \cs_new_protected:Npn \@@_macro_call_safe:
   {
@@ -6665,7 +6684,7 @@
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_put_left:NV \l_@@_head_tl \l_@@_tmpa_tl
     \tl_use:N \l_@@_head_tl \scan_stop:
-    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_print_assignment:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 %
@@ -6769,14 +6788,14 @@
     \int_compare:nNnTF { \tl_tail:n {#2} } = \c_zero
       {
         \@@_prev_input_gpush:N \l_@@_head_tl
-        \@@_print_action:
+        \@@_print_assignment:
         \@@_scan_int:
         \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_prev_input_silent:V \l_@@_head_tl
       }
       {
         \@@_prev_input_silent:V \l_@@_head_tl
-        \@@_print_action:
+        \@@_print_assignment:
       }
     \tl_set_eq:NN \l_@@_defined_tl \l_@@_head_tl
     \exp_args:NNf \@@_do_register_set:Nn #1
@@ -6874,7 +6893,7 @@
 % Let \TeX{} trigger an error.
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { undefined_cs }                  % 103
-  { \tl_use:N \l_@@_head_tl \@@_print_action: }
+  { \tl_use:N \l_@@_head_tl \@@_print_expansion: }
 %    \end{macrocode}
 %
 % \begin{macro}{\@@_expandafter:, \@@_unless:, \@@_unless_bad:}
@@ -6891,7 +6910,7 @@
     \gtl_concat:NNN \l_@@_head_gtl
       \l_@@_tmpb_gtl \l_@@_head_gtl
     \@@_prev_input_gpush_gtl:N \l_@@_head_gtl
-    \@@_print_action:x { \gtl_to_str:N \l_@@_head_gtl }
+    \@@_print_expansion:x { \gtl_to_str:N \l_@@_head_gtl }
     \@@_get_next:
     \@@_token_if_expandable:NTF \l_@@_head_token
       { \@@_expand_do:N \prg_do_nothing: }
@@ -6901,7 +6920,7 @@
       { back_input: ~ \gtl_to_str:N \l_@@_head_gtl }
     \gtl_pop_left:N \l_@@_head_gtl
     \@@_back_input:
-    \@@_print_action:
+    \@@_print_expansion:
   }
 \cs_new_protected:Npn \@@_unless:
   {
@@ -7016,7 +7035,7 @@
     \group_begin:
       \msg_warning:nn { unravel } { endinput-ignored }
     \group_end:
-    \@@_print_action:
+    \@@_print_expansion:
   }
 \cs_new_protected:Npn \@@_scantokens:
   {
@@ -7025,7 +7044,7 @@
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_set_rescan:Nno \l_@@_head_tl { } \l_@@_tmpa_tl
     \@@_back_input:V \l_@@_head_tl
-    \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
+    \@@_print_expansion:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
 \cs_new_protected:Npn \@@_input:
   {
@@ -7035,7 +7054,7 @@
     \tl_set:Nx \l_@@_tmpa_tl { \tl_tail:N \l_@@_head_tl }
     \@@_file_get:nN \l_@@_tmpa_tl \l_@@_tmpa_tl
     \@@_back_input:V \l_@@_tmpa_tl
-    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_print_expansion:x { \tl_to_str:N \l_@@_head_tl }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7045,7 +7064,7 @@
 \@@_new_tex_expandable:nn { cs_name }                       % 109
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
-    \@@_print_action:
+    \@@_print_expansion:
     \@@_csname_loop:
     \@@_prev_input_silent:V \l_@@_head_tl
     \@@_prev_input_gpop:N \l_@@_head_tl
@@ -7076,7 +7095,7 @@
 \@@_new_tex_expandable:nn { convert }                       % 110
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
-    \@@_print_action:
+    \@@_print_expansion:
     \int_case:nn \l_@@_head_char_int
       {
         0      \@@_scan_int:
@@ -7156,7 +7175,7 @@
 \cs_new_protected:Npn \@@_get_the:N #1
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
-    \@@_print_action:
+    \@@_print_expansion:
     \int_if_odd:nTF \l_@@_head_char_int
       { % \unexpanded, \detokenize
         \@@_scan_toks:NN \c_false_bool \c_false_bool
@@ -7190,7 +7209,7 @@
             \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
             \@@_back_input:V \l_@@_tmpa_tl
           }
-        \@@_print_action:
+        \@@_print_expansion:
       }
     #1
   }
@@ -7361,7 +7380,7 @@
       }
       {
         \@@_prev_input_gpush:N \l_@@_head_tl
-        \@@_print_action:
+        \@@_print_expansion:
         \int_case:nn \l_@@_head_char_int
           {
             {  0 } { \@@_test_two_chars: } % if
@@ -7409,7 +7428,7 @@
 \cs_new_protected:Npn \@@_cond_true:n #1
   {
     \@@_change_if_limit:nn { 3 } {#1} % wait for else/fi
-    \@@_print_action:x { \g_@@_action_text_str = true }
+    \@@_print_expansion:x { \g_@@_action_text_str = true }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7421,7 +7440,7 @@
   {
     \@@_cond_false_loop:n {#1}
     \@@_cond_false_common:
-    \@@_print_action:x { \g_@@_action_text_str = false }
+    \@@_print_expansion:x { \g_@@_action_text_str = false }
   }
 \cs_new_protected:Npn \@@_cond_false_loop:n #1
   {
@@ -7511,7 +7530,7 @@
 \cs_new_protected:Npn \@@_test_ifx:n #1
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
-    \@@_print_action:
+    \@@_print_expansion:
     \@@_get_next:
     \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
     \cs_set_eq:NN \l_@@_tmpb_token \l_@@_head_token
@@ -7559,7 +7578,7 @@
 \cs_new_protected:Npn \@@_test_case:n #1
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
-    \@@_print_action:
+    \@@_print_expansion:
     \bool_if:NT \g_@@_internal_debug_bool { \iow_term:n { {\ifcase level~#1} } }
     \@@_scan_int:
     \@@_prev_input_get:N \l_@@_head_tl
@@ -7567,7 +7586,7 @@
     % ^^A does text_case_aux use prev_input_seq?
     \exp_args:No \@@_test_case_aux:nn { \l_@@_head_tl } {#1}
     \@@_prev_input_gpop:N \l_@@_head_tl
-    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_print_expansion:x { \tl_to_str:N \l_@@_head_tl }
   }
 \cs_new_protected:Npn \@@_test_case_aux:nn #1#2
   {
@@ -7652,8 +7671,8 @@
                 => ~ skipped ~ to ~ \tl_to_str:N \l_@@_head_tl
               }
           }
-        % ^^A todo: in this print_action the token itself is missing.
-        \@@_print_action:
+        % ^^A todo: in the terminal output the token itself is missing.
+        \@@_print_expansion:
         \@@_cond_pop:
       }
   }
@@ -7760,7 +7779,6 @@
           \@@_print_state_input:
         }
     \group_end:
-    \@@_prompt:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7842,48 +7860,56 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_print_action:, \@@_print_action:x}
+% \begin{macro}{\@@_print_action:, \@@_print_action:x, \@@_print_assignment:, \@@_print_assignment:x, \@@_print_expansion:, \@@_print_expansion:x, \@@_print_action_aux:N}
+%   Some of these commands are currently synonyms but we may decide to
+%   make some options act differently on them.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_action:
-  {
-    \int_gincr:N \g_@@_step_int
-    \@@_print:x
-      {
-        [=====
-        \bool_if:NT \g_@@_number_steps_bool
-          { ~ Step ~ \int_to_arabic:n { \g_@@_step_int } ~ }
-        =====]~
-        \int_compare:nNnTF
-          { \str_count:N \g_@@_action_text_str }
-          > { \g_@@_max_action_int }
-          {
-            \str_range:Nnn \g_@@_action_text_str
-              { 1 } { \g_@@_max_action_int - 3 } ...
-          }
-          { \g_@@_action_text_str }
-      }
-    \@@_print_state:
-  }
+  { \@@_print_action_aux:N \g_@@_trace_other_bool }
 \cs_new_protected:Npn \@@_print_action:x #1
   {
     \@@_set_action_text:x {#1}
     \@@_print_action:
   }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_print_gtl_action:N}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_print_gtl_action:N #1
+\cs_new_protected:Npn \@@_print_assignment:
+  { \@@_print_action_aux:N \g_@@_trace_assigns_bool }
+\cs_new_protected:Npn \@@_print_assignment:x #1
   {
-    \@@_print_action:x { \gtl_to_str:N #1 }
+    \@@_set_action_text:x {#1}
+    \@@_print_assignment:
   }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_print_done:x}
-%    \begin{macrocode}
-\cs_new_eq:NN \@@_print_done:x \@@_print_action:x
+\cs_new_protected:Npn \@@_print_expansion:
+  { \@@_print_action_aux:N \g_@@_trace_expansion_bool }
+\cs_new_protected:Npn \@@_print_expansion:x #1
+  {
+    \@@_set_action_text:x {#1}
+    \@@_print_expansion:
+  }
+\cs_new_protected:Npn \@@_print_action_aux:N #1
+  {
+    \int_gdecr:N \g_@@_nonstop_int
+    \int_gincr:N \g_@@_step_int
+    \bool_if:NT #1
+      {
+        \@@_print:x
+          {
+            [=====
+            \bool_if:NT \g_@@_number_steps_bool
+              { ~ Step ~ \int_to_arabic:n { \g_@@_step_int } ~ }
+            =====]~
+            \int_compare:nNnTF
+              { \str_count:N \g_@@_action_text_str }
+              > { \g_@@_max_action_int }
+              {
+                \str_range:Nnn \g_@@_action_text_str
+                  { 1 } { \g_@@_max_action_int - 3 } ...
+              }
+              { \g_@@_action_text_str }
+          }
+        \@@_print_state:
+        \@@_prompt:
+      }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7892,7 +7918,7 @@
 \cs_new_protected:Npn \@@_print_assigned_token:
   {
     \@@_after_assignment: % ^^A todo: simplify
-    \@@_print_action:x
+    \@@_print_assignment:x
       {
         Set~ \exp_after:wN \token_to_str:N \l_@@_defined_tl
         = \exp_after:wN \token_to_meaning:N \l_@@_defined_tl
@@ -7902,7 +7928,7 @@
 \cs_new_protected:Npn \@@_print_assigned_register:
   {
     \@@_after_assignment: % ^^A todo: simplify
-    \@@_exp_args:Nx \@@_print_action:x
+    \@@_exp_args:Nx \@@_print_assignment:x
       {
         \exp_not:n
           {
@@ -7939,6 +7965,7 @@
           { [=====~Start~=====] }
       }
     \@@_print_state:
+    \@@_prompt:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7957,7 +7984,6 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prompt:
   {
-    \int_gdecr:N \g_@@_nonstop_int
     \int_compare:nNnF \g_@@_nonstop_int > \c_zero
       {
         \group_begin:
@@ -8034,7 +8060,7 @@
 \cs_new_protected:Npn \@@_prompt_help:
   {
     \@@_print:n { "m":~meaning~of~first~token }
-    \@@_print:n { "q":~semi-quiet~(same~as~"o1") }
+    \@@_print:n { "q":~semi-quiet~(same~as~"o-1") }
     \@@_print:n { "x"/"X":~exit~this~instance~of~unravel/TeX }
     \@@_print:n { "s<num>":~do~<num>~steps~silently }
     \@@_print:n
@@ -8091,6 +8117,8 @@
             \int_gset_eq:NN \g_@@_max_output_int \c_max_int
             \int_gset_eq:NN \g_@@_max_input_int \c_max_int
             \@@_print_state:
+            \int_gdecr:N \g_@@_nonstop_int
+            \@@_prompt:
           }
         \@@_prompt_all_aux:N \g_@@_max_output_int
         \@@_prompt_all_aux:N \g_@@_max_input_int
@@ -8194,6 +8222,9 @@
     max-output       .int_gset:N  = \g_@@_default_max_output_int ,
     max-input        .int_gset:N  = \g_@@_default_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
+    trace-assigns    .bool_gset:N = \g_@@_default_trace_assign_bool ,
+    trace-expansion  .bool_gset:N = \g_@@_default_trace_expansion_bool ,
+    trace-other      .bool_gset:N = \g_@@_default_trace_other_bool ,
     welcome-message  .bool_gset:N = \g_@@_default_welcome_message_bool ,
   }
 \keys_define:nn { unravel }
@@ -8204,14 +8235,17 @@
     max-output       .int_gset:N  = \g_@@_max_output_int ,
     max-input        .int_gset:N  = \g_@@_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
+    trace-assigns    .bool_gset:N = \g_@@_trace_assigns_bool ,
+    trace-expansion  .bool_gset:N = \g_@@_trace_expansion_bool ,
+    trace-other      .bool_gset:N = \g_@@_trace_other_bool ,
     welcome-message  .bool_gset:N = \g_@@_welcome_message_bool ,
   }
 %    \end{macrocode}
 %
-% The |machine| option is somewhat special so it is clearer to define
-% it separately.  The code is identical for |unravel/defaults| and
-% |unravel| keys.  To be sure of which options are set, use |.meta:nn|
-% and give the path explicitly.
+% The |machine| and |trace| options are somewhat special so it is
+% clearer to define them separately.  The code is identical for
+% |unravel/defaults| and |unravel| keys.  To be sure of which options
+% are set, use |.meta:nn| and give the path explicitly.
 %    \begin{macrocode}
 \tl_map_inline:nn { { /defaults } { } }
   {
@@ -8228,6 +8262,14 @@
             number-steps    = false ,
             welcome-message = false ,
           } ,
+        trace          .meta:nn =
+          { unravel #1 }
+          {
+            trace-assigns = ##1 ,
+            trace-expansion = ##1 ,
+            trace-other = ##1 ,
+            welcome-message = ##1 ,
+          }
       }
   }
 %    \end{macrocode}
@@ -8293,10 +8335,14 @@
     \bool_gset_eq:NN \g_@@_explicit_prompt_bool \g_@@_default_explicit_prompt_bool
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
+    \bool_gset_eq:NN \g_@@_trace_assigns_bool \g_@@_default_trace_assigns_bool
+    \bool_gset_eq:NN \g_@@_trace_expansion_bool \g_@@_default_trace_expansion_bool
+    \bool_gset_eq:NN \g_@@_trace_other_bool \g_@@_default_trace_other_bool
     \bool_gset_eq:NN \g_@@_welcome_message_bool \g_@@_default_welcome_message_bool
     \int_gset_eq:NN \g_@@_max_action_int \g_@@_default_max_action_int
     \int_gset_eq:NN \g_@@_max_output_int \g_@@_default_max_output_int
     \int_gset_eq:NN \g_@@_max_input_int  \g_@@_default_max_input_int
+    \int_gzero:N \g_@@_nonstop_int
   }
 %    \end{macrocode}
 % \end{macro}
