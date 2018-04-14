@@ -8414,7 +8414,7 @@
 % \begin{macro}{\unravel}
 %   Simply call an underlying code-level command.
 %    \begin{macrocode}
-\NewDocumentCommand \unravel { O { } m } { \unravel:nn {#1} {#2} }
+\NewDocumentCommand \unravel { O { } +m } { \unravel:nn {#1} {#2} }
 %    \end{macrocode}
 % \end{macro}
 %
