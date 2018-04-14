@@ -78,7 +78,7 @@
 %   \end{syntax}
 %   Performs \cs{unravel:nn} with the \meta{options} and \meta{code}
 %   then saves the output into the \meta{tl var}.  The option
-%   |trace=false| is useful in this case.
+%   |mute| is useful in this case.
 % \end{function}
 %
 % \begin{function}{\unravel_setup:n}
@@ -195,16 +195,29 @@
 %   part, and the input part.
 % \end{function}
 %
+% \begin{function}{mute}
+%   Make none of the steps produce any output, by setting
+%   |trace-assigns|, |trace-expansion|, |trace-other|, |welcome-message|
+%   to \texttt{false}.  This is only useful with \cs{unravel_get:nnN} or
+%   when other options change some of these settings.
+% \end{function}
+%
 % \begin{function}{number-steps}
 %   Boolean option (default \texttt{true}) determining whether to
 %   number steps.
 % \end{function}
 %
-% \begin{function}{trace, trace-assigns, trace-expansion, trace-other}
+% \begin{function}{online}
+%   Integer option determining where to write the output: terminal and
+%   log if the option is positive, log only if the option is zero,
+%   neither if the option is negative.
+% \end{function}
+%
+% \begin{function}{trace-assigns, trace-expansion, trace-other}
 %   Boolean options (default \texttt{true}) controlling what steps
-%   produce any output at all.  The |trace| key sets |trace-assigns|,
-%   |trace-expansion|, |trace-other| (and |welcome-message|) to the same
-%   value; these three keys control tracing of different types of steps.
+%   produce any output at all.  The keys |trace-assigns|,
+%   |trace-expansion|, |trace-other| control tracing of different types
+%   of steps.
 % \end{function}
 %
 % \begin{function}{welcome-message}
@@ -594,6 +607,7 @@
 \cs_generate_variant:Nn \seq_push:Nn { Nf }
 \cs_generate_variant:Nn \str_head:n { f }
 \cs_generate_variant:Nn \tl_to_str:n { o }
+\cs_generate_variant:Nn \tl_if_eq:nnTF { o }
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
 \cs_generate_variant:Nn \tl_if_in:nnF { nV }
 \cs_generate_variant:Nn \tl_if_in:nnTF { nV }
@@ -1167,12 +1181,10 @@
 %    \end{macrocode}
 % \end{variable}
 %
-% \begin{variable}{\g_@@_nonstop_int, \g_@@_noise_int}
+% \begin{variable}{\g_@@_nonstop_int}
 %   The number of prompts to skip.
 %    \begin{macrocode}
 \int_new:N \g_@@_nonstop_int
-\int_new:N \g_@@_noise_int
-\int_gset_eq:NN \g_@@_noise_int \c_one
 %    \end{macrocode}
 % \end{variable}
 %
@@ -1181,6 +1193,7 @@
 %     \g_@@_default_explicit_prompt_bool , \g_@@_explicit_prompt_bool ,
 %     \g_@@_default_internal_debug_bool  , \g_@@_internal_debug_bool  ,
 %     \g_@@_default_number_steps_bool    , \g_@@_number_steps_bool    ,
+%     \g_@@_default_online_int           , \g_@@_online_int           ,
 %     \g_@@_default_trace_assigns_bool   , \g_@@_trace_assigns_bool   ,
 %     \g_@@_default_trace_expansion_bool , \g_@@_trace_expansion_bool ,
 %     \g_@@_default_trace_other_bool     , \g_@@_trace_other_bool     ,
@@ -1188,18 +1201,20 @@
 %   }
 %   Variables for the options |explicit-prompt|,
 %   |internal-debug|, |number-steps|, and so on.  The
-%   \texttt{default_} booleans store the default value of these
+%   \texttt{default_} booleans/integers store the default value of these
 %   options, and are affected by \cs{unravelsetup} or
 %   \cs{unravel_setup:n}.
 %    \begin{macrocode}
 \bool_new:N \g_@@_default_explicit_prompt_bool
 \bool_new:N \g_@@_default_internal_debug_bool
 \bool_new:N \g_@@_default_number_steps_bool
+\int_new:N  \g_@@_default_online_int
 \bool_new:N \g_@@_default_trace_assigns_bool
 \bool_new:N \g_@@_default_trace_expansion_bool
 \bool_new:N \g_@@_default_trace_other_bool
 \bool_new:N \g_@@_default_welcome_message_bool
 \bool_gset_true:N \g_@@_default_number_steps_bool
+\int_gset_eq:NN   \g_@@_default_online_int \c_one
 \bool_gset_true:N \g_@@_default_trace_assigns_bool
 \bool_gset_true:N \g_@@_default_trace_expansion_bool
 \bool_gset_true:N \g_@@_default_trace_other_bool
@@ -1207,6 +1222,7 @@
 \bool_new:N \g_@@_explicit_prompt_bool
 \bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
+\int_new:N  \g_@@_online_int
 \bool_new:N \g_@@_trace_assigns_bool
 \bool_new:N \g_@@_trace_expansion_bool
 \bool_new:N \g_@@_trace_other_bool
@@ -1341,6 +1357,14 @@
 % \begin{variable}{\l_@@_head_meaning_tl}
 %    \begin{macrocode}
 \tl_new:N \l_@@_head_meaning_tl
+%    \end{macrocode}
+% \end{variable}
+%
+% \begin{variable}{\l_@@_argi_tl, \l_@@_argii_tl}
+%   Token list variables used to store first/second arguments.
+%    \begin{macrocode}
+\tl_new:N \l_@@_argi_tl
+\tl_new:N \l_@@_argii_tl
 %    \end{macrocode}
 % \end{variable}
 %
@@ -2329,11 +2353,15 @@
   {
     \cs_new_protected:Npn \@@_get_next_notexpanded:
       {
-        \@@_exp_args:NNx \use:nn \@@_notexpanded_test:w
-          { \scan_stop: \exp_after:wN \cs_to_str:N \l_@@_head_tl Z }
-          \q_mark \@@_notexpanded_expand:n
-          #1 Z \q_mark \use_none:n
-          \q_stop
+        \tl_if_eq:onTF { \l_@@_head_tl } { \@@_unravel_marker: }
+          { \@@_get_next_marker: }
+          {
+            \@@_exp_args:NNx \use:nn \@@_notexpanded_test:w
+              { \scan_stop: \exp_after:wN \cs_to_str:N \l_@@_head_tl Z }
+              \q_mark \@@_notexpanded_expand:n
+              #1 Z \q_mark \use_none:n
+              \q_stop
+          }
       }
     \cs_new_protected:Npn \@@_notexpanded_test:w
         ##1 #1 ##2 Z \q_mark ##3##4 \q_stop
@@ -2368,6 +2396,27 @@
   }
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\@@_get_next_marker:}
+%   This is used to deal with nested unravel.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_next_marker:
+  {
+    \@@_get_next:
+    \tl_if_eq:onTF \l_@@_head_tl { \@@:nn }
+      { \@@_error:nxxxx { nested-unravel } { } { } { } { } }
+      { \@@_error:nxxxx { internal } { marker~unknown } { } { } { } }
+    \@@_input_gpop_item:NF \l_@@_argi_tl
+      { \@@_error:nxxxx { internal } { marker~1 } { } { } { } }
+    \@@_input_gpop_item:NF \l_@@_argii_tl
+      { \@@_error:nxxxx { internal } { marker~2 } { } { } { } }
+    \exp_args:Nno \keys_set:nn { unravel } \l_@@_argi_tl
+    \@@_exp_args:Nx \@@_back_input:n
+      { \exp_not:N \exp_not:n { \exp_not:o \l_@@_argii_tl } }
+    \@@_get_next:
+  }
+%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_get_token:}
@@ -7725,7 +7774,7 @@
 % \end{variable}
 % \end{macro}
 %
-% \begin{macro}{\@@_print:n, \@@_print:x}
+% \begin{macro}{\@@_print:n, \@@_print:x, \@@_log:n}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print:n #1
   {
@@ -7735,16 +7784,30 @@
   }
 \cs_new_protected:Npn \@@_print:x
   { \@@_exp_args:Nx \@@_print:n }
+\cs_new_protected:Npn \@@_log:n #1
+  {
+    \tl_set:Nn \l_@@_print_tl {#1}
+    \@@_print_normalize_null:
+    \@@_exp_args:Nx \iow_log:n { \l_@@_print_tl }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_print_message:nn}
 %   The message to be printed should come already detokenized, as~|#2|.
 %   It will be wrapped to 80 characters per line, with~|#1| before each
-%   line.
+%   line.  The message is properly suppressed (or sent only to the log)
+%   according to \cs{g_@@_online_int}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_message:nn #1 #2
-  { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_print:n }
+  {
+    \int_compare:nNnF \g_@@_online_int < \c_zero
+      {
+        \int_compare:nNnTF \g_@@_online_int = \c_zero
+          { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_log:n }
+          { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_print:n }
+      }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -7781,7 +7844,7 @@
     \group_begin:
       \@@_set_escapechar:n { 92 }
       \tl_use:N \g_@@_before_print_state_tl
-      \int_compare:nNnT \g_@@_noise_int > \c_zero
+      \int_compare:nNnT \g_@@_online_int > \c_zero
         {
           \@@_print_state_output:
           \@@_print_state_prev:
@@ -7983,7 +8046,7 @@
 %   Final message.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_outcome:
-  { \@@_print:n { [=====~End~=====] } }
+  { \@@_print_message:nn { } { [=====~End~=====] } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -8023,7 +8086,7 @@
             { m } { \@@_print_meaning: \@@_prompt_aux: }
             { q }
               {
-                \int_gset:Nn \g_@@_noise_int { -1 }
+                \int_gset:Nn \g_@@_online_int { -1 }
                 \int_gzero:N \g_@@_nonstop_int
               }
             { x }
@@ -8035,7 +8098,7 @@
             { s } { \@@_prompt_scan_int:nn {#1}
               \@@_prompt_silent_steps:n }
             { o } { \@@_prompt_scan_int:nn {#1}
-              { \int_gset:Nn \g_@@_noise_int } }
+              { \int_gset:Nn \g_@@_online_int } }
             { C }
               {
                 \@@_exp_args:Nx \use:n
@@ -8083,10 +8146,10 @@
   {
     \int_compare:nNnF {#1} < \c_zero
       {
-        \int_gset:Nn \g_@@_noise_int { -1 }
+        \int_gset:Nn \g_@@_online_int { -1 }
         \tl_gset:Nn \g_@@_before_prompt_tl
           {
-            \int_gset_eq:NN \g_@@_noise_int \c_one
+            \int_gset_eq:NN \g_@@_online_int \c_one
             \tl_gclear:N \g_@@_before_prompt_tl
           }
         \int_gset:Nn \g_@@_nonstop_int {#1}
@@ -8100,7 +8163,7 @@
   }
 \cs_new_protected:Npn \@@_prompt_vert:Nn #1#2
   {
-    \int_gset:Nn \g_@@_noise_int { -1 }
+    \int_gset:Nn \g_@@_online_int { -1 }
     \tl_gset:Nf \g_@@_before_print_state_tl
       {
         \exp_args:NNf \exp_stop_f: \int_compare:nNnTF
@@ -8111,7 +8174,7 @@
               { \int_max:nn { \g_@@_nonstop_int } { 2 } }
           }
           {
-            \int_gset_eq:NN \g_@@_noise_int \c_one
+            \int_gset_eq:NN \g_@@_online_int \c_one
             \tl_gclear:N \g_@@_before_print_state_tl
           }
       }
@@ -8231,6 +8294,7 @@
     max-output       .int_gset:N  = \g_@@_default_max_output_int ,
     max-input        .int_gset:N  = \g_@@_default_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
+    online           .int_gset:N  = \g_@@_default_online_int ,
     trace-assigns    .bool_gset:N = \g_@@_default_trace_assign_bool ,
     trace-expansion  .bool_gset:N = \g_@@_default_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_default_trace_other_bool ,
@@ -8244,6 +8308,7 @@
     max-output       .int_gset:N  = \g_@@_max_output_int ,
     max-input        .int_gset:N  = \g_@@_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
+    online           .int_gset:N  = \g_@@_online_int ,
     trace-assigns    .bool_gset:N = \g_@@_trace_assigns_bool ,
     trace-expansion  .bool_gset:N = \g_@@_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_trace_other_bool ,
@@ -8271,13 +8336,14 @@
             number-steps    = false ,
             welcome-message = false ,
           } ,
-        trace          .meta:nn =
+        mute          .meta:nn =
           { unravel #1 }
           {
-            trace-assigns = ##1 ,
-            trace-expansion = ##1 ,
-            trace-other = ##1 ,
-            welcome-message = ##1 ,
+            trace-assigns = false ,
+            trace-expansion = false ,
+            trace-other = false ,
+            welcome-message = false ,
+            online = -1 ,
           }
       }
   }
@@ -8310,7 +8376,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\unravel:nn}
+% \begin{macro}{\unravel:nn, \@@:nn, \@@_unravel_marker:}
+%   The command starts with \cs{@@_unravel_marker:} to detect nesting of
+%   \tn{unravel} in \tn{unravel} and avoid re-initializing important
+%   variables.
 %   Initialize and setup keys.  Initialize and setup other variables
 %   including the input.  Welcome the user.  Then comes the main loop:
 %   until the input is exhausted, print the current status and do one
@@ -8319,7 +8388,9 @@
 %   (and last) one instead.  If the main loop finished correctly, print
 %   its outcome and finally test that everything is all right.
 %    \begin{macrocode}
-\cs_new_protected:Npn \unravel:nn #1#2
+\cs_new_protected:Npn \unravel:nn { \@@_unravel_marker: \@@:nn }
+\cs_new_eq:NN \@@_unravel_marker: \@@_special_relax:
+\cs_new_protected:Npn \@@:nn #1#2
   {
     \@@_init_key_vars:
     \keys_set:nn { unravel } {#1}
@@ -8349,6 +8420,7 @@
     \bool_gset_eq:NN \g_@@_explicit_prompt_bool \g_@@_default_explicit_prompt_bool
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
+    \int_gset_eq:NN  \g_@@_online_int \g_@@_default_online_int
     \bool_gset_eq:NN \g_@@_trace_assigns_bool \g_@@_default_trace_assigns_bool
     \bool_gset_eq:NN \g_@@_trace_expansion_bool \g_@@_default_trace_expansion_bool
     \bool_gset_eq:NN \g_@@_trace_other_bool \g_@@_default_trace_other_bool
@@ -8490,6 +8562,8 @@
   { The~primitive~\iow_char:N\\endinput~was~ignored. }
 \msg_new:nnn { unravel } { missing-something }
   { Something~is~missing,~sorry! }
+\msg_new:nnn { unravel } { nested-unravel }
+  { The~\iow_char:N\\unravel~command~may~not~be~nested. }
 \msg_new:nnnn { unravel } { tex-error }
   { TeX~sees~"#1"~and~throws~an~error:\\\\ \iow_indent:n {#2} }
   {

@@ -1,0 +1,26 @@
+%
+% Copyright (C) 2018 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { machine }
+
+\TEST { \unravel ~ nested }
+  {
+    \unravel_get:nnN { mute } { ab \unravel { bc } cd } \l_tmpa_tl
+    \exp_args:Nxx \tl_if_eq:nnTF \l_tmpa_tl { \tl_to_str:n { abbccd } }
+      { \TRUE } { \ERROR }
+  }
+
+\END
