@@ -51,6 +51,10 @@
     \unravel [mute]
       { \tl_set:Nx \l_tmpa_tl { \char_generate:nn {65} {11} } }
     \tl_if_eq:onTF \l_tmpa_tl { A } { \TRUE } { \ERROR }
+    \unravel [mute]
+      { \cs_generate_variant:Nn \tl_if_eq:nnTF { fx } }
+    \cs_set_protected:Npn \test:fxTF { \exp_args:Nfx \tl_if_eq:nnTF }
+    \cs_if_eq:NNTF \test:fxTF \tl_if_eq:fxTF { \TRUE } { \ERROR }
   }
 
 \END
