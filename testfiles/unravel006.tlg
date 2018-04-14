@@ -178,7 +178,7 @@ Defining \g__unravel_input_6_gtl on line ...
 || \edef \foo {
 || \ifx 
 |> \notexpanded:\empty \empty a\fi }
-[==========] Compare: \ifx \notexpanded:\empty \empty =false
+[==========] Compare: \ifx \notexpanded:\empty \empty =false => skipped to \fi
 || \edef \foo {
 |> }
 [==========] \edef \foo {}
@@ -361,7 +361,7 @@ TEST 3: \unravel and token_if_expandable
 |> \notexpanded:\if_meaning:w \if_meaning:w \prg_return_false: \else:
 |> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
 |> \fi: \fi: \exp_end: {}{}
-[==========] Compare: \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w =false
+[==========] Compare: \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w =false => skipped to \fi
 || 
 |> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
 |> \fi: \fi: \exp_end: {}{}
@@ -476,7 +476,7 @@ TEST 3: \unravel and token_if_expandable
 [==========] \if_meaning:w = \ifx
 || \if_meaning:w 
 |> \notexpanded:\undefined \undefined \fi: 
-[==========] Compare: \if_meaning:w \notexpanded:\undefined \undefined =false
+[==========] Compare: \if_meaning:w \notexpanded:\undefined \undefined =false => skipped to \fi
 || 
 |> 
 [===== End =====]

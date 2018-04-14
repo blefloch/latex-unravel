@@ -246,7 +246,7 @@ TEST 3: \unravel and glue sign
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =false
+[==========] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =false => skipped to \fi
 || 
 |> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{\__kernel_msg_error:nnx
@@ -447,7 +447,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \if:w \exp_not:N \\exp_not:N  
 |> \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl
 |> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \if:w \exp_not:N \\exp_not:N  =false
+[==========] \if:w \exp_not:N \\exp_not:N  =false => skipped to \fi
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {

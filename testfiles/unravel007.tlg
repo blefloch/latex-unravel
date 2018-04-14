@@ -10,7 +10,7 @@ Defining \g__unravel_input_1_gtl on line ...
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \toks 0\bgroup abc}
-[==========] \iffalse =false
+[==========] \iffalse =false => skipped to \fi
 || 
 |> \toks 0\bgroup abc}
 [==========] \toks = \toks
@@ -35,7 +35,7 @@ Defining \g__unravel_input_4_gtl on line ...
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \unexpanded \bgroup \empty }
-[==========] \iffalse =false
+[==========] \iffalse =false => skipped to \fi
 || 
 |> \unexpanded \bgroup \empty }
 [==========] \unexpanded = \unexpanded

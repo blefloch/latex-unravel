@@ -7558,7 +7558,11 @@
   {
     \@@_cond_false_loop:n {#1}
     \@@_cond_false_common:
-    \@@_print_expansion:x { \g_@@_action_text_str = false }
+    \@@_print_expansion:x
+      {
+        \g_@@_action_text_str = false ~
+        => ~ skipped ~ to ~ \iow_char:N\\fi
+      }
   }
 \cs_new_protected:Npn \@@_cond_false_loop:n #1
   {
