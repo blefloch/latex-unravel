@@ -23,4 +23,12 @@
       { \TRUE } { \ERROR }
   }
 
+\TEST { \unravel ~ tl_if_in }
+  {
+    \unravel_get:nnN { mute }
+      { \tl_if_in:nnTF { abc } { a } { TRUE } { ERROR } }
+      \l_tmpa_tl
+    \TYPE { \l_tmpa_tl }
+  }
+
 \END

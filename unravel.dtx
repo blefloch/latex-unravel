@@ -609,9 +609,6 @@
 \cs_generate_variant:Nn \tl_to_str:n { o }
 \cs_generate_variant:Nn \tl_if_eq:nnTF { o }
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
-\cs_generate_variant:Nn \tl_if_in:nnF { nV }
-\cs_generate_variant:Nn \tl_if_in:nnTF { nV }
-\cs_generate_variant:Nn \tl_if_in:NnTF { No , NV }
 \cs_generate_variant:Nn \tl_if_single_token:nT { V }
 \cs_generate_variant:Nn \gtl_gput_right:Nn { NV }
 \cs_generate_variant:Nn \ior_str_get:NN { Nc }
@@ -624,6 +621,20 @@
 \cs_generate_variant:Nn \gtl_gclear:N { c }
 \cs_generate_variant:Nn \gtl_gclear_new:N { c }
 %    \end{macrocode}
+%
+% \begin{macro}{\@@_tl_if_in:ooTF}
+%   Analogue of \cs{tl_if_in:ooTF} but with an extra group because that
+%   function redefines an auxiliary that may appear in the code being
+%   debugged (see Github issue |#27|).
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_tl_if_in:ooTF #1#2#3#4
+  {
+    \group_begin:
+    \exp_args:Noo \tl_if_in:nnTF {#1} {#2}
+      { \group_end: #3 } { \group_end: #4 }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{variable}{\l_@@_exp_tl}
 % \begin{macro}{\@@_exp_args:Nx, \@@_exp_args:NNx}
@@ -2571,7 +2582,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_set_cmd_aux_cs:
   {
-    \tl_if_in:NoTF \l_@@_head_meaning_tl
+    \@@_tl_if_in:ooTF \l_@@_head_meaning_tl
       { \tl_to_str:n { elect~font } }
       {
         \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
@@ -3072,7 +3083,7 @@
       {
         \tl_set:Nx \l_@@_tmpa_tl
           {^ \exp_after:wN \@@_macro_parameter:N \l_@@_head_tl }
-        \tl_if_in:NVTF \c_@@_parameters_tl \l_@@_tmpa_tl
+        \@@_tl_if_in:ooTF \c_@@_parameters_tl \l_@@_tmpa_tl
           { \@@_macro_call_quick: } { \@@_macro_call_safe: }
       }
       { \@@_macro_call_safe: }
@@ -3957,7 +3968,7 @@
         \@@_scan_decimal_loop:
       }
       {
-        \tl_if_in:nVTF { 0123456789 } \l_@@_head_tl
+        \@@_tl_if_in:ooTF { 0123456789 } \l_@@_head_tl
           {
             \@@_back_input:
             \@@_scan_int:
@@ -4032,7 +4043,7 @@
     \@@_get_x_next:
     \tl_if_empty:NTF \l_@@_head_tl
       { \use_ii:nn }
-      { \tl_if_in:nVTF { 0123456789 } \l_@@_head_tl }
+      { \@@_tl_if_in:ooTF { 0123456789 } \l_@@_head_tl }
       {
         \@@_prev_input:V \l_@@_head_tl
         \@@_scan_decimal_loop:
@@ -7600,7 +7611,7 @@
   {
     #1
     \@@_get_x_non_blank:
-    \tl_if_in:nVF { < = > } \l_@@_head_tl
+    \@@_tl_if_in:ooTF { < = > } \l_@@_head_tl { }
       {
         \@@_error:nnnnn { missing-equals } { } { } { } { }
         \@@_back_input:
