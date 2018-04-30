@@ -7210,8 +7210,8 @@
       {
         0      \@@_scan_int:
         1      \@@_scan_int:
-        2 { \@@_get_next: \@@_prev_input:V \l_@@_head_tl }
-        3 { \@@_get_next: \@@_prev_input:V \l_@@_head_tl }
+        2      \@@_convert_string:
+        3      \@@_convert_meaning:
         4      \@@_scan_font_ident:
         8      \@@_scan_font_ident:
         9      \@@_scan_font_ident:
@@ -7251,6 +7251,20 @@
       }
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_back_input_tl_o:
+  }
+\cs_new_protected:Npn \@@_convert_string:
+  {
+    \@@_get_next:
+    \tl_if_empty:NTF \l_@@_head_tl
+      { \@@_prev_input:x { \gtl_to_str:N \l_@@_head_gtl } }
+      { \@@_prev_input:V \l_@@_head_tl }
+  }
+\cs_new_protected:Npn \@@_convert_meaning:
+  {
+    \@@_get_next:
+    \tl_if_empty:NTF \l_@@_head_tl
+      { \@@_prev_input:n { \l_@@_head_token } }
+      { \@@_prev_input:V \l_@@_head_tl }
   }
 \cs_new_protected:Npn \@@_scan_pdfstrcmp:
   {

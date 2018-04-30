@@ -31,4 +31,14 @@
     \TYPE { \l_tmpa_tl }
   }
 
+\TEST { \unravel ~ tl_if_head_is_group }
+  {
+    \unravel_get:nnN { mute }
+      {
+        \tl_set:Nx \l_tmpb_tl { \token_to_str:N { \token_to_meaning:N } }
+        \tl_if_head_is_group:nTF { {,} . } { TRUE } { ERROR }
+      }
+      \l_tmpa_tl
+    \TYPE { \l_tmpa_tl | \l_tmpb_tl }
+  }
 \END
