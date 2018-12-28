@@ -23,9 +23,9 @@
 %
 % \title{The \textsf{unravel} package: \\
 %   watching TeX digest tokens\thanks{This
-%     file has version number 0.2e, last revised 2018/04/04.}}
+%     file has version number 0.2f, last revised 2018/12/28.}}
 % \author{Bruno Le Floch}
-% \date{2018/04/04}
+% \date{2018/12/28}
 %
 % \maketitle
 % \tableofcontents
@@ -527,7 +527,7 @@
 % an error.
 %    \begin{macrocode}
 \RequirePackage{expl3,xparse}[2018/02/21]
-\RequirePackage{gtl}[2018/04/04]
+\RequirePackage{gtl}[2018/12/28]
 \csname cs_if_exist:cF\endcsname{str_range:nnn}{\RequirePackage{l3str}}
 %    \end{macrocode}
 %
@@ -545,7 +545,7 @@
   {%
     \csname @@_setup_restore:\endcsname
     \ProvidesExplPackage
-      {unravel} {2018/04/04} {0.2e} {Watching TeX digest tokens}%
+      {unravel} {2018/12/28} {0.2f} {Watching TeX digest tokens}%
     \csname @@_setup_unravel:\endcsname
   }%
 %    \end{macrocode}
