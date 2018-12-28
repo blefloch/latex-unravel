@@ -565,10 +565,10 @@
 %   code when that is clearer (typically when testing the meaning of
 %   a token against that of a primitive).
 %    \begin{macrocode}
-\cs_new_eq:NN \@@_currentgrouptype:      \etex_currentgrouptype:D
+\cs_new_eq:NN \@@_currentgrouptype:      \tex_currentgrouptype:D
 \cs_new_protected:Npn \@@_set_escapechar:n
   { \int_set:Nn \tex_escapechar:D }
-\cs_new_eq:NN \@@_everyeof:w             \etex_everyeof:D
+\cs_new_eq:NN \@@_everyeof:w             \tex_everyeof:D
 \cs_new_eq:NN \@@_everypar:w             \tex_everypar:D
 \cs_new_eq:NN \@@_hbox:w                 \tex_hbox:D
 \cs_new_eq:NN \@@_mag:                   \tex_mag:D
@@ -595,7 +595,7 @@
 %   These are not quite primitives, but are very low-level
 %   |ior| streams to prompt the user explicitly or not.
 %    \begin{macrocode}
-\cs_new_eq:NN \c_@@_prompt_ior \c_sixteen
+\int_const:Nn \c_@@_prompt_ior { 16 }
 \int_const:Nn \c_@@_noprompt_ior { -1 }
 %    \end{macrocode}
 % \end{macro}
@@ -767,13 +767,13 @@
 %   character is a space, the charcode test is true, and if there is no
 %   escape charcter, the test is unfinished after |\token_to_str:N \ |.
 %   In both of those cases, \cs{@@_strip_escape_aux:w} inserts
-%   |-\@@_number:w \fi: \c_zero|.  If the escape character was a
+%   |-\@@_number:w \fi: \c_zero_int|.  If the escape character was a
 %   space, the test was true, and \cs{int_value:w} converts
-%   \cs{c_zero} to~|0|, hence the leading roman numeral expansion
+%   \cs{c_zero_int} to~|0|, hence the leading roman numeral expansion
 %   removes a space from what follows (it is important that what follows
 %   cannot start with a digit).  Otherwise, the test takes~|-| as its
 %   second operand, is false, and the roman numeral expansion only sees
-%   \cs{c_zero}, thus does not remove anything from what follows.
+%   \cs{c_zero_int}, thus does not remove anything from what follows.
 %    \begin{macrocode}
 \cs_new:Npn \@@_strip_escape:w
   {
@@ -781,9 +781,9 @@
       \if_charcode:w \token_to_str:N \ \@@_strip_escape_aux:w \fi:
       \@@_strip_escape_aux:N
   }
-\cs_new:Npn \@@_strip_escape_aux:N #1 { \c_zero }
+\cs_new:Npn \@@_strip_escape_aux:N #1 { \c_zero_int }
 \cs_new:Npn \@@_strip_escape_aux:w #1#2
-  { - \@@_number:w #1 \c_zero }
+  { - \@@_number:w #1 \c_zero_int }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -1156,8 +1156,8 @@
   {
     \int_case:nnF {#1}
       {
-        { 2 } { \@@_join_get_aux:NNN \skip_eval:n \etex_glueexpr:D }
-        { 3 } { \@@_join_get_aux:NNN \muskip_eval:n \etex_muexpr:D }
+        { 2 } { \@@_join_get_aux:NNN \skip_eval:n \tex_glueexpr:D }
+        { 3 } { \@@_join_get_aux:NNN \muskip_eval:n \tex_muexpr:D }
       }
       {
         \@@_error:nnnnn { internal } { join-factor } { } { } { }
@@ -1225,7 +1225,7 @@
 \bool_new:N \g_@@_default_trace_other_bool
 \bool_new:N \g_@@_default_welcome_message_bool
 \bool_gset_true:N \g_@@_default_number_steps_bool
-\int_gset_eq:NN   \g_@@_default_online_int \c_one
+\int_gset:Nn   \g_@@_default_online_int { 1 }
 \bool_gset_true:N \g_@@_default_trace_assigns_bool
 \bool_gset_true:N \g_@@_default_trace_expansion_bool
 \bool_gset_true:N \g_@@_default_trace_other_bool
@@ -2712,7 +2712,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_input_if_empty:TF
   {
-    \int_compare:nNnTF \g_@@_input_int = \c_zero
+    \int_compare:nNnTF \g_@@_input_int = 0
       { \use_i:nn }
       {
         \gtl_if_empty:cTF
@@ -2739,7 +2739,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_input_split:
   {
-    \int_compare:nNnT \g_@@_input_int = \c_one
+    \int_compare:nNnT \g_@@_input_int = 1
       {
         \exp_args:Nc \@@_input_split_aux:N
           { g_@@_input_1_gtl }
@@ -2857,7 +2857,7 @@
 %    \begin{macrocode}
 \prg_new_protected_conditional:Npnn \@@_input_gpop_item:N #1 { F }
   {
-    \int_compare:nNnTF \g_@@_input_int = \c_zero
+    \int_compare:nNnTF \g_@@_input_int = 0
       { \prg_return_false: }
       {
         \exp_args:Nc \@@_input_gpop_item_aux:NN
@@ -2869,10 +2869,10 @@
     \gtl_gpop_left_item:NNTF #1#2
       { \prg_return_true: }
       {
-        \int_compare:nNnTF { \gtl_extra_end:N #1 } > \c_zero
+        \int_compare:nNnTF { \gtl_extra_end:N #1 } > 0
           { \prg_return_false: }
           {
-            \int_compare:nNnTF \g_@@_input_int = \c_one
+            \int_compare:nNnTF \g_@@_input_int = 1
               { \prg_return_false: }
               {
                 \@@_input_merge:
@@ -2896,7 +2896,7 @@
   { \tl_clear:N #1 \@@_input_gpop_tl_aux:N #1 }
 \cs_new_protected:Npn \@@_input_gpop_tl_aux:N #1
   {
-    \int_compare:nNnF \g_@@_input_int = \c_zero
+    \int_compare:nNnF \g_@@_input_int = 0
       {
         \exp_args:Nc \@@_input_gpop_tl_aux:NN
           { g_@@_input_ \int_use:N \g_@@_input_int _gtl } #1
@@ -2912,8 +2912,8 @@
         \@@_input_gpop_tl_aux:N #2
       }
       {
-        \int_compare:nNnTF \g_@@_input_int > \c_one
-          { \int_compare:nNnTF { \gtl_extra_end:N #1 } > \c_zero }
+        \int_compare:nNnTF \g_@@_input_int > 1
+          { \int_compare:nNnTF { \gtl_extra_end:N #1 } > 0 }
           { \use_i:nn }
           {
             \tl_put_right:Nx #2 { \gtl_left_tl:N #1 }
@@ -3403,11 +3403,11 @@
     \@@_gtl_if_head_is_definable:NTF \l_@@_head_gtl
       { \prg_return_false: }
       {
-        \str_if_eq_x:nnTF
+        \str_if_eq:eeTF
           { \str_head:f { \gtl_to_str:N \l_@@_head_gtl } } {#1}
           { \prg_return_true: }
           {
-            \str_if_eq_x:nnTF
+            \str_if_eq:eeTF
               { \str_head:f { \gtl_to_str:N \l_@@_head_gtl } } {#2}
               { \prg_return_true: }
               { \prg_return_false: }
@@ -3574,7 +3574,7 @@
     \int_compare:nNnT {#1} = { 8 }
       {
         \@@_tex_error:nV { the-cannot } \l_@@_head_tl
-        \@@_scan_something_internal_auxii:Vn \c_zero { 0 }
+        \@@_scan_something_internal_auxii:nn 0 { 0 }
         \@@_break:w
       }
     \tl_if_empty:nF {#2}
@@ -3696,7 +3696,7 @@
 \cs_new:Npn \@@_thing_register:
   {
     \int_eval:n { \l_@@_head_char_int / 1 000 000 - 1 }
-    \int_compare:nNnT { \tl_tail:V \l_@@_head_char_int } = \c_zero
+    \int_compare:nNnT { \tl_tail:V \l_@@_head_char_int } = 0
       { \@@_scan_int: }
   }
 %    \end{macrocode}
@@ -3707,7 +3707,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_toks_register:
   {
-    \int_compare:nNnT \l_@@_head_char_int = \c_zero
+    \int_compare:nNnT \l_@@_head_char_int = 0
       { \@@_scan_int: }
   }
 %    \end{macrocode}
@@ -3732,7 +3732,7 @@
                 { 1 } \dim_eval:n
                 { 2 } \skip_eval:n
               }
-            { \int_compare:nNnT {#1} = { 3 } \etex_mutoglue:D #3 }
+            { \int_compare:nNnT {#1} = { 3 } \tex_mutoglue:D #3 }
           }
       }
       {
@@ -3743,7 +3743,7 @@
           }
           {
             \@@_tex_error:nV { incompatible-units } #3
-            \tl_set:Nx #4 { \muskip_eval:n { \etex_gluetomu:D #3 } }
+            \tl_set:Nx #4 { \muskip_eval:n { \tex_gluetomu:D #3 } }
           }
       }
   }
@@ -3899,7 +3899,7 @@
   }
 \cs_new_protected:Npn \@@_scan_int_explicit:Nn #1#2
   {
-    \if_int_compare:w \c_one
+    \if_int_compare:w 1
         < #2 1 \exp_after:wN \exp_not:N \l_@@_head_tl \exp_stop_f:
       \exp_after:wN \use_i:nn
     \else:
@@ -4289,7 +4289,7 @@
           {
             \@@_prev_input_silent:V \c_right_brace_str
             \tl_put_right:Nn \l_@@_defining_tl { \if_false: { \fi: } }
-            \int_compare:nNnF {#1} = \c_one
+            \int_compare:nNnF {#1} = 1
               { \@@_scan_group_xdef:f { \int_eval:n { #1 - 1 } } }
           }
       }
@@ -4315,7 +4315,7 @@
         \gtl_if_head_is_group_begin:NTF \l_@@_head_gtl
           { \@@_scan_group_x:f { \int_eval:n { #1 + 1 } } }
           {
-            \int_compare:nNnF {#1} = \c_one
+            \int_compare:nNnF {#1} = 1
               { \@@_scan_group_x:f { \int_eval:n { #1 - 1 } } }
           }
       }
@@ -4552,7 +4552,7 @@
 \cs_new_protected:Npn \@@_box_hook:N #1
   {
     \tl_set:NV \l_@@_tmpa_tl #1
-    \str_if_eq_x:nnF
+    \str_if_eq:eeF
       { \tl_head:N \l_@@_tmpa_tl } { \exp_not:N \@@_box_hook:w }
       {
         \@@_exp_args:Nx #1
@@ -4785,7 +4785,7 @@
   }
 \cs_new_protected:Npn \@@_end_box_group_aux:n #1
   {
-    \str_if_eq_x:nnTF {#1} { Z }
+    \str_if_eq:eeTF {#1} { Z }
       { \@@_end_simple_group: }
       {
         \@@_get_x_non_relax:
@@ -5184,7 +5184,7 @@
           {
             % ^^A todo: unless its_all_over
             \int_gdecr:N \g_@@_ends_int
-            \int_compare:nNnTF \g_@@_ends_int > \c_zero
+            \int_compare:nNnTF \g_@@_ends_int > 0
               {
                 \@@_back_input:
                 \@@_back_input:n
@@ -5289,7 +5289,7 @@
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
-    \int_compare:nNnF \l_@@_head_char_int = \c_zero
+    \int_compare:nNnF \l_@@_head_char_int = 0
       { \@@_scan_int: }
     \@@_prev_input_gpush:
     \@@_scan_toks:NN \c_false_bool \c_true_bool
@@ -5336,13 +5336,13 @@
             \@@_scan_something_internal:n { 5 }
             \@@_prev_input_gpop:N \l_@@_head_tl
             \@@_exp_args:Nx \use:n
-              { \etex_showtokens:D { \tl_tail:N \l_@@_head_tl } }
+              { \tex_showtokens:D { \tl_tail:N \l_@@_head_tl } }
           }
       }
       { % no operand for showlists, showgroups, showifs
-        \int_compare:nNnT \l_@@_head_char_int = \c_one % showbox
+        \int_compare:nNnT \l_@@_head_char_int = 1 % showbox
           { \@@_scan_int: }
-        \int_compare:nNnT \l_@@_head_char_int = \c_five % showtokens
+        \int_compare:nNnT \l_@@_head_char_int = 5 % showtokens
           { \@@_scan_toks:NN \c_false_bool \c_false_bool }
         \@@_prev_input_gpop:N \l_@@_head_tl
         \tl_use:N \l_@@_head_tl \scan_stop:
@@ -5618,7 +5618,7 @@
   {
     \tl_set_eq:NN \l_@@_tmpa_tl \l_@@_head_tl
     \@@_get_next:
-    \int_compare:nNnTF \@@_currentgrouptype: = \c_zero
+    \int_compare:nNnTF \@@_currentgrouptype: = 0
       {
         \@@_print_action:x
           {
@@ -6483,7 +6483,7 @@
 %    \begin{macrocode}
 \@@_prefixed_new:nn { toks_register }                       % 71
   {
-    \int_compare:nNnT \l_@@_head_char_int = \c_zero
+    \int_compare:nNnT \l_@@_head_char_int = 0
       { % \toks
         \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_action:
@@ -6506,7 +6506,7 @@
       \l_@@_head_cmd_int = { \@@_tex_use:n { toks_register } }
       {
         \@@_prev_input:V \l_@@_head_tl
-        \int_compare:nNnT \l_@@_head_char_int = \c_zero
+        \int_compare:nNnT \l_@@_head_char_int = 0
           { \@@_scan_int: }
       }
       {
@@ -6545,7 +6545,7 @@
   }
 \@@_prefixed_new:nn { set_aux }                             % 79
   { % prevdepth = 1, spacefactor = 102
-    \int_compare:nNnTF \l_@@_head_char_int = \c_one
+    \int_compare:nNnTF \l_@@_head_char_int = 1
       { \@@_assign_value:nn { } { \@@_scan_normal_dimen: } }
       { \@@_assign_value:nn { } { \@@_scan_int: } }
   }
@@ -6570,7 +6570,7 @@
         \prg_replicate:nn
           {
             \tl_if_head_eq_meaning:VNT
-              \l_@@_defined_tl \tex_parshape:D { \c_two * }
+              \l_@@_defined_tl \tex_parshape:D { 2 * }
             \tl_tail:N \l_@@_defined_tl
           }
           { \@@_scan_int: }
@@ -6709,7 +6709,7 @@
   }
 \prg_new_conditional:Npnn \@@_read_to_cs_safe:n #1 { TF }
   {
-    \int_compare:nNnTF { \etex_interactionmode:D } > { 1 }
+    \int_compare:nNnTF { \tex_interactionmode:D } > { 1 }
       { \prg_return_true: }
       {
         \int_compare:nNnTF {#1} < { 0 }
@@ -6738,7 +6738,7 @@
     \tl_set:NV \l_@@_defining_tl \l_@@_tmpa_tl
     \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
     \@@_prev_input_gpush:N \l_@@_head_tl
-    \int_compare:nNnTF \l_@@_head_char_int < \c_two
+    \int_compare:nNnTF \l_@@_head_char_int < 2
       { % def/gdef
         \@@_scan_r_token:
         \tl_put_right:NV \l_@@_defining_tl \l_@@_defined_tl
@@ -6834,13 +6834,13 @@
 % \tn{muskip}, and commands with a built-in number).
 %    \begin{macrocode}
 \@@_prefixed_new:nn { register }                            % 89
-  { \@@_do_register:N \c_zero }
+  { \@@_do_register:N 0 }
 \@@_prefixed_new:nn { advance }                             % 90
-  { \@@_do_operation:N \c_one }
+  { \@@_do_operation:N 1 }
 \@@_prefixed_new:nn { multiply }                            % 91
-  { \@@_do_operation:N \c_two }
+  { \@@_do_operation:N 2 }
 \@@_prefixed_new:nn { divide }                              % 92
-  { \@@_do_operation:N \c_three }
+  { \@@_do_operation:N 3 }
 %    \end{macrocode}
 %
 % \begin{macro}{\@@_do_operation:N, \@@_do_operation_fail:w}
@@ -6894,7 +6894,7 @@
   }
 \cs_new_protected:Npn \@@_do_register_aux:Nn #1#2
   {
-    \int_compare:nNnTF { \tl_tail:n {#2} } = \c_zero
+    \int_compare:nNnTF { \tl_tail:n {#2} } = 0
       {
         \@@_prev_input_gpush:N \l_@@_head_tl
         \@@_print_assignment:
@@ -6917,7 +6917,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_do_register_set:Nn #1#2
   {
-    \int_compare:nNnTF {#1} = \c_zero
+    \int_compare:nNnTF {#1} = 0
       { % truly register command
         \@@_scan_optional_equals:
       }
@@ -6925,7 +6925,7 @@
         \@@_scan_keyword:nF { bByY }
           { \@@_prev_input_silent:n { by } }
       }
-    \int_compare:nNnTF {#1} < \c_two
+    \int_compare:nNnTF {#1} < 2
       {
         \int_case:nnF {#2}
           {
@@ -7390,14 +7390,14 @@
       {
         \@@_input_get:N \l_@@_tmpb_gtl
         \if_true:
-          \if_case:w \gtl_head_do:NN \l_@@_tmpb_gtl \c_one
+          \if_case:w \gtl_head_do:NN \l_@@_tmpb_gtl \c_one_int
             \exp_after:wN \@@_pass_text_done:w
           \fi:
           \@@_input_gpop:N \l_@@_tmpb_gtl
           \exp_after:wN \@@_pass_text:
         \else:
           \use:c { fi: }
-          \int_set_eq:NN \l_@@_if_nesting_int \c_one
+          \int_set:Nn \l_@@_if_nesting_int { 1 }
           \@@_input_gpop:N \l_@@_tmpb_gtl
           \exp_after:wN \@@_pass_text_nested:
         \fi:
@@ -7447,7 +7447,7 @@
         \int_incr:N \l_@@_if_nesting_int
         \fi:
         \@@_input_gpop:N \l_@@_unused_gtl
-        \int_compare:nNnTF \l_@@_if_nesting_int = \c_zero
+        \int_compare:nNnTF \l_@@_if_nesting_int = 0
           { \@@_pass_text: }
           { \@@_pass_text_nested: }
       }
@@ -7493,7 +7493,7 @@
       { \int_gset:Nn \g_@@_if_limit_int {#1} }
       {
         \tl_clear:N \l_@@_tmpa_tl
-        \prg_replicate:nn { \g_@@_if_depth_int - #2 - \c_one }
+        \prg_replicate:nn { \g_@@_if_depth_int - #2 - 1 }
           {
             \tl_put_right:Nx \l_@@_tmpa_tl
               { { \tl_head:N \g_@@_if_limit_tl } }
@@ -7741,7 +7741,7 @@
   }
 \cs_new_protected:Npn \@@_test_case_aux:nn #1#2
   {
-    \int_compare:nNnTF {#1} = \c_zero
+    \int_compare:nNnTF {#1} = 0
       { \@@_change_if_limit:nn { 4 } {#2} }
       {
         \@@_pass_text:
@@ -7803,9 +7803,9 @@
   {
     \int_compare:nNnTF \l_@@_head_char_int > \g_@@_if_limit_int
       {
-        \int_compare:nNnTF \g_@@_if_limit_int = \c_zero
+        \int_compare:nNnTF \g_@@_if_limit_int = 0
           {
-            \int_compare:nNnTF \g_@@_if_depth_int = \c_zero
+            \int_compare:nNnTF \g_@@_if_depth_int = 0
               { \@@_error:nnnnn { extra-fi-or-else } { } { } { } { } }
               { \@@_insert_relax: }
           }
@@ -7813,7 +7813,7 @@
       }
       {
         \@@_set_action_text:
-        \int_compare:nNnF \l_@@_head_char_int = \c_two
+        \int_compare:nNnF \l_@@_head_char_int = 2
           {
             \@@_fi_or_else_loop:
             \@@_set_action_text:x
@@ -7829,7 +7829,7 @@
   }
 \cs_new_protected:Npn \@@_fi_or_else_loop:
   {
-    \int_compare:nNnF \l_@@_head_char_int = \c_two
+    \int_compare:nNnF \l_@@_head_char_int = 2
       {
         \@@_pass_text:
         \@@_set_cmd:
@@ -7894,9 +7894,9 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_message:nn #1 #2
   {
-    \int_compare:nNnF \g_@@_online_int < \c_zero
+    \int_compare:nNnF \g_@@_online_int < 0
       {
-        \int_compare:nNnTF \g_@@_online_int = \c_zero
+        \int_compare:nNnTF \g_@@_online_int = 0
           { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_log:n }
           { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_print:n }
       }
@@ -7937,7 +7937,7 @@
     \group_begin:
       \@@_set_escapechar:n { 92 }
       \tl_use:N \g_@@_before_print_state_tl
-      \int_compare:nNnT \g_@@_online_int > \c_zero
+      \int_compare:nNnT \g_@@_online_int > 0
         {
           \@@_print_state_output:
           \@@_print_state_prev:
@@ -8149,7 +8149,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prompt:
   {
-    \int_compare:nNnF \g_@@_nonstop_int > \c_zero
+    \int_compare:nNnF \g_@@_nonstop_int > 0
       {
         \group_begin:
           \@@_set_escapechar:n { -1 }
@@ -8161,7 +8161,7 @@
   }
 \cs_new_protected:Npn \@@_prompt_aux:
   {
-    \int_compare:nNnT { \etex_interactionmode:D } = { 3 }
+    \int_compare:nNnT { \tex_interactionmode:D } = { 3 }
       {
         \bool_if:NTF \g_@@_explicit_prompt_bool
           { \ior_str_get:Nc \c_@@_prompt_ior }
@@ -8237,12 +8237,12 @@
   }
 \cs_new_protected:Npn \@@_prompt_silent_steps:n #1
   {
-    \int_compare:nNnF {#1} < \c_zero
+    \int_compare:nNnF {#1} < 0
       {
         \int_gset:Nn \g_@@_online_int { -1 }
         \tl_gset:Nn \g_@@_before_prompt_tl
           {
-            \int_gset_eq:NN \g_@@_online_int \c_one
+            \int_gset:Nn \g_@@_online_int { 1 }
             \tl_gclear:N \g_@@_before_prompt_tl
           }
         \int_gset:Nn \g_@@_nonstop_int {#1}
@@ -8267,7 +8267,7 @@
               { \int_max:nn { \g_@@_nonstop_int } { 2 } }
           }
           {
-            \int_gset_eq:NN \g_@@_online_int \c_one
+            \int_gset:Nn \g_@@_online_int { 1 }
             \tl_gclear:N \g_@@_before_print_state_tl
           }
       }
@@ -8571,8 +8571,8 @@
     \bool_if:nTF
       {
         \tl_if_empty_p:N \g_@@_if_limit_tl
-        && \int_compare_p:nNn \g_@@_if_limit_int = \c_zero
-        && \int_compare_p:nNn \g_@@_if_depth_int = \c_zero
+        && \int_compare_p:nNn \g_@@_if_limit_int = 0
+        && \int_compare_p:nNn \g_@@_if_depth_int = 0
         && \seq_if_empty_p:N \g_@@_prev_input_seq
       }
       { \@@_input_if_empty:TF { } { \@@_final_bad: } }
