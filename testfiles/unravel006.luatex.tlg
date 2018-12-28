@@ -103,25 +103,15 @@ Defining \g__unravel_input_5_gtl on line ...
 || \edef \foo {
 || \csname 
 |> space\noexpand \empty \endcsname }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\empty " and throws an error:
-! 
-!     Missing \endcsname inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\empty " and throws an error:
+(unravel)                
+(unravel)                    Missing \endcsname inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     The control sequence marked <to be read again> should not appear between
-|     \csname and \endcsname.
-|...............................................
+TeX's advice is:
+    The control sequence marked <to be read again> should not appear between
+    \csname and \endcsname.
 [==========] \csname space\tex_endcsname:D =\space 
 || \edef \foo {
 |> \space \empty \endcsname }

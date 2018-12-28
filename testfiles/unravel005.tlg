@@ -76,24 +76,14 @@ Defining \g__unravel_input_3_gtl on line ...
 || \C =
 || \M 
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\M " and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\M " and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \M = \muskip0 => 0
 || \C =0
 |> \relax 
@@ -110,26 +100,16 @@ l. ...  }
 [==========] \C = \count0
 || \C 
 |> \T {}
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\T " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\T " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] \T = \toks0 => 0
 || \C =0
 |> \T {}
@@ -150,26 +130,16 @@ Defining \g__unravel_input_4_gtl on line ...
 [==========] \C = \count0
 || \C 
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] 0
 || \C =0
 |> \relax 
@@ -186,26 +156,16 @@ l. ...  }
 [==========] \C = \count0
 || \C 
 |> \tenrm 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\tenrm " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\tenrm " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] \tenrm = select font cmr10 => 0
 || \C =0
 |> \tenrm 
@@ -295,24 +255,14 @@ Defining \g__unravel_input_5_gtl on line ...
 || \D =
 || \M 
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\M " and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\M " and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \M = \muskip0 => 0.0pt
 || \D =
 || 0.0pt
@@ -330,26 +280,16 @@ l. ...  }
 [==========] \D = \dimen0
 || \D 
 |> \T {}
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\T " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\T " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] \T = \toks0 => 0.0pt
 || \D =
 || 0.0pt
@@ -370,26 +310,16 @@ l. ...  }
 [==========] \D = \dimen0
 || \D 
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] 0
 || \D =
 || 0
@@ -410,28 +340,18 @@ Defining \g__unravel_input_18_gtl on line ...
 Defining \g__unravel_input_19_gtl on line ...
 Defining \g__unravel_input_20_gtl on line ...
 Defining \g__unravel_input_21_gtl on line ...
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Illegal unit of measure (pt inserted)
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Illegal unit of measure (pt inserted)
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd,
-|     nc, bp, or sp; but yours is a new one! I'll assume that you meant to say
-|     pt, for printer's points. To recover gracefully from this error, it's
-|     best to delete the erroneous units; e.g., type `2' to delete two
-|     letters. (See Chapter 27 of The TeXbook.)
-|...............................................
+TeX's advice is:
+    Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd, nc,
+    bp, or sp; but yours is a new one! I'll assume that you meant to say pt,
+    for printer's points. To recover gracefully from this error, it's best to
+    delete the erroneous units; e.g., type `2' to delete two letters. (See
+    Chapter 27 of The TeXbook.)
 [==========] pt
 || \D =
 || 0pt
@@ -450,26 +370,16 @@ Defining \g__unravel_input_22_gtl on line ...
 [==========] \D = \dimen0
 || \D 
 |> \tenrm 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\tenrm " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\tenrm " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] \tenrm = select font cmr10 => 0.0pt
 || \D =
 || 0.0pt
@@ -627,24 +537,14 @@ l. ...  }
 || \S =
 || \M 
 |> minus1fil\relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\M " and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\M " and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \M = \muskip0 => 0.0pt
 || \S =
 || 0.0pt
@@ -699,26 +599,16 @@ l. ...  }
 [==========] \S = \skip0
 || \S 
 |> \T {}
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\T " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\T " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] \T = \toks0 => 0.0pt
 || \S =
 || 0.0pt
@@ -739,52 +629,32 @@ l. ...  }
 [==========] \S = \skip0
 || \S 
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] 0
 || \S =
 || 0
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Illegal unit of measure (pt inserted)
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Illegal unit of measure (pt inserted)
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd,
-|     nc, bp, or sp; but yours is a new one! I'll assume that you meant to say
-|     pt, for printer's points. To recover gracefully from this error, it's
-|     best to delete the erroneous units; e.g., type `2' to delete two
-|     letters. (See Chapter 27 of The TeXbook.)
-|...............................................
+TeX's advice is:
+    Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd, nc,
+    bp, or sp; but yours is a new one! I'll assume that you meant to say pt,
+    for printer's points. To recover gracefully from this error, it's best to
+    delete the erroneous units; e.g., type `2' to delete two letters. (See
+    Chapter 27 of The TeXbook.)
 [==========] pt
 || \S =
 || 0pt
@@ -805,26 +675,16 @@ Defining \g__unravel_input_25_gtl on line ...
 [==========] \S = \skip0
 || \S 
 |> \tenrm 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\tenrm " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\tenrm " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] \tenrm = select font cmr10 => 0.0pt
 || \S =
 || 0.0pt
@@ -886,24 +746,14 @@ l. ...  }
 || \M =
 || \D 
 |> plus1fil\relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\D " and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\D " and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \D = \dimen0 => 0.0mu
 || \M =
 || 0.0mu
@@ -939,24 +789,14 @@ l. ...  }
 || \M =
 || \S 
 |> minus1fil\relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\S " and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\S " and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \S = \skip0 => 0.0mu
 || \M =
 || 0.0mu
@@ -1069,44 +909,24 @@ l. ...  }
 [==========] \M = \muskip0
 || \M 
 |> \T {}
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\T " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\T " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "0.0pt" and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
+! Package unravel Error: TeX sees "0.0pt" and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \T = \toks0 => 0.0mu
 || \M =
 || 0.0mu
@@ -1127,50 +947,30 @@ l. ...  }
 [==========] \M = \muskip0
 || \M 
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 [==========] 0
 || \M =
 || 0
 |> \relax 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\relax " and throws an error:
-! 
-!     Illegal unit of measure (mu inserted)
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Illegal unit of measure (mu inserted)
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     The unit of measurement in math glue must be mu. To recover gracefully
-|     from this error, it's best to delete the erroneous units; e.g., type `2'
-|     to delete two letters. (See Chapter 27 of The TeXbook.)
-|...............................................
+TeX's advice is:
+    The unit of measurement in math glue must be mu. To recover gracefully
+    from this error, it's best to delete the erroneous units; e.g., type `2'
+    to delete two letters. (See Chapter 27 of The TeXbook.)
 [==========] mu
 || \M =
 || 0mu
@@ -1188,44 +988,24 @@ l. ...  }
 [==========] \M = \muskip0
 || \M 
 |> \tenrm 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\tenrm " and throws an error:
-! 
-!     Missing number, treated as zero
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\tenrm " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A number should have been here; I inserted `0'. If you can't figure out
-|     why I needed to see a number, look up `weird error' in the index to The
-|     TeXbook.
-|...............................................
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "0.0pt" and throws an error:
-! 
-!     Incompatible glue units
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
+! Package unravel Error: TeX sees "0.0pt" and throws an error:
+(unravel)                
+(unravel)                    Incompatible glue units
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm going to assume that 1mu=1pt when they're mixed.
-|...............................................
+TeX's advice is:
+    I'm going to assume that 1mu=1pt when they're mixed.
 [==========] \tenrm = select font cmr10 => 0.0mu
 || \M =
 || 0.0mu
@@ -1250,27 +1030,16 @@ l. ...  }
 [==========] \T = \toks0
 || \T 
 |> \C \relax }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\C " and throws an error:
-! 
-!     Missing { inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\C " and throws an error:
+(unravel)                
+(unravel)                    Missing { inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A left brace was mandatory here, so I've put one in. You might want to
-|     delete and/or insert some corrections so that I will find a matching
-|     right brace soon. (If you're confused by all this, try typing `I}' now.)
-| 
-|...............................................
+TeX's advice is:
+    A left brace was mandatory here, so I've put one in. You might want to
+    delete and/or insert some corrections so that I will find a matching right
+    brace soon. (If you're confused by all this, try typing `I}' now.)
 [==========] \T = \toks0
 || \T =
 |> {\C \relax }
@@ -1290,27 +1059,16 @@ l. ...  }
 [==========] \T = \toks0
 || \T 
 |> \D \relax }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\D " and throws an error:
-! 
-!     Missing { inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\D " and throws an error:
+(unravel)                
+(unravel)                    Missing { inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A left brace was mandatory here, so I've put one in. You might want to
-|     delete and/or insert some corrections so that I will find a matching
-|     right brace soon. (If you're confused by all this, try typing `I}' now.)
-| 
-|...............................................
+TeX's advice is:
+    A left brace was mandatory here, so I've put one in. You might want to
+    delete and/or insert some corrections so that I will find a matching right
+    brace soon. (If you're confused by all this, try typing `I}' now.)
 [==========] \T = \toks0
 || \T =
 |> {\D \relax }
@@ -1330,27 +1088,16 @@ l. ...  }
 [==========] \T = \toks0
 || \T 
 |> \S \relax }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\S " and throws an error:
-! 
-!     Missing { inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\S " and throws an error:
+(unravel)                
+(unravel)                    Missing { inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A left brace was mandatory here, so I've put one in. You might want to
-|     delete and/or insert some corrections so that I will find a matching
-|     right brace soon. (If you're confused by all this, try typing `I}' now.)
-| 
-|...............................................
+TeX's advice is:
+    A left brace was mandatory here, so I've put one in. You might want to
+    delete and/or insert some corrections so that I will find a matching right
+    brace soon. (If you're confused by all this, try typing `I}' now.)
 [==========] \T = \toks0
 || \T =
 |> {\S \relax }
@@ -1370,27 +1117,16 @@ l. ...  }
 [==========] \T = \toks0
 || \T 
 |> \M \relax }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\M " and throws an error:
-! 
-!     Missing { inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\M " and throws an error:
+(unravel)                
+(unravel)                    Missing { inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A left brace was mandatory here, so I've put one in. You might want to
-|     delete and/or insert some corrections so that I will find a matching
-|     right brace soon. (If you're confused by all this, try typing `I}' now.)
-| 
-|...............................................
+TeX's advice is:
+    A left brace was mandatory here, so I've put one in. You might want to
+    delete and/or insert some corrections so that I will find a matching right
+    brace soon. (If you're confused by all this, try typing `I}' now.)
 [==========] \T = \toks0
 || \T =
 |> {\M \relax }
@@ -1423,27 +1159,16 @@ l. ...  }
 [==========] \T = \toks0
 || \T 
 |> \tenrm }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\tenrm " and throws an error:
-! 
-!     Missing { inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\tenrm " and throws an error:
+(unravel)                
+(unravel)                    Missing { inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     A left brace was mandatory here, so I've put one in. You might want to
-|     delete and/or insert some corrections so that I will find a matching
-|     right brace soon. (If you're confused by all this, try typing `I}' now.)
-| 
-|...............................................
+TeX's advice is:
+    A left brace was mandatory here, so I've put one in. You might want to
+    delete and/or insert some corrections so that I will find a matching right
+    brace soon. (If you're confused by all this, try typing `I}' now.)
 [==========] \T = \toks0
 || \T =
 |> {\tenrm }

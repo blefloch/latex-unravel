@@ -87,13 +87,13 @@ Defining \g__unravel_input_4_gtl on line ...
 [==========] \message {-1}
 || 
 |> \prg_do_nothing: \prg_do_nothing: \prg_do_nothing: 
-[==========] \prg_do_nothing: = macro:->
+[==========] \prg_do_nothing: = \long macro:->
 || 
 |> \prg_do_nothing: \prg_do_nothing: 
-[==========] \prg_do_nothing: = macro:->
+[==========] \prg_do_nothing: = \long macro:->
 || 
 |> \prg_do_nothing: 
-[==========] \prg_do_nothing: = macro:->
+[==========] \prg_do_nothing: = \long macro:->
 || 
 |> 
 [===== End =====]
@@ -125,22 +125,15 @@ TEST 2: \unravel : \read in \nonstopmode
 [==========] to
 || \global \read 16to
 |> \foo \scrollmode \show \foo \global \edef \foo {\expandafter \empty }
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-fatal"
-! 
-! TeX sees "\global \read 16to\foo " and throws a fatal error:
-! 
-!     *** (cannot \read from terminal in nonstop modes)
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\global \read 16to\foo " and throws a fatal
+(unravel)                error:
+(unravel)                
+(unravel)                    *** (cannot \read from terminal in nonstop
+(unravel)                    modes)
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX provides no further help for this error.
-|...............................................
+TeX provides no further help for this error.
 [==========] \scrollmode 
 || 
 |> \show \foo \global \edef \foo {\expandafter \empty }
@@ -189,25 +182,15 @@ TEST 3: \unravel : \csname subtleties
 [==========] \csname = \csname
 || \csname 
 |> \*\endcsname 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\*" and throws an error:
-! 
-!     Missing \endcsname inserted
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\*" and throws an error:
+(unravel)                
+(unravel)                    Missing \endcsname inserted
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     The control sequence marked <to be read again> should not appear between
-|     \csname and \endcsname.
-|...............................................
+TeX's advice is:
+    The control sequence marked <to be read again> should not appear between
+    \csname and \endcsname.
 [==========] \csname \tex_endcsname:D =\csname\endcsname
 || 
 |> \csname\endcsname\*\endcsname 
@@ -220,24 +203,14 @@ l. ...  }
 [==========] \use_none:n = \long macro:#1->
 || 
 |> \endcsname 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "tex-error"
-! 
-! TeX sees "\endcsname " and throws an error:
-! 
-!     Extra \endcsname
-! 
-! See the unravel documentation for further information.
-! 
-! For immediate help type H <return>.
-!...............................................  
+! Package unravel Error: TeX sees "\endcsname " and throws an error:
+(unravel)                
+(unravel)                    Extra \endcsname
+For immediate help type H <return>.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| TeX's advice is:
-| 
-|     I'm ignoring this, since I wasn't doing a \csname.
-|...............................................
+TeX's advice is:
+    I'm ignoring this, since I wasn't doing a \csname.
 [==========] \endcsname = \endcsname
 || 
 |> 

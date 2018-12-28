@@ -71,13 +71,13 @@ l. ...  }
 || \showthe 
 |> \A \showthe \B \A \B 
 > \B .
-<argument> \etex_showtokens:D {\B }
+<argument> \tex_showtokens:D {\B }
 l. ...  }
 [==========] \showthe = \showthe
 || \showthe 
 |> \B \A \B 
 > \B .
-<argument> \etex_showtokens:D {\B }
+<argument> \tex_showtokens:D {\B }
 l. ...  }
 [==========] \A = select font cmti10
 <| \A 

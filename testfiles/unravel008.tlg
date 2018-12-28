@@ -21,23 +21,13 @@ Defining \g__unravel_input_15_gtl on line ...
 Defining \g__unravel_input_16_gtl on line ...
 Defining \g__unravel_input_17_gtl on line ...
 Defining \g__unravel_input_18_gtl on line ...
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-! unravel error: "nested-unravel"
-! 
-! The \unravel command may not be nested.
-! 
-! See the unravel documentation for further information.
-! 
-! Type <return> to continue.
-!...............................................  
+! Package unravel Error: The \unravel command may not be nested.
+Type <return> to continue.
+ ...                                              
 l. ...  }
-|'''''''''''''''''''''''''''''''''''''''''''''''
-| LaTeX does not know anything more about this error, sorry.
-| 
-| Try typing <return> to proceed.
-| If that doesn't work, type X <return> to quit.
-|...............................................
+LaTeX does not know anything more about this error, sorry.
+Try typing <return> to proceed.
+If that doesn't work, type X <return> to quit.
 TRUE
 ============================================================
 ============================================================

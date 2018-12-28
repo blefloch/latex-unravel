@@ -498,15 +498,15 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 |> \__cs_to_str:N \l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
-[==========] \__cs_to_str:N = \long macro:#1->\c_zero 
+[==========] \__cs_to_str:N = \long macro:#1->\c_zero_int 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 
-|> \c_zero l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip
-|> }}
-[==========] \c_zero = \char"0 => 0
+|> \c_zero_int l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> {-\l_tmpa_skip }}
+[==========] \c_zero_int = \char"0 => 0
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
@@ -643,43 +643,43 @@ Defining \g__unravel_input_10_gtl on line ...
 [==========] \else: = \else => skipped to \fi: 
 || 
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \skip_eval:n = \long macro:#1->\skip_use:N \etex_glueexpr:D \__kernel_chk_expr:nNnN {#1}\etex_glueexpr:D {}\skip_eval:n \scan_stop: 
+[==========] \skip_eval:n = \long macro:#1->\skip_use:N \tex_glueexpr:D \__kernel_chk_expr:nNnN {#1}\tex_glueexpr:D {}\skip_eval:n \scan_stop: 
 || \cs_set_nopar:Npx \l_tmpa_tl {
-|> \skip_use:N \etex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip
-|> }\etex_glueexpr:D {}\skip_eval:n \scan_stop: }
+|> \skip_use:N \tex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip
+|> }\tex_glueexpr:D {}\skip_eval:n \scan_stop: }
 [==========] \skip_use:N = \the
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|> \etex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\etex_glueexpr:D
+|> \tex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\tex_glueexpr:D
 |> {}\skip_eval:n \scan_stop: }
-[==========] \etex_glueexpr:D = \glueexpr
+[==========] \tex_glueexpr:D = \glueexpr
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D 
-|> \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\etex_glueexpr:D {}\skip_eval:n
+|| \tex_glueexpr:D 
+|> \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\tex_glueexpr:D {}\skip_eval:n
 |> \scan_stop: }
 [==========] \__kernel_chk_expr:nNnN = \long macro:#1#2#3#4->#1
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D 
+|| \tex_glueexpr:D 
 |> -\l_tmpa_skip \scan_stop: }
 [==========] -
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D 
+|| \tex_glueexpr:D 
 || -
 |> \l_tmpa_skip \scan_stop: }
 [==========] \l_tmpa_skip = \skip43
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D 
+|| \tex_glueexpr:D 
 || -
 || \l_tmpa_skip 
 |> \scan_stop: }
 [==========] \l_tmpa_skip = \skip43 => 2.0pt plus 3.0pt minus 4.0pt
 || \cs_set_nopar:Npx \l_tmpa_tl {
 || \skip_use:N 
-|| \etex_glueexpr:D 
+|| \tex_glueexpr:D 
 || -
 || 2.0pt plus 3.0pt minus 4.0pt
 |> \scan_stop: }
