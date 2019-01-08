@@ -1,5 +1,5 @@
 % \iffalse
-%% File: unravel.dtx Copyright (C) 2013, 2015, 2018 Bruno Le Floch
+%% File: unravel.dtx Copyright (C) 2013, 2015, 2018-2019 Bruno Le Floch
 %%
 %% It may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License (LPPL), either version 1.3c of this
@@ -869,11 +869,16 @@
 %
 % \subsubsection{Helpers for control flow}
 %
-% \begin{macro}[EXP]{\@@_exit:w, \@@_exit_hard:w, \@@_exit_point:}
+% \begin{macro}[EXP]{\@@_exit:w, \@@_exit_error:w, \@@_exit_hard:w, \@@_exit_point:}
 %   Jump to the very end of this instance of \cs{unravel}.
 %    \begin{macrocode}
 \cs_new_eq:NN \@@_exit_point: \prg_do_nothing:
 \cs_new:Npn \@@_exit:w #1 \@@_exit_point: { }
+\cs_new:Npn \@@_exit_error:w #1 \@@_exit_point: #2 \@@_final_bad:
+  {
+    \@@_error:nnnnn { runaway-unravel } { } { } { } { }
+    #2
+  }
 \cs_new:Npn \@@_exit_hard:w #1 \@@_exit_point: #2 \@@_exit_point: { }
 %    \end{macrocode}
 % \end{macro}
@@ -2333,7 +2338,7 @@
 \cs_new_protected:Npn \@@_get_next:
   {
     \@@_input_if_empty:TF
-      { \@@_exit:w }
+      { \@@_exit_error:w }
       {
         \@@_input_gpop:N \l_@@_head_gtl
         \gtl_head_do:NN \l_@@_head_gtl \@@_get_next_aux:w
@@ -8567,13 +8572,26 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_main_loop:}
-%   Loop forever, getting the next token (with expansion) and
-%   performing the corresponding command.
+% \begin{macro}{\@@_main_loop:, \@@_get_x_next_or_done:}
+%   Loop forever, getting the next token (with expansion) and performing
+%   the corresponding command.  We use \cs{@@_get_x_next_or_done:},
+%   which is basically \cs{@@_get_x_next:} but with a different
+%   behaviour when there are no more tokens: running out of tokens here
+%   is a successful exit of \cs{unravel}.  Note that we cannot put the
+%   logic into \cs{@@_main_loop:} because \cs{@@_expand_do:N} suppresses
+%   the loop when a token is marked with \cs{notexpanded:}, and we don't
+%   want that to suppress the main loop, only the expansion loop.
 %    \begin{macrocode}
+\cs_new_protected:Npn \@@_get_x_next_or_done:
+  {
+    \@@_input_if_empty:TF { \@@_exit:w } { }
+    \@@_get_next:
+    \@@_token_if_expandable:NT \l_@@_head_token
+      { \@@_expand_do:N \@@_get_x_next_or_done: }
+  }
 \cs_new_protected:Npn \@@_main_loop:
   {
-    \@@_get_x_next:
+    \@@_get_x_next_or_done:
     \@@_set_cmd:
     \@@_do_step:
     \@@_main_loop:
@@ -8691,6 +8709,8 @@
       { TeX~provides~no~further~help~for~this~error. }
       { TeX's~advice~is:\\\\ \iow_indent:n {#3} }
   }
+\msg_new:nnn { unravel } { runaway-unravel }
+  { Runaway~\iow_char:N\\unravel }
 %    \end{macrocode}
 %
 % Some error messages from \TeX{} itself.
