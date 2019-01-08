@@ -429,25 +429,25 @@ Defining \g__unravel_input_7_gtl on line ...
 || \if:w 
 |> \ \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N
 |> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \exp_not:N \
+[==========] \
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 
-|| \if:w \exp_not:N \
+|| \if:w \
 |>  \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N
 |> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \exp_not:N  
+[==========]  
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 
-|| \if:w \exp_not:N \\exp_not:N  
+|| \if:w \ 
 |> \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl
 |> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \if:w \exp_not:N \\exp_not:N  =false => skipped to \fi
+[==========] \if:w \ =false => skipped to \fi
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
@@ -552,33 +552,33 @@ Defining \g__unravel_input_10_gtl on line ...
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \exp_not:N _
-|| \if:w \exp_not:N _
+[==========] _
+|| \if:w _
 |> \use_i:nn \use_i_delimit_by_q_stop:nw l_tmpa_tl??\q_stop \exp_after:wN
 |> \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \use_i:nn = \long macro:#1#2->#1
-|| \if:w \exp_not:N _
+|| \if:w _
 |> \use_i_delimit_by_q_stop:nw _tmpa_tl??\q_stop \exp_after:wN
 |> \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \use_i_delimit_by_q_stop:nw = \long macro:#1#2\q_stop ->#1
-|| \if:w \exp_not:N _
+|| \if:w _
 |> _\exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \exp_not:N _
-|| \if:w \exp_not:N _\exp_not:N _
+[==========] _
+|| \if:w __
 |> \exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \if:w \exp_not:N _\exp_not:N _=true
+[==========] \if:w __=true
 || 
 |> \exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
@@ -614,21 +614,21 @@ Defining \g__unravel_input_10_gtl on line ...
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
 |> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \exp_not:N l
-|| \if:w \exp_not:N l
+[==========] l
+|| \if:w l
 |> l\else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
 |> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \exp_not:N l
-|| \if:w \exp_not:N l\exp_not:N l
+[==========] l
+|| \if:w ll
 |> \else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
 |> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \if:w \exp_not:N l\exp_not:N l=true
+[==========] \if:w ll=true
 || 
 |> \else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
