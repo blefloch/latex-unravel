@@ -613,6 +613,7 @@
 \cs_generate_variant:Nn \gtl_gput_right:Nn { NV }
 \cs_generate_variant:Nn \ior_str_get:NN { Nc }
 \cs_generate_variant:Nn \gtl_if_empty:NTF { c }
+\cs_generate_variant:Nn \gtl_if_tl:NT { c }
 \cs_generate_variant:Nn \gtl_to_str:N { c }
 \cs_generate_variant:Nn \gtl_gpop_left:NN { c }
 \cs_generate_variant:Nn \gtl_get_left:NN { c }
@@ -620,6 +621,7 @@
 \cs_generate_variant:Nn \gtl_gconcat:NNN { ccc , cNc }
 \cs_generate_variant:Nn \gtl_gclear:N { c }
 \cs_generate_variant:Nn \gtl_gclear_new:N { c }
+\cs_generate_variant:Nn \gtl_left_tl:N { c }
 %    \end{macrocode}
 %
 % \begin{macro}{\@@_tl_if_in:ooTF}
@@ -2816,6 +2818,33 @@
       }
   }
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_input_get_left:N, \@@_input_get_left_aux:nN}
+% \begin{variable}{\l_@@_input_get_left_tl}
+%    \begin{macrocode}
+\tl_new:N \l_@@_input_get_left_tl
+\cs_new_protected:Npn \@@_input_get_left:N #1
+  {
+    \tl_clear:N #1
+    \exp_args:NV \@@_input_get_left_aux:nN \g_@@_input_int #1
+  }
+\cs_new_protected:Npn \@@_input_get_left_aux:nN #1#2
+  {
+    \int_compare:nNnF {#1} = 0
+      {
+        \tl_set:Nx \l_@@_input_get_left_tl
+          { \gtl_left_tl:c { g_@@_input_#1_gtl } }
+        \tl_concat:NNN #2 #2 \l_@@_input_get_left_tl
+        \gtl_if_tl:cT { g_@@_input_#1_gtl }
+          {
+            \exp_args:Nf \@@_input_get_left_aux:nN
+              { \int_eval:n { #1 - 1 } } #2
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{variable}
 % \end{macro}
 %
 % \begin{macro}{\@@_input_gpop:N}
@@ -8230,6 +8259,7 @@
               }
             { | } { \@@_prompt_scan_int:nn {#1}
               \@@_prompt_vert:n }
+            { u } { \@@_prompt_until:n {#1} }
             { a } { \@@_prompt_all: }
           }
           { \@@_prompt_help: }
@@ -8250,14 +8280,15 @@
 \cs_new_protected:Npn \@@_prompt_help:
   {
     \@@_print:n { "m":~meaning~of~first~token }
-    \@@_print:n { "q":~semi-quiet~(same~as~"o-1") }
-    \@@_print:n { "x"/"X":~exit~this~instance~of~unravel/TeX }
+    \@@_print:n { "a":~print~state~again,~without~truncating }
     \@@_print:n { "s<num>":~do~<num>~steps~silently }
+    \@@_print:n { "|<num>":~silent~steps~until~<num>~fewer~"||" }
+    \@@_print:n { "u<text>":~silent~steps~until~the~input~starts~with~<text> }
     \@@_print:n
       { "o<num>":~1~=>~log~and~terminal,~0~=>~only~log,~-1~=>~neither.}
+    \@@_print:n { "q":~semi-quiet~(same~as~"o-1") }
     \@@_print:n { "C<code>":~run~some~expl3~code~immediately }
-    \@@_print:n { "|<num>":~silent~steps~until~<num>~fewer~"||" }
-    \@@_print:n { "a":~print~state~again,~without~truncating }
+    \@@_print:n { "x"/"X":~exit~this~instance~of~unravel/TeX }
     \@@_prompt_aux:
   }
 \cs_new_protected:Npn \@@_prompt_silent_steps:n #1
@@ -8321,6 +8352,37 @@
 % \end{macro}
 %
 % ^^A todo: I suspect a bug if given 'a' twice in a row
+%
+% \begin{macro}{\@@_prompt_until:n}
+% \begin{variable}{\g_@@_until_tl}
+%    \begin{macrocode}
+\tl_new:N \g_@@_until_tl
+\cs_new_protected:Npn \@@_prompt_until:n #1
+  {
+    \tl_gset:Nx \g_@@_until_tl { \tl_tail:n {#1} }
+    \int_gset:Nn \g_@@_online_int { -1 }
+    \tl_gset:Nn \g_@@_before_print_state_tl
+      {
+        \@@_input_get_left:N \l_@@_tmpa_tl
+        \@@_exp_args:Nx \use:n
+          {
+            \exp_not:N \tl_if_in:nnTF
+              { \exp_not:N \@@:nn \tl_to_str:N \l_@@_tmpa_tl }
+              { \exp_not:N \@@:nn \tl_to_str:N \g_@@_until_tl }
+          }
+          {
+            \int_gset:Nn \g_@@_online_int { 1 }
+            \tl_gclear:N \g_@@_before_print_state_tl
+          }
+          {
+            \int_gset:Nn \g_@@_nonstop_int
+              { \int_max:nn { \g_@@_nonstop_int } { 2 } }
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{variable}
+% \end{macro}
 %
 % \subsubsection{Errors}
 %
