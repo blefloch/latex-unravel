@@ -869,11 +869,12 @@
 %
 % \subsubsection{Helpers for control flow}
 %
-% \begin{macro}[EXP]{\@@_exit:w, \@@_exit_point:}
+% \begin{macro}[EXP]{\@@_exit:w, \@@_exit_hard:w, \@@_exit_point:}
 %   Jump to the very end of this instance of \cs{unravel}.
 %    \begin{macrocode}
 \cs_new_eq:NN \@@_exit_point: \prg_do_nothing:
 \cs_new:Npn \@@_exit:w #1 \@@_exit_point: { }
+\cs_new:Npn \@@_exit_hard:w #1 \@@_exit_point: #2 \@@_exit_point: { }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -4235,7 +4236,7 @@
     \@@_input_gpop_item:NF \l_@@_head_tl
       {
         \@@_error:nnnnn { runaway-text } { } { } { } { }
-        \@@_exit:w
+        \@@_exit_hard:w
       }
     \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
     \bool_if:NT #1
@@ -7460,7 +7461,7 @@
 \cs_new_protected:Npn \@@_pass_text_empty:
   {
     \@@_error:nnnnn { runaway-if } { } { } { } { }
-    \@@_exit:w
+    \@@_exit_hard:w
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8204,7 +8205,7 @@
             { x }
               {
                 \group_end:
-                \exp_after:wN \@@_exit:w \@@_exit:w
+                \@@_exit_hard:w
               }
             { X } { \tex_batchmode:D \tex_end:D }
             { s } { \@@_prompt_scan_int:nn {#1}
