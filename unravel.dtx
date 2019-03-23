@@ -23,9 +23,9 @@
 %
 % \title{The \textsf{unravel} package: \\
 %   watching TeX digest tokens\thanks{This
-%     file has version number 0.2f, last revised 2018/12/28.}}
+%     file has version number 0.2g, last revised 2019/03/23.}}
 % \author{Bruno Le Floch}
-% \date{2018/12/28}
+% \date{2019/03/23}
 %
 % \maketitle
 % \tableofcontents
@@ -545,7 +545,7 @@
   {%
     \csname @@_setup_restore:\endcsname
     \ProvidesExplPackage
-      {unravel} {2018/12/28} {0.2f} {Watching TeX digest tokens}%
+      {unravel} {2019/03/23} {0.2g} {Watching TeX digest tokens}%
     \csname @@_setup_unravel:\endcsname
   }%
 %    \end{macrocode}
@@ -611,7 +611,6 @@
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
 \cs_generate_variant:Nn \tl_if_single_token:nT { V }
 \cs_generate_variant:Nn \gtl_gput_right:Nn { NV }
-\cs_generate_variant:Nn \ior_str_get:NN { Nc }
 \cs_generate_variant:Nn \gtl_if_empty:NTF { c }
 \cs_generate_variant:Nn \gtl_if_tl:NT { c }
 \cs_generate_variant:Nn \gtl_to_str:N { c }
@@ -8199,6 +8198,14 @@
 %
 % \subsubsection{Prompt}
 %
+% \begin{macro}{\@@_ior_str_get:NN, \@@_ior_str_get:Nc}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_ior_str_get:NN #1#2
+  { \tex_readline:D #1 to #2 }
+\cs_generate_variant:Nn \@@_ior_str_get:NN { Nc }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\@@_prompt:}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prompt:
@@ -8218,8 +8225,8 @@
     \int_compare:nNnT { \tex_interactionmode:D } = { 3 }
       {
         \bool_if:NTF \g_@@_explicit_prompt_bool
-          { \ior_str_get:Nc \c_@@_prompt_ior }
-          { \ior_str_get:Nc \c_@@_noprompt_ior }
+          { \@@_ior_str_get:Nc \c_@@_prompt_ior }
+          { \@@_ior_str_get:Nc \c_@@_noprompt_ior }
               { Your~input }
         \exp_args:Nv \@@_prompt_treat:n { Your~input }
       }
