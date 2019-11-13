@@ -2289,11 +2289,10 @@
 \@@_tex_primitive:nnn { pdfximagebbox     } { convert } { 31 }
 \@@_tex_primitive:nnn { jobname           } { convert } { 32 }
 \sys_if_engine_luatex:T
-  {
-    \@@_tex_primitive:nnn { directlua       } { convert } { 33 }
-    \@@_tex_primitive:nnn { expanded        } { convert } { 34 }
-    \@@_tex_primitive:nnn { luaescapestring } { convert } { 35 }
-  }
+  { \@@_tex_primitive:nnn { directlua     } { convert } { 33 } }
+\@@_tex_primitive:nnn { expanded          } { convert } { 34 }
+\sys_if_engine_luatex:T
+  { \@@_tex_primitive:nnn { luaescapestring } { convert } { 35 } }
 \sys_if_engine_xetex:T
   {
     \@@_tex_primitive:nnn { Ucharcat        } { convert } { 40 }
@@ -7023,8 +7022,8 @@
 %   \tn{pdffilemoddate}, \tn{pdffilesize}, \tn{pdfmdfivesum},
 %   \tn{pdffiledump}, \tn{pdfmatch}, \tn{pdflastmatch},
 %   \tn{pdfuniformdeviate}, \tn{pdfnormaldeviate}, \tn{pdfinsertht},
-%   \tn{pdfximagebbox}, \tn{jobname}, and in
-%   \LuaTeX{} \tn{directlua}, \tn{expanded}, \tn{luaescapestring}.
+%   \tn{pdfximagebbox}, \tn{jobname}, \tn{expanded}, and in
+%   \LuaTeX{} \tn{directlua}, \tn{luaescapestring}, and in \XeTeX{} \tn{Ucharcat}.
 % \item |the=111| for \tn{the}, \tn{unexpanded}, and \tn{detokenize}.
 % \item |top_bot_mark=112| \tn{topmark}, \tn{firstmark}, \tn{botmark},
 %   \tn{splitfirstmark}, \tn{splitbotmark}, \tn{topmarks},
