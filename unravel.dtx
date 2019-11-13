@@ -4040,35 +4040,37 @@
         \@@_scan_something_internal:n {#1}
         \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
         \@@_prev_input_gpush:N \l_@@_tmpa_tl
-        \@@_break:w
       }
-      { \@@_back_input: }
-    \int_compare:nNnT {#1} = { 3 }
       {
-        \@@_scan_keyword:nT { mMuU } { \@@_break:w }
-        \@@_tex_error:nV { missing-mu } \l_@@_head_tl
-        \@@_prev_input:n { mu }
-        \@@_break:w
+        \@@_back_input:
+        \int_compare:nNnT {#1} = { 3 }
+          {
+            \@@_scan_keyword:nT { mMuU } { \@@_break:w }
+            \@@_tex_error:nV { missing-mu } \l_@@_head_tl
+            \@@_prev_input:n { mu }
+            \@@_break:w
+          }
+        \@@_scan_keyword:nT { eEmM } { \@@_break:w }
+        \@@_scan_keyword:nT { eExX } { \@@_break:w }
+        \@@_scan_keyword:nT { pPxX } { \@@_break:w }
+        \@@_scan_keyword:nT { tTrRuUeE }
+          { \@@_prepare_mag: }
+        \@@_scan_keyword:nT { pPtT } { \@@_break:w }
+        \@@_scan_keyword:nT { iInN } { \@@_break:w }
+        \@@_scan_keyword:nT { pPcC } { \@@_break:w }
+        \@@_scan_keyword:nT { cCmM } { \@@_break:w }
+        \@@_scan_keyword:nT { mMmM } { \@@_break:w }
+        \@@_scan_keyword:nT { bBpP } { \@@_break:w }
+        \@@_scan_keyword:nT { dDdD } { \@@_break:w }
+        \@@_scan_keyword:nT { cCcC } { \@@_break:w }
+        \@@_scan_keyword:nT { nNdD } { \@@_break:w }
+        \@@_scan_keyword:nT { nNcC } { \@@_break:w }
+        \@@_scan_keyword:nT { sSpP } { \@@_break:w }
+        \@@_tex_error:nV { missing-pt } \l_@@_head_tl
+        \@@_prev_input:n { pt }
+        \@@_break_point:
+        \@@_skip_optional_space:
       }
-    \@@_scan_keyword:nT { eEmM } { \@@_break:w }
-    \@@_scan_keyword:nT { eExX } { \@@_break:w }
-    \@@_scan_keyword:nT { pPxX } { \@@_break:w }
-    \@@_scan_keyword:nT { tTrRuUeE }
-      { \@@_prepare_mag: }
-    \@@_scan_keyword:nT { pPtT } { \@@_break:w }
-    \@@_scan_keyword:nT { iInN } { \@@_break:w }
-    \@@_scan_keyword:nT { pPcC } { \@@_break:w }
-    \@@_scan_keyword:nT { cCmM } { \@@_break:w }
-    \@@_scan_keyword:nT { mMmM } { \@@_break:w }
-    \@@_scan_keyword:nT { bBpP } { \@@_break:w }
-    \@@_scan_keyword:nT { dDdD } { \@@_break:w }
-    \@@_scan_keyword:nT { cCcC } { \@@_break:w }
-    \@@_scan_keyword:nT { nNdD } { \@@_break:w }
-    \@@_scan_keyword:nT { nNcC } { \@@_break:w }
-    \@@_scan_keyword:nT { sSpP } { \@@_break:w }
-    \@@_tex_error:nV { missing-pt } \l_@@_head_tl
-    \@@_prev_input:n { pt }
-    \@@_break_point:
   }
 \cs_new_protected:Npn \@@_scan_inf_unit_loop:
   { \@@_scan_keyword:nT { lL } { \@@_scan_inf_unit_loop: } }
