@@ -206,30 +206,30 @@ TEST 3: \unravel and glue sign
 [===== Start =====]
 || 
 |> \tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \tl_set:Nx = \protected\long macro:#1#2->\__kernel_chk_var_local:N #1\cs_set_nopar:Npx #1{#2}
+[==========] \tl_set:Nx = \protected\long macro:#1#2->\__kernel_chk_var_local:N #1\__debug_tl_set:Nx #1{#2}
 || 
-|> \__kernel_chk_var_local:N \l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> \__kernel_chk_var_local:N \l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__kernel_chk_var_local:N = \protected\long macro:#1->\__debug_suspended:T \use_none:nnnnn \__kernel_chk_var_exist:N #1\__debug_chk_var_scope_aux:NN l#1
 || 
 |> \__debug_suspended:T \use_none:nnnnn \__kernel_chk_var_exist:N \l_tmpa_tl
-|> \__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> \__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__debug_suspended:T = \long macro:#1->
 || 
 |> \__kernel_chk_var_exist:N \l_tmpa_tl \__debug_chk_var_scope_aux:NN
-|> l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__kernel_chk_var_exist:N = \protected\long macro:#1->\__debug_suspended:T \use_none:nnn \cs_if_exist:NF #1{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N #1}}
 || 
 |> \__debug_suspended:T \use_none:nnn \cs_if_exist:NF \l_tmpa_tl
 |> {\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__debug_suspended:T = \long macro:#1->
 || 
 |> \cs_if_exist:NF \l_tmpa_tl {\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \cs_if_exist:NF = \long macro:#1->\if_meaning:w #1\scan_stop: \prg_return_false: \else: \if_cs_exist:N #1\prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end: {}
 || 
@@ -237,39 +237,39 @@ TEST 3: \unravel and glue sign
 |> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if_meaning:w = \ifx
 || \if_meaning:w 
 |> \l_tmpa_tl \scan_stop: \prg_return_false: \else: \if_cs_exist:N \l_tmpa_tl
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =false => skipped to \fi
 || 
 |> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if_cs_exist:N = \ifdefined
 || \if_cs_exist:N 
 |> \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \l_tmpa_tl 
 || \if_cs_exist:N \l_tmpa_tl 
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if_cs_exist:N \l_tmpa_tl =true
 || 
 |> \prg_return_true: \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 Defining \g__unravel_input_6_gtl on line ...
 [==========] \prg_return_true: = \long macro:->\exp_after:wN \use_i:nn \exp:w 
@@ -277,101 +277,101 @@ Defining \g__unravel_input_6_gtl on line ...
 |> \exp_after:wN \use_i:nn \exp:w \else: \prg_return_false: \fi: \fi:
 |> \exp_end: {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_after:wN \use_i:nn 
 || \exp_after:wN \use_i:nn 
 |> \exp:w \else: \prg_return_false: \fi: \fi: \exp_end:
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp:w = \romannumeral
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \else: \prg_return_false: \fi: \fi: \exp_end: {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \else: = \else => skipped to \fi: 
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \fi: \exp_end: {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \fi: = \fi
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \exp_end: {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_end: = \char"0 => 0
 || \exp_after:wN \use_i:nn 
 || \exp:w 0
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp:w 0=
 || \exp_after:wN \use_i:nn 
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
-|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx
+|> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 Defining \g__unravel_input_7_gtl on line ...
 [==========] back_input: \exp_after:wN \use_i:nn 
 || 
 |> \use_i:nn {}{\__kernel_msg_error:nnx
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
-|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \use_i:nn = \long macro:#1#2->#1
 || 
-|> \__debug_chk_var_scope_aux:NN l\l_tmpa_tl \cs_set_nopar:Npx \l_tmpa_tl
+|> \__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__debug_chk_var_scope_aux:NN = \protected\long macro:#1#2->\exp_args:NNf \__debug_chk_var_scope_aux:Nn #1{\cs_to_str:N #2}
 || 
 |> \exp_args:NNf \__debug_chk_var_scope_aux:Nn l{\cs_to_str:N \l_tmpa_tl
-|> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_args:NNf = \long macro:#1#2#3->\exp_after:wN #1\exp_after:wN #2\exp_after:wN {\exp:w \exp_end_continue_f:w #3}
 || 
 |> \exp_after:wN \__debug_chk_var_scope_aux:Nn \exp_after:wN l\exp_after:wN
-|> {\exp:w \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx
+|> {\exp:w \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 |> \exp_after:wN l\exp_after:wN {\exp:w \exp_end_continue_f:w \cs_to_str:N
-|> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_after:wN l
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 |> \exp_after:wN {\exp:w \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl
-|> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_after:wN {
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
-|> \exp:w \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx
+|> \exp:w \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp:w = \romannumeral
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 
-|> \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl
-|> {\skip_eval:n {-\l_tmpa_skip }}
+|> \exp_end_continue_f:w \cs_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx
+|> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_end_continue_f:w = \protected\long macro:->`^^@
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 
-|> `^^@\cs_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> `^^@\cs_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] `^^@=0
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
-|> \cs_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> \cs_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] \cs_to_str:N = \long macro:->\tex_romannumeral:D \if:w \token_to_str:N \ \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -379,7 +379,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \exp_after:wN {
 || \exp:w 0
 |> \tex_romannumeral:D \if:w \token_to_str:N \ \__cs_to_str:w \fi:
-|> \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx
+|> \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \tex_romannumeral:D = \romannumeral
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -388,7 +388,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \exp:w 0
 || \tex_romannumeral:D 
 |> \if:w \token_to_str:N \ \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N
-|> \token_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> \token_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] \if:w = \if
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -398,7 +398,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 || \if:w 
 |> \token_to_str:N \ \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N
-|> \token_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> \token_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] \token_to_str:N = \string
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -409,7 +409,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \if:w 
 || \token_to_str:N 
 |> \ \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N
-|> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \ 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
@@ -419,7 +419,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \if:w 
 || \token_to_str:N \ 
 |> \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl
-|> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \token_to_str:N \ =\ 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
@@ -428,7 +428,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 || \if:w 
 |> \ \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N
-|> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
@@ -437,7 +437,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 || \if:w \
 |>  \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N
-|> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========]  
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
@@ -446,14 +446,14 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 || \if:w \ 
 |> \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl
-|> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if:w \ =false => skipped to \fi
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 
-|> \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx
+|> \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_after:wN \__cs_to_str:N 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -462,7 +462,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \exp:w 0
 || \tex_romannumeral:D 
 || \exp_after:wN \__cs_to_str:N 
-|> \token_to_str:N \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> \token_to_str:N \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] \token_to_str:N = \string
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -472,7 +472,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 || \exp_after:wN \__cs_to_str:N 
 || \token_to_str:N 
-|> \l_tmpa_tl }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \l_tmpa_tl }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \l_tmpa_tl 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
@@ -481,7 +481,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \tex_romannumeral:D 
 || \exp_after:wN \__cs_to_str:N 
 || \token_to_str:N \l_tmpa_tl 
-|> }\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \token_to_str:N \l_tmpa_tl =\l_tmpa_tl
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
@@ -489,14 +489,14 @@ Defining \g__unravel_input_7_gtl on line ...
 || \exp:w 0
 || \tex_romannumeral:D 
 || \exp_after:wN \__cs_to_str:N 
-|> \l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] back_input: \exp_after:wN \__cs_to_str:N 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 
-|> \__cs_to_str:N \l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> \__cs_to_str:N \l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] \__cs_to_str:N = \long macro:#1->\c_zero_int 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -504,7 +504,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 
-|> \c_zero_int l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n
+|> \c_zero_int l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n
 |> {-\l_tmpa_skip }}
 [==========] \c_zero_int = \char"0 => 0
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
@@ -512,31 +512,31 @@ Defining \g__unravel_input_7_gtl on line ...
 || \exp_after:wN {
 || \exp:w 0
 || \tex_romannumeral:D 0
-|> l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 Defining \g__unravel_input_8_gtl on line ...
 [==========] \tex_romannumeral:D 0=
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
 || \exp:w 0
-|> l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp:w 0=
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
-|> l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] back_input: \exp_after:wN {
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
-|> {l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> {l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 Defining \g__unravel_input_9_gtl on line ...
 [==========] back_input: \exp_after:wN l
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
-|> l{l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> l{l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 Defining \g__unravel_input_10_gtl on line ...
 [==========] back_input: \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || 
-|> \__debug_chk_var_scope_aux:Nn l{l_tmpa_tl}\cs_set_nopar:Npx \l_tmpa_tl
+|> \__debug_chk_var_scope_aux:Nn l{l_tmpa_tl}\__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__debug_chk_var_scope_aux:Nn = \protected\long macro:#1#2->\if:w _\use_i:nn \use_i_delimit_by_q_stop:nw #2??\q_stop \exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw #2?\q_stop #1{#2}\else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn {__debug_chk_/#2}#1{#2}\fi: 
 || 
@@ -544,103 +544,106 @@ Defining \g__unravel_input_10_gtl on line ...
 |> \exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if:w = \if
 || \if:w 
 |> _\use_i:nn \use_i_delimit_by_q_stop:nw l_tmpa_tl??\q_stop \exp_after:wN
 |> \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] _
 || \if:w _
 |> \use_i:nn \use_i_delimit_by_q_stop:nw l_tmpa_tl??\q_stop \exp_after:wN
 |> \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \use_i:nn = \long macro:#1#2->#1
 || \if:w _
 |> \use_i_delimit_by_q_stop:nw _tmpa_tl??\q_stop \exp_after:wN
 |> \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \use_i_delimit_by_q_stop:nw = \long macro:#1#2\q_stop ->#1
 || \if:w _
 |> _\exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] _
 || \if:w __
 |> \exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if:w __=true
 || 
 |> \exp_after:wN \__debug_chk_var_scope_aux:NNn \use_i_delimit_by_q_stop:nw
 |> l_tmpa_tl?\q_stop l{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \exp_after:wN \__debug_chk_var_scope_aux:NNn 
 || \exp_after:wN \__debug_chk_var_scope_aux:NNn 
 |> \use_i_delimit_by_q_stop:nw l_tmpa_tl?\q_stop l{l_tmpa_tl}\else:
 |> \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \use_i_delimit_by_q_stop:nw = \long macro:#1#2\q_stop ->#1
 || \exp_after:wN \__debug_chk_var_scope_aux:NNn 
 |> ll{l_tmpa_tl}\else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] back_input: \exp_after:wN \__debug_chk_var_scope_aux:NNn 
 || 
 |> \__debug_chk_var_scope_aux:NNn ll{l_tmpa_tl}\else: \exp_args:Nc
 |> \__debug_chk_var_scope_aux:NNn {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi:
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__debug_chk_var_scope_aux:NNn = \protected\long macro:#1#2#3->\if:w #1#2\else: \if:w #1\scan_stop: \cs_gset_nopar:Npn #1{#2}\else: \__kernel_msg_error:nnxxx {kernel}{local-global}{#1}{#2}{\iow_char:N \\#3}\fi: \fi: 
 || 
 |> \if:w ll\else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if:w = \if
 || \if:w 
 |> ll\else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] l
 || \if:w l
 |> l\else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] l
 || \if:w ll
 |> \else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \if:w ll=true
 || 
 |> \else: \if:w l\scan_stop: \cs_gset_nopar:Npn l{l}\else:
 |> \__kernel_msg_error:nnxxx {kernel}{local-global}{l}{l}{\iow_char:N
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \else: = \else => skipped to \fi: 
 || 
 |> \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
-|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \cs_set_nopar:Npx \l_tmpa_tl
+|> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \else: = \else => skipped to \fi: 
+|| 
+|> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[==========] \__debug_tl_set:Nx = \protected\long macro:#1#2->\cs_set_nopar:Npx #1{#2}
 || 
 |> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \skip_eval:n = \long macro:#1->\skip_use:N \tex_glueexpr:D \__kernel_chk_expr:nNnN {#1}\tex_glueexpr:D {}\skip_eval:n \scan_stop: 
