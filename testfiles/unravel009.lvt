@@ -1,0 +1,33 @@
+%
+% Copyright (C) 2019 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { machine }
+
+\TEST { Unit ~ optional ~ space ~ (github~issue~38)  }
+  {
+    \unravel_get:nnN { mute } { \token_to_str:N \BOOM } \l_tmpa_tl
+    \TYPE { |\meaning \l_tmpa_tl | }
+    \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_dim = 1 pt \c_space_tl \BOOM } \l_tmpb_tl
+    \tl_if_eq:NNTF \l_tmpa_tl \l_tmpb_tl { \TRUE } { \ERROR }
+    \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_dim = 1 pc \c_space_tl \BOOM } \l_tmpb_tl
+    \tl_if_eq:NNTF \l_tmpa_tl \l_tmpb_tl { \TRUE } { \ERROR }
+    \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_dim = 1 \l_tmpb_dim \BOOM } \l_tmpb_tl
+    \tl_if_eq:NNTF \l_tmpa_tl \l_tmpb_tl { \TRUE } { \ERROR }
+    \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_dim = 1 pz \c_space_tl } \l_tmpb_tl
+    \str_if_eq:eeTF { \l_tmpb_tl } { pz ~ } { \TRUE } { \ERROR }
+  }
+
+\END
