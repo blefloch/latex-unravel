@@ -28,6 +28,8 @@
     \tl_if_eq:NNTF \l_tmpa_tl \l_tmpb_tl { \TRUE } { \ERROR }
     \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_dim = 1 pz \c_space_tl } \l_tmpb_tl
     \str_if_eq:eeTF { \l_tmpb_tl } { pz ~ } { \TRUE } { \ERROR }
+    \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_skip = 1pt minus 3filll \exp_not:N \c_space_tl \BOOM } \l_tmpb_tl
+    \tl_if_eq:NNTF \l_tmpa_tl \l_tmpb_tl { \TRUE } { \ERROR }
     %
     \unravel_get:nnN { mute } { \exp_last_unbraced:Nx \show {\if_dim:w 3pt>2pt\else:\fi:} } \l_tmpa_tl
     \tl_if_empty:NTF \l_tmpa_tl { \TRUE } { \ERROR }
