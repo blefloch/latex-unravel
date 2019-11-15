@@ -40,4 +40,16 @@
     \skip_show:N \l_tmpb_skip
   }
 
+\cs_set:Npn \test:w #1 \scan_stop: { \tl_set:Nn \l_tmpa_tl {#1} }
+\TEST { \skip ~ minus ~ plus }
+  {
+    \unravel_get:nnN { mute }
+      { \afterassignment \test:w \l_tmpa_skip = 0pt minus 1pt plus 1pt \scan_stop: }
+      \l_tmpb_tl
+    \tl_if_eq:onTF { \l_tmpa_tl } { plus 1pt } { \TRUE } { \ERROR }
+    \tl_if_empty:NTF \l_tmpb_tl { \TRUE } { \ERROR }
+    \str_if_eq:eeTF { \skip_use:N \l_tmpa_skip } { 0.0pt ~ minus ~ 1.0pt }
+      { \TRUE } { \ERROR }
+  }
+
 \END
