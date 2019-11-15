@@ -8293,7 +8293,11 @@
                 \group_end:
                 \@@_exit_hard:w
               }
-            { X } { \tex_batchmode:D \tex_end:D }
+            { X }
+              {
+                \tex_batchmode:D
+                \tex_read:D -1 to \l_@@_tmpa_tl
+              }
             { s } { \@@_prompt_scan_int:nn {#1}
               \@@_prompt_silent_steps:n }
             { o } { \@@_prompt_scan_int:nn {#1}

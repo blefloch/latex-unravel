@@ -51,4 +51,9 @@
 \TEST { \unravel ~ escapechar }
   { \unravel{\escapechar=47\message{\relax}} }
 
+\TEST { Hard~end }
+  {
+    \unravel [prompt-input = {{},X}] { \c_space_tl A }
+  }
+
 \END
