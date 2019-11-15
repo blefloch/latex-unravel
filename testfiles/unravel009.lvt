@@ -103,6 +103,11 @@
     \unravel{\romannumeral-`a}
     \unravel{\iffalse}
     \unravel{\unexpanded\bgroup}
+    \unravel[mute]{\hrule width 0pt height 0pt dept }
+    \unravel[mute]{\hrule width 0pt height 0pt depth }
+    \unravel[mute]{\hrule width 0pt height 0pt depth0 }
+    \unravel[mute]{\hrule width 0pt height 0pt depth0p }
+    \unravel[mute]{\hrule width 0pt height 0pt depth0pt }
   }
 
 \TEST { Unit ~ optional ~ space ~ (github~issue~38)  }

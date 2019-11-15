@@ -451,24 +451,80 @@ l. ...  }
 LaTeX does not know anything more about this error, sorry.
 Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
-============================================================
-============================================================
-TEST 7: Unit optional space (github issue 38)
-============================================================
-|macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
 Defining \g__unravel_input_6_gtl on line ...
-TRUE
-TRUE
-TRUE
 Defining \g__unravel_input_7_gtl on line ...
 Defining \g__unravel_input_8_gtl on line ...
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Missing number, treated as zero
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+TeX's advice is:
+    A number should have been here; I inserted `0'. If you can't figure out
+    why I needed to see a number, look up `weird error' in the index to The
+    TeXbook.
 Defining \g__unravel_input_9_gtl on line ...
 Defining \g__unravel_input_10_gtl on line ...
 Defining \g__unravel_input_11_gtl on line ...
 Defining \g__unravel_input_12_gtl on line ...
 Defining \g__unravel_input_13_gtl on line ...
 Defining \g__unravel_input_14_gtl on line ...
+Defining \g__unravel_input_15_gtl on line ...
+Defining \g__unravel_input_16_gtl on line ...
+Defining \g__unravel_input_17_gtl on line ...
+Defining \g__unravel_input_18_gtl on line ...
+Defining \g__unravel_input_19_gtl on line ...
+Defining \g__unravel_input_20_gtl on line ...
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Illegal unit of measure (pt inserted)
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+TeX's advice is:
+    Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd, nc,
+    bp, or sp; but yours is a new one! I'll assume that you meant to say pt,
+    for printer's points. To recover gracefully from this error, it's best to
+    delete the erroneous units; e.g., type `2' to delete two letters. (See
+    Chapter 27 of The TeXbook.)
+Defining \g__unravel_input_21_gtl on line ...
+Defining \g__unravel_input_22_gtl on line ...
+Defining \g__unravel_input_23_gtl on line ...
+Defining \g__unravel_input_24_gtl on line ...
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
+! Package unravel Error: TeX sees "\relax " and throws an error:
+(unravel)                
+(unravel)                    Illegal unit of measure (pt inserted)
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+TeX's advice is:
+    Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd, nc,
+    bp, or sp; but yours is a new one! I'll assume that you meant to say pt,
+    for printer's points. To recover gracefully from this error, it's best to
+    delete the erroneous units; e.g., type `2' to delete two letters. (See
+    Chapter 27 of The TeXbook.)
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
 ! Package unravel Error: TeX sees "p" and throws an error:
 (unravel)                
 (unravel)                    Illegal unit of measure (pt inserted)
@@ -481,7 +537,31 @@ TeX's advice is:
     for printer's points. To recover gracefully from this error, it's best to
     delete the erroneous units; e.g., type `2' to delete two letters. (See
     Chapter 27 of The TeXbook.)
-Defining \g__unravel_input_15_gtl on line ...
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
+============================================================
+============================================================
+TEST 7: Unit optional space (github issue 38)
+============================================================
+|macro:->\char 92 BOOM|
+TRUE
+TRUE
+TRUE
+! Package unravel Error: TeX sees "p" and throws an error:
+(unravel)                
+(unravel)                    Illegal unit of measure (pt inserted)
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+TeX's advice is:
+    Dimensions can be in units of em, ex, in, pt, pc, cm, mm, dd, cc, nd, nc,
+    bp, or sp; but yours is a new one! I'll assume that you meant to say pt,
+    for printer's points. To recover gracefully from this error, it's best to
+    delete the erroneous units; e.g., type `2' to delete two letters. (See
+    Chapter 27 of The TeXbook.)
 TRUE
 TRUE
 > \relax=\relax.
