@@ -1,9 +1,75 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: expanded support (github issue 36)
+TEST 1: skip to else/fi (github issue 35)
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \ifx aaT\else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
+Defining \g__unravel_input_4_gtl on line ...
+Defining \g__unravel_input_3_gtl on line ...
+Defining \g__unravel_input_2_gtl on line ...
+[==========] \ifx = \ifx
+|| \ifx 
+|> aaT\else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] Compare: \ifx aa=true
+|| 
+|> T\else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] T
+<| T
+|| 
+|> \else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] \else = \else => skip to \fi 
+<| T
+|| 
+|> \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] \ifx = \ifx
+<| T
+|| \ifx 
+|> aaT\fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] Compare: \ifx aa=true
+<| T
+|| 
+|> T\fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] T
+<| TT
+|| 
+|> \fi \ifx abT\else F\fi \ifx abT\fi 
+[==========] \fi = \fi
+<| TT
+|| 
+|> \ifx abT\else F\fi \ifx abT\fi 
+[==========] \ifx = \ifx
+<| TT
+|| \ifx 
+|> abT\else F\fi \ifx abT\fi 
+[==========] Compare: \ifx ab=false => skip to \else 
+<| TT
+|| 
+|> F\fi \ifx abT\fi 
+[==========] F
+<| TTF
+|| 
+|> \fi \ifx abT\fi 
+[==========] \fi = \fi
+<| TTF
+|| 
+|> \ifx abT\fi 
+[==========] \ifx = \ifx
+<| TTF
+|| \ifx 
+|> abT\fi 
+[==========] Compare: \ifx ab=false => skip to \fi 
+<| TTF
+|| 
+|> 
+[===== End =====]
+TRUE
+============================================================
+============================================================
+TEST 2: expanded support (github issue 36)
+============================================================
 [===== Start =====]
 || 
 |> \exp_after:wN \show \expanded {\exp_after:wN \if_meaning:w \expanded
@@ -17,7 +83,6 @@ Defining \g__unravel_input_1_gtl on line ...
 || \expanded 
 |> {\exp_after:wN \if_meaning:w \expanded {\use_i:nn A\c_empty_tl }At\else:
 |> f\fi: }
-Defining \g__unravel_input_2_gtl on line ...
 [==========] \exp_after:wN \if_meaning:w 
 || \exp_after:wN \show 
 || \expanded 
@@ -31,8 +96,6 @@ Defining \g__unravel_input_2_gtl on line ...
 || \exp_after:wN \if_meaning:w 
 || \expanded 
 |> {\use_i:nn A\c_empty_tl }At\else: f\fi: }
-Defining \g__unravel_input_3_gtl on line ...
-Defining \g__unravel_input_4_gtl on line ...
 [==========] \use_i:nn = \long macro:#1#2->#1
 || \exp_after:wN \show 
 || \expanded 
@@ -63,7 +126,7 @@ Defining \g__unravel_input_4_gtl on line ...
 || \expanded 
 || {
 |> t\else: f\fi: }
-[==========] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skip to \fi: 
 || \exp_after:wN \show 
 || \expanded 
 || {t
@@ -83,7 +146,7 @@ l. ...  }
 [===== End =====]
 ============================================================
 ============================================================
-TEST 2: Runaway unravel (github issue 37)
+TEST 3: Runaway unravel (github issue 37)
 ============================================================
 [===== Start =====]
 || 
@@ -154,7 +217,7 @@ Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
 ============================================================
 ============================================================
-TEST 3: Unit optional space (github issue 38)
+TEST 4: Unit optional space (github issue 38)
 ============================================================
 |macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
@@ -191,7 +254,7 @@ l. ...  }
 TRUE
 ============================================================
 ============================================================
-TEST 4: Implicit number as dimension/glue unit (github issue 39)
+TEST 5: Implicit number as dimension/glue unit (github issue 39)
 ============================================================
 TRUE
 > \parskip=15.25879pt plus 0.04759pt.

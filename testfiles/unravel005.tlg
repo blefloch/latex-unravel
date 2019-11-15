@@ -1025,7 +1025,7 @@ TeX's advice is:
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \T \C \relax }
-[==========] \iffalse =false => skipped to \fi
+[==========] \iffalse =false => skip to \fi 
 || 
 |> \T \C \relax }
 [==========] \T = \toks0
@@ -1054,7 +1054,7 @@ TeX's advice is:
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \T \D \relax }
-[==========] \iffalse =false => skipped to \fi
+[==========] \iffalse =false => skip to \fi 
 || 
 |> \T \D \relax }
 [==========] \T = \toks0
@@ -1083,7 +1083,7 @@ TeX's advice is:
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \T \S \relax }
-[==========] \iffalse =false => skipped to \fi
+[==========] \iffalse =false => skip to \fi 
 || 
 |> \T \S \relax }
 [==========] \T = \toks0
@@ -1112,7 +1112,7 @@ TeX's advice is:
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \T \M \relax }
-[==========] \iffalse =false => skipped to \fi
+[==========] \iffalse =false => skip to \fi 
 || 
 |> \T \M \relax }
 [==========] \T = \toks0
@@ -1154,7 +1154,7 @@ TeX's advice is:
 [==========] \iffalse = \iffalse
 || \iffalse 
 |> {\fi \T \tenrm }
-[==========] \iffalse =false => skipped to \fi
+[==========] \iffalse =false => skip to \fi 
 || 
 |> \T \tenrm }
 [==========] \T = \toks0

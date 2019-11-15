@@ -16,6 +16,21 @@
 
 \unravelsetup { machine }
 
+\leavevmode
+
+\TEST { skip~to~else/fi~ (github~issue~35) }
+  {
+    \unravel_get:nnN { }
+      {
+        \ifx a a T\else F\fi
+        \ifx a a T\fi
+        \ifx a b T\else F\fi
+        \ifx a b T\fi
+      }
+      \l_tmpa_tl
+    \str_if_eq:eeTF { \l_tmpa_tl } { TTF } { \TRUE } { \ERROR }
+  }
+
 \TEST { expanded~support~ (github~issue~36) }
   {
     \unravel

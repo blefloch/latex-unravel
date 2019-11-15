@@ -168,7 +168,7 @@ Defining \g__unravel_input_6_gtl on line ...
 || \edef \foo {
 || \ifx 
 |> \notexpanded:\empty \empty a\fi }
-[==========] Compare: \ifx \notexpanded:\empty \empty =false => skipped to \fi
+[==========] Compare: \ifx \notexpanded:\empty \empty =false => skip to \fi 
 || \edef \foo {
 |> }
 [==========] \edef \foo {}
@@ -231,7 +231,7 @@ l. ...  }
 [==========] \ifdefined \notexpanded:\foobar =true
 || 
 |> \else \fi 
-[==========] \else = \else => skipped to \fi 
+[==========] \else = \else => skip to \fi 
 || 
 |> 
 [===== End =====]
@@ -351,7 +351,7 @@ TEST 3: \unravel and token_if_expandable
 |> \notexpanded:\if_meaning:w \if_meaning:w \prg_return_false: \else:
 |> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
 |> \fi: \fi: \exp_end: {}{}
-[==========] Compare: \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w =false => skipped to \fi
+[==========] Compare: \if_meaning:w \notexpanded:\if_meaning:w \if_meaning:w =false => skip to \else: 
 || 
 |> \if_cs_exist:N \if_meaning:w \prg_return_true: \else: \prg_return_false:
 |> \fi: \fi: \exp_end: {}{}
@@ -376,7 +376,7 @@ TEST 3: \unravel and token_if_expandable
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \else: \prg_return_false: \fi: \fi: \exp_end: {}{}
-[==========] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skip to \fi: 
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \fi: \exp_end: {}{}
@@ -436,7 +436,7 @@ TEST 3: \unravel and token_if_expandable
 || \exp:w 
 |> \else: \if_cs_exist:N \def \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{}
-[==========] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skip to \fi: 
 || \exp_after:wN \use_ii:nn 
 || \exp:w 
 |> \exp_end: {}{}
@@ -466,7 +466,7 @@ TEST 3: \unravel and token_if_expandable
 [==========] \if_meaning:w = \ifx
 || \if_meaning:w 
 |> \notexpanded:\undefined \undefined \fi: 
-[==========] Compare: \if_meaning:w \notexpanded:\undefined \undefined =false => skipped to \fi
+[==========] Compare: \if_meaning:w \notexpanded:\undefined \undefined =false => skip to \fi: 
 || 
 |> 
 [===== End =====]

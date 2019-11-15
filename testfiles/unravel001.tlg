@@ -246,7 +246,7 @@ TEST 3: \unravel and glue sign
 |> {}{\__kernel_msg_error:nnx {kernel}{non-declared-variable}{\token_to_str:N
 |> \l_tmpa_tl }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx
 |> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =false => skipped to \fi
+[==========] Compare: \if_meaning:w \l_tmpa_tl \scan_stop: =false => skip to \else: 
 || 
 |> \if_cs_exist:N \l_tmpa_tl \prg_return_true: \else: \prg_return_false: \fi:
 |> \fi: \exp_end: {}{\__kernel_msg_error:nnx
@@ -292,7 +292,7 @@ Defining \g__unravel_input_6_gtl on line ...
 |> {kernel}{non-declared-variable}{\token_to_str:N \l_tmpa_tl
 |> }}\__debug_chk_var_scope_aux:NN l\l_tmpa_tl \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skip to \fi: 
 || \exp_after:wN \use_i:nn 
 || \exp:w 
 |> \fi: \exp_end: {}{\__kernel_msg_error:nnx
@@ -447,7 +447,7 @@ Defining \g__unravel_input_7_gtl on line ...
 || \if:w \ 
 |> \__cs_to_str:w \fi: \exp_after:wN \__cs_to_str:N \token_to_str:N \l_tmpa_tl
 |> }\__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \if:w \ =false => skipped to \fi
+[==========] \if:w \ =false => skip to \fi: 
 || \exp_after:wN \__debug_chk_var_scope_aux:Nn 
 || \exp_after:wN l
 || \exp_after:wN {
@@ -635,12 +635,12 @@ Defining \g__unravel_input_10_gtl on line ...
 |> \\l_tmpa_tl}\fi: \fi: \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
 |> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skip to \fi: 
 || 
 |> \else: \exp_args:Nc \__debug_chk_var_scope_aux:NNn
 |> {__debug_chk_/l_tmpa_tl}l{l_tmpa_tl}\fi: \__debug_tl_set:Nx \l_tmpa_tl
 |> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \else: = \else => skipped to \fi: 
+[==========] \else: = \else => skip to \fi: 
 || 
 |> \__debug_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
 [==========] \__debug_tl_set:Nx = \protected\long macro:#1#2->\cs_set_nopar:Npx #1{#2}
