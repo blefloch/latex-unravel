@@ -1151,31 +1151,31 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_prev_input_join_get:nN}
-% \begin{macro}{\@@_join_get_aux:NNN}
+% \begin{macro}{\@@_prev_input_join_get:nnN}
+% \begin{macro}{\@@_join_get_aux:NNnN}
 %   Pops the previous-input sequence twice to get some value in
 %   \cs{l_@@_head_tl} and some sign or decimal number in
 %   \cs{l_@@_tmpa_tl}.  Combines them into a value, using
 %   the appropriate evaluation function, determined based
 %   on~|#1|.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_prev_input_join_get:nN #1
+\cs_new_protected:Npn \@@_prev_input_join_get:nnN #1
   {
     \int_case:nnF {#1}
       {
-        { 2 } { \@@_join_get_aux:NNN \skip_eval:n \tex_glueexpr:D }
-        { 3 } { \@@_join_get_aux:NNN \muskip_eval:n \tex_muexpr:D }
+        { 2 } { \@@_join_get_aux:NNnN \skip_eval:n \tex_glueexpr:D }
+        { 3 } { \@@_join_get_aux:NNnN \muskip_eval:n \tex_muexpr:D }
       }
       {
         \@@_error:nnnnn { internal } { join-factor } { } { } { }
-        \@@_join_get_aux:NNN \use:n \prg_do_nothing:
+        \@@_join_get_aux:NNnN \use:n \prg_do_nothing:
       }
   }
-\cs_new_protected:Npn \@@_join_get_aux:NNN #1#2#3
+\cs_new_protected:Npn \@@_join_get_aux:NNnN #1#2#3#4
   {
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
-    \tl_set:Nx #3 { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl } }
+    \tl_set:Nx #4 { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl #3 } }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -4038,7 +4038,9 @@
       {
         \@@_prev_input_gpush:
         \@@_scan_something_internal:n {#1}
-        \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
+        \int_compare:nNnTF \g_@@_val_level_int = { 0 }
+          { \@@_prev_input_join_get:nnN {#1} { sp } \l_@@_tmpa_tl }
+          { \@@_prev_input_join_get:nnN {#1} { } \l_@@_tmpa_tl }
         \@@_prev_input_gpush:N \l_@@_tmpa_tl
         \exp_after:wN \use_none:n \@@_break:w
       }
@@ -4121,7 +4123,7 @@
           { \@@_break:w }
       }
       { \@@_back_input: \@@_scan_dimen:nN {#1} \c_false_bool }
-    \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
+    \@@_prev_input_join_get:nnN {#1} { } \l_@@_tmpa_tl
     \@@_prev_input_gpush:
     \@@_prev_input_gpush:N \l_@@_tmpa_tl
     \@@_scan_keyword:nT { pPlLuUsS }
@@ -4129,7 +4131,7 @@
     \@@_scan_keyword:nT { mMiInNuUsS }
       { \@@_scan_dimen:nN {#1} \c_true_bool }
     \@@_break_point:
-    \@@_prev_input_join_get:nN {#1} \l_@@_tmpa_tl
+    \@@_prev_input_join_get:nnN {#1} { } \l_@@_tmpa_tl
     \@@_prev_input_silent:V \l_@@_tmpa_tl
   }
 %    \end{macrocode}

@@ -35,4 +35,11 @@
     \tl_if_empty:NTF \l_tmpa_tl { \TRUE } { \ERROR }
   }
 
+\TEST { Implicit~number~as~dimension/glue~unit~ (github~issue~39) }
+  {
+    \unravel_get:nnN { mute } { \parskip \mag \mag plus 3.12 \mag \relax } \l_tmpa_tl
+    \tl_if_empty:NTF \l_tmpa_tl { \TRUE } { \ERROR }
+    \skip_show:N \parskip
+  }
+
 \END
