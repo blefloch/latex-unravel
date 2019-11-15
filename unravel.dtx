@@ -7408,7 +7408,8 @@
     \cs_if_eq:NNTF #1 \@@_get_token_xdef:
       {
         \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl
-        \@@_prev_input:V \l_@@_head_tl
+        \@@_prev_input_silent:x { \l_@@_head_tl }
+        \@@_print_action:
       }
       {
         \cs_if_eq:NNTF #1 \@@_get_token_x:

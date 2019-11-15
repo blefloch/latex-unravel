@@ -314,11 +314,11 @@ TEST 2: \unravel and the in edef
 || \the 
 || \toks 02
 |> b}
-[==========] \exp_not:n {\abc }
-|| \edef \foo {a\exp_not:n {\abc }
+[==========] \the =>\abc 
+|| \edef \foo {a\abc 
 |> b}
-[==========] \edef \foo {a\exp_not:n {\abc }b}
-|| \edef \foo {a\exp_not:n {\abc }b}
+[==========] \edef \foo {a\abc b}
+|| \edef \foo {a\abc b}
 |> 
 [==========] Set \foo=macro:->a\abc b
 || 

@@ -1,14 +1,82 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: Stop correctly for "until token" instruction (github issue 34)
+TEST 1: Display of unexpanded/detokenize/the in edef (github issue 33)
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
 [===== Start =====]
 || 
+|> \edef \x {\unexpanded {\hi }}
+Defining \g__unravel_input_2_gtl on line ...
+[==========] \unexpanded = \unexpanded
+|| \edef \x {
+|| \unexpanded 
+|> {\hi }}
+[==========] \unexpanded {\hi }
+|| \edef \x {\hi 
+|> }
+[==========] \edef \x {\hi }
+|| \edef \x {\hi }
+|> 
+[==========] Set \x=macro:->\hi 
+|| 
+|> 
+[===== End =====]
+TRUE
+[===== Start =====]
+|| 
+|> \edef \x {\detokenize {\hi }}
+[==========] \detokenize = \detokenize
+|| \edef \x {
+|| \detokenize 
+|> {\hi }}
+[==========] \detokenize {\hi }
+|| \edef \x {\hi 
+|> }
+[==========] \edef \x {\hi }
+|| \edef \x {\hi }
+|> 
+[==========] Set \x=macro:->\hi 
+|| 
+|> 
+[===== End =====]
+TRUE
+[===== Start =====]
+|| 
+|> \edef \x {\the \toks 0}
+[==========] \the = \the
+|| \edef \x {
+|| \the 
+|> \toks 0}
+[==========] \toks = \toks
+|| \edef \x {
+|| \the 
+|| \toks 
+|> 0}
+[==========] 0
+|| \edef \x {
+|| \the 
+|| \toks 0
+|> }
+[==========] \the =>\hi 
+|| \edef \x {\hi 
+|> }
+[==========] \edef \x {\hi }
+|| \edef \x {\hi }
+|> 
+[==========] Set \x=macro:->\hi 
+|| 
+|> 
+[===== End =====]
+TRUE
+============================================================
+============================================================
+TEST 2: Stop correctly for "until token" instruction (github issue 34)
+============================================================
+[===== Start =====]
+|| 
 |> \testA: 
 u\testD: 
-Defining \g__unravel_input_2_gtl on line ...
 [==========] \testA: = \long macro:->\testB: 
 Defining \g__unravel_input_3_gtl on line ...
 [==========] \testB: = \long macro:->\testC: 
@@ -35,7 +103,7 @@ and I'll forget about whatever was undefined.
 [==========] \testD: = undefined
 ============================================================
 ============================================================
-TEST 2: skip to else/fi (github issue 35)
+TEST 3: skip to else/fi (github issue 35)
 ============================================================
 [===== Start =====]
 || 
@@ -98,7 +166,7 @@ TEST 2: skip to else/fi (github issue 35)
 TRUE
 ============================================================
 ============================================================
-TEST 3: expanded support (github issue 36)
+TEST 4: expanded support (github issue 36)
 ============================================================
 [===== Start =====]
 || 
@@ -176,7 +244,7 @@ l. ...  }
 [===== End =====]
 ============================================================
 ============================================================
-TEST 4: Runaway unravel (github issue 37)
+TEST 5: Runaway unravel (github issue 37)
 ============================================================
 [===== Start =====]
 || 
@@ -247,7 +315,7 @@ Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
 ============================================================
 ============================================================
-TEST 5: Unit optional space (github issue 38)
+TEST 6: Unit optional space (github issue 38)
 ============================================================
 |macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
@@ -284,7 +352,7 @@ l. ...  }
 TRUE
 ============================================================
 ============================================================
-TEST 6: Implicit number as dimension/glue unit (github issue 39)
+TEST 7: Implicit number as dimension/glue unit (github issue 39)
 ============================================================
 TRUE
 > \parskip=15.25879pt plus 0.04759pt.
@@ -292,7 +360,7 @@ TRUE
 l. ...  }
 ============================================================
 ============================================================
-TEST 7: prompt-input option
+TEST 8: prompt-input option
 ============================================================
 [===== Start =====]
 || 

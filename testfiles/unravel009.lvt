@@ -18,6 +18,20 @@
 
 \leavevmode
 
+\TEST { Display~of~unexpanded/detokenize/the~in~edef~(github~issue~33) }
+  {
+    \unravel{\edef\x{\unexpanded{\hi}}}
+    \edef\y{\unexpanded{\hi}}
+    \cs_if_eq:NNTF \x \y { \TRUE } { \ERROR }
+    \unravel{\edef\x{\detokenize{\hi}}}
+    \edef\y{\detokenize{\hi}}
+    \cs_if_eq:NNTF \x \y { \TRUE } { \ERROR }
+    \toks0={\hi}
+    \unravel{\edef\x{\the\toks0}}
+    \edef\y{\the\toks0}
+    \cs_if_eq:NNTF \x \y { \TRUE } { \ERROR }
+  }
+
 \TEST { Stop~correctly~for~"until~token"~instruction~(github~issue~34) }
   {
     \cs_set:Npn \testA: { \testB: }

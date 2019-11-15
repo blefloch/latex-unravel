@@ -686,11 +686,11 @@ Defining \g__unravel_input_10_gtl on line ...
 || -
 || 2.0pt plus 3.0pt minus 4.0pt
 |> \scan_stop: }
-[==========] \exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}
-|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}
+[==========] \skip_use:N =>-2.0pt plus -3.0pt minus -4.0pt
+|| \cs_set_nopar:Npx \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt
 |> }
-[==========] \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}}
-|| \cs_set_nopar:Npx \l_tmpa_tl {\exp_not:n {-2.0pt plus -3.0pt minus -4.0pt}}
+[==========] \cs_set_nopar:Npx \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
+|| \cs_set_nopar:Npx \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
 |> 
 [==========] Set \l_tmpa_tl=macro:->-2.0pt plus -3.0pt minus -4.0pt
 || 
