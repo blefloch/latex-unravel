@@ -4990,24 +4990,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{One step}
-%
-% \begin{macro}{\@@_do_step:}
-%   Perform the action if the corresponding command exists.  If that
-%   command does not exist, complain, and leave the token in the output.
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_do_step:
-  {
-    \@@_set_action_text:
-    \bool_if:NT \g_@@_internal_debug_bool
-      { \@@_exp_args:Nx \iow_term:n { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
-    \cs_if_exist_use:cF
-      { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
-      { \@@_error:nxxxx { internal } { unknown-command } { } { } { } }
-  }
-%    \end{macrocode}
-% \end{macro}
-%
 % \subsection{Commands}
 %
 % We will implement commands in order of their command codes (some of
@@ -8716,6 +8698,22 @@
     \@@_set_cmd:
     \@@_do_step:
     \@@_main_loop:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_do_step:}
+%   Perform the action if the corresponding command exists.  If that
+%   command does not exist, complain, and leave the token in the output.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_do_step:
+  {
+    \@@_set_action_text:
+    \bool_if:NT \g_@@_internal_debug_bool
+      { \@@_exp_args:Nx \iow_term:n { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
+    \cs_if_exist_use:cF
+      { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
+      { \@@_error:nxxxx { internal } { unknown-command } { } { } { } }
   }
 %    \end{macrocode}
 % \end{macro}
