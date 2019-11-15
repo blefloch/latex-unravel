@@ -102,6 +102,7 @@
     \unravel{\romannumeral\numexpr-1}
     \unravel{\romannumeral-`a}
     \unravel{\iffalse}
+    \unravel{\unexpanded\bgroup}
   }
 
 \TEST { Unit ~ optional ~ space ~ (github~issue~38)  }
