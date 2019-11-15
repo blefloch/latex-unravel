@@ -147,4 +147,13 @@
     \def \foo { } { \TRUE }
   }
 
+\TEST { Hash~doubling~in~converting~toks~to~string }
+  {
+    \unravel [mute]
+      { \str_if_eq:eeTF {#} { \token_to_str:N # } { \ERROR } { \FALSE } }
+    \unravel [mute]
+      { \str_if_eq:eeTF {#} { \token_to_str:N # \token_to_str:N # } { \TRUE } { \ERROR } }
+    \unravel [mute] { \tex_message:D {#} }
+  }
+
 \END
