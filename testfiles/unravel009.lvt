@@ -16,6 +16,22 @@
 
 \unravelsetup { machine }
 
+\TEST { expanded~support~ (github~issue~36) }
+  {
+    \unravel
+      {
+        \exp_after:wN \show
+        \expanded
+          {
+            \exp_after:wN \if_meaning:w \expanded { \use_i:nn A \c_empty_tl } A
+            t
+            \else:
+            f
+            \fi:
+          }
+      }
+  }
+
 \TEST { Runaway~unravel~ (github~issue~37) }
   {
     \unravel{\romannumeral\numexpr-1}

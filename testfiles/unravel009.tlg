@@ -1,9 +1,90 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: Runaway unravel (github issue 37)
+TEST 1: expanded support (github issue 36)
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \exp_after:wN \show \expanded {\exp_after:wN \if_meaning:w \expanded
+|> {\use_i:nn A\c_empty_tl }At\else: f\fi: }
+[==========] \exp_after:wN \show 
+|| \exp_after:wN \show 
+|> \expanded {\exp_after:wN \if_meaning:w \expanded {\use_i:nn A\c_empty_tl
+|> }At\else: f\fi: }
+[==========] \expanded = \expanded
+|| \exp_after:wN \show 
+|| \expanded 
+|> {\exp_after:wN \if_meaning:w \expanded {\use_i:nn A\c_empty_tl }At\else:
+|> f\fi: }
+Defining \g__unravel_input_2_gtl on line ...
+[==========] \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|| \exp_after:wN \if_meaning:w 
+|> \expanded {\use_i:nn A\c_empty_tl }At\else: f\fi: }
+[==========] \expanded = \expanded
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|| \exp_after:wN \if_meaning:w 
+|| \expanded 
+|> {\use_i:nn A\c_empty_tl }At\else: f\fi: }
+Defining \g__unravel_input_3_gtl on line ...
+Defining \g__unravel_input_4_gtl on line ...
+[==========] \use_i:nn = \long macro:#1#2->#1
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|| \exp_after:wN \if_meaning:w 
+|| \expanded 
+|| {
+|> A}At\else: f\fi: }
+[==========] \expanded {\exp_not:n {A}}=A
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|| \exp_after:wN \if_meaning:w 
+|> AAt\else: f\fi: }
+[==========] back_input: \exp_after:wN \if_meaning:w 
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|> \if_meaning:w AAt\else: f\fi: }
+[==========] \if_meaning:w = \ifx
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|| \if_meaning:w 
+|> AAt\else: f\fi: }
+[==========] Compare: \if_meaning:w AA=true
+|| \exp_after:wN \show 
+|| \expanded 
+|| {
+|> t\else: f\fi: }
+[==========] \else: = \else => skipped to \fi: 
+|| \exp_after:wN \show 
+|| \expanded 
+|| {t
+|> }
+[==========] \expanded {\exp_not:n {t}}=t
+|| \exp_after:wN \show 
+|> t
+[==========] back_input: \exp_after:wN \show 
+|| 
+|> \show t
+[==========] \show = \show
+|| \show 
+|> t
+> the letter t.
+<argument> t
+l. ...  }
+[===== End =====]
+============================================================
+============================================================
+TEST 2: Runaway unravel (github issue 37)
+============================================================
 [===== Start =====]
 || 
 |> \romannumeral \numexpr -1
@@ -14,7 +95,6 @@ Defining \g__unravel_input_1_gtl on line ...
 || \romannumeral 
 || \numexpr 
 |> -1
-Defining \g__unravel_input_2_gtl on line ...
 [==========] -
 || \romannumeral 
 || \numexpr -
@@ -31,7 +111,6 @@ Some TeX command expects input beyond the end of the argument of \unravel.
 [==========] \numexpr -1 => -1
 || \romannumeral -1
 |> 
-Defining \g__unravel_input_3_gtl on line ...
 [==========] \romannumeral -1=
 || 
 |> 
@@ -75,9 +154,8 @@ Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
 ============================================================
 ============================================================
-TEST 2: Unit optional space (github issue 38)
+TEST 3: Unit optional space (github issue 38)
 ============================================================
-Defining \g__unravel_input_4_gtl on line ...
 |macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
 Defining \g__unravel_input_6_gtl on line ...
@@ -113,7 +191,7 @@ l. ...  }
 TRUE
 ============================================================
 ============================================================
-TEST 3: Implicit number as dimension/glue unit (github issue 39)
+TEST 4: Implicit number as dimension/glue unit (github issue 39)
 ============================================================
 TRUE
 > \parskip=15.25879pt plus 0.04759pt.
