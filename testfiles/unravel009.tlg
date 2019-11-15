@@ -1,15 +1,45 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: skip to else/fi (github issue 35)
+TEST 1: Stop correctly for "until token" instruction (github issue 34)
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
 [===== Start =====]
 || 
-|> \ifx aaT\else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
-Defining \g__unravel_input_4_gtl on line ...
-Defining \g__unravel_input_3_gtl on line ...
+|> \testA: 
+u\testD: 
 Defining \g__unravel_input_2_gtl on line ...
+[==========] \testA: = \long macro:->\testB: 
+Defining \g__unravel_input_3_gtl on line ...
+[==========] \testB: = \long macro:->\testC: 
+Defining \g__unravel_input_4_gtl on line ...
+[==========] \testC: = \long macro:->\testD: 
+|| 
+|> \testD: 
+x
+[===== Start =====]
+|| 
+|> \testA: 
+u\testA: 
+[==========] \testA: = \long macro:->\testB: 
+[==========] \testB: = \long macro:->\testC: 
+[==========] \testC: = \long macro:->\testD: 
+! Undefined control sequence.
+\l__unravel_head_tl ->\testD: 
+l. ...  }
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+[==========] \testD: = undefined
+============================================================
+============================================================
+TEST 2: skip to else/fi (github issue 35)
+============================================================
+[===== Start =====]
+|| 
+|> \ifx aaT\else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
 [==========] \ifx = \ifx
 || \ifx 
 |> aaT\else F\fi \ifx aaT\fi \ifx abT\else F\fi \ifx abT\fi 
@@ -68,7 +98,7 @@ Defining \g__unravel_input_2_gtl on line ...
 TRUE
 ============================================================
 ============================================================
-TEST 2: expanded support (github issue 36)
+TEST 3: expanded support (github issue 36)
 ============================================================
 [===== Start =====]
 || 
@@ -146,7 +176,7 @@ l. ...  }
 [===== End =====]
 ============================================================
 ============================================================
-TEST 3: Runaway unravel (github issue 37)
+TEST 4: Runaway unravel (github issue 37)
 ============================================================
 [===== Start =====]
 || 
@@ -217,7 +247,7 @@ Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
 ============================================================
 ============================================================
-TEST 4: Unit optional space (github issue 38)
+TEST 5: Unit optional space (github issue 38)
 ============================================================
 |macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
@@ -254,7 +284,7 @@ l. ...  }
 TRUE
 ============================================================
 ============================================================
-TEST 5: Implicit number as dimension/glue unit (github issue 39)
+TEST 6: Implicit number as dimension/glue unit (github issue 39)
 ============================================================
 TRUE
 > \parskip=15.25879pt plus 0.04759pt.
@@ -262,7 +292,7 @@ TRUE
 l. ...  }
 ============================================================
 ============================================================
-TEST 6: prompt-input option
+TEST 7: prompt-input option
 ============================================================
 [===== Start =====]
 || 

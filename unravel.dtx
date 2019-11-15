@@ -8424,6 +8424,7 @@
               { \exp_not:N \@@:nn \tl_to_str:N \g_@@_until_tl }
           }
           {
+            \int_gzero:N \g_@@_nonstop_int
             \int_gset:Nn \g_@@_online_int { 1 }
             \tl_gclear:N \g_@@_before_print_state_tl
           }

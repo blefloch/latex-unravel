@@ -18,6 +18,15 @@
 
 \leavevmode
 
+\TEST { Stop~correctly~for~"until~token"~instruction~(github~issue~34) }
+  {
+    \cs_set:Npn \testA: { \testB: }
+    \cs_set:Npn \testB: { \testC: }
+    \cs_set:Npn \testC: { \testD: }
+    \unravel [prompt-input={u\testD:,x}] { \testA: }
+    \unravel [prompt-input={u\testA:}] { \testA: }
+  }
+
 \TEST { skip~to~else/fi~ (github~issue~35) }
   {
     \unravel_get:nnN { }
