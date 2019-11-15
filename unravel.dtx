@@ -3974,6 +3974,10 @@
 %   and |inf| is |#2|.  The third argument of this procedure is omitted
 %   here, as the corresponding shortcut is provided as a separate
 %   function, \cs{@@_scan_dim_unit:nN}.
+%
+%   Ideally, \cs{@@_scan_inf_unit_loop:} would produce an \pkg{unravel}
+%   error when reaching the third ``L'', rather than letting TeX produce
+%   the error later on.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_dimen:nN #1#2
   {
