@@ -140,4 +140,10 @@
     \unravel [prompt-input = {s2, x}] { \testA: }
   }
 
+\TEST { afterassignment~kept }
+  {
+    \unravel { \afterassignment \TYPE \c_space_tl }
+    \def \foo { } { \TRUE }
+  }
+
 \END

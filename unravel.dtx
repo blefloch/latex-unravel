@@ -264,8 +264,6 @@
 %   \tn{lastpenalty}, \tn{lastskip}, \tn{currentiflevel} and
 %   \tn{currentiftype} may have wrong values.  Perhaps
 %   \tn{currentgrouplevel} and \tn{currentgrouptype} too.
-% \item Tokens passed to \tn{afterassignment} are not yet kept after
-%   \pkg{unravel} is done even if there has been no assignment.
 % \item Tokens passed to \tn{aftergroup} are lost when \pkg{unravel} is
 %   done.
 % \item In \XeTeX{}, characters beyond the basic multilingual plane may
@@ -274,7 +272,7 @@
 %   using \tn{input},
 %   while \TeX{} only fixes category codes when the corresponding
 %   characters are converted to tokens.  Similarly, the argument of
-%   \tn{scantokens} is converted to the new category code r\'egime in
+%   \tn{scantokens} is converted to the new category code regime in
 %   one go, and the result must be balanced.
 % \item Explicit begin-group and end-group characters other than the
 %   usual left and right braces may make \pkg{unravel} choke, or may be
@@ -8640,6 +8638,7 @@
     \@@_exit_point:
     \@@_print_outcome:
     \@@_final_test:
+    \@@_final_after_assignment:
     \@@_exit_point:
   }
 \cs_new_protected:Npn \unravel_get:nnN #1#2#3
@@ -8742,6 +8741,17 @@
   {
     \@@_error:nnnnn { internal }
       { the-last-unravel-finished-badly } { } { } { }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_final_after_assignment:}
+%   Salvage any remaining \tn{afterassignment} token.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_final_after_assignment:
+  {
+    \gtl_if_empty:NF \g_@@_after_assignment_gtl
+      { \gtl_head_do:NN \g_@@_after_assignment_gtl \tex_afterassignment:D }
   }
 %    \end{macrocode}
 % \end{macro}
