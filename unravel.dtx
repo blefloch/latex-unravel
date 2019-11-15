@@ -7702,7 +7702,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: fix interaction with noexpand and active chars (what interaction?)
 % \begin{macro}{\@@_test_two_chars:nn, \@@_test_two_chars_get:n, \@@_test_two_chars_gtl:N}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_two_chars:nn #1
@@ -7741,7 +7740,10 @@
         \gtl_if_head_is_group_begin:NTF #1 { \c_group_begin_token }
           {
             \gtl_if_head_is_group_end:NTF #1 { \c_group_end_token }
-              { \exp_not:N \exp_not:N \gtl_head_do:NN #1 \exp_not:N }
+              {
+                \exp_not:N \exp_not:N
+                \exp_not:f { \gtl_head_do:NN #1 \exp_stop_f: }
+              }
           }
       }
   }

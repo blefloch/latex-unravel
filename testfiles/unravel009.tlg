@@ -1,13 +1,138 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: Display of unexpanded/detokenize/the in edef (github issue 33)
+TEST 1: if/ifcat and catcode 6 and 13 (github issue 32b)
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
 [===== Start =====]
 || 
-|> \edef \x {\unexpanded {\hi }}
+|> \if ####\fi 
+s10
+[==========] \if = \if
+[==========] ##
+[==========] ##
+[==========] \if ####=true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \if !##\fi 
+s10
+[==========] \if = \if
+[==========] !
+[==========] ##
+[==========] \if !##=true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \if \noexpand *\noexpand !\fi 
+s10
+[==========] \if = \if
 Defining \g__unravel_input_2_gtl on line ...
+Defining \g__unravel_input_3_gtl on line ...
+[==========] *
+[==========] !
+[==========] \if *!=false => skip to \fi 
+[===== Start =====]
+|| 
+|> \if \noexpand *!\fi 
+s10
+[==========] \if = \if
+[==========] *
+[==========] !
+[==========] \if *!=false => skip to \fi 
+[===== Start =====]
+|| 
+|> \if \noexpand *\noexpand +\fi 
+s10
+[==========] \if = \if
+[==========] *
+[==========] +
+[==========] \if *+=false => skip to \fi 
+[===== Start =====]
+|| 
+|> \if \noexpand +\mag \fi 
+s10
+[==========] \if = \if
+[==========] +
+[==========] \mag 
+[==========] \if +\mag =true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \if \noexpand +\relax \fi 
+s10
+[==========] \if = \if
+[==========] +
+[==========] \relax 
+[==========] \if +\relax =true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \ifcat ####\fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] ##
+[==========] ##
+[==========] \ifcat ####=true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \ifcat !##\fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] !
+[==========] ##
+[==========] \ifcat !##=true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \ifcat \noexpand *\noexpand !\fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] *
+[==========] !
+[==========] \ifcat *!=false => skip to \fi 
+[===== Start =====]
+|| 
+|> \ifcat \noexpand *!\fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] *
+[==========] !
+[==========] \ifcat *!=false => skip to \fi 
+[===== Start =====]
+|| 
+|> \ifcat \noexpand *\noexpand +\fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] *
+[==========] +
+[==========] \ifcat *+=false => skip to \fi 
+[===== Start =====]
+|| 
+|> \ifcat \noexpand +\mag \fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] +
+[==========] \mag 
+[==========] \ifcat +\mag =true
+[==========] \fi = \fi
+[===== Start =====]
+|| 
+|> \ifcat \noexpand +\relax \fi 
+s10
+[==========] \ifcat = \ifcat
+[==========] +
+[==========] \relax 
+[==========] \ifcat +\relax =true
+[==========] \fi = \fi
+============================================================
+============================================================
+TEST 2: Display of unexpanded/detokenize/the in edef (github issue 33)
+============================================================
+[===== Start =====]
+|| 
+|> \edef \x {\unexpanded {\hi }}
 [==========] \unexpanded = \unexpanded
 || \edef \x {
 || \unexpanded 
@@ -71,14 +196,13 @@ TRUE
 TRUE
 ============================================================
 ============================================================
-TEST 2: Stop correctly for "until token" instruction (github issue 34)
+TEST 3: Stop correctly for "until token" instruction (github issue 34)
 ============================================================
 [===== Start =====]
 || 
 |> \testA: 
 u\testD: 
 [==========] \testA: = \long macro:->\testB: 
-Defining \g__unravel_input_3_gtl on line ...
 [==========] \testB: = \long macro:->\testC: 
 Defining \g__unravel_input_4_gtl on line ...
 [==========] \testC: = \long macro:->\testD: 
@@ -103,7 +227,7 @@ and I'll forget about whatever was undefined.
 [==========] \testD: = undefined
 ============================================================
 ============================================================
-TEST 3: skip to else/fi (github issue 35)
+TEST 4: skip to else/fi (github issue 35)
 ============================================================
 [===== Start =====]
 || 
@@ -166,7 +290,7 @@ TEST 3: skip to else/fi (github issue 35)
 TRUE
 ============================================================
 ============================================================
-TEST 4: expanded support (github issue 36)
+TEST 5: expanded support (github issue 36)
 ============================================================
 [===== Start =====]
 || 
@@ -244,7 +368,7 @@ l. ...  }
 [===== End =====]
 ============================================================
 ============================================================
-TEST 5: Runaway unravel (github issue 37)
+TEST 6: Runaway unravel (github issue 37)
 ============================================================
 [===== Start =====]
 || 
@@ -315,7 +439,7 @@ Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
 ============================================================
 ============================================================
-TEST 6: Unit optional space (github issue 38)
+TEST 7: Unit optional space (github issue 38)
 ============================================================
 |macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
@@ -352,7 +476,7 @@ l. ...  }
 TRUE
 ============================================================
 ============================================================
-TEST 7: Implicit number as dimension/glue unit (github issue 39)
+TEST 8: Implicit number as dimension/glue unit (github issue 39)
 ============================================================
 TRUE
 > \parskip=15.25879pt plus 0.04759pt.
@@ -360,7 +484,7 @@ TRUE
 l. ...  }
 ============================================================
 ============================================================
-TEST 8: prompt-input option
+TEST 9: prompt-input option
 ============================================================
 [===== Start =====]
 || 

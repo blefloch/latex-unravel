@@ -18,6 +18,33 @@
 
 \leavevmode
 
+\char_set_active_eq:NN ! #
+\char_set_catcode_active:N !
+\char_set_active_eq:NN * \cs_set:Npn
+\char_set_catcode_active:N *
+\char_set_active_eq:NN + \cs_set_nopar:Npn
+\char_set_catcode_active:N +
+\TEST { if/ifcat~and~catcode~6~and~13~(github~issue~32b) }
+  {
+    \unravel [prompt-input = {s10}] {\if # # \fi}
+    \unravel [prompt-input = {s10}] {\if ! # \fi}
+    \unravel [prompt-input = {s10}] {\if \noexpand * \noexpand ! \fi}
+    \unravel [prompt-input = {s10}] {\if \noexpand * ! \fi}
+    \unravel [prompt-input = {s10}] {\if \noexpand * \noexpand + \fi}
+    \unravel [prompt-input = {s10}] {\if \noexpand + \mag \fi}
+    \unravel [prompt-input = {s10}] {\if \noexpand + \relax \fi}
+    \unravel [prompt-input = {s10}] {\ifcat # # \fi}
+    \unravel [prompt-input = {s10}] {\ifcat ! # \fi}
+    \unravel [prompt-input = {s10}] {\ifcat \noexpand * \noexpand ! \fi}
+    \unravel [prompt-input = {s10}] {\ifcat \noexpand * ! \fi}
+    \unravel [prompt-input = {s10}] {\ifcat \noexpand * \noexpand + \fi}
+    \unravel [prompt-input = {s10}] {\ifcat \noexpand + \mag \fi}
+    \unravel [prompt-input = {s10}] {\ifcat \noexpand + \relax \fi}
+  }
+\char_set_catcode_other:N !
+\char_set_catcode_other:N *
+\char_set_catcode_other:N +
+
 \TEST { Display~of~unexpanded/detokenize/the~in~edef~(github~issue~33) }
   {
     \unravel{\edef\x{\unexpanded{\hi}}}
