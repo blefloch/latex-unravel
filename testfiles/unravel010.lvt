@@ -1,0 +1,41 @@
+%
+% Copyright (C) 2019 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\ExplSyntaxOn
+\bool_lazy_any:nT
+  { \sys_if_engine_pdftex_p: \sys_if_engine_ptex_p: \sys_if_engine_uptex_p: }
+  { \DeclareUnicodeCharacter { 1E } { A } }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { machine }
+
+\leavevmode
+
+\TEST { Large~unicode~values }
+  {
+    \unravel_get:nnN { mute } { \edef \foo { ^^^^^^010001 } } \l_tmpa_tl
+    \tl_if_empty:NTF \l_tmpa_tl { \TRUE } { \ERROR }
+    \unravel_get:nnN { mute } { \foo } \l_tmpa_tl
+    \str_if_eq:eeTF \l_tmpa_tl
+      {
+        \bool_lazy_any:nTF
+          { \sys_if_engine_pdftex_p: \sys_if_engine_ptex_p: \sys_if_engine_uptex_p: }
+          { AA010001 } { \char 65537 ~ }
+      }
+      { \TRUE } { \ERROR }
+  }
+
+\END

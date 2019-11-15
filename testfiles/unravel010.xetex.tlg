@@ -1,0 +1,11 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: Large unicode values
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+Defining \g__unravel_input_2_gtl on line ...
+TRUE
+Missing character: There is no 𐀁 in font [lmroman10-regular]:mapping=tex-text;!
+TRUE
+============================================================
