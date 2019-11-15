@@ -213,6 +213,24 @@
 %   neither if the option is negative.
 % \end{function}
 %
+% \begin{function}{prompt-input}
+%   Comma-delimited list option (empty by default) whose items are used
+%   one by one as if the user typed them at the prompt.  Since the
+%   key-value list is itself comma-delimited, the value here must be
+%   wrapped in braces.  For instance, |prompt-input = {s10, m, u\def}|
+%   skips $10$ steps, shows the first token's meaning, then continues
+%   silently until the first token is~|\def|, and any subsequent prompt
+%   is treated normally with user interaction.  This can be useful when
+%   repeatedly debugging complicated code when the issue is known to lie
+%   quite late in the code.
+%
+%   As for any |clist|, spaces are discarded around each comma and empty
+%   entries are removed, then for each item one pair of braces is
+%   removed (if any is present); to get an empty item use an empty brace
+%   group, such as in |prompt-input = {s10, {}, x}|.  Category codes are
+%   those in effect when the |prompt-input| option is read.
+% \end{function}
+%
 % \begin{function}{trace-assigns, trace-expansion, trace-other}
 %   Boolean options (default \texttt{true}) controlling what steps
 %   produce any output at all.  The keys |trace-assigns|,
@@ -1207,6 +1225,7 @@
 %     \g_@@_default_internal_debug_bool  , \g_@@_internal_debug_bool  ,
 %     \g_@@_default_number_steps_bool    , \g_@@_number_steps_bool    ,
 %     \g_@@_default_online_int           , \g_@@_online_int           ,
+%     \g_@@_default_prompt_input_clist   , \g_@@_prompt_input_clist   ,
 %     \g_@@_default_trace_assigns_bool   , \g_@@_trace_assigns_bool   ,
 %     \g_@@_default_trace_expansion_bool , \g_@@_trace_expansion_bool ,
 %     \g_@@_default_trace_other_bool     , \g_@@_trace_other_bool     ,
@@ -1222,6 +1241,7 @@
 \bool_new:N \g_@@_default_internal_debug_bool
 \bool_new:N \g_@@_default_number_steps_bool
 \int_new:N  \g_@@_default_online_int
+\clist_new:N \g_@@_default_prompt_input_clist
 \bool_new:N \g_@@_default_trace_assigns_bool
 \bool_new:N \g_@@_default_trace_expansion_bool
 \bool_new:N \g_@@_default_trace_other_bool
@@ -1236,6 +1256,7 @@
 \bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
 \int_new:N  \g_@@_online_int
+\clist_new:N \g_@@_prompt_input_clist
 \bool_new:N \g_@@_trace_assigns_bool
 \bool_new:N \g_@@_trace_expansion_bool
 \bool_new:N \g_@@_trace_other_bool
@@ -8231,13 +8252,28 @@
   }
 \cs_new_protected:Npn \@@_prompt_aux:
   {
-    \int_compare:nNnT { \tex_interactionmode:D } = { 3 }
+    \clist_if_empty:NTF \g_@@_prompt_input_clist
       {
-        \bool_if:NTF \g_@@_explicit_prompt_bool
-          { \@@_ior_str_get:Nc \c_@@_prompt_ior }
-          { \@@_ior_str_get:Nc \c_@@_noprompt_ior }
-              { Your~input }
-        \exp_args:Nv \@@_prompt_treat:n { Your~input }
+        \int_compare:nNnT { \tex_interactionmode:D } = { 3 }
+          {
+            \bool_if:NTF \g_@@_explicit_prompt_bool
+              { \@@_ior_str_get:Nc \c_@@_prompt_ior }
+              { \@@_ior_str_get:Nc \c_@@_noprompt_ior }
+                  { Your~input }
+            \exp_args:Nv \@@_prompt_treat:n { Your~input }
+          }
+      }
+      {
+        \clist_gpop:NN \g_@@_prompt_input_clist \l_@@_tmpa_tl
+        \group_begin:
+          \@@_set_escapechar:n { 92 }
+          \@@_print:x
+            {
+              \bool_if:NT \g_@@_explicit_prompt_bool { Your~input= }
+              \tl_to_str:N \l_@@_tmpa_tl
+            }
+        \group_end:
+        \exp_args:NV \@@_prompt_treat:n \l_@@_tmpa_tl
       }
   }
 \cs_new_protected:Npn \@@_prompt_treat:n #1
@@ -8492,6 +8528,7 @@
     max-input        .int_gset:N  = \g_@@_default_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
     online           .int_gset:N  = \g_@@_default_online_int ,
+    prompt-input     .clist_gset:N = \g_@@_default_prompt_input_clist ,
     trace-assigns    .bool_gset:N = \g_@@_default_trace_assign_bool ,
     trace-expansion  .bool_gset:N = \g_@@_default_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_default_trace_other_bool ,
@@ -8506,6 +8543,7 @@
     max-input        .int_gset:N  = \g_@@_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
     online           .int_gset:N  = \g_@@_online_int ,
+    prompt-input     .clist_gset:N = \g_@@_prompt_input_clist ,
     trace-assigns    .bool_gset:N = \g_@@_trace_assigns_bool ,
     trace-expansion  .bool_gset:N = \g_@@_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_trace_other_bool ,
@@ -8618,6 +8656,7 @@
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
     \int_gset_eq:NN  \g_@@_online_int \g_@@_default_online_int
+    \clist_gset_eq:NN \g_@@_prompt_input_clist \g_@@_default_prompt_input_clist
     \bool_gset_eq:NN \g_@@_trace_assigns_bool \g_@@_default_trace_assigns_bool
     \bool_gset_eq:NN \g_@@_trace_expansion_bool \g_@@_default_trace_expansion_bool
     \bool_gset_eq:NN \g_@@_trace_other_bool \g_@@_default_trace_other_bool

@@ -261,3 +261,33 @@ TRUE
 <recently read> }
 l. ...  }
 ============================================================
+============================================================
+TEST 6: prompt-input option
+============================================================
+[===== Start =====]
+|| 
+|> \testA: 
+Your input=
+[==========] \testA: = \long macro:->\testB: 
+|| 
+|> \testB: 
+Your input=
+[==========] \testB: = \long macro:->\testC: 
+|| 
+|> \testC: 
+Your input=x
+[===== Start =====]
+|| 
+|> \testA: 
+Your input=s2
+[==========] \testA: = \long macro:->\testB: 
+[==========] \testB: = \long macro:->\testC: 
+Your input=x
+[===== Start =====]
+|| 
+|> \testA: 
+s2
+[==========] \testA: = \long macro:->\testB: 
+[==========] \testB: = \long macro:->\testC: 
+x
+============================================================

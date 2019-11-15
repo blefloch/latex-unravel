@@ -80,4 +80,14 @@
     \skip_show:N \parskip
   }
 
+\TEST { prompt-input~option }
+  {
+    \cs_set:Npn \testA: { \testB: }
+    \cs_set:Npn \testB: { \testC: }
+    \cs_set:Npn \testC: { \testD: }
+    \unravel [explicit-prompt, prompt-input = {{}, {}, x}] { \testA: }
+    \unravel [explicit-prompt, prompt-input = {s2, x}] { \testA: }
+    \unravel [prompt-input = {s2, x}] { \testA: }
+  }
+
 \END
