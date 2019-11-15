@@ -1,11 +1,82 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ============================================================
-TEST 1: Unit optional space (github issue 38)
+TEST 1: Runaway unravel (github issue 37)
 ============================================================
 Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \romannumeral \numexpr -1
+[==========] \romannumeral = \romannumeral
+|| \romannumeral 
+|> \numexpr -1
+[==========] \numexpr = \numexpr
+|| \romannumeral 
+|| \numexpr 
+|> -1
 Defining \g__unravel_input_2_gtl on line ...
+[==========] -
+|| \romannumeral 
+|| \numexpr -
+|> 1
+[==========] 1
+|| \romannumeral 
+|| \numexpr -1
+|> 
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
+[==========] \numexpr -1 => -1
+|| \romannumeral -1
+|> 
 Defining \g__unravel_input_3_gtl on line ...
+[==========] \romannumeral -1=
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \romannumeral -`a
+[==========] \romannumeral = \romannumeral
+|| \romannumeral 
+|> -`a
+[==========] -
+|| \romannumeral -
+|> `a
+[==========] `a=97
+|| \romannumeral -97
+|> 
+! Package unravel Error: Runaway \unravel, so \relax inserted.
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+Some TeX command expects input beyond the end of the argument of \unravel.
+[==========] \romannumeral -97=
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \iffalse 
+[==========] \iffalse = \iffalse
+|| \iffalse 
+|> 
+! Package unravel Error: Runaway \if... Exiting \unravel
+Type <return> to continue.
+ ...                                              
+l. ...  }
+LaTeX does not know anything more about this error, sorry.
+Try typing <return> to proceed.
+If that doesn't work, type X <return> to quit.
+============================================================
+============================================================
+TEST 2: Unit optional space (github issue 38)
+============================================================
 Defining \g__unravel_input_4_gtl on line ...
 |macro:->\char 92 BOOM|
 Defining \g__unravel_input_5_gtl on line ...
@@ -42,7 +113,7 @@ l. ...  }
 TRUE
 ============================================================
 ============================================================
-TEST 2: Implicit number as dimension/glue unit (github issue 39)
+TEST 3: Implicit number as dimension/glue unit (github issue 39)
 ============================================================
 TRUE
 > \parskip=15.25879pt plus 0.04759pt.

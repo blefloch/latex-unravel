@@ -870,16 +870,11 @@
 %
 % \subsubsection{Helpers for control flow}
 %
-% \begin{macro}[EXP]{\@@_exit:w, \@@_exit_error:w, \@@_exit_hard:w, \@@_exit_point:}
+% \begin{macro}[EXP]{\@@_exit:w, \@@_exit_hard:w, \@@_exit_point:}
 %   Jump to the very end of this instance of \cs{unravel}.
 %    \begin{macrocode}
 \cs_new_eq:NN \@@_exit_point: \prg_do_nothing:
 \cs_new:Npn \@@_exit:w #1 \@@_exit_point: { }
-\cs_new:Npn \@@_exit_error:w #1 \@@_exit_point: #2 \@@_final_bad:
-  {
-    \@@_error:nnnnn { runaway-unravel } { } { } { } { }
-    #2
-  }
 \cs_new:Npn \@@_exit_hard:w #1 \@@_exit_point: #2 \@@_exit_point: { }
 %    \end{macrocode}
 % \end{macro}
@@ -2328,8 +2323,11 @@
 %
 % \begin{macro}{\@@_get_next:}
 % \begin{macro}{\@@_get_next_aux:w}
-%   If the input is empty, forcefully exit.  Otherwise,
-%   remove the first token in the input, and store it in
+%   If the input is empty, insert a frozen \tn{relax} (the alternative
+%   would be either to grab a token in the input stream after
+%   \cs{unravel}, which is tough, or simply produce an error and exit;
+%   perhaps this should be configurable).
+%   Then remove the first token in the input, and store it in
 %   \cs{l_@@_head_gtl}.  Set \cs{l_@@_head_token} equal in meaning to
 %   that first token.  Then set \cs{l_@@_head_tl} to contain the token,
 %   unless it is a begin-group or end-group character, in which case
@@ -2338,20 +2336,22 @@
 \cs_new_protected:Npn \@@_get_next:
   {
     \@@_input_if_empty:TF
-      { \@@_exit_error:w }
       {
-        \@@_input_gpop:N \l_@@_head_gtl
-        \gtl_head_do:NN \l_@@_head_gtl \@@_get_next_aux:w
-        \gtl_if_tl:NTF \l_@@_head_gtl
-          {
-            \tl_set:Nx \l_@@_head_tl
-              { \gtl_head:N \l_@@_head_gtl }
-            \token_if_eq_meaning:NNT
-              \l_@@_head_token \@@_special_relax:
-              \@@_get_next_notexpanded:
-          }
-          { \tl_clear:N \l_@@_head_tl }
+        \@@_error:nnnnn { runaway-unravel } { } { } { } { }
+        \@@_back_input_gtl:N \c_@@_frozen_relax_gtl
       }
+      { }
+    \@@_input_gpop:N \l_@@_head_gtl
+    \gtl_head_do:NN \l_@@_head_gtl \@@_get_next_aux:w
+    \gtl_if_tl:NTF \l_@@_head_gtl
+      {
+        \tl_set:Nx \l_@@_head_tl
+          { \gtl_head:N \l_@@_head_gtl }
+        \token_if_eq_meaning:NNT
+          \l_@@_head_token \@@_special_relax:
+          \@@_get_next_notexpanded:
+      }
+      { \tl_clear:N \l_@@_head_tl }
   }
 \cs_new_protected:Npn \@@_get_next_aux:w
   { \cs_set_eq:NN \l_@@_head_token }
@@ -8754,7 +8754,7 @@
 \msg_new:nnn { unravel } { bad-unless }
   { \iow_char:N\\unless~not~followed~by~conditional. }
 \msg_new:nnn { unravel } { runaway-if }
-  { Runaway~\iow_char:N\\if... }
+  { Runaway~\iow_char:N\\if...~Exiting~\iow_char:N\\unravel }
 \msg_new:nnn { unravel } { runaway-macro-parameter }
   {
     Runaway~macro~parameter~\# #2~after \\\\
@@ -8788,8 +8788,12 @@
       { TeX~provides~no~further~help~for~this~error. }
       { TeX's~advice~is:\\\\ \iow_indent:n {#3} }
   }
-\msg_new:nnn { unravel } { runaway-unravel }
-  { Runaway~\iow_char:N\\unravel }
+\msg_new:nnnn { unravel } { runaway-unravel }
+  { Runaway~\iow_char:N\\unravel,~so~\iow_char:N\\relax~inserted. }
+  {
+    Some~TeX~command~expects~input~beyond~the~end~of~
+    the~argument~of~\iow_char:N\\unravel.
+  }
 %    \end{macrocode}
 %
 % Some error messages from \TeX{} itself.
