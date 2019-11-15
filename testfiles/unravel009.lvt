@@ -161,4 +161,10 @@
     \unravel [mute] { \tex_message:D {#} }
   }
 
+\TEST { forbidden~case }
+  {
+    \unravel { \lastskip }
+    \leavevmode \unravel { \moveright }
+  }
+
 \END
