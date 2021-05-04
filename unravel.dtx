@@ -8036,7 +8036,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_prev:
   {
-    \seq_set_map:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
+    \seq_set_map_x:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
       { \@@_to_str:n {##1} }
     \seq_remove_all:Nn \l_@@_tmpa_seq { }
     \seq_if_empty:NTF \l_@@_tmpa_seq
