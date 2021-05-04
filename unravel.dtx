@@ -2257,8 +2257,11 @@
 \@@_tex_primitive:nnn { ifcsname          } { if_test } { 18 }
 \@@_tex_primitive:nnn { iffontchar        } { if_test } { 19 }
 \@@_tex_primitive:nnn { ifincsname        } { if_test } { 20 }
+\@@_tex_primitive:nnn { ifprimitive       } { if_test } { 21 }
 \@@_tex_primitive:nnn { ifpdfprimitive    } { if_test } { 21 }
+\@@_tex_primitive:nnn { ifabsnum          } { if_test } { 22 }
 \@@_tex_primitive:nnn { ifpdfabsnum       } { if_test } { 22 }
+\@@_tex_primitive:nnn { ifabsdim          } { if_test } { 23 }
 \@@_tex_primitive:nnn { ifpdfabsdim       } { if_test } { 23 }
 \@@_tex_primitive:nnn { fi                } { fi_or_else } { 2 }
 \@@_tex_primitive:nnn { else              } { fi_or_else } { 3 }
@@ -7017,7 +7020,7 @@
 %   \tn{ifmmode}, \tn{ifinner}, \tn{ifvoid}, \tn{ifhbox}, \tn{ifvbox},
 %   \tn{ifx}, \tn{ifeof}, \tn{iftrue}, \tn{iffalse}, \tn{ifcase},
 %   \tn{ifdefined}, \tn{ifcsname}, \tn{iffontchar}, \tn{ifincsname},
-%   \tn{ifpdfprimitive}, \tn{ifpdfabsnum}, and \tn{ifpdfabsdim}.
+%   \tn{ifprimitive}, \tn{ifabsnum}, and \tn{ifabsdim}.
 % \item |fi_or_else=108| for \tn{fi}, \tn{else} and \tn{or}.
 % \item |cs_name=109| for \tn{csname}.
 % \item |convert=110| for \tn{number}, \tn{romannumeral}, \tn{string},
@@ -7595,9 +7598,9 @@
             { 19 } % iffontchar
               { \@@_scan_font_ident: \@@_scan_int: }
             % { 20 } { } % ifincsname % ^^A todo: something?
-            { 22 } % ifpdfabsnum
+            { 22 } % ifabsnum
               { \@@_test_two_vals:N \@@_scan_int: }
-            { 23 } % ifpdfabsdim
+            { 23 } % ifabsdim
               { \@@_test_two_vals:N \@@_scan_normal_dimen: }
           }
         \@@_prev_input_gpop:N \l_@@_head_tl
