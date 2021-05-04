@@ -1430,6 +1430,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{variable}{\g_@@_lastnamedcs_tl}
+%   Used for \LuaTeX{}'s \tn{lastnamedcs} primitive.
+%    \begin{macrocode}
+\tl_new:N \g_@@_lastnamedcs_tl
+%    \end{macrocode}
+% \end{variable}
+%
 % \begin{variable}
 %   {
 %     \g_@@_after_assignment_gtl,
@@ -2267,6 +2274,7 @@
 \@@_tex_primitive:nnn { else              } { fi_or_else } { 3 }
 \@@_tex_primitive:nnn { or                } { fi_or_else } { 4 }
 \@@_tex_primitive:nnn { csname            } { cs_name } { 0 }
+\@@_tex_primitive:nnn { lastnamedcs       } { cs_name } { 1 }
 \@@_tex_primitive:nnn { number            } { convert } { 0 }
 \@@_tex_primitive:nnn { romannumeral      } { convert } { 1 }
 \@@_tex_primitive:nnn { string            } { convert } { 2 }
@@ -7022,7 +7030,7 @@
 %   \tn{ifdefined}, \tn{ifcsname}, \tn{iffontchar}, \tn{ifincsname},
 %   \tn{ifprimitive}, \tn{ifabsnum}, and \tn{ifabsdim}.
 % \item |fi_or_else=108| for \tn{fi}, \tn{else} and \tn{or}.
-% \item |cs_name=109| for \tn{csname}.
+% \item |cs_name=109| for \tn{csname} and \tn{lastnamedcs}
 % \item |convert=110| for \tn{number}, \tn{romannumeral}, \tn{string},
 %   \tn{meaning}, \tn{fontname}, \tn{eTeXrevision}, \tn{pdftexrevision},
 %   \tn{pdftexbanner}, \tn{pdffontname}, \tn{pdffontobjnum},
@@ -7217,12 +7225,21 @@
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { cs_name }                       % 109
   {
-    \@@_prev_input_gpush:N \l_@@_head_tl
-    \@@_print_expansion:
-    \@@_csname_loop:
-    \@@_prev_input_silent:V \l_@@_head_tl
-    \@@_prev_input_gpop:N \l_@@_head_tl
-    \@@_back_input_tl_o:
+    \int_compare:nNnTF \l_@@_head_char_int = 0
+      {
+        \@@_prev_input_gpush:N \l_@@_head_tl
+        \@@_print_expansion:
+        \@@_csname_loop:
+        \@@_prev_input_silent:V \l_@@_head_tl
+        \@@_get_lastnamedcs:
+        \@@_prev_input_gpop:N \l_@@_head_tl
+        \@@_back_input_tl_o:
+      }
+      {
+        \@@_back_input:V \g_@@_lastnamedcs_tl
+        \@@_print_expansion:x
+          { \tl_to_str:N \l_@@_head_tl = \tl_to_str:N \g_@@_lastnamedcs_tl }
+      }
   }
 \cs_new_protected:Npn \@@_csname_loop:
   {
@@ -7241,6 +7258,14 @@
           { \@@_token_to_char:N \l_@@_head_token }
         \@@_csname_loop:
       }
+  }
+\cs_new_protected:Npn \@@_get_lastnamedcs:
+  {
+    \group_begin:
+    \@@_prev_input_get:N \l_@@_head_tl
+    \tl_gset:No \g_@@_lastnamedcs_tl
+      { \cs:w \exp_after:wN \use_none:n \l_@@_head_tl }
+    \group_end:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -7875,6 +7900,7 @@
   {
     \@@_csname_loop:
     \@@_prev_input:V \l_@@_head_tl
+    \@@_get_lastnamedcs:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8654,6 +8680,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_init_key_vars:
   {
+    \sys_if_engine_luatex:T { \tl_gset:No \g_@@_lastnamedcs_tl { \tex_lastnamedcs:D } }
     \bool_gset_eq:NN \g_@@_explicit_prompt_bool \g_@@_default_explicit_prompt_bool
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
