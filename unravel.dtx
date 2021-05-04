@@ -261,8 +261,8 @@
 % \item \tn{aftergroup} is only partially implemented.
 % \item \tn{everyhbox}, \tn{everyvbox}, \tn{everymath},
 %   \tn{everydisplay}, \tn{lastkern}, \tn{lastnodetype},
-%   \tn{lastpenalty}, \tn{lastskip}, \tn{currentiflevel} and
-%   \tn{currentiftype} may have wrong values.  Perhaps
+%   \tn{lastpenalty}, \tn{lastskip}, \tn{currentifbranch}
+%   may have wrong values.  Perhaps
 %   \tn{currentgrouplevel} and \tn{currentgrouptype} too.
 % \item Setting \tn{globaldefs} to a non-zero value may cause problems.
 % \item Tokens passed to \tn{aftergroup} are lost when \pkg{unravel} is
@@ -7518,6 +7518,7 @@
   }
 \cs_new_protected:Npn \@@_cond_pop:
   {
+    \fi:
     \int_gset:Nn \g_@@_if_limit_int
       { \tl_head:N \g_@@_if_limit_tl }
     \tl_gset:Nx \g_@@_if_limit_tl
@@ -7567,7 +7568,7 @@
         {  1 } { \@@_test_two_chars:nn { 1 } {#1} } % ifcat
         { 12 } { \@@_test_ifx:n {#1} }
         { 16 } { \@@_test_case:n {#1} }
-        { 21 } { \@@_test_pdfprimitive:n {#1} } % ^^A todo and \unless
+        { 21 } { \if_true: \@@_test_pdfprimitive:n {#1} } % ^^A todo and \unless
       }
       {
         \@@_prev_input_gpush:N \l_@@_head_tl
@@ -7602,9 +7603,9 @@
         \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
         \l_@@_head_tl \scan_stop:
-          \exp_after:wN \@@_cond_true:n
+          \@@_cond_true:NNNn
         \else:
-          \exp_after:wN \@@_cond_false:n
+          \@@_cond_false:Nn
         \fi:
         {#1}
       }
@@ -7612,22 +7613,22 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_cond_true:n}
+% \begin{macro}{\@@_cond_true:NNNn}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_cond_true:n #1
+\cs_new_protected:Npn \@@_cond_true:NNNn #1#2#3#4
   {
-    \@@_change_if_limit:nn { 3 } {#1} % wait for else/fi
+    \@@_change_if_limit:nn { 3 } {#4} % wait for else/fi
     \@@_print_expansion:x { \g_@@_action_text_str = true }
   }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}
-%   {\@@_cond_false:n, \@@_cond_false_loop:n, \@@_cond_false_common:}
+%   {\@@_cond_false:Nn, \@@_cond_false_loop:n, \@@_cond_false_common:}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_cond_false:n #1
+\cs_new_protected:Npn \@@_cond_false:Nn #1#2
   {
-    \@@_cond_false_loop:n {#1}
+    \@@_cond_false_loop:n {#2}
     \@@_cond_false_common:
     \@@_print_expansion:x
       {
@@ -7683,6 +7684,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_two_chars:nn #1
   {
+    \exp_args:NNo \gtl_set:Nn \l_@@_head_gtl { \l_@@_head_tl }
     \@@_prev_input_gpush_gtl:N \l_@@_head_gtl
     \@@_print_expansion:
     \@@_test_two_chars_get:n {#1}
@@ -7690,13 +7692,18 @@
     \@@_prev_input_gpop_gtl:N \l_@@_head_gtl
     \@@_set_action_text:x { \gtl_to_str:N \l_@@_head_gtl }
     \gtl_pop_left_item:NNTF \l_@@_head_gtl \l_@@_head_tl { } { }
+    \exp_args:No \tl_if_head_eq_meaning:nNT \l_@@_head_tl \reverse_if:N
+      {
+        \gtl_pop_left_item:NNTF \l_@@_head_gtl \l_@@_head_tl { } { }
+        \tl_put_left:Nn \l_@@_head_tl { \reverse_if:N }
+      }
     \gtl_pop_left:NN \l_@@_head_gtl \l_@@_tmpb_gtl
     \@@_test_two_chars_gtl:N \l_@@_tmpb_gtl
     \@@_test_two_chars_gtl:N \l_@@_head_gtl
     \l_@@_head_tl \scan_stop:
-      \exp_after:wN \@@_cond_true:n
+      \@@_cond_true:NNNn
     \else:
-      \exp_after:wN \@@_cond_false:n
+      \@@_cond_false:Nn
     \fi:
   }
 \cs_new_protected:Npn \@@_test_two_chars_get:n #1
@@ -7758,9 +7765,9 @@
       }
     \@@_test_ifx_aux:NNN \l_@@_tmpb_token \l_@@_tmpb_gtl
       \@@_test_ifx_aux:w
-      \exp_after:wN \@@_cond_true:n
+      \@@_cond_true:NNNn
     \else:
-      \exp_after:wN \@@_cond_false:n
+      \@@_cond_false:Nn
     \fi:
     {#1}
   }
@@ -7788,9 +7795,11 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_test_case:n, \@@_test_case_aux:nn}
+% ^^A todo: \ifcase\currentifbranch\show 0\or\show 1\else\show -\fi won't work correctly.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_test_case:n #1
   {
+    \if_case:w 0 ~
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_expansion:
     \bool_if:NT \g_@@_internal_debug_bool { \iow_term:n { {\ifcase level~#1} } }
@@ -7798,6 +7807,12 @@
     \@@_prev_input_get:N \l_@@_head_tl
     \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
     % ^^A does text_case_aux use prev_input_seq?
+    \int_compare:nNnF { \l_@@_head_tl } = 0
+      {
+        \int_compare:nNnTF { \l_@@_head_tl } > 0
+          { \fi: \if_case:w 1 ~ \or: }
+          { \fi: \if_case:w -1 ~ \else: }
+      }
     \exp_args:No \@@_test_case_aux:nn { \l_@@_head_tl } {#1}
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_expansion:x { \tl_to_str:N \l_@@_head_tl }

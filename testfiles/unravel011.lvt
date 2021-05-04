@@ -1,0 +1,105 @@
+%
+% Copyright (C) 2021 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+
+\unravelsetup { mute }
+
+\leavevmode
+
+\OMIT
+\cs_new:Npn \showvals { \the\currentiflevel, \the\currentiftype , \the\currentifbranch }
+\cs_new:Npn \test #1
+  {
+    \unravel_get:nnN { } {#1} \l_tmpa_tl
+    \tl_log:N \l_tmpa_tl
+    \c_space_tl
+  }
+$$X$$
+\TIMO
+
+\vbox_set:Nn \l_tmpa_box
+  {
+    \TEST { Current~if~type~etc }
+      {
+        % 1: if
+        \test { \if A A \showvals \else \ERROR \fi }
+        \iftrue\iftrue \test { \if A B \ERROR \else \showvals \fi } \fi\fi
+        \test { \unless\if A A \ERROR \else \showvals \fi }
+        \test { \unless\if A B \showvals \else \ERROR \fi }
+        % 2: ifcat
+        \test { \ifcat A B \showvals \else \ERROR \fi }
+        \test { \ifcat A . \ERROR \else \showvals \fi }
+        \iftrue\iftrue \test { \unless\ifcat A B \ERROR \else \showvals \fi } \fi\fi
+        \test { \unless\ifcat A . \showvals \else \ERROR \fi }
+        % 3: ifnum
+        \test { \ifnum -0=0~ \showvals \else \ERROR \fi }
+        \test { \ifnum -0=1~ \ERROR \else \showvals \fi }
+        \iftrue\iftrue\iftrue \test { \unless\ifnum -0=0~ \ERROR \else \showvals \fi } \fi\fi\fi
+        \test { \unless\ifnum -0=1~ \showvals \else \ERROR \fi }
+        % 4: ifdim
+        \test { \ifdim -0pt=0pt~ \showvals \else \ERROR \fi }
+        \test { \ifdim -0pt=1pt~ \ERROR \else \showvals \fi }
+        \iffalse\else \test { \unless\ifdim -0pt=0pt~ \ERROR \else \showvals \fi } \fi
+        \test { \unless\ifdim -0pt=1pt~ \showvals \else \ERROR \fi }
+        % 5: ifodd
+        \test { \ifodd 1~ \showvals \else \ERROR \fi }
+        \test { \ifodd 0~ \ERROR \else \showvals \fi }
+        \test { \unless\ifodd 1~ \ERROR \else \showvals \fi }
+        \test { \unless\ifodd 0~ \showvals \else \ERROR \fi }
+        \tex_par:D
+        % 6-9: vmode, hmode, mmode, inner
+        \vbox:n { \test { \ifvmode \showvals \else \ERROR \fi } }
+        \vbox:n { \test { \unless\ifvmode \ERROR \else \showvals \fi } }
+        \vbox:n { \test { \unless\ifhmode \showvals \else \ERROR \fi } }
+        \vbox:n { \test { \ifhmode \ERROR \else \showvals \fi } }
+        \vbox:n { \test { \unless\ifmmode \showvals \else \ERROR \fi } }
+        \vbox:n { \test { \ifmmode \ERROR \else \showvals \fi } }
+        \vbox:n { \test { \ifinner \showvals \else \ERROR \fi } }
+        \vbox:n { \test { \unless\ifinner \ERROR \else \showvals \fi } }
+        \mode_leave_vertical:
+        \test { \unless\ifvmode \showvals \else \ERROR \fi }
+        \test { \ifvmode \ERROR \else \showvals \fi }
+        \test { \ifhmode \showvals \else \ERROR \fi }
+        \test { \unless\ifhmode \ERROR \else \showvals \fi }
+        \test { \unless\ifmmode \showvals \else \ERROR \fi }
+        \test { \ifmmode \ERROR \else \showvals \fi }
+        \test { \unless\ifinner \showvals \else \ERROR \fi }
+        \test { \ifinner \ERROR \else \showvals \fi }
+        $$
+            \test { \unless\ifvmode \showvals \else \ERROR \fi }
+            \test { \ifvmode \ERROR \else \showvals \fi }
+            \test { \unless\ifhmode \showvals \else \ERROR \fi }
+            \test { \ifhmode \ERROR \else \showvals \fi }
+            \test { \ifmmode \showvals \else \ERROR \fi }
+            \test { \unless\ifmmode \ERROR \else \showvals \fi }
+            \test { \unless\ifinner \showvals \else \ERROR \fi }
+            \test { \ifinner \ERROR \else \showvals \fi }
+        $$
+        % 10-12 void,hbox,vbox
+        \hbox_set:Nn \l_tmpa_box { A }
+        \test { \unless\ifvoid \l_tmpa_box \showvals \else \ERROR \fi }
+        \test { \ifvoid \l_tmpa_box \ERROR \else \showvals \fi }
+        \test { \ifhbox \l_tmpa_box \showvals \else \ERROR \fi }
+        \test { \unless\ifhbox \l_tmpa_box \ERROR \else \showvals \fi }
+        \test { \unless\ifvbox \l_tmpa_box \showvals \else \ERROR \fi }
+        \test { \ifvbox \l_tmpa_box \ERROR \else \showvals \fi }
+        % 13: ifx
+        \test { \ifx A A \showvals \else \ERROR \fi }
+        \test { \ifx A B \ERROR \else \showvals \fi }
+        \test { \unless\ifx A A \ERROR \else \showvals \fi }
+        \test { \unless\ifx A B \showvals \else \ERROR \fi }
+      }
+  }
+\END
