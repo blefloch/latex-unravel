@@ -65,3 +65,41 @@ Defining \g__unravel_input_7_gtl on line ...
 > \l_tmpa_tl=1,-13,-1.
 > \l_tmpa_tl=1,-13,1.
 ============================================================
+============================================================
+TEST 2: Dangling if
+============================================================
+Package unravel Warning: Attempting to issue 1 dangling conditionals.
+TRUE
+! Extra \or.
+<argument> \unravel {\iftrue }\TRUE \or 
+                                        \TRUE \else \ERROR \fi \unravel {\if...
+l. ...  }
+I'm ignoring this; it doesn't match any \if.
+TRUE
+Package unravel Warning: Attempting to issue 1 dangling conditionals.
+TRUE
+! Extra \else.
+<argument> ...nravel {\iffalse \else }\TRUE \else 
+                                                  \TRUE \fi \unravel {\ifcas...
+l. ...  }
+I'm ignoring this; it doesn't match any \if.
+TRUE
+Package unravel Warning: Attempting to issue 1 dangling conditionals.
+TRUE
+Package unravel Warning: Attempting to issue 3 dangling conditionals.
+TRUE
+TRUE
+! Extra \else.
+<argument> ...\ERROR \else \ERROR \fi \TRUE \else 
+                                                  \TRUE \fi \TRUE \or \TRUE ...
+l. ...  }
+I'm ignoring this; it doesn't match any \if.
+TRUE
+TRUE
+! Extra \or.
+<argument> ...\fi \TRUE \else \TRUE \fi \TRUE \or 
+                                                  \TRUE \else \ERROR \fi 
+l. ...  }
+I'm ignoring this; it doesn't match any \if.
+TRUE
+============================================================

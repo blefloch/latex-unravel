@@ -102,4 +102,18 @@ $$X$$
         \test { \unless\ifx A B \showvals \else \ERROR \fi }
       }
   }
+
+
+\TEST { Dangling~if }
+  {
+    \unravel { \iftrue } \TRUE \or \TRUE \else \ERROR \fi
+    \unravel { \iffalse \else } \TRUE \else \TRUE \fi
+    \unravel { \ifcase 1 \or } \TRUE \or \ERROR \else \ERROR \fi
+    \unravel { \iftrue \unless\ifx..\else \ifcase 0~ }
+      \TRUE \or \ERROR \else \ERROR \fi
+      \TRUE \else \TRUE \fi
+      \TRUE \or \TRUE \else \ERROR \fi
+  }
+
+
 \END

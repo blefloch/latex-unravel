@@ -8635,7 +8635,6 @@
     \@@_exit_point:
     \@@_print_outcome:
     \@@_final_test:
-    \@@_final_after_assignment:
     \@@_exit_point:
   }
 \cs_new_protected:Npn \unravel_get:nnN #1#2#3
@@ -8740,20 +8739,45 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_final_test:
   {
-    \bool_if:nTF
+    \@@_input_if_empty:TF
       {
-        \tl_if_empty_p:N \g_@@_if_limit_tl
-        && \int_compare_p:nNn \g_@@_if_limit_int = 0
-        && \int_compare_p:nNn \g_@@_if_depth_int = 0
-        && \seq_if_empty_p:N \g_@@_prev_input_seq
+        \seq_if_empty:NTF \g_@@_prev_input_seq
+          {
+            \tl_if_empty:NTF \g_@@_if_limit_tl
+              { \int_compare:nNnF \g_@@_if_limit_int = 0 { \@@_final_bad: } }
+              { \@@_final_conditionals: }
+          }
+          { \@@_final_bad: }
       }
-      { \@@_input_if_empty:TF { } { \@@_final_bad: } }
       { \@@_final_bad: }
+    \@@_final_after_assignment:
   }
 \cs_new_protected:Npn \@@_final_bad:
   {
     \@@_error:nnnnn { internal }
       { the-last-unravel-finished-badly } { } { } { }
+  }
+\cs_new_protected:Npn \@@_final_conditionals:
+  {
+    \group_begin:
+    \msg_warning:nnx { unravel } { dangling-conditionals }
+      { \tl_count:N \g_@@_if_limit_tl }
+    \group_end:
+    \tl_greverse:N \g_@@_if_limit_tl
+    \tl_gput_right:NV \g_@@_if_limit_tl \g_@@_if_limit_int
+    \tl_gset:Nx \g_@@_if_limit_tl { \tl_tail:N \g_@@_if_limit_tl } % remove the {0}
+    \prg_replicate:nn { \tl_count:N \g_@@_if_limit_tl } { \fi: }
+    \tl_map_function:NN \g_@@_if_limit_tl \@@_final_cond_aux:n
+  }
+\cs_new:Npn \@@_final_cond_aux:n #1
+  {
+    \int_case:nnF {#1}
+      {
+        { 2 } { \if_false: \else: }
+        { 3 } { \if_true: }
+        { 4 } { \if_case:w 0 ~ }
+      }
+      { \@@_final_bad: }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8862,6 +8886,8 @@
     Some~TeX~command~expects~input~beyond~the~end~of~
     the~argument~of~\iow_char:N\\unravel.
   }
+\msg_new:nnn { unravel } { dangling-conditionals }
+  { Attempting~to~issue~#1~dangling~conditionals. }
 %    \end{macrocode}
 %
 % Some error messages from \TeX{} itself.
