@@ -29,7 +29,7 @@
 \TEST { \unravel ~ and ~ glue ~ sign }
   {
     \skip_set:Nn \l_tmpa_skip { 2pt plus 3pt minus 4pt }
-    \debug_off:n { check-expressions } % keep output sane
+    \debug_off:n { check-declarations, check-expressions } % keep output sane
     \unravel { \tl_set:Nx \l_tmpa_tl { \skip_eval:n { - \l_tmpa_skip } } }
   }
 
