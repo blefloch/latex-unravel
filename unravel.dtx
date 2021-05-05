@@ -4194,13 +4194,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: allow \input".. .."
 % \begin{macro}{\@@_scan_file_name:}
-% ^^A todo: area_delimiter and ext_delimiter ??
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_file_name:
   {
     \bool_gset_true:N \g_@@_name_in_progress_bool
+    \bool_gset_false:N \g_@@_quotes_bool
     \@@_get_x_non_blank:
     \@@_scan_file_name_loop:
     \bool_gset_false:N \g_@@_name_in_progress_bool
@@ -4213,7 +4212,13 @@
       {
         \tl_set:Nx \l_@@_tmpa_tl
           { \@@_token_to_char:N \l_@@_head_token }
-        \tl_if_eq:NNF \l_@@_tmpa_tl \c_space_tl
+        \tl_if_eq:NNT \l_@@_tmpa_tl \c_@@_dq_tl
+          {
+            \bool_if:NTF \g_@@_quotes_bool
+              { \bool_set_false:N } { \bool_set_true:N } \g_@@_quotes_bool
+          }
+        \bool_if:NTF \g_@@_quotes_bool
+          { \use:n } { \tl_if_eq:NNF \l_@@_tmpa_tl \c_space_tl }
           {
             \@@_prev_input_silent:V \l_@@_tmpa_tl
             \@@_get_x_next:
@@ -4221,6 +4226,7 @@
           }
       }
   }
+\bool_new:N \g_@@_quotes_bool
 %    \end{macrocode}
 % \end{macro}
 %
