@@ -7312,7 +7312,7 @@
         0      \@@_scan_int:
         1      \@@_scan_int:
         2      \@@_convert_string:
-        3      \@@_convert_meaning:
+        3      \@@_convert_meaning:w
         4      \@@_scan_font_ident:
         8      \@@_scan_font_ident:
         9      \@@_scan_font_ident:
@@ -7360,12 +7360,28 @@
       { \@@_prev_input:x { \gtl_to_str:N \l_@@_head_gtl } }
       { \@@_prev_input:V \l_@@_head_tl }
   }
-\cs_new_protected:Npn \@@_convert_meaning:
+\cs_new_protected:Npn \@@_convert_meaning:w
+    \@@_prev_input_gpop:N \l_@@_head_tl \@@_back_input_tl_o:
   {
     \@@_get_next:
     \tl_if_empty:NTF \l_@@_head_tl
-      { \@@_prev_input:n { \l_@@_head_token } }
-      { \@@_prev_input:V \l_@@_head_tl }
+      {
+        \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
+        \@@_prev_input_gpop:N \l_@@_prev_input_tl
+        \exp_args:NNV \gtl_put_left:Nn \l_@@_tmpb_gtl \l_@@_prev_input_tl
+        \@@_prev_input_gpush_gtl:N \l_@@_tmpb_gtl
+        \@@_print_action:x { \gtl_to_str:N \l_@@_tmpb_gtl }
+        \@@_prev_input_gpop_gtl:N \l_@@_tmpb_gtl
+        \tl_set:Nx \l_@@_tmpa_tl { \gtl_head_do:NN \l_@@_head_gtl \tex_meaning:D }
+        \@@_back_input:V \l_@@_tmpa_tl
+        \@@_print_expansion:x
+          { \gtl_to_str:N \l_@@_tmpb_gtl = \tl_to_str:N \l_@@_tmpa_tl }
+      }
+      {
+        \@@_prev_input:V \l_@@_head_tl
+        \@@_prev_input_gpop:N \l_@@_head_tl
+        \@@_back_input_tl_o:
+      }
   }
 \cs_new_protected:Npn \@@_scan_pdfstrcmp:
   {
