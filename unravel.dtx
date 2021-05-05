@@ -295,8 +295,6 @@
 %   \tn{nonstopmode}.
 % \item Use the |interwoven-preambles| fatal error message once
 %   alignments are implemented.
-% \item Look at all places where \TeX{}'s procedure |prepare_mag| is
-%   called.
 % \item Find out why so many input levels are used (see the log of the
 %   |unravel003| testfile for instance)
 % \end{itemize}
@@ -744,29 +742,6 @@
   }
 %    \end{macrocode}
 % \end{macro}
-% \end{macro}
-%
-% \begin{macro}{\@@_prepare_mag:}
-%   Used whenever \TeX{} needs the value of \tn{mag}.  ^^A todo: move
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_prepare_mag:
-  {
-    \int_compare:nNnT { \g_@@_mag_set_int } > { 0 }
-      {
-        \int_compare:nNnF { \@@_mag: } = { \g_@@_mag_set_int }
-          {
-            \@@_tex_error:nn { incompatible-mag } { }
-            \int_gset_eq:NN \@@_mag: \g_@@_mag_set_int
-          }
-      }
-    \int_compare:nF { 1 <= \@@_mag: <= 32768 }
-      {
-        \@@_tex_error:nV { illegal-mag } \l_@@_head_tl
-        \int_gset:Nn \@@_mag: { 1000 }
-      }
-    \int_gset_eq:NN \g_@@_mag_set_int \@@_mag:
-  }
-%    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@@_prompt_input:Nn}
@@ -1606,6 +1581,29 @@
 \int_new:N \g_@@_mag_set_int
 %    \end{macrocode}
 % \end{variable}
+%
+% \begin{macro}{\@@_prepare_mag:}
+%   Used whenever \TeX{} needs the value of \tn{mag}.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_prepare_mag:
+  {
+    \int_compare:nNnT { \g_@@_mag_set_int } > { 0 }
+      {
+        \int_compare:nNnF { \@@_mag: } = { \g_@@_mag_set_int }
+          {
+            \@@_tex_error:nn { incompatible-mag } { }
+            \int_gset_eq:NN \@@_mag: \g_@@_mag_set_int
+          }
+      }
+    \int_compare:nF { 1 <= \@@_mag: <= 32768 }
+      {
+        \@@_tex_error:nV { illegal-mag } \l_@@_head_tl
+        \int_gset:Nn \@@_mag: { 1000 }
+      }
+    \int_gset_eq:NN \g_@@_mag_set_int \@@_mag:
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsection{Numeric codes}
 % \label{sec:numeric-codes}
@@ -6377,7 +6375,11 @@
             \int_case:nnF \l_@@_head_char_int
               {
                 { 7 } { \@@_scan_extension_operands_aux: } % pdfobj
-                { 9 } { \@@_scan_extension_operands_aux: } % pdfxform
+                { 9 }
+                  {
+                    \@@_prepare_mag:
+                    \@@_scan_extension_operands_aux:
+                  } % pdfxform
                 { 11 } { \@@_scan_extension_operands_aux: } %pdfximage
               }
               { \@@_scan_immediate_operands_bad: }
