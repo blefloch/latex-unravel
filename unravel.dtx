@@ -5609,8 +5609,6 @@
 %
 % \subsubsection{From 32 to 47}
 %
-% ^^A todo: implement \@@_begin_insert_or_adjust:
-%
 % \begin{itemize}
 % \item |halign=32|
 % \item |valign=33|
@@ -5657,11 +5655,33 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { insert }                               % 37
-  { \@@_begin_insert_or_adjust: }
+  {
+    \@@_prev_input_gpush:N \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_int:
+    \@@_begin_insert_or_adjust:
+  }
 \@@_new_tex_cmd:nn { vadjust }                              % 38
   {
     \mode_if_vertical:TF
-      { \@@_forbidden_case: } { \@@_begin_insert_or_adjust: }
+      { \@@_forbidden_case: }
+      {
+        \@@_prev_input_gpush:N \l_@@_head_tl
+        \@@_print_action:
+        \@@_scan_keyword:nTF { pPrReE }
+        \@@_begin_insert_or_adjust:
+      }
+  }
+\cs_new_protected:Npn \@@_begin_insert_or_adjust:
+  {
+    \@@_scan_left_brace:
+    \@@_prev_input_gpop:N \l_@@_head_tl
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \gtl_gconcat:NNN \g_@@_output_gtl
+      \g_@@_output_gtl \c_group_begin_gtl
+    \tl_use:N \l_@@_head_tl \c_group_begin_token
+    \@@_print_action:x
+      { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
   }
 %    \end{macrocode}
 %
