@@ -7030,7 +7030,7 @@
 %   \tn{ifdefined}, \tn{ifcsname}, \tn{iffontchar}, \tn{ifincsname},
 %   \tn{ifprimitive}, \tn{ifabsnum}, and \tn{ifabsdim}.
 % \item |fi_or_else=108| for \tn{fi}, \tn{else} and \tn{or}.
-% \item |cs_name=109| for \tn{csname} and \tn{lastnamedcs}
+% \item |cs_name=109| for \tn{csname} and \tn{lastnamedcs}.
 % \item |convert=110| for \tn{number}, \tn{romannumeral}, \tn{string},
 %   \tn{meaning}, \tn{fontname}, \tn{eTeXrevision}, \tn{pdftexrevision},
 %   \tn{pdftexbanner}, \tn{pdffontname}, \tn{pdffontobjnum},
@@ -8556,7 +8556,9 @@
     max-input        .int_gset:N  = \g_@@_default_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
     online           .int_gset:N  = \g_@@_default_online_int ,
-    prompt-input     .clist_gset:N = \g_@@_default_prompt_input_clist ,
+    prompt-input     .code:n
+      = \clist_gset:Nx \g_@@_default_prompt_input_clist
+        { \tl_to_str:n {#1} } ,
     trace-assigns    .bool_gset:N = \g_@@_default_trace_assign_bool ,
     trace-expansion  .bool_gset:N = \g_@@_default_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_default_trace_other_bool ,
@@ -8571,7 +8573,8 @@
     max-input        .int_gset:N  = \g_@@_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
     online           .int_gset:N  = \g_@@_online_int ,
-    prompt-input     .clist_gset:N = \g_@@_prompt_input_clist ,
+    prompt-input     .code:n
+      = \clist_gset:Nx \g_@@_prompt_input_clist { \tl_to_str:n {#1} } ,
     trace-assigns    .bool_gset:N = \g_@@_trace_assigns_bool ,
     trace-expansion  .bool_gset:N = \g_@@_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_trace_other_bool ,
