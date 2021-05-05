@@ -769,6 +769,38 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\@@_prompt_input:Nn}
+% \begin{macro}[rEXP]{\@@_prompt_input:w}
+% \begin{macro}[EXP]{\@@_prompt_input_aux:w, \@@_use_ii_i:nn, \@@_use_none_delimit_by_q_recursion_tail:w}
+% \begin{variable}{\q_@@_recursion_tail}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_prompt_input:Nn #1#2
+  {
+    \clist_gset:Nx #1
+      { \@@_prompt_input:w \prg_do_nothing: #2 , \q_@@_recursion_tail , }
+  }
+\cs_new:Npn \@@_prompt_input:w #1 ,
+  {
+    \tl_trim_spaces_apply:oN {#1} \@@_use_ii_i:nn
+    \@@_prompt_input_aux:w ,
+  }
+\cs_new:Npn \@@_use_ii_i:nn #1#2 { #2 #1 }
+\cs_new:Npn \@@_prompt_input_aux:w #1 ,
+  {
+    \@@_use_none_delimit_by_q_recursion_tail:w #1
+      \use_none:nnnnn \q_@@_recursion_tail
+    { \tl_to_str:n {#1} } ,
+    \@@_prompt_input:w \prg_do_nothing:
+  }
+\cs_new:Npn \@@_use_none_delimit_by_q_recursion_tail:w
+    #1 \q_@@_recursion_tail { }
+\quark_new:N \q_@@_recursion_tail
+%    \end{macrocode}
+% \end{variable}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
 % \subsubsection{String helpers}
 %
 % \begin{macro}{\@@_strip_escape:w}
@@ -8557,8 +8589,7 @@
     number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
     online           .int_gset:N  = \g_@@_default_online_int ,
     prompt-input     .code:n
-      = \clist_gset:Nx \g_@@_default_prompt_input_clist
-        { \tl_to_str:n {#1} } ,
+      = \@@_prompt_input:Nn \g_@@_default_prompt_input_clist {#1} ,
     trace-assigns    .bool_gset:N = \g_@@_default_trace_assign_bool ,
     trace-expansion  .bool_gset:N = \g_@@_default_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_default_trace_other_bool ,
@@ -8574,7 +8605,7 @@
     number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
     online           .int_gset:N  = \g_@@_online_int ,
     prompt-input     .code:n
-      = \clist_gset:Nx \g_@@_prompt_input_clist { \tl_to_str:n {#1} } ,
+      = \@@_prompt_input:Nn \g_@@_prompt_input_clist {#1} ,
     trace-assigns    .bool_gset:N = \g_@@_trace_assigns_bool ,
     trace-expansion  .bool_gset:N = \g_@@_trace_expansion_bool ,
     trace-other      .bool_gset:N = \g_@@_trace_other_bool ,
