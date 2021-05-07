@@ -1622,12 +1622,18 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\@@_tex_primitive:nnn}
+% \begin{macro}{\@@_tex_primitive:nnn, \@@_tex_primitive_pdf:nnn}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_primitive:nnn #1#2#3
   {
     \tl_const:cx { c_@@_tex_#1_tl }
       { { \@@_tex_use:n {#2} } {#3} }
+  }
+\cs_new_protected:Npn \@@_tex_primitive_pdf:nnn #1#2#3
+  {
+    \sys_if_engine_pdftex:F
+      { \@@_tex_primitive:nnn {#1} {#2} {#3} }
+    \@@_tex_primitive:nnn { pdf #1 } {#2} {#3}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -1929,42 +1935,42 @@
 \@@_tex_primitive:nnn { special           } { extension } { 3 }
 \@@_tex_primitive:nnn { immediate         } { extension } { 4 }
 \@@_tex_primitive:nnn { setlanguage       } { extension } { 5 }
-\@@_tex_primitive:nnn { pdfliteral        } { extension } { 6 }
-\@@_tex_primitive:nnn { pdfobj            } { extension } { 7 }
-\@@_tex_primitive:nnn { pdfrefobj         } { extension } { 8 }
-\@@_tex_primitive:nnn { pdfxform          } { extension } { 9 }
-\@@_tex_primitive:nnn { pdfrefxform       } { extension } { 10 }
-\@@_tex_primitive:nnn { pdfximage         } { extension } { 11 }
-\@@_tex_primitive:nnn { pdfrefximage      } { extension } { 12 }
-\@@_tex_primitive:nnn { pdfannot          } { extension } { 13 }
-\@@_tex_primitive:nnn { pdfstartlink      } { extension } { 14 }
-\@@_tex_primitive:nnn { pdfendlink        } { extension } { 15 }
-\@@_tex_primitive:nnn { pdfoutline        } { extension } { 16 }
-\@@_tex_primitive:nnn { pdfdest           } { extension } { 17 }
-\@@_tex_primitive:nnn { pdfthread         } { extension } { 18 }
-\@@_tex_primitive:nnn { pdfstartthread    } { extension } { 19 }
-\@@_tex_primitive:nnn { pdfendthread      } { extension } { 20 }
-\@@_tex_primitive:nnn { pdfsavepos        } { extension } { 21 }
-\@@_tex_primitive:nnn { pdfinfo           } { extension } { 22 }
-\@@_tex_primitive:nnn { pdfcatalog        } { extension } { 23 }
-\@@_tex_primitive:nnn { pdfnames          } { extension } { 24 }
-\@@_tex_primitive:nnn { pdffontattr       } { extension } { 25 }
-\@@_tex_primitive:nnn { pdfincludechars   } { extension } { 26 }
-\@@_tex_primitive:nnn { pdfmapfile        } { extension } { 27 }
-\@@_tex_primitive:nnn { pdfmapline        } { extension } { 28 }
-\@@_tex_primitive:nnn { pdftrailer        } { extension } { 29 }
-\@@_tex_primitive:nnn { pdfresettimer     } { extension } { 30 }
-\@@_tex_primitive:nnn { pdffontexpand     } { extension } { 31 }
-\@@_tex_primitive:nnn { pdfsetrandomseed  } { extension } { 32 }
-\@@_tex_primitive:nnn { pdfsnaprefpoint   } { extension } { 33 }
-\@@_tex_primitive:nnn { pdfsnapy          } { extension } { 34 }
-\@@_tex_primitive:nnn { pdfsnapycomp      } { extension } { 35 }
-\@@_tex_primitive:nnn { pdfglyphtounicode } { extension } { 36 }
-\@@_tex_primitive:nnn { pdfcolorstack     } { extension } { 37 }
-\@@_tex_primitive:nnn { pdfsetmatrix      } { extension } { 38 }
-\@@_tex_primitive:nnn { pdfsave           } { extension } { 39 }
-\@@_tex_primitive:nnn { pdfrestore        } { extension } { 40 }
-\@@_tex_primitive:nnn { pdfnobuiltintounicode } { extension } { 41 }
+\@@_tex_primitive_pdf:nnn { literal       } { extension } { 6 }
+\@@_tex_primitive_pdf:nnn { obj           } { extension } { 7 }
+\@@_tex_primitive_pdf:nnn { refobj        } { extension } { 8 }
+\@@_tex_primitive_pdf:nnn { xform         } { extension } { 9 }
+\@@_tex_primitive_pdf:nnn { refxform      } { extension } { 10 }
+\@@_tex_primitive_pdf:nnn { ximage        } { extension } { 11 }
+\@@_tex_primitive_pdf:nnn { refximage     } { extension } { 12 }
+\@@_tex_primitive_pdf:nnn { annot         } { extension } { 13 }
+\@@_tex_primitive_pdf:nnn { startlink     } { extension } { 14 }
+\@@_tex_primitive_pdf:nnn { endlink       } { extension } { 15 }
+\@@_tex_primitive_pdf:nnn { outline       } { extension } { 16 }
+\@@_tex_primitive_pdf:nnn { dest          } { extension } { 17 }
+\@@_tex_primitive_pdf:nnn { thread        } { extension } { 18 }
+\@@_tex_primitive_pdf:nnn { startthread   } { extension } { 19 }
+\@@_tex_primitive_pdf:nnn { endthread     } { extension } { 20 }
+\@@_tex_primitive_pdf:nnn { savepos       } { extension } { 21 }
+\@@_tex_primitive_pdf:nnn { info          } { extension } { 22 }
+\@@_tex_primitive_pdf:nnn { catalog       } { extension } { 23 }
+\@@_tex_primitive_pdf:nnn { names         } { extension } { 24 }
+\@@_tex_primitive_pdf:nnn { fontattr      } { extension } { 25 }
+\@@_tex_primitive_pdf:nnn { includechars  } { extension } { 26 }
+\@@_tex_primitive_pdf:nnn { mapfile       } { extension } { 27 }
+\@@_tex_primitive_pdf:nnn { mapline       } { extension } { 28 }
+\@@_tex_primitive_pdf:nnn { trailer       } { extension } { 29 }
+\@@_tex_primitive_pdf:nnn { resettimer    } { extension } { 30 }
+\@@_tex_primitive_pdf:nnn { fontexpand    } { extension } { 31 }
+\@@_tex_primitive_pdf:nnn { setrandomseed } { extension } { 32 }
+\@@_tex_primitive_pdf:nnn { snaprefpoint  } { extension } { 33 }
+\@@_tex_primitive_pdf:nnn { snapy         } { extension } { 34 }
+\@@_tex_primitive_pdf:nnn { snapycomp     } { extension } { 35 }
+\@@_tex_primitive_pdf:nnn { glyphtounicode} { extension } { 36 }
+\@@_tex_primitive_pdf:nnn { colorstack    } { extension } { 37 }
+\@@_tex_primitive_pdf:nnn { setmatrix     } { extension } { 38 }
+\@@_tex_primitive_pdf:nnn { save          } { extension } { 39 }
+\@@_tex_primitive_pdf:nnn { restore       } { extension } { 40 }
+\@@_tex_primitive_pdf:nnn { nobuiltintounicode } { extension } { 41 }
 \@@_tex_primitive:nnn { openin                } { in_stream } { 1 }
 \@@_tex_primitive:nnn { closein               } { in_stream } { 0 }
 \@@_tex_primitive:nnn { begingroup            } { begin_group } { 0 }
@@ -1980,20 +1986,20 @@
 \@@_tex_primitive:nnn { lastnodetype          } { last_item } { 3 }
 \@@_tex_primitive:nnn { inputlineno           } { last_item } { 4 }
 \@@_tex_primitive:nnn { badness               } { last_item } { 5 }
-\@@_tex_primitive:nnn { pdftexversion         } { last_item } { 6 }
-\@@_tex_primitive:nnn { pdflastobj            } { last_item } { 7 }
-\@@_tex_primitive:nnn { pdflastxform          } { last_item } { 8 }
-\@@_tex_primitive:nnn { pdflastximage         } { last_item } { 9 }
-\@@_tex_primitive:nnn { pdflastximagepages    } { last_item } { 10 }
-\@@_tex_primitive:nnn { pdflastannot          } { last_item } { 11 }
-\@@_tex_primitive:nnn { pdflastxpos           } { last_item } { 12 }
-\@@_tex_primitive:nnn { pdflastypos           } { last_item } { 13 }
-\@@_tex_primitive:nnn { pdfretval             } { last_item } { 14 }
-\@@_tex_primitive:nnn { pdflastximagecolordepth } { last_item } { 15 }
-\@@_tex_primitive:nnn { pdfelapsedtime        } { last_item } { 16 }
-\@@_tex_primitive:nnn { pdfshellescape        } { last_item } { 17 }
-\@@_tex_primitive:nnn { pdfrandomseed         } { last_item } { 18 }
-\@@_tex_primitive:nnn { pdflastlink           } { last_item } { 19 }
+\@@_tex_primitive_pdf:nnn { texversion        } { last_item } { 6 }
+\@@_tex_primitive_pdf:nnn { lastobj           } { last_item } { 7 }
+\@@_tex_primitive_pdf:nnn { lastxform         } { last_item } { 8 }
+\@@_tex_primitive_pdf:nnn { lastximage        } { last_item } { 9 }
+\@@_tex_primitive_pdf:nnn { lastximagepages   } { last_item } { 10 }
+\@@_tex_primitive_pdf:nnn { lastannot         } { last_item } { 11 }
+\@@_tex_primitive_pdf:nnn { lastxpos          } { last_item } { 12 }
+\@@_tex_primitive_pdf:nnn { lastypos          } { last_item } { 13 }
+\@@_tex_primitive_pdf:nnn { retval            } { last_item } { 14 }
+\@@_tex_primitive_pdf:nnn { lastximagecolordepth } { last_item } { 15 }
+\@@_tex_primitive_pdf:nnn { elapsedtime       } { last_item } { 16 }
+\@@_tex_primitive_pdf:nnn { shellescape       } { last_item } { 17 }
+\@@_tex_primitive_pdf:nnn { randomseed        } { last_item } { 18 }
+\@@_tex_primitive_pdf:nnn { lastlink          } { last_item } { 19 }
 \@@_tex_primitive:nnn { eTeXversion           } { last_item } { 20 }
 \@@_tex_primitive:nnn { currentgrouplevel     } { last_item } { 21 }
 \@@_tex_primitive:nnn { currentgrouptype      } { last_item } { 22 }
@@ -2027,10 +2033,10 @@
 \@@_tex_primitive:nnn { everyjob              } { assign_toks } { 7 }
 \@@_tex_primitive:nnn { everycr               } { assign_toks } { 8 }
 \@@_tex_primitive:nnn { errhelp               } { assign_toks } { 9 }
-\@@_tex_primitive:nnn { pdfpagesattr          } { assign_toks } { 10 }
-\@@_tex_primitive:nnn { pdfpageattr           } { assign_toks } { 11 }
-\@@_tex_primitive:nnn { pdfpageresources      } { assign_toks } { 12 }
-\@@_tex_primitive:nnn { pdfpkmode             } { assign_toks } { 13 }
+\@@_tex_primitive_pdf:nnn { pagesattr         } { assign_toks } { 10 }
+\@@_tex_primitive_pdf:nnn { pageattr          } { assign_toks } { 11 }
+\@@_tex_primitive_pdf:nnn { pageresources     } { assign_toks } { 12 }
+\@@_tex_primitive_pdf:nnn { pkmode            } { assign_toks } { 13 }
 \@@_tex_primitive:nnn { everyeof              } { assign_toks } { 14 }
 \@@_tex_primitive:nnn { pretolerance          } { assign_int } { 0 }
 \@@_tex_primitive:nnn { tolerance             } { assign_int } { 1 }
@@ -2088,38 +2094,38 @@
 \@@_tex_primitive:nnn { holdinginserts        } { assign_int } { 53 }
 \@@_tex_primitive:nnn { errorcontextlines     } { assign_int } { 54 }
 \@@_tex_primitive:nnn { pdfoutput             } { assign_int } { 55 }
-\@@_tex_primitive:nnn { pdfcompresslevel      } { assign_int } { 56 }
-\@@_tex_primitive:nnn { pdfdecimaldigits      } { assign_int } { 57 }
-\@@_tex_primitive:nnn { pdfmovechars          } { assign_int } { 58 }
-\@@_tex_primitive:nnn { pdfimageresolution    } { assign_int } { 59 }
-\@@_tex_primitive:nnn { pdfpkresolution       } { assign_int } { 60 }
-\@@_tex_primitive:nnn { pdfuniqueresname      } { assign_int } { 61 }
-\@@_tex_primitive:nnn
-  { pdfoptionalwaysusepdfpagebox    } { assign_int } { 62 }
-\@@_tex_primitive:nnn
-  { pdfoptionpdfinclusionerrorlevel } { assign_int } { 63 }
-\@@_tex_primitive:nnn
-  { pdfoptionpdfminorversion        } { assign_int } { 64 }
-\@@_tex_primitive:nnn { pdfminorversion       } { assign_int } { 64 }
-\@@_tex_primitive:nnn { pdfforcepagebox       } { assign_int } { 65 }
-\@@_tex_primitive:nnn { pdfpagebox            } { assign_int } { 66 }
-\@@_tex_primitive:nnn
-  { pdfinclusionerrorlevel } { assign_int } { 67 }
-\@@_tex_primitive:nnn { pdfgamma              } { assign_int } { 68 }
-\@@_tex_primitive:nnn { pdfimagegamma         } { assign_int } { 69 }
-\@@_tex_primitive:nnn { pdfimagehicolor       } { assign_int } { 70 }
-\@@_tex_primitive:nnn { pdfimageapplygamma    } { assign_int } { 71 }
-\@@_tex_primitive:nnn { pdfadjustspacing      } { assign_int } { 72 }
-\@@_tex_primitive:nnn { pdfprotrudechars      } { assign_int } { 73 }
-\@@_tex_primitive:nnn { pdftracingfonts       } { assign_int } { 74 }
-\@@_tex_primitive:nnn { pdfobjcompresslevel   } { assign_int } { 75 }
-\@@_tex_primitive:nnn
-  { pdfadjustinterwordglue } { assign_int } { 76 }
-\@@_tex_primitive:nnn { pdfprependkern        } { assign_int } { 77 }
-\@@_tex_primitive:nnn { pdfappendkern         } { assign_int } { 78 }
-\@@_tex_primitive:nnn { pdfgentounicode       } { assign_int } { 79 }
-\@@_tex_primitive:nnn { pdfdraftmode          } { assign_int } { 80 }
-\@@_tex_primitive:nnn { pdfinclusioncopyfonts } { assign_int } { 81 }
+\@@_tex_primitive_pdf:nnn { compresslevel     } { assign_int } { 56 }
+\@@_tex_primitive_pdf:nnn { decimaldigits     } { assign_int } { 57 }
+\@@_tex_primitive_pdf:nnn { movechars         } { assign_int } { 58 }
+\@@_tex_primitive_pdf:nnn { imageresolution   } { assign_int } { 59 }
+\@@_tex_primitive_pdf:nnn { pkresolution      } { assign_int } { 60 }
+\@@_tex_primitive_pdf:nnn { uniqueresname     } { assign_int } { 61 }
+\@@_tex_primitive_pdf:nnn
+  { optionalwaysusepdfpagebox    } { assign_int } { 62 }
+\@@_tex_primitive_pdf:nnn
+  { optionpdfinclusionerrorlevel } { assign_int } { 63 }
+\@@_tex_primitive_pdf:nnn
+  { optionpdfminorversion        } { assign_int } { 64 }
+\@@_tex_primitive_pdf:nnn { minorversion      } { assign_int } { 64 }
+\@@_tex_primitive_pdf:nnn { forcepagebox      } { assign_int } { 65 }
+\@@_tex_primitive_pdf:nnn { pagebox           } { assign_int } { 66 }
+\@@_tex_primitive_pdf:nnn
+  { inclusionerrorlevel } { assign_int } { 67 }
+\@@_tex_primitive_pdf:nnn { gamma             } { assign_int } { 68 }
+\@@_tex_primitive_pdf:nnn { imagegamma        } { assign_int } { 69 }
+\@@_tex_primitive_pdf:nnn { imagehicolor      } { assign_int } { 70 }
+\@@_tex_primitive_pdf:nnn { imageapplygamma   } { assign_int } { 71 }
+\@@_tex_primitive_pdf:nnn { adjustspacing     } { assign_int } { 72 }
+\@@_tex_primitive_pdf:nnn { protrudechars     } { assign_int } { 73 }
+\@@_tex_primitive_pdf:nnn { tracingfonts      } { assign_int } { 74 }
+\@@_tex_primitive_pdf:nnn { objcompresslevel  } { assign_int } { 75 }
+\@@_tex_primitive_pdf:nnn
+  { adjustinterwordglue } { assign_int } { 76 }
+\@@_tex_primitive_pdf:nnn { prependkern       } { assign_int } { 77 }
+\@@_tex_primitive_pdf:nnn { appendkern        } { assign_int } { 78 }
+\@@_tex_primitive_pdf:nnn { gentounicode      } { assign_int } { 79 }
+\@@_tex_primitive_pdf:nnn { draftmode         } { assign_int } { 80 }
+\@@_tex_primitive_pdf:nnn { inclusioncopyfonts } { assign_int } { 81 }
 \@@_tex_primitive:nnn { tracingassigns        } { assign_int } { 82 }
 \@@_tex_primitive:nnn { tracinggroups         } { assign_int } { 83 }
 \@@_tex_primitive:nnn { tracingifs            } { assign_int } { 84 }
@@ -2151,19 +2157,19 @@
 \@@_tex_primitive:nnn { hoffset              } { assign_dimen } { 18 }
 \@@_tex_primitive:nnn { voffset              } { assign_dimen } { 19 }
 \@@_tex_primitive:nnn { emergencystretch     } { assign_dimen } { 20 }
-\@@_tex_primitive:nnn { pdfhorigin           } { assign_dimen } { 21 }
-\@@_tex_primitive:nnn { pdfvorigin           } { assign_dimen } { 22 }
-\@@_tex_primitive:nnn { pdfpagewidth         } { assign_dimen } { 23 }
-\@@_tex_primitive:nnn { pdfpageheight        } { assign_dimen } { 24 }
-\@@_tex_primitive:nnn { pdflinkmargin        } { assign_dimen } { 25 }
-\@@_tex_primitive:nnn { pdfdestmargin        } { assign_dimen } { 26 }
-\@@_tex_primitive:nnn { pdfthreadmargin      } { assign_dimen } { 27 }
-\@@_tex_primitive:nnn { pdffirstlineheight   } { assign_dimen } { 28 }
-\@@_tex_primitive:nnn { pdflastlinedepth     } { assign_dimen } { 29 }
-\@@_tex_primitive:nnn { pdfeachlineheight    } { assign_dimen } { 30 }
-\@@_tex_primitive:nnn { pdfeachlinedepth     } { assign_dimen } { 31 }
-\@@_tex_primitive:nnn { pdfignoreddimen      } { assign_dimen } { 32 }
-\@@_tex_primitive:nnn { pdfpxdimen           } { assign_dimen } { 33 }
+\@@_tex_primitive_pdf:nnn { horigin          } { assign_dimen } { 21 }
+\@@_tex_primitive_pdf:nnn { vorigin          } { assign_dimen } { 22 }
+\@@_tex_primitive_pdf:nnn { pagewidth        } { assign_dimen } { 23 }
+\@@_tex_primitive_pdf:nnn { pageheight       } { assign_dimen } { 24 }
+\@@_tex_primitive_pdf:nnn { linkmargin       } { assign_dimen } { 25 }
+\@@_tex_primitive_pdf:nnn { destmargin       } { assign_dimen } { 26 }
+\@@_tex_primitive_pdf:nnn { threadmargin     } { assign_dimen } { 27 }
+\@@_tex_primitive_pdf:nnn { firstlineheight  } { assign_dimen } { 28 }
+\@@_tex_primitive_pdf:nnn { lastlinedepth    } { assign_dimen } { 29 }
+\@@_tex_primitive_pdf:nnn { eachlineheight   } { assign_dimen } { 30 }
+\@@_tex_primitive_pdf:nnn { eachlinedepth    } { assign_dimen } { 31 }
+\@@_tex_primitive_pdf:nnn { ignoreddimen     } { assign_dimen } { 32 }
+\@@_tex_primitive_pdf:nnn { pxdimen          } { assign_dimen } { 33 }
 \@@_tex_primitive:nnn { lineskip              } { assign_glue } { 0 }
 \@@_tex_primitive:nnn { baselineskip          } { assign_glue } { 1 }
 \@@_tex_primitive:nnn { parskip               } { assign_glue } { 2 }
@@ -2189,7 +2195,7 @@
 \@@_tex_primitive:nnn { rpcode           } { assign_font_int } { 3 }
 \@@_tex_primitive:nnn { efcode           } { assign_font_int } { 4 }
 \@@_tex_primitive:nnn { tagcode          } { assign_font_int } { 5 }
-\@@_tex_primitive:nnn { pdfnoligatures   } { assign_font_int } { 6 }
+\@@_tex_primitive_pdf:nnn { noligatures  } { assign_font_int } { 6 }
 \@@_tex_primitive:nnn { knbscode         } { assign_font_int } { 7 }
 \@@_tex_primitive:nnn { stbscode         } { assign_font_int } { 8 }
 \@@_tex_primitive:nnn { shbscode         } { assign_font_int } { 9 }
@@ -2262,12 +2268,12 @@
 \@@_tex_primitive:nnn { scrollmode      } { set_interaction } { 2 }
 \@@_tex_primitive:nnn { errorstopmode   } { set_interaction } { 3 }
 \@@_tex_primitive:nnn { letterspacefont } { letterspace_font } { 0 }
-\@@_tex_primitive:nnn { pdfcopyfont     } { pdf_copy_font } { 0 }
+\@@_tex_primitive_pdf:nnn { copyfont    } { pdf_copy_font } { 0 }
 \@@_tex_primitive:nnn { undefined         } { undefined_cs } { 0 }
 \@@_tex_primitive:nnn { ndefined          } { undefined_cs } { 0 }
 \@@_tex_primitive:nnn { expandafter       } { expand_after } { 0 }
 \@@_tex_primitive:nnn { unless            } { expand_after } { 1 }
-\@@_tex_primitive:nnn { pdfprimitive      } { no_expand } { 1 }
+\@@_tex_primitive_pdf:nnn { primitive     } { no_expand } { 1 }
 \@@_tex_primitive:nnn { noexpand          } { no_expand } { 0 }
 \@@_tex_primitive:nnn { input             } { input } { 0 }
 \@@_tex_primitive:nnn { endinput          } { input } { 1 }
@@ -2310,33 +2316,32 @@
 \@@_tex_primitive:nnn { meaning           } { convert } { 3 }
 \@@_tex_primitive:nnn { fontname          } { convert } { 4 }
 \@@_tex_primitive:nnn { eTeXrevision      } { convert } { 5 }
-\@@_tex_primitive:nnn { pdftexrevision    } { convert } { 6 }
-\@@_tex_primitive:nnn { pdftexbanner      } { convert } { 7 }
+\@@_tex_primitive_pdf:nnn { texrevision   } { convert } { 6 }
+\@@_tex_primitive_pdf:nnn { texbanner     } { convert } { 7 }
 \@@_tex_primitive:nnn { pdffontname       } { convert } { 8 }
-\@@_tex_primitive:nnn { pdffontobjnum     } { convert } { 9 }
-\@@_tex_primitive:nnn { pdffontsize       } { convert } { 10 }
-\@@_tex_primitive:nnn { pdfpageref        } { convert } { 11 }
-\@@_tex_primitive:nnn { pdfxformname      } { convert } { 12 }
-\@@_tex_primitive:nnn { pdfescapestring   } { convert } { 13 }
-\@@_tex_primitive:nnn { pdfescapename     } { convert } { 14 }
+\@@_tex_primitive_pdf:nnn { fontobjnum    } { convert } { 9 }
+\@@_tex_primitive_pdf:nnn { fontsize      } { convert } { 10 }
+\@@_tex_primitive_pdf:nnn { pageref       } { convert } { 11 }
+\@@_tex_primitive_pdf:nnn { xformname     } { convert } { 12 }
+\@@_tex_primitive_pdf:nnn { escapestring  } { convert } { 13 }
+\@@_tex_primitive_pdf:nnn { escapename    } { convert } { 14 }
 \@@_tex_primitive:nnn { leftmarginkern    } { convert } { 15 }
 \@@_tex_primitive:nnn { rightmarginkern   } { convert } { 16 }
-\@@_tex_primitive:nnn
-  { \sys_if_engine_xetex:F { pdf } strcmp } { convert } { 17 }
-\@@_tex_primitive:nnn { pdfcolorstackinit } { convert } { 18 }
-\@@_tex_primitive:nnn { pdfescapehex      } { convert } { 19 }
-\@@_tex_primitive:nnn { pdfunescapehex    } { convert } { 20 }
-\@@_tex_primitive:nnn { pdfcreationdate   } { convert } { 21 }
-\@@_tex_primitive:nnn { pdffilemoddate    } { convert } { 22 }
-\@@_tex_primitive:nnn { pdffilesize       } { convert } { 23 }
-\@@_tex_primitive:nnn { pdfmdfivesum      } { convert } { 24 }
-\@@_tex_primitive:nnn { pdffiledump       } { convert } { 25 }
-\@@_tex_primitive:nnn { pdfmatch          } { convert } { 26 }
-\@@_tex_primitive:nnn { pdflastmatch      } { convert } { 27 }
-\@@_tex_primitive:nnn { pdfuniformdeviate } { convert } { 28 }
-\@@_tex_primitive:nnn { pdfnormaldeviate  } { convert } { 29 }
-\@@_tex_primitive:nnn { pdfinsertht       } { convert } { 30 }
-\@@_tex_primitive:nnn { pdfximagebbox     } { convert } { 31 }
+\@@_tex_primitive_pdf:nnn { strcmp        } { convert } { 17 }
+\@@_tex_primitive_pdf:nnn { colorstackinit } { convert } { 18 }
+\@@_tex_primitive_pdf:nnn { escapehex     } { convert } { 19 }
+\@@_tex_primitive_pdf:nnn { unescapehex   } { convert } { 20 }
+\@@_tex_primitive_pdf:nnn { creationdate  } { convert } { 21 }
+\@@_tex_primitive_pdf:nnn { filemoddate   } { convert } { 22 }
+\@@_tex_primitive_pdf:nnn { filesize      } { convert } { 23 }
+\@@_tex_primitive_pdf:nnn { mdfivesum     } { convert } { 24 }
+\@@_tex_primitive_pdf:nnn { filedump      } { convert } { 25 }
+\@@_tex_primitive_pdf:nnn { match         } { convert } { 26 }
+\@@_tex_primitive_pdf:nnn { lastmatch     } { convert } { 27 }
+\@@_tex_primitive_pdf:nnn { uniformdeviate } { convert } { 28 }
+\@@_tex_primitive_pdf:nnn { normaldeviate } { convert } { 29 }
+\@@_tex_primitive_pdf:nnn { insertht      } { convert } { 30 }
+\@@_tex_primitive_pdf:nnn { ximagebbox    } { convert } { 31 }
 \@@_tex_primitive:nnn { jobname           } { convert } { 32 }
 \sys_if_engine_luatex:T
   { \@@_tex_primitive:nnn { directlua     } { convert } { 33 } }
