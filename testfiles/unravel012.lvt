@@ -1,0 +1,20 @@
+%
+% Copyright (C) 2021 Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations , check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+\ExplSyntaxOn
+\unravelsetup { mute }
+\unravel { \file_input:n { .tex } }
+
+
+\END
