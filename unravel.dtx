@@ -2621,12 +2621,29 @@
 %   Complain about an unknown primitive, and consider it as if it were
 %   \tn{relax}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_set_cmd_aux_unknown:
+\sys_if_engine_luatex:TF
   {
-    \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
-      \c_@@_tex_relax_tl
-    \@@_error:nxxxx { unknown-primitive }
-      { \l_@@_head_meaning_tl } { } { } { }
+    \cs_new_protected:Npn \@@_set_cmd_aux_unknown:
+      {
+        \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
+          \c_@@_tex_relax_tl
+        \@@_tl_if_in:ooTF \l_@@_head_meaning_tl
+          { \tl_to_str:n { xpandable~luacall } }
+          { }
+          {
+            \@@_error:nxxxx { unknown-primitive }
+              { \l_@@_head_meaning_tl } { } { } { }
+          }
+      }
+  }
+  {
+    \cs_new_protected:Npn \@@_set_cmd_aux_unknown:
+      {
+        \exp_last_unbraced:NV \@@_set_cmd_aux_primitive:nn
+          \c_@@_tex_relax_tl
+        \@@_error:nxxxx { unknown-primitive }
+          { \l_@@_head_meaning_tl } { } { } { }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -3265,8 +3282,7 @@
           { \@@_error:nxxxx { internal } { expandable } { } { } { } }
       }
       {
-        \@@_error:nxxxx { unknown-primitive }
-          { \l_@@_head_meaning_tl } { } { } { }
+        \@@_set_cmd_aux_unknown:
         \@@_input_gpop_tl:N \l_@@_tmpa_tl
         \tl_put_right:NV \l_@@_head_tl \l_@@_tmpa_tl
         \exp_args:NV \@@_back_input:o \l_@@_head_tl
