@@ -561,6 +561,20 @@
 %
 % \subsection{Primitives, variants, and helpers}
 %
+% \subsubsection{Adjustments to \pkg{expl3}}
+%
+% In upcoming versions of \pkg{expl3}, the \cs{group_align_safe_begin:}
+% and \cs{group_align_safe_end:} commands may involve an explicit
+% end-group character token with non-standard character code, which
+% would wrongly be normalized by \pkg{gtl} (used by \pkg{unravel}),
+% hence break.  To avoid this we change here the definitions slightly.
+%    \begin{macrocode}
+\cs_gset:Npn \group_align_safe_begin:
+  { \exp:w \if_false: { \fi: -`} \exp_stop_f: }
+\cs_gset:Npn \group_align_safe_end:
+  { \if_int_compare:w `{ = \c_zero_int } \fi: }
+%    \end{macrocode}
+%
 % \subsubsection{Renamed primitives}
 %
 % \begin{macro}
