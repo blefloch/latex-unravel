@@ -14,7 +14,25 @@
 \START
 \ExplSyntaxOn
 \unravelsetup { mute }
-\unravel { \file_input:n { .tex } }
+\TEST { file-input }
+  { \unravel { \file_input:n { .tex } } }
 
+\makeatletter
+
+\immediate\openout 14 = test.dat \relax
+\immediate\write 14 { other }
+\immediate\closeout 14\relax
+
+\TEST { openout, closeout~etc }
+  {
+    \unravel
+      {
+        \shipout \vbox { \openout 15 = test.dat ~ }
+        \immediate \write 15 { test }
+        \shipout \hbox to 3pt { \closeout 15 }
+        \hbox_set:Nn \l_tmpa_box { \@@input { test.dat } x }
+        \box_show:N \l_tmpa_box
+      }
+  }
 
 \END

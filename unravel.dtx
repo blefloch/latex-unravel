@@ -632,6 +632,7 @@
 \cs_generate_variant:Nn \tl_to_str:n { o }
 \cs_generate_variant:Nn \tl_if_eq:nnTF { o }
 \cs_generate_variant:Nn \tl_if_head_eq_meaning:nNT { V }
+\cs_generate_variant:Nn \tl_if_head_eq_meaning:nNTF { V }
 \cs_generate_variant:Nn \tl_if_single_token:nT { V }
 \cs_generate_variant:Nn \gtl_gput_right:Nn { NV }
 \cs_generate_variant:Nn \gtl_if_empty:NTF { c }
@@ -5646,7 +5647,9 @@
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
-    \@@_do_box:N \c_true_bool
+    \tl_if_head_eq_meaning:VNTF \l_@@_head_tl \tex_shipout:D
+      { \@@_do_box:N \c_false_bool }
+      { \@@_do_box:N \c_true_bool }
   }
 %    \end{macrocode}
 %
