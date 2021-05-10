@@ -4700,7 +4700,6 @@
     \token_if_eq_meaning:NNTF \l_@@_head_token \@@_hbox:w
       { \@@_box_hook:N \tex_everyhbox:D }
       { \@@_box_hook:N \tex_everyvbox:D }
-      % ^^A todo: TeX calls |normal_paragraph| here.
     \@@_scan_spec:
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_set_action_text:x
@@ -4864,17 +4863,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_end_graf:}
+% \begin{macro}{\@@_par_if_hmode:}
+%   This is like the |end_graf| procedure in \TeX{}.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_end_graf:
-  { \mode_if_horizontal:T { \@@_normal_paragraph: } }
+\cs_new_protected:Npn \@@_par_if_hmode:
+  { \mode_if_horizontal:T { \@@_par: } }
 %    \end{macrocode}
 % \end{macro}
 %
 % ^^A todo: Do we need to do more?
-% \begin{macro}{\@@_normal_paragraph:}
+% \begin{macro}{\@@_par:}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_normal_paragraph:
+\cs_new_protected:Npn \@@_par:
   {
     \tex_par:D
     \gtl_gput_right:Nn \g_@@_output_gtl { \par }
@@ -4895,7 +4895,7 @@
 % \subsection{Groups}
 %
 % ^^A todo: implement \@@_end_align_group:
-% ^^A todo: implement \@@_end_no_align_group: (start = \@@_end_graf:)
+% ^^A todo: implement \@@_end_no_align_group: (start = \@@_par_if_hmode:)
 % ^^A todo: implement \@@_end_output_group:
 % ^^A todo: implement \@@_end_disc_group:
 % ^^A todo: implement \@@_end_math_choice_group:
@@ -4916,15 +4916,15 @@
             { 1 } { \@@_end_simple_group: } % simple
             { 2 } { \@@_end_box_group: } % hbox
             { 3 } { \@@_end_box_group: } % adjusted_hbox
-            { 4 } { \@@_end_graf: \@@_end_box_group: } % vbox
-            { 5 } { \@@_end_graf: \@@_end_box_group: } % vtop
+            { 4 } { \@@_par_if_hmode: \@@_end_box_group: } % vbox
+            { 5 } { \@@_par_if_hmode: \@@_end_box_group: } % vtop
             { 6 } { \@@_end_align_group: } % align
             { 7 } { \@@_end_no_align_group: } % no_align
             { 8 } { \@@_end_output_group: } % output
             { 9 } { \@@_end_simple_group: } % math
             { 10 } { \@@_end_disc_group: } % disc
-            { 11 } { \@@_end_graf: \@@_end_simple_group: } % insert
-            { 12 } { \@@_end_graf: \@@_end_simple_group: } % vcenter
+            { 11 } { \@@_par_if_hmode: \@@_end_simple_group: } % insert
+            { 12 } { \@@_par_if_hmode: \@@_end_simple_group: } % vcenter
             { 13 } { \@@_end_math_choice_group: } % math_choice
           }
       }
@@ -5326,10 +5326,10 @@
     \@@_mode_non_math:n
       {
         \mode_if_vertical:TF
-          { \@@_normal_paragraph: }
+          { \@@_par: }
           {
             % if align_state<0 then off_save;
-            \@@_end_graf:
+            \@@_par_if_hmode:
             \mode_if_vertical:T
               { \mode_if_inner:F { \@@_build_page: } }
           }
