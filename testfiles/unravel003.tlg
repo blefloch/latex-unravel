@@ -17,11 +17,11 @@ Defining \g__unravel_input_2_gtl on line ...
 || \font \A =
 |> cmti10 at 10pt\font \B =cmti10\relax \show \A \show \B \showthe \A \showthe
 |> \B \A \B 
+Defining \g__unravel_input_3_gtl on line ...
 [==========] at
 || \font \A =cmti10 at
 |>  10pt\font \B =cmti10\relax \show \A \show \B \showthe \A \showthe \B \A \B
 |> 
-Defining \g__unravel_input_3_gtl on line ...
 [==========] 1
 || \font \A =cmti10 at
 || 1

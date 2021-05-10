@@ -4233,12 +4233,18 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_file_name:
   {
-    \bool_gset_true:N \g_@@_name_in_progress_bool
-    \bool_gset_false:N \g_@@_quotes_bool
-    \@@_get_x_non_blank:
-    \@@_scan_file_name_loop:
-    \bool_gset_false:N \g_@@_name_in_progress_bool
-    \@@_prev_input_silent:n { ~ }
+    \@@_get_x_non_relax:
+    \token_if_eq_catcode:NNTF \l_@@_head_token \c_group_begin_token
+      { \@@_scan_group_x:N \c_false_bool }
+      {
+        \@@_back_input:
+        \bool_gset_true:N \g_@@_name_in_progress_bool
+        \bool_gset_false:N \g_@@_quotes_bool
+        \@@_get_x_non_blank:
+        \@@_scan_file_name_loop:
+        \bool_gset_false:N \g_@@_name_in_progress_bool
+        \@@_prev_input_silent:n { ~ }
+      }
   }
 \cs_new_protected:Npn \@@_scan_file_name_loop:
   {
