@@ -1520,7 +1520,7 @@
 %
 % \begin{variable}{\g_@@_val_level_int}
 %   See \TeX{}'s |cur_val_level| variable.  This is set by
-%   \cs{@@_scan_something_internal:n} to
+%   \cs{@@_rescan_something_internal:n} to
 %   \begin{itemize}
 %   \item $0$ for integer values,
 %   \item $1$ for dimension values,
@@ -3440,7 +3440,7 @@
 % \begin{macro}{\@@_scan_optional_equals:}
 %   See \TeX{}'s |scan_optional_equals|.  In all cases we forcefully
 %   insert an equal sign in the output, because this sign is required,
-%   as \cs{@@_scan_something_internal:n} leaves raw numbers in
+%   as \cs{@@_rescan_something_internal:n} leaves raw numbers in
 %   the previous-input sequence.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_scan_optional_equals:
@@ -3656,8 +3656,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: rename this function because all other scan functions do get_x_next themselves.
-% \begin{macro}{\@@_scan_something_internal:n}
+% \begin{macro}{\@@_rescan_something_internal:n}
 % \begin{macro}{\@@_scan_something_aux:nwn}
 %   Receives an (explicit) \enquote{level} argument:
 %   \begin{itemize}
@@ -3701,7 +3700,7 @@
 %   |\parindent=\parskip| where a skip or a dimen is downgraded to a
 %   dimen or an int, or when there was an error).
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_something_internal:n #1
+\cs_new_protected:Npn \@@_rescan_something_internal:n #1
   {
     \@@_set_cmd:
     \@@_set_action_text:
@@ -3716,13 +3715,13 @@
         \@@_back_input:
         \@@_tex_error:nV { missing-number } \l_@@_head_tl
         \@@_thing_use_get:nnNN { 1 } {#3} \c_zero_dim \l_@@_tmpa_tl
-        \@@_scan_something_internal_auxii:Vn \l_@@_tmpa_tl { 1 }
+        \@@_rescan_something_internal_auxii:Vn \l_@@_tmpa_tl { 1 }
         \@@_break:w
       }
     \int_compare:nNnT {#1} = { 8 }
       {
         \@@_tex_error:nV { the-cannot } \l_@@_head_tl
-        \@@_scan_something_internal_auxii:nn 0 { 0 }
+        \@@_rescan_something_internal_auxii:nn 0 { 0 }
         \@@_break:w
       }
     \tl_if_empty:nF {#2}
@@ -3735,11 +3734,11 @@
     \int_compare:nNnTF {#3} < { 4 }
       { \@@_thing_use_get:nnNN {#1} {#3} \l_@@_head_tl \l_@@_tmpa_tl }
       { \tl_set:Nx \l_@@_tmpa_tl { \@@_the:w \l_@@_head_tl } }
-    \@@_scan_something_internal_auxii:Vn \l_@@_tmpa_tl {#1}
+    \@@_rescan_something_internal_auxii:Vn \l_@@_tmpa_tl {#1}
     \@@_break_point:
     \int_compare:nNnT {#3} < { 4 } { \@@_print_action: }
   }
-\cs_new_protected:Npn \@@_scan_something_internal_auxii:nn #1#2
+\cs_new_protected:Npn \@@_rescan_something_internal_auxii:nn #1#2
   {
     \@@_prev_input_silent:n {#1}
     \@@_set_action_text:
@@ -3747,7 +3746,7 @@
       { \g_@@_action_text_str \use:n { ~ => ~ } \tl_to_str:n {#1} }
     \int_gset:Nn \g_@@_val_level_int {#2}
   }
-\cs_generate_variant:Nn \@@_scan_something_internal_auxii:nn { V }
+\cs_generate_variant:Nn \@@_rescan_something_internal_auxii:nn { V }
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -3760,7 +3759,7 @@
 %   |cmd| integer, but for |last_item|, |set_aux| and |register|, the level of the
 %   token depends on the |char| integer.  When the token is not allowed
 %   after \tn{the} (or at any other position where
-%   \cs{@@_scan_something_internal:n} is called), the resulting level
+%   \cs{@@_rescan_something_internal:n} is called), the resulting level
 %   is~$8$, large enough so that the main function knows it is
 %   forbidden.
 %    \begin{macrocode}
@@ -4005,7 +4004,7 @@
     \@@_scan_signs:
     \@@_set_cmd:
     \@@_cmd_if_internal:TF
-      { \@@_scan_something_internal:n { 0 } }
+      { \@@_rescan_something_internal:n { 0 } }
       { \@@_scan_int_char: }
   }
 \cs_new_protected:Npn \@@_scan_int_char:
@@ -4099,8 +4098,8 @@
     \@@_cmd_if_internal:TF
       {
         \int_compare:nNnTF {#1} = { 3 }
-          { \@@_scan_something_internal:n { 3 } }
-          { \@@_scan_something_internal:n { 1 } }
+          { \@@_rescan_something_internal:n { 3 } }
+          { \@@_rescan_something_internal:n { 1 } }
         \int_compare:nNnT \g_@@_val_level_int = { 0 }
           { \@@_scan_dim_unit:nN {#1} #2 }
       }
@@ -4153,7 +4152,7 @@
     \@@_cmd_if_internal:TF
       {
         \@@_prev_input_gpush:
-        \@@_scan_something_internal:n {#1}
+        \@@_rescan_something_internal:n {#1}
         \int_compare:nNnTF \g_@@_val_level_int = { 0 }
           { \@@_prev_input_join_get:nnN {#1} { sp } \l_@@_tmpa_tl }
           { \@@_prev_input_join_get:nnN {#1} { } \l_@@_tmpa_tl }
@@ -4230,7 +4229,7 @@
     \@@_set_cmd:
     \@@_cmd_if_internal:TF
       {
-        \@@_scan_something_internal:n {#1}
+        \@@_rescan_something_internal:n {#1}
         \int_case:nnF \g_@@_val_level_int
           {
             { 0 } { \@@_scan_dim_unit:nN {#1} \c_false_bool }
@@ -5486,7 +5485,7 @@
         { 2 }
           { % showthe
             \@@_get_x_next:
-            \@@_scan_something_internal:n { 5 }
+            \@@_rescan_something_internal:n { 5 }
             \@@_prev_input_gpop:N \l_@@_head_tl
             \@@_exp_args:Nx \use:n
               { \tex_showtokens:D { \tl_tail:N \l_@@_head_tl } }
@@ -7541,7 +7540,7 @@
       }
       { % \the
         \@@_get_x_next:
-        \@@_scan_something_internal:n { 5 }
+        \@@_rescan_something_internal:n { 5 }
         \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_set_action_text:x
           {
