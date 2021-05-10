@@ -1,0 +1,105 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line ....
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line ....
+============================================================
+TEST 1: math
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> $a+\alpha $
+Defining \g__unravel_input_2_gtl on line ...
+Defining \g__unravel_input_3_gtl on line ...
+Defining \g__unravel_input_4_gtl on line ...
+[===== Step 1 =====] $= math shift character $ : \everypar={}
+|| 
+|> $a+\alpha $
+[===== Step 2 =====] $= math shift character $
+<| $
+|| 
+|> a+\alpha $
+[===== Step 3 =====] \everymath=\check@mathfonts \the \everymath 
+<| $
+|| 
+|> \check@mathfonts \the \everymath a+\alpha $
+Defining \g__unravel_input_5_gtl on line ...
+[===== Step 4 =====] \check@mathfonts = macro:->\ifx \glb@currsize \...
+<| $
+|| 
+|> \ifx \glb@currsize \f@size \else \glb@settings \init@restore@glb@settings
+|> \fi \let \curr@math@size \f@size \def \init@restore@glb@settings
+|> {\aftergroup \restglb@settings }\the \everymath a+\alpha $
+[===== Step 5 =====] \ifx = \ifx
+<| $
+|| \ifx 
+|> \glb@currsize \f@size \else \glb@settings \init@restore@glb@settings \fi
+|> \let \curr@math@size \f@size \def \init@restore@glb@settings {\aftergroup
+|> \restglb@settings }\the \everymath a+\alpha $
+[===== Step 6 =====] Compare: \ifx \glb@currsize \f@size =true
+<| $
+|| 
+|> \else \glb@settings \init@restore@glb@settings \fi \let \curr@math@size
+|> \f@size \def \init@restore@glb@settings {\aftergroup \restglb@settings
+|> }\the \everymath a+\alpha $
+[===== Step 7 =====] \else = \else => skip to \fi 
+<| $
+|| 
+|> \let \curr@math@size \f@size \def \init@restore@glb@settings {\aftergroup
+|> \restglb@settings }\the \everymath a+\alpha $
+[===== Step 8 =====] \let \curr@math@size 
+<| $
+|| \let \curr@math@size 
+|> \f@size \def \init@restore@glb@settings {\aftergroup \restglb@settings
+|> }\the \everymath a+\alpha $
+Defining \g__unravel_input_6_gtl on line ...
+[===== Step 9 =====] Set \curr@math@size=macro:->10
+<| $
+|| 
+|> \def \init@restore@glb@settings {\aftergroup \restglb@settings }\the
+|> \everymath a+\alpha $
+[===== Step 10 =====] \def \init@restore@glb@settings {\aftergroup \r...
+<| $
+|| \def \init@restore@glb@settings {\aftergroup \restglb@settings }
+|> \the \everymath a+\alpha $
+[===== Step 11 =====] Set \init@restore@glb@settings=macro:->\aftergr...
+<| $
+|| 
+|> \the \everymath a+\alpha $
+[===== Step 12 =====] \the = \the
+<| $
+|| \the 
+|> \everymath a+\alpha $
+[===== Step 13 =====] \everymath = \toks11
+<| $
+|| \the 
+|| \everymath 
+|> a+\alpha $
+[===== Step 14 =====] \the =>
+<| $
+|| 
+|> a+\alpha $
+[===== Step 15 =====] a
+<| $a
+|| 
+|> +\alpha $
+[===== Step 16 =====] +
+<| $a+
+|| 
+|> \alpha $
+[===== Step 17 =====] \mathchar "10b 
+<| $a+\mathchar "10b 
+|| 
+|> $
+[===== Step 18 =====] $= math shift character $
+<| $a+\mathchar "10b $
+|| 
+|> 
+[===== End =====]
+============================================================
