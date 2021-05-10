@@ -2322,12 +2322,12 @@
 \@@_tex_primitive:nnn { ifdim             } { if_test } { 3 }
 \@@_tex_primitive:nnn { ifodd             } { if_test } { 4 }
 \@@_tex_primitive:nnn { ifvmode           } { if_test } { 5 }
-\@@_tex_primitive:nnn { ifhmode           } { if_test } { 6 }
-\@@_tex_primitive:nnn { ifmmode           } { if_test } { 7 }
-\@@_tex_primitive:nnn { ifinner           } { if_test } { 8 }
+\@@_tex_primitive:nnn { ifhmode           } { if_test } { 5 }
+\@@_tex_primitive:nnn { ifmmode           } { if_test } { 5 }
+\@@_tex_primitive:nnn { ifinner           } { if_test } { 5 }
 \@@_tex_primitive:nnn { ifvoid            } { if_test } { 9 }
-\@@_tex_primitive:nnn { ifhbox            } { if_test } { 10 }
-\@@_tex_primitive:nnn { ifvbox            } { if_test } { 11 }
+\@@_tex_primitive:nnn { ifhbox            } { if_test } { 9 }
+\@@_tex_primitive:nnn { ifvbox            } { if_test } { 9 }
 \@@_tex_primitive:nnn { ifx               } { if_test } { 12 }
 \@@_tex_primitive:nnn { ifeof             } { if_test } { 13 }
 \@@_tex_primitive:nnn { iftrue            } { if_test } { 14 }
@@ -2343,6 +2343,19 @@
 \@@_tex_primitive:nnn { ifpdfabsnum       } { if_test } { 22 }
 \@@_tex_primitive:nnn { ifabsdim          } { if_test } { 23 }
 \@@_tex_primitive:nnn { ifpdfabsdim       } { if_test } { 23 }
+\bool_if:nT { \sys_if_engine_ptex_p: || \sys_if_engine_uptex_p: }
+  {
+    \@@_tex_primitive:nnn { iftdir        } { if_test } { 5 }
+    \@@_tex_primitive:nnn { ifydir        } { if_test } { 5 }
+    \@@_tex_primitive:nnn { ifddir        } { if_test } { 5 }
+    \@@_tex_primitive:nnn { ifmdir        } { if_test } { 5 }
+    \@@_tex_primitive:nnn { iftbox        } { if_test } { 9 }
+    \@@_tex_primitive:nnn { ifybox        } { if_test } { 9 }
+    \@@_tex_primitive:nnn { ifdbox        } { if_test } { 9 }
+    \@@_tex_primitive:nnn { ifmbox        } { if_test } { 9 }
+    \@@_tex_primitive:nnn { ifjfont       } { if_test } { 24 }
+    \@@_tex_primitive:nnn { iftfont       } { if_test } { 24 }
+  }
 \@@_tex_primitive:nnn { fi                } { fi_or_else } { 2 }
 \@@_tex_primitive:nnn { else              } { fi_or_else } { 3 }
 \@@_tex_primitive:nnn { or                } { fi_or_else } { 4 }
@@ -4342,7 +4355,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: provide separate functions for defs (avoid hash doubling).
 % \begin{macro}{\@@_scan_toks:NN}
 %   The boolean |#1| is true if we are making a definition (then we
 %   start by scanning the parameter text), false if we are simply
@@ -7148,11 +7160,12 @@
 % \item |no_expand=105| for \tn{noexpand} and \tn{pdfprimitive}.
 % \item |input=106| for \tn{input}, \tn{endinput} and \tn{scantokens}.
 % \item |if_test=107| for the conditionals, \tn{if}, \tn{ifcat},
-%   \tn{ifnum}, \tn{ifdim}, \tn{ifodd}, \tn{ifvmode}, \tn{ifhmode},
-%   \tn{ifmmode}, \tn{ifinner}, \tn{ifvoid}, \tn{ifhbox}, \tn{ifvbox},
+%   \tn{ifnum}, \tn{ifdim}, \tn{ifodd}, \tn[index=ifhmode]{if[vhm]mode},
+%   \tn[index=iftdir]{if[tydm]dir},
+%   \tn{ifinner}, \tn{ifvoid}, \tn[index=ifhbox]{if[hvtydm]box},
 %   \tn{ifx}, \tn{ifeof}, \tn{iftrue}, \tn{iffalse}, \tn{ifcase},
 %   \tn{ifdefined}, \tn{ifcsname}, \tn{iffontchar}, \tn{ifincsname},
-%   \tn{ifprimitive}, \tn{ifabsnum}, and \tn{ifabsdim}.
+%   \tn{ifprimitive}, \tn{ifabsnum}, \tn{ifabsdim}, \tn{ifjfont}, \tn{iftfont}.
 % \item |fi_or_else=108| for \tn{fi}, \tn{else} and \tn{or}.
 % \item |cs_name=109| for \tn{csname} and \tn{lastnamedcs}.
 % \item |convert=110| for \tn{number}, \tn{romannumeral}, \tn{string},
@@ -7748,13 +7761,8 @@
             {  3 } % ifdim
               { \@@_test_two_vals:N \@@_scan_normal_dimen: }
             {  4 } { \@@_scan_int: } % ifodd
-            % {  5 } { } % ifvmode
-            % {  6 } { } % ifhmode
-            % {  7 } { } % ifmmode
-            % {  8 } { } % ifinner
-            {  9 } { \@@_scan_int: } % ifvoid
-            { 10 } { \@@_scan_int: } % ifhbox
-            { 11 } { \@@_scan_int: } % ifvbox
+            % {  5 } { } % if[hvm]mode, ifinner, if[tydm]dir
+            {  9 } { \@@_scan_int: } % ifvoid, ifhbox, ifvbox etc
             { 13 } { \@@_scan_int: } % ifeof
             % { 14 } { } % iftrue
             % { 15 } { } % iffalse
@@ -7767,6 +7775,7 @@
               { \@@_test_two_vals:N \@@_scan_int: }
             { 23 } % ifabsdim
               { \@@_test_two_vals:N \@@_scan_normal_dimen: }
+            { 24 } { \@@_scan_font_ident: } % ifjfont, iftfont
           }
         \@@_prev_input_gpop:N \l_@@_head_tl
         \@@_set_action_text:x { \tl_to_str:N \l_@@_head_tl }
