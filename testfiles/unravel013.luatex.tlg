@@ -377,3 +377,61 @@ l. ...  }
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 8: mathop, limits
+============================================================
+[===== Start =====]
+|| 
+|> $$a\eqno b$$
+[==========] $= math shift character $ : \everypar={}
+|| 
+|> $$a\eqno b$$
+[==========] $= math shift character $
+<| $$
+|| 
+|> a\eqno b$$
+[==========] a
+<| $$a
+|| 
+|> \eqno b$$
+[==========] \eqno = \eqno
+<| $$a\eqno 
+|| 
+|> b$$
+[==========] b
+<| $$a\eqno b
+|| 
+|> $$
+[==========] $= math shift character $
+<| $$a\eqno b$$
+|| 
+|> 
+[===== End =====]
+> \box...=
+\vbox(19.0+0.0)x469.75499, direction TLT
+.\hbox(0.0+0.0)x469.75499, glue set 449.755fil, direction TLT
+..\localpar
+...\localinterlinepenalty=0
+...\localbrokenpenalty=0
+...\localleftbox=null
+...\localrightbox=null
+..\hbox(0.0+0.0)x20.0, direction TLT
+..\penalty 10000
+..\glue(\parfillskip) 0.0 plus 1.0fil
+..\glue(\rightskip) 0.0
+.\penalty 10000
+.\glue(\abovedisplayshortskip) 0.0 plus 3.0
+.\glue(\baselineskip) 5.05556
+.\hbox(6.94444+0.0)x469.75499, direction TLT
+..\kern232.23456 (font)
+..\hbox(4.30554+0.0)x5.28589, direction TLT
+...\OML/cmm/m/it/10 a
+..\kern227.94289 (font)
+..\hbox(6.94444+0.0)x4.29166, direction TLT
+...\OML/cmm/m/it/10 b
+.\penalty 0
+.\glue(\belowdisplayshortskip) 7.0 plus 3.0 minus 4.0
+! OK.
+<argument> \l_tmpa_box 
+l. ...  }
+============================================================

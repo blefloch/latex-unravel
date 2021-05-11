@@ -5155,15 +5155,18 @@
 % \end{macro}
 %
 % \begin{macro}{\@@_after_math:}
+%   In display math mode, or in a group started by \tn{eqno} or
+%   \tn{leqno}, search for another
+%   |$|; otherwise simply close the inner math.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_after_math:
   {
     \mode_if_inner:TF
       {
-        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-        \@@_back_input_gtl:N \l_@@_after_group_gtl
-        $ % $
+        \int_compare:nNnTF
+          \l_@@_eqno_grouplevel_int = \tex_currentgrouplevel:D
       }
+      { \use_i:nn }
       {
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_get_x_next:
@@ -5177,6 +5180,11 @@
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
         \@@_back_input_gtl:N \l_@@_after_group_gtl
         $ $
+      }
+      {
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \@@_back_input_gtl:N \l_@@_after_group_gtl
+        $ % $
       }
     \@@_print_action:
   }
@@ -6024,10 +6032,26 @@
 % \end{itemize}
 %
 %    \begin{macrocode}
+\int_new:N \l_@@_eqno_grouplevel_int
 \@@_new_tex_cmd:nn { eq_no }                                % 48
   {
     \mode_if_math:TF
-      { \@@_not_implemented:n { eqno } }
+      {
+        \mode_if_inner:TF
+          { \@@_off_save: }
+          {
+            \int_compare:nNnTF \tex_currentgrouptype:D = { 15 }
+              {
+                \@@_box_hook:N \tex_everymath:D
+                \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+                \l_@@_head_token
+                \@@_box_hook_end:
+                \int_set:Nn \l_@@_eqno_grouplevel_int
+                  { \tex_currentgrouplevel:D }
+              }
+              { \@@_off_save: }
+          }
+      }
       { \@@_forbidden_case: }
   }
 %    \end{macrocode}
@@ -6105,8 +6129,8 @@
   { \@@_mode_math:n { \@@_output_head_token: } }
 \cs_new_protected:Npn \@@_output_head_token:
   {
-    \l_@@_head_token
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \l_@@_head_token
     \@@_print_action:
   }
 %    \end{macrocode}
