@@ -6034,7 +6034,65 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { left_right }                           % 49
-  { \@@_mode_math:n { \@@_not_implemented:n { left/right } } }
+  {
+    \@@_mode_math:n
+      {
+        \@@_prev_input_gpush:N \l_@@_head_tl
+        \@@_print_action:
+        \@@_scan_delimiter:
+        \@@_prev_input_gpop:N \l_@@_head_tl
+        \tl_if_head_eq_meaning:nNTF \l_@@_head_tl \tex_left:D
+          {
+            \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+            \tl_use:N \l_@@_head_tl \scan_stop:
+            \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+          }
+          {
+            \int_case:nnF \tex_currentgrouptype:D
+              {
+                { 16 }
+                  {
+                    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+                    \@@_back_input_gtl:N \l_@@_after_group_gtl
+                    \tl_if_head_eq_meaning:nNTF \l_@@_head_tl \tex_middle:D
+                      {
+                        \tl_use:N \l_@@_head_tl \scan_stop:
+                        \gtl_clear:N \l_@@_after_group_gtl
+                      }
+                      { \tl_use:N \l_@@_head_tl \scan_stop: }
+                    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+                  }
+                { 15 }
+                  { % todo: this is a TeX error
+                    \tl_use:N \l_@@_head_tl \scan_stop:
+                  }
+              }
+              { \@@_off_save: }
+          }
+      }
+  }
+\cs_new_protected:Npn \@@_scan_delimiter:
+  {
+    \@@_get_x_non_relax:
+    \@@_set_cmd:
+    \int_case:nnF \l_@@_head_cmd_int
+      {
+        { \@@_tex_use:n { the_char } }
+          { \@@_prev_input:V \l_@@_head_tl }
+        { \@@_tex_use:n { other_char } }
+          { \@@_prev_input:V \l_@@_head_tl }
+        { \@@_tex_use:n { delim_num } }
+          {
+            \@@_prev_input:V \l_@@_head_tl
+            \@@_scan_int:
+          }
+      }
+      {
+        \@@_back_input:
+        \@@_tex_error:nV { missing-delim } \l_@@_head_tl
+        \@@_prev_input:n { . }
+      }
+  }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -9239,6 +9297,17 @@
     The~control~sequence~marked~<to~be~read~again>~should~
     not~appear~between~\token_to_str:c{csname}~and~
     \token_to_str:c{endcsname}.
+  }
+\@@_tex_msg_new:nnn { missing-delim }
+  { Missing~delimiter~(.~inserted) }
+  {
+    I~was~expecting~to~see~something~like~`('~or~`\token_to_str:N\{'~or~
+    `\token_to_str:N\}'~here.~If~you~typed,~e.g.,~
+    `\{'~instead~of~`\token_to_str:N\{',~you~
+    should~probably~delete~the~`\{'~by~typing~`1'~now,~so~that~
+    braces~don't~get~unbalanced.~Otherwise~just~proceed.~
+    Acceptable~delimiters~are~characters~whose~\token_to_str:c{delcode}~is~
+    nonnegative,~or~you~can~use~`\token_to_str:c{delimiter}~<delimiter~code>'.
   }
 %    \end{macrocode}
 %

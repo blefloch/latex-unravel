@@ -50,5 +50,17 @@
       }
   }
 
+\clearpage
+
+\TEST { left,~middle,~right }
+  {
+    \unravel [mute]
+      {
+        \hbox_set:Nn \l_tmpb_box
+          { $ \left( x \middle\mathchar"26A ~ y \right\} \showlists $ }
+      }
+  }
+
+
 
 \END

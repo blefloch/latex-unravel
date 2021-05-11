@@ -213,3 +213,40 @@ prevdepth 0.0, prevgraf 1 line
 \l__unravel_head_tl ->\showlists 
 l. ...  }
 ============================================================
+============================================================
+TEST 6: left, middle, right
+============================================================
+! Package unravel Error: TeX sees "\mathchar " and throws an error:
+(unravel)                
+(unravel)                    Missing delimiter (. inserted)
+For immediate help type H <return>.
+ ...                                              
+l. ...  }
+TeX's advice is:
+    I was expecting to see something like `(' or `\{' or `\}' here. If you
+    typed, e.g., `\{' instead of `\{', you should probably delete the `\{' by
+    typing `1' now, so that braces don't get unbalanced. Otherwise just
+    proceed. Acceptable delimiters are characters whose \delcode is
+    nonnegative, or you can use `\delimiter <delimiter code>'.
+### math mode entered at line 62
+\mathinner
+.\left"28300
+.\mathord
+..\fam1 x
+.\middle"0
+.\mathord
+..\fam2 j
+.\mathord
+..\fam1 y
+.\right"267309
+### restricted horizontal mode entered at line 62
+spacefactor 1000
+### vertical mode entered at line 0
+### current page:
+\write-{}
+\write-{}
+prevdepth 0.0, prevgraf 1 line
+! OK.
+\l__unravel_head_tl ->\showlists 
+l. ...  }
+============================================================
