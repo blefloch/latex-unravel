@@ -6097,12 +6097,19 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_comp }                            % 50
-  { \@@_mode_math:n { \@@_not_implemented:n { math~comp } } }
+  { \@@_mode_math:n { \@@_sub_sup: } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { limit_switch }                         % 51
-  { \@@_mode_math:n { \@@_not_implemented:n { limits } } }
+  {
+    \@@_mode_math:n
+      {
+        \l_@@_head_token
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \@@_print_action:
+      }
+  }
 %    \end{macrocode}
 %
 %    \begin{macrocode}

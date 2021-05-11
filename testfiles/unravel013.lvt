@@ -61,6 +61,17 @@
       }
   }
 
+\clearpage
+
+\TEST { mathop,~limits }
+  {
+    \unravel [mute]
+      {
+        \hbox_set:Nn \l_tmpb_box
+          { $ \mathop{\omega}^a \mathop{\omega}\nolimits^a \showlists $ }
+      }
+  }
+
 
 
 \END

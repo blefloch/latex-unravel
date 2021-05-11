@@ -250,3 +250,25 @@ prevdepth 0.0, prevgraf 1 line
 \l__unravel_head_tl ->\showlists 
 l. ...  }
 ============================================================
+============================================================
+TEST 7: mathop, limits
+============================================================
+### math mode entered at line 73
+\mathop
+.\fam1 !
+^\fam1 a
+\mathop\nolimits
+.\fam1 !
+^\fam1 a
+### restricted horizontal mode entered at line 73
+spacefactor 1000
+### vertical mode entered at line 0
+### current page:
+\write-{}
+\write-{}
+\write-{}
+prevdepth 0.0, prevgraf 1 line
+! OK.
+\l__unravel_head_tl ->\showlists 
+l. ...  }
+============================================================
