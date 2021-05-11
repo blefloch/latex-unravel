@@ -5193,16 +5193,14 @@
 %
 % \begin{macro}{\@@_after_math:}
 %   In display math mode, or in a group started by \tn{eqno} or
-%   \tn{leqno}, search for another
+%   \tn{leqno} (namely in inner math mode with non-zero
+%   \cs{l_@@_choice_int}), search for another
 %   |$|; otherwise simply close the inner math.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_after_math:
   {
     \mode_if_inner:TF
-      {
-        \int_compare:nNnTF
-          \l_@@_eqno_grouplevel_int = \tex_currentgrouplevel:D
-      }
+      { \int_compare:nNnTF \l_@@_choice_int > 0 }
       { \use_i:nn }
       {
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
@@ -6074,7 +6072,6 @@
 % \end{itemize}
 %
 %    \begin{macrocode}
-\int_new:N \l_@@_eqno_grouplevel_int
 \@@_new_tex_cmd:nn { eq_no }                                % 48
   {
     \mode_if_math:TF
@@ -6088,8 +6085,7 @@
                 \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
                 \l_@@_head_token
                 \@@_box_hook_end:
-                \int_set:Nn \l_@@_eqno_grouplevel_int
-                  { \tex_currentgrouplevel:D }
+                \int_set:Nn \l_@@_choice_int { 1 }
               }
               { \@@_off_save: }
           }
