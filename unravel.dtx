@@ -6102,13 +6102,12 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { limit_switch }                         % 51
+  { \@@_mode_math:n { \@@_output_head_token: } }
+\cs_new_protected:Npn \@@_output_head_token:
   {
-    \@@_mode_math:n
-      {
-        \l_@@_head_token
-        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-        \@@_print_action:
-      }
+    \l_@@_head_token
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \@@_print_action:
   }
 %    \end{macrocode}
 %
@@ -6119,7 +6118,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_style }                           % 53
-  { \@@_mode_math:n { \@@_not_implemented:n { math~style } } }
+  { \@@_mode_math:n { \@@_output_head_token: } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -6129,7 +6128,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { non_script }                           % 55
-  { \@@_mode_math:n { \@@_not_implemented:n { non~script } } }
+  { \@@_mode_math:n { \@@_output_head_token: } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}

@@ -231,14 +231,15 @@ TeX's advice is:
 ### math mode entered at line 62
 \mathinner
 .\left [ axis ]height=0.07973 depth=0.00227 "28300
+.\scriptscriptstyle
 .\mathord
 ..\fam1 x
-.\middledepth=0.00302 class=3037 "0
+.\middle [ axis noaxis ]height=92.00177 depth=101.00183 class=6422625 "0
 .\mathord
 ..\fam2 j
 .\mathord
 ..\fam1 y
-.\right [ axis noaxis ]height=92.00177 depth=101.00183 class=6422625 "267309
+.\rightheight=0.00058 depth=0.00003 class=145 "267309
 ### restricted horizontal mode entered at line 62
 spacefactor 1000
 ### vertical mode entered at line 0

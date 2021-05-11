@@ -57,7 +57,7 @@
     \unravel [mute]
       {
         \hbox_set:Nn \l_tmpb_box
-          { $ \left( x \middle\mathchar"26A ~ y \right\} \showlists $ }
+          { $ \left( \scriptscriptstyle x \middle\mathchar"26A ~ y \right\} \showlists $ }
       }
   }
 

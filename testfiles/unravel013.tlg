@@ -231,6 +231,7 @@ TeX's advice is:
 ### math mode entered at line 62
 \mathinner
 .\left"28300
+.\scriptscriptstyle
 .\mathord
 ..\fam1 x
 .\middle"0
