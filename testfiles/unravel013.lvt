@@ -85,6 +85,17 @@
     \box_show:N \l_tmpa_box
   }
 
+\clearpage
+
+\TEST { mathop,~limits }
+  {
+    \hbox_set:Nn \l_tmpa_box
+      {
+        \unravel [machine]
+          { $ \mathchoice { a } { b } { c } { d } \showlists $ }
+      }
+  }
+
 
 
 \END

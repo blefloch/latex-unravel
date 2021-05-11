@@ -254,7 +254,7 @@
 %   incorrect widths.
 % \item Some primitives are not implemented yet: alignments
 %   (\tn{halign}, \tn{valign}, \tn{noalign}, \tn{omit}, \tn{span},
-%   \tn{cr}, \tn{crcr},~|&|), many math mode primitives, and
+%   \tn{cr}, \tn{crcr},~|&|), some math mode primitives, and
 %   \tn{pdfprimitive}, \tn{discretionary}, as well as
 %   all primitives specific to engines other than \pdfTeX{}.
 %   This list may sadly be incomplete!
@@ -4923,9 +4923,18 @@
 %
 % \subsection{Groups}
 %
+% \begin{variable}{\l_@@_choice_int}
+%   Used by \tn{mathchoice} etc to keep
+%   track of which argument we are currently in.
+%    \begin{macrocode}
+\int_new:N \l_@@_choice_int
+%    \end{macrocode}
+% \end{variable}
+%
 % \begin{macro}{\@@_handle_right_brace:}
 %   When an end-group character is sensed, the result depends on the
-%   current group type.
+%   current group type.  Suppress the |after_group| tokens in
+%   \tn{discretionary} or \tn{mathchoice}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_handle_right_brace:
   {
@@ -4933,7 +4942,12 @@
       {
         \gtl_gconcat:NNN \g_@@_output_gtl
           \g_@@_output_gtl \c_group_end_gtl
-        \@@_back_input_gtl:N \l_@@_after_group_gtl
+        \int_case:nnF \@@_currentgrouptype:
+          {
+            { 10 } { } % disc
+            { 13 } { } % math_choice
+          }
+          { \@@_back_input_gtl:N \l_@@_after_group_gtl }
         \int_case:nn \@@_currentgrouptype:
           {
             { 1 } { \@@_end_simple_group: } % simple
@@ -5049,8 +5063,31 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_end_math_choice_group:
   {
-    \@@_not_implemented:n { end_math_choice_group }
-    \@@_end_simple_group:
+    \int_compare:nNnTF \l_@@_choice_int > 3
+      {
+        \@@_back_input_gtl:N \l_@@_after_group_gtl
+        \c_group_end_token
+        \@@_print_action:x
+          { \token_to_str:N \mathchoice {...}{...}{...}{...} }
+      }
+      { \exp_args:NV \@@_end_math_choice_group:n \l_@@_choice_int }
+  }
+\cs_new_protected:Npn \@@_end_math_choice_group:n #1
+  {
+    \@@_scan_left_brace:
+    \gtl_gconcat:NNN \g_@@_output_gtl
+      \g_@@_output_gtl \c_group_begin_gtl
+    \@@_back_input_gtl:N \l_@@_after_group_gtl
+    \c_group_end_token
+    \c_group_begin_token
+    \int_set:Nn \l_@@_choice_int { #1 + 1 }
+    \gtl_clear:N \l_@@_after_group_gtl
+    \@@_print_action:x
+      {
+        \token_to_str:N \mathchoice
+        \prg_replicate:nn {#1} { { ... } }
+        \iow_char:N \{
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6152,7 +6189,23 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_choice }                          % 54
-  { \@@_mode_math:n { \@@_not_implemented:n { math~choice } } }
+  {
+    \@@_mode_math:n
+      {
+        \@@_prev_input_gpush:N \l_@@_head_tl
+        \@@_print_action:
+        \@@_scan_left_brace:
+        \@@_prev_input_gpop:N \l_@@_head_tl
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+        \gtl_gconcat:NNN \g_@@_output_gtl
+          \g_@@_output_gtl \c_group_begin_gtl
+        \tl_use:N \l_@@_head_tl \c_group_begin_token
+        \gtl_clear:N \l_@@_after_group_gtl
+        \int_set:Nn \l_@@_choice_int { 1 }
+        \@@_print_action:x
+          { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
+      }
+  }
 %    \end{macrocode}
 %
 %    \begin{macrocode}

@@ -429,3 +429,86 @@ TEST 8: mathop, limits
 <argument> \l_tmpa_box 
 l. ...  }
 ============================================================
+============================================================
+TEST 9: mathop, limits
+============================================================
+[===== Start =====]
+|| 
+|> $\mathchoice {a}{b}{c}{d}\showlists $
+[==========] $= math shift character $
+<| $
+|| 
+|> \mathchoice {a}{b}{c}{d}\showlists $
+[==========] \mathchoice = \mathchoice
+<| $
+|| \mathchoice 
+|> {a}{b}{c}{d}\showlists $
+[==========] \mathchoice {
+<| $\mathchoice {
+|| 
+|> a}{b}{c}{d}\showlists $
+[==========] a
+<| $\mathchoice {a
+|| 
+|> }{b}{c}{d}\showlists $
+[==========] \mathchoice{...}{
+<| $\mathchoice {a}{
+|| 
+|> b}{c}{d}\showlists $
+[==========] b
+<| $\mathchoice {a}{b
+|| 
+|> }{c}{d}\showlists $
+[==========] \mathchoice{...}{...}{
+<| $\mathchoice {a}{b}{
+|| 
+|> c}{d}\showlists $
+[==========] c
+<| $\mathchoice {a}{b}{c
+|| 
+|> }{d}\showlists $
+[==========] \mathchoice{...}{...}{...}{
+<| $\mathchoice {a}{b}{c}{
+|| 
+|> d}\showlists $
+[==========] d
+<| $\mathchoice {a}{b}{c}{d
+|| 
+|> }\showlists $
+[==========] \mathchoice{...}{...}{...}{...}
+<| $\mathchoice {a}{b}{c}{d}
+|| 
+|> \showlists $
+[==========] \showlists = \showlists
+<| $\mathchoice {a}{b}{c}{d}
+|| \showlists 
+|> $
+### math mode entered at line 97
+\mathchoice
+D\mathord
+D.\fam1 a
+T\mathord
+T.\fam1 b
+S\mathord
+S.\fam1 c
+s\mathord
+s.\fam1 d
+### restricted horizontal mode entered at line 97
+spacefactor 1000
+### vertical mode entered at line 0
+### current page:
+\write-{}
+\write-{}
+\write-{}
+\write-{}
+\write-{}
+prevdepth 0.0, prevgraf 1 line
+! OK.
+\l__unravel_head_tl ->\showlists 
+l. ...  }
+[==========] $= math shift character $
+<| $\mathchoice {a}{b}{c}{d}$
+|| 
+|> 
+[===== End =====]
+============================================================
