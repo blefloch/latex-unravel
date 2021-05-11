@@ -758,9 +758,15 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}[EXP]{\@@_use_ii_i:nn}
+%    \begin{macrocode}
+\cs_new:Npn \@@_use_ii_i:nn #1#2 { #2 #1 }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\@@_prompt_input:Nn}
 % \begin{macro}[rEXP]{\@@_prompt_input:w}
-% \begin{macro}[EXP]{\@@_prompt_input_aux:w, \@@_use_ii_i:nn, \@@_use_none_delimit_by_q_recursion_tail:w}
+% \begin{macro}[EXP]{\@@_prompt_input_aux:w, \@@_use_none_delimit_by_q_recursion_tail:w}
 % \begin{variable}{\q_@@_recursion_tail}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prompt_input:Nn #1#2
@@ -773,7 +779,6 @@
     \tl_trim_spaces_apply:oN {#1} \@@_use_ii_i:nn
     \@@_prompt_input_aux:w ,
   }
-\cs_new:Npn \@@_use_ii_i:nn #1#2 { #2 #1 }
 \cs_new:Npn \@@_prompt_input_aux:w #1 ,
   {
     \@@_use_none_delimit_by_q_recursion_tail:w #1
@@ -927,6 +932,23 @@
 % \end{macro}
 %
 % \subsubsection{Helpers concerning tokens}
+%
+% \begin{macro}{\@@_active_do:nn}
+%   Apply some code to an active character token constructed from its
+%   character code.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_active_do:nn #1#2
+  {
+    \group_begin:
+    \char_set_active_eq:nN {#1} \scan_stop:
+    \use:x
+      {
+        \group_end:
+        \exp_not:n {#2} { \char_generate:nn {#1} { 13 } }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{macro}{\@@_token_to_char:N}
 % \begin{macro}{\@@_meaning_to_char:n, \@@_meaning_to_char:o}
@@ -4791,13 +4813,18 @@
   {
     \tex_char:D #1 \scan_stop:
     \@@_charcode_if_safe:nTF {#1}
-      { \tl_set:Nx \l_@@_tmpa_tl { \char_generate:nn {#1} { 12 } } }
+      {
+        \tl_set:Nx \l_@@_tmpa_tl { \char_generate:nn {#1} { 12 } }
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
+        \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
+      }
       {
         \tl_set:Nx \l_@@_tmpa_tl
           { \exp_not:N \char \int_eval:n {#1} ~ }
+        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
+        \@@_print_action:x
+          { " \char_generate:nn {#1} { 12 } " = \tl_to_str:N \l_@@_tmpa_tl }
       }
-    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
-    \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
 \cs_generate_variant:Nn \@@_char:n { V }
 \cs_new_protected:Npn \@@_char:x
@@ -4810,11 +4837,13 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_char_in_mmode:n #1
   {
-    \int_compare:nNnTF { \tex_mathcode:D #1 } = { "8000 }
+    \int_compare:nNnTF { \tex_mathcode:D #1 }
+      = { \sys_if_engine_luatex:TF { "1000000 } { "8000 } }
       { % math active
-        \@@_exp_args:NNx \gtl_set:Nn \l_@@_head_gtl
-          { \char_generate:nn {#1} { 12 } }
+        \@@_active_do:nn {#1} { \gtl_set:Nn \l_@@_head_gtl }
         \@@_back_input:
+        \@@_print_action:x
+          { \char_generate:nn {#1} { 12 } ~ active }
       }
       { \@@_char:n {#1} }
   }

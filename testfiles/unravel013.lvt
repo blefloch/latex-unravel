@@ -18,4 +18,25 @@
 \TEST { math }
   { \unravel { $ a + \alpha $ } }
 
+\use:c { frozen@everymath } = { }
+
+\TEST { math-active }
+  {
+    \mathcode`a="8000\relax
+    \unravel { $ a $ }
+  }
+
+\TEST { char }
+  { \unravel { \char`a | } }
+
+% \TEST { math-subsuperscripts }
+%   {
+%     \unravel [mute]
+%       {
+%         \hbox_set:Nn \l_tmpa_box { $ a ^ b _ c $ }
+%         \box_show:N \l_tmpa_box
+%       }
+%   }
+
+
 \END

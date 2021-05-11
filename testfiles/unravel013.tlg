@@ -103,3 +103,65 @@ Defining \g__unravel_input_6_gtl on line ...
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 2: math-active
+============================================================
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> $a$
+[===== Step 1 =====] $= math shift character $
+<| $
+|| 
+|> a$
+[===== Step 2 =====] a active
+<| $
+|| 
+|> a$
+! Undefined control sequence.
+\l__unravel_head_tl ->a
+l. ...  }
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+[===== Step 3 =====] a= undefined
+<| $
+|| 
+|> $
+[===== Step 4 =====] $= math shift character $
+<| $$
+|| 
+|> 
+[===== End =====]
+============================================================
+============================================================
+TEST 3: char
+============================================================
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> \char `a|
+[===== Step 1 =====] \char = \char
+|| \char 
+|> `a|
+[===== Step 2 =====] `a=97
+|| \char 97
+|> |
+[===== Step 3 =====] a
+<| a
+|| 
+|> |
+[===== Step 4 =====] "|"=\char 124 
+<| a\char 124 
+|| 
+|> 
+[===== End =====]
+============================================================
