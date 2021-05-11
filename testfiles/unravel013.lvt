@@ -39,5 +39,16 @@
       }
   }
 
+\clearpage
+
+\TEST { radical~and~mathaccents }
+  {
+    \unravel [mute]
+      {
+        \hbox_set:Nn \l_tmpb_box
+          { $ \radical"270370 \omega \mathaccent"0362 \mathchar"122 \showlists $ }
+      }
+  }
+
 
 \END

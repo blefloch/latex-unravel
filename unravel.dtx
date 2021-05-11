@@ -5311,6 +5311,10 @@
   {
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
+    \@@_do_one_atom:
+  }
+\cs_new_protected:Npn \@@_do_one_atom:
+  {
     \@@_get_x_non_relax:
     \@@_set_cmd:
     \int_case:nnTF \l_@@_head_cmd_int
@@ -5970,12 +5974,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_scan_math:}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_scan_math: { \@@_not_implemented:n { scan_math } }
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\@@_do_math_accent:}
 %   \TeX{} will complain if \cs{l_@@_head_tl} happens to start with
 %   \tn{accent} (the user used \tn{accent} in math mode).
@@ -5985,11 +5983,7 @@
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_print_action:
     \@@_scan_int:
-    \@@_scan_math:
-    \@@_prev_input_gpop:N \l_@@_head_tl
-    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-    \tl_use:N \l_@@_head_tl \scan_stop:
-    \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
+    \@@_do_one_atom:
   }
 %    \end{macrocode}
 % \end{macro}
@@ -6192,19 +6186,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { radical }                              % 66
-  {
-    \@@_mode_math:n
-      {
-        \@@_prev_input_gpush:N \l_@@_head_tl
-        \@@_print_action:
-        \@@_scan_int:
-        \@@_scan_math:
-        \@@_prev_input_gpop:N \l_@@_head_tl
-        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-        \tl_use:N \l_@@_head_tl \scan_stop:
-        \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
-      }
-  }
+  { \@@_mode_math:n { \@@_do_math_accent: } }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
