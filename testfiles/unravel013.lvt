@@ -29,14 +29,15 @@
 \TEST { char }
   { \unravel { \char`a | } }
 
-% \TEST { math-subsuperscripts }
-%   {
-%     \unravel [mute]
-%       {
-%         \hbox_set:Nn \l_tmpa_box { $ a ^ b _ c $ }
-%         \box_show:N \l_tmpa_box
-%       }
-%   }
+\TEST { math-subsuperscripts }
+  {
+    \tl_set:Nx \l_tmpa_tl { $ V ^ b \char_generate:nn { `_ } { 8 } c $ }
+    \unravel [mute]
+      {
+        \hbox_set:Nn \l_tmpb_box { \l_tmpa_tl }
+        \box_show:N \l_tmpb_box
+      }
+  }
 
 
 \END
