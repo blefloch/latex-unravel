@@ -4923,12 +4923,6 @@
 %
 % \subsection{Groups}
 %
-% ^^A todo: implement \@@_end_align_group:
-% ^^A todo: implement \@@_end_no_align_group: (start = \@@_par_if_hmode:)
-% ^^A todo: implement \@@_end_output_group:
-% ^^A todo: implement \@@_end_disc_group:
-% ^^A todo: implement \@@_end_math_choice_group:
-%
 % \begin{macro}{\@@_handle_right_brace:}
 %   When an end-group character is sensed, the result depends on the
 %   current group type.
@@ -5010,6 +5004,57 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\@@_end_align_group:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_end_align_group:
+  {
+    \@@_not_implemented:n { end_align_group }
+    \@@_end_simple_group:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_end_no_align_group:}
+%   ^^A todo: should start with \@@_par_if_hmode:
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_end_no_align_group:
+  {
+    \@@_not_implemented:n { end_no_align_group }
+    \@@_end_simple_group:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_end_output_group:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_end_output_group:
+  {
+    \@@_not_implemented:n { end_output_group }
+    \@@_end_simple_group:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_end_disc_group:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_end_disc_group:
+  {
+    \@@_not_implemented:n { end_disc_group }
+    \@@_end_simple_group:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_end_math_choice_group:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_end_math_choice_group:
+  {
+    \@@_not_implemented:n { end_math_choice_group }
+    \@@_end_simple_group:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\@@_off_save:}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_off_save:
@@ -5041,7 +5086,6 @@
 %
 % \subsection{Modes}
 % ^^A todo: implement \aftergroup and things happening at end-group
-% ^^A todo: implement \@@_scan_math:
 %
 % \begin{macro}
 %   {\@@_mode_math:n, \@@_mode_non_math:n, \@@_mode_vertical:n}
@@ -5088,7 +5132,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% ^^A todo: should push_math be provided?
 % \begin{macro}{\@@_goto_inner_math:}
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_goto_inner_math:
@@ -5259,8 +5302,6 @@
   { \l_@@_head_token \@@_print_action: }
 %    \end{macrocode}
 %
-% ^^A todo: wrong: needs to collect subsup before output (otherwise b{}^2{}_3)
-% ^^A todo: wrong: mathcode "8000 is not recognized.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { superscript_char }                     % 7
   { \@@_mode_math:n { \@@_sub_sup: } }
@@ -5794,7 +5835,6 @@
   }
 %    \end{macrocode}
 %
-% ^^A todo: implement the internal \pdfprimitive business.
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { ignore_spaces }                        % 39
   {
@@ -5927,6 +5967,12 @@
     \@@_print_action:x { \tl_to_str:N \l_@@_head_tl }
     \@@_break_point:
   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_scan_math:}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_scan_math: { \@@_not_implemented:n { scan_math } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6631,6 +6677,7 @@
 %
 % \begin{macro}{\@@_after_assignment:}
 % \begin{macro}{\@@_omit_after_assignment:w}
+%   ^^A todo: simplify
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_after_assignment:
   {
@@ -6881,7 +6928,6 @@
   }
 %    \end{macrocode}
 %
-% ^^A todo: print the temporary relax assignment?
 %    \begin{macrocode}
 \@@_prefixed_new:nn { shorthand_def }                       % 95
   {
@@ -6892,6 +6938,7 @@
     \@@_print_action:x
       { \l_@@_prev_action_tl \tl_to_str:N \l_@@_defined_tl }
     \exp_after:wN \cs_set_eq:NN \l_@@_defined_tl \scan_stop:
+    \@@_just_print_assigned_token:
     \@@_scan_optional_equals:
     \@@_scan_int:
     \@@_assign_token:n { }
@@ -7014,7 +7061,6 @@
   }
 %    \end{macrocode}
 %
-% ^^A todo: print the temporary nullfont assignment?
 %    \begin{macrocode}
 \@@_prefixed_new:nn { letterspace_font }                    % 101
   {
@@ -7024,6 +7070,7 @@
     \@@_print_action:x
       { \g_@@_action_text_str \tl_to_str:N \l_@@_defined_tl }
     \exp_after:wN \cs_set_eq:NN \l_@@_defined_tl \@@_nullfont:
+    \@@_just_print_assigned_token:
     \@@_scan_optional_equals:
     \@@_scan_font_ident:
     \@@_scan_int:
@@ -7031,7 +7078,6 @@
   }
 %    \end{macrocode}
 %
-% ^^A todo: print the temporary nullfont assignment?
 %    \begin{macrocode}
 \@@_prefixed_new:nn { pdf_copy_font }                       % 102
   {
@@ -7041,6 +7087,7 @@
     \@@_print_action:x
       { \g_@@_action_text_str \tl_to_str:N \l_@@_defined_tl }
     \exp_after:wN \cs_set_eq:NN \l_@@_defined_tl \@@_nullfont:
+    \@@_just_print_assigned_token:
     \@@_scan_optional_equals:
     \@@_scan_font_ident:
     \@@_assign_token:n { }
@@ -7778,7 +7825,8 @@
         {  1 } { \@@_test_two_chars:nn { 1 } {#1} } % ifcat
         { 12 } { \@@_test_ifx:n {#1} }
         { 16 } { \@@_test_case:n {#1} }
-        { 21 } { \if_true: \@@_test_pdfprimitive:n {#1} } % ^^A todo and \unless
+        { 20 } { \if_true: \@@_test_incsname:n {#1} }
+        { 21 } { \if_true: \@@_test_pdfprimitive:n {#1} }
       }
       {
         \@@_prev_input_gpush:N \l_@@_head_tl
@@ -7799,7 +7847,6 @@
             { 18 } { \@@_test_ifcsname: } % ifcsname
             { 19 } % iffontchar
               { \@@_scan_font_ident: \@@_scan_int: }
-            % { 20 } { } % ifincsname % ^^A todo: something?
             { 22 } % ifabsnum
               { \@@_test_two_vals:N \@@_scan_int: }
             { 23 } % ifabsdim
@@ -8045,6 +8092,20 @@
           }
       }
   }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_test_incsname:n}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_test_incsname:n #1
+  { \@@_not_implemented:n { ifincsname } }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_test_pdfprimitive:n}
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_test_pdfprimitive:n #1
+  { \@@_not_implemented:n { ifpdfprimitive } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -8362,21 +8423,25 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_print_assigned_token:, \@@_print_assigned_register:}
+% \begin{macro}{\@@_just_print_assigned_token:, \@@_print_assigned_token:, \@@_print_assigned_register:}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_print_assigned_token:
+\cs_new_protected:Npn \@@_just_print_assigned_token:
   {
-    \@@_after_assignment: % ^^A todo: simplify
     \@@_print_assignment:x
       {
         Set~ \exp_after:wN \token_to_str:N \l_@@_defined_tl
         = \exp_after:wN \token_to_meaning:N \l_@@_defined_tl
       }
+  }
+\cs_new_protected:Npn \@@_print_assigned_token:
+  {
+    \@@_after_assignment:
+    \@@_just_print_assigned_token:
     \@@_omit_after_assignment:w
   }
 \cs_new_protected:Npn \@@_print_assigned_register:
   {
-    \@@_after_assignment: % ^^A todo: simplify
+    \@@_after_assignment:
     \@@_exp_args:Nx \@@_print_assignment:x
       {
         \exp_not:n
