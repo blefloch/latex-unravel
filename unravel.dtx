@@ -5368,7 +5368,12 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { endv }                                 % 9
-  { \@@_not_implemented:n { alignments } }
+  {
+    \@@_mode_non_math:n
+      {
+        \@@_not_implemented:n { alignments }
+      }
+  }
 %    \end{macrocode}
 %
 % Blank spaces are ignored in vertical and math modes in the same way as
@@ -5796,7 +5801,7 @@
 \@@_new_tex_cmd:nn { valign }                               % 33
   { \@@_not_implemented:n { valign } }
 \@@_new_tex_cmd:nn { no_align }                             % 34
-  { \@@_not_implemented:n { noalign } }
+  { \l_@@_head_token \@@_print_action: }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -6257,7 +6262,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { omit }                                 % 63
-  { \@@_not_implemented:n { omit } }
+  { \l_@@_head_token \@@_print_action: }
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -7743,10 +7748,7 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_expandable:nn { end_template }                  % 117
-  {
-    \@@_not_implemented:n { end-template } { } { } { }
-    \@@_back_input_tl_o:
-  }
+  { \@@_back_input_tl_o: }
 %    \end{macrocode}
 %
 %
