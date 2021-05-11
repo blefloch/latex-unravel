@@ -74,7 +74,7 @@
 
 \clearpage
 
-\TEST { mathop,~limits }
+\TEST { display,~eqno }
   {
     \vbox_set:Nn \l_tmpa_box
       {
@@ -87,7 +87,7 @@
 
 \clearpage
 
-\TEST { mathop,~limits }
+\TEST { mathchoice }
   {
     \hbox_set:Nn \l_tmpa_box
       {
