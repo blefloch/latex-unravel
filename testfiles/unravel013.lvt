@@ -65,9 +65,9 @@
 
 \TEST { mathop,~limits }
   {
-    \unravel [mute]
+    \unravel [machine]
       {
-        \hbox_set:Nn \l_tmpb_box
+        \tex_setbox:D \l_tmpb_box \tex_hbox:D
           { $ \mathop{\omega}^a \mathop{\omega}\nolimits^a \showlists $ }
       }
   }

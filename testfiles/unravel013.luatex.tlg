@@ -253,6 +253,99 @@ l. ...  }
 ============================================================
 TEST 7: mathop, limits
 ============================================================
+[===== Start =====]
+|| 
+|> \tex_setbox:D \l_tmpb_box \tex_hbox:D {$\mathop {\omega }^a\mathop {\omega
+|> }\nolimits ^a\showlists $}
+[==========] \tex_setbox:D 
+|| \tex_setbox:D 
+|> \l_tmpb_box \tex_hbox:D {$\mathop {\omega }^a\mathop {\omega }\nolimits
+|> ^a\showlists $}
+[==========] \l_tmpb_box = \char"E => 14
+|| \tex_setbox:D 14
+|> \tex_hbox:D {$\mathop {\omega }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] \tex_hbox:D 
+|| \tex_setbox:D 14=\tex_hbox:D 
+|> {$\mathop {\omega }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] \tex_setbox:D 14=\tex_hbox:D {
+<| \tex_setbox:D 14=\tex_hbox:D {
+|| 
+|> $\mathop {\omega }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] $= math shift character $
+<| \tex_setbox:D 14=\tex_hbox:D {$
+|| 
+|> \mathop {\omega }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] \mathop = \mathop
+<| \tex_setbox:D 14=\tex_hbox:D {$
+|| \mathop 
+|> {\omega }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] \mathop 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {
+|| 
+|> \omega }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] \mathchar "121 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 
+|| 
+|> }^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }
+|| 
+|> ^a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] ^= superscript character ^
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }
+|| ^
+|> a\mathop {\omega }\nolimits ^a\showlists $}
+[==========] a
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }
+|| ^a
+|> \mathop {\omega }\nolimits ^a\showlists $}
+[==========] ^a
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a
+|| 
+|> \mathop {\omega }\nolimits ^a\showlists $}
+[==========] \mathop = \mathop
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a
+|| \mathop 
+|> {\omega }\nolimits ^a\showlists $}
+[==========] \mathop 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop {
+|| 
+|> \omega }\nolimits ^a\showlists $}
+[==========] \mathchar "121 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 
+|| 
+|> }\nolimits ^a\showlists $}
+[==========] 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }
+|| 
+|> \nolimits ^a\showlists $}
+[==========] \nolimits = \nolimits
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits 
+|| 
+|> ^a\showlists $}
+[==========] ^= superscript character ^
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits 
+|| ^
+|> a\showlists $}
+[==========] a
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits 
+|| ^a
+|> \showlists $}
+[==========] ^a
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits ^a
+|| 
+|> \showlists $}
+[==========] \showlists = \showlists
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits ^a
+|| \showlists 
+|> $}
 ### math mode entered at line 73
 \mathop
 .\fam1 !
@@ -271,4 +364,15 @@ prevdepth 0.0, prevgraf 1 line
 ! OK.
 \l__unravel_head_tl ->\showlists 
 l. ...  }
+[==========] $= math shift character $
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits ^a$
+|| 
+|> }
+[==========] 
+<| \tex_setbox:D 14=\tex_hbox:D {$\mathop {\mathchar "121 }^a\mathop
+<| {\mathchar "121 }\nolimits ^a$}
+|| 
+|> 
+[===== End =====]
 ============================================================
