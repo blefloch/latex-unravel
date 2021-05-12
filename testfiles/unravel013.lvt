@@ -96,6 +96,19 @@
       }
   }
 
+\clearpage
+
+\TEST { discretionary }
+  {
+    \vbox_set:Nn \l_tmpa_box
+      {
+        \unravel_get:nnN { machine }
+          { a \tex_hyphen:D b \discretionary{X}{Y}{Z} c \showlists }
+          \l_tmpa_tl
+        \tl_show:N \l_tmpa_tl
+      }
+  }
+
 
 
 \END

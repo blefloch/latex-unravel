@@ -1952,6 +1952,11 @@
 \@@_tex_primitive:nnn { /                 } { ital_corr } { 0 }
 \@@_tex_primitive:nnn { accent            } { accent } { 0 }
 \@@_tex_primitive:nnn { mathaccent        } { math_accent } { 0 }
+\sys_if_engine_luatex:T
+  {
+    \@@_tex_primitive:nnn
+      { explicitdiscretionary } { discretionary } { 1 }
+  }
 \@@_tex_primitive:nnn { -                 } { discretionary } { 1 }
 \@@_tex_primitive:nnn { discretionary     } { discretionary } { 0 }
 \@@_tex_primitive:nnn { eqno              } { eq_no } { 0 }
@@ -4959,10 +4964,10 @@
             { 7 } { \@@_end_no_align_group: } % no_align
             { 8 } { \@@_end_output_group: } % output
             { 9 } { \@@_end_simple_group: } % math
-            { 10 } { \@@_end_disc_group: } % disc
+            { 10 } { \@@_end_choice_group:NN 2 \discretionary  } % disc
             { 11 } { \@@_par_if_hmode: \@@_end_simple_group: } % insert
             { 12 } { \@@_par_if_hmode: \@@_end_simple_group: } % vcenter
-            { 13 } { \@@_end_math_choice_group: } % math_choice
+            { 13 } { \@@_end_choice_group:NN 3 \mathchoice } % math_choice
           }
       }
       { % bottom_level, semi_simple, math_shift, math_left
@@ -5049,42 +5054,32 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_end_disc_group:}
+% \begin{macro}{\@@_end_choice_group:NN, \@@_end_choice_group:nN}
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_end_disc_group:
+\cs_new_protected:Npn \@@_end_choice_group:NN #1#2
   {
-    \@@_not_implemented:n { end_disc_group }
-    \@@_end_simple_group:
-  }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@@_end_math_choice_group:}
-%    \begin{macrocode}
-\cs_new_protected:Npn \@@_end_math_choice_group:
-  {
-    \int_compare:nNnTF \l_@@_choice_int > 3
+    \int_compare:nNnTF \l_@@_choice_int > {#1}
       {
         \@@_back_input_gtl:N \l_@@_after_group_gtl
         \c_group_end_token
         \@@_print_action:x
-          { \token_to_str:N \mathchoice {...}{...}{...}{...} }
+          { \token_to_str:N #2 \prg_replicate:nn { #1 + 1 } { {...} } }
       }
-      { \exp_args:NV \@@_end_math_choice_group:n \l_@@_choice_int }
+      { \exp_args:NV \@@_end_choice_group:nN \l_@@_choice_int #2 }
   }
-\cs_new_protected:Npn \@@_end_math_choice_group:n #1
+\cs_new_protected:Npn \@@_end_choice_group:nN #1#2
   {
     \@@_scan_left_brace:
     \gtl_gconcat:NNN \g_@@_output_gtl
       \g_@@_output_gtl \c_group_begin_gtl
     \@@_back_input_gtl:N \l_@@_after_group_gtl
-    \c_group_end_token
-    \c_group_begin_token
+    \use:n \c_group_end_token
+    \use:n \c_group_begin_token
     \int_set:Nn \l_@@_choice_int { #1 + 1 }
     \gtl_clear:N \l_@@_after_group_gtl
     \@@_print_action:x
       {
-        \token_to_str:N \mathchoice
+        \token_to_str:N #2
         \prg_replicate:nn {#1} { { ... } }
         \iow_char:N \{
       }
@@ -6054,7 +6049,14 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { discretionary }                        % 47
-  { \@@_not_implemented:n { discretionary } }
+  {
+    \@@_mode_non_vertical:n
+      {
+        \int_compare:nNnTF \l_@@_head_char_int = { 1 }
+          { \@@_output_head_token: }
+          { \@@_do_choice: }
+      }
+  }
 %    \end{macrocode}
 %
 % \subsubsection{Maths: from 48 to 56}
@@ -6185,22 +6187,21 @@
 %
 %    \begin{macrocode}
 \@@_new_tex_cmd:nn { math_choice }                          % 54
+  { \@@_mode_math:n { \@@_do_choice: } }
+\cs_new_protected:Npn \@@_do_choice:
   {
-    \@@_mode_math:n
-      {
-        \@@_prev_input_gpush:N \l_@@_head_tl
-        \@@_print_action:
-        \@@_scan_left_brace:
-        \@@_prev_input_gpop:N \l_@@_head_tl
-        \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
-        \gtl_gconcat:NNN \g_@@_output_gtl
-          \g_@@_output_gtl \c_group_begin_gtl
-        \tl_use:N \l_@@_head_tl \c_group_begin_token
-        \gtl_clear:N \l_@@_after_group_gtl
-        \int_set:Nn \l_@@_choice_int { 1 }
-        \@@_print_action:x
-          { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
-      }
+    \@@_prev_input_gpush:N \l_@@_head_tl
+    \@@_print_action:
+    \@@_scan_left_brace:
+    \@@_prev_input_gpop:N \l_@@_head_tl
+    \gtl_gput_right:NV \g_@@_output_gtl \l_@@_head_tl
+    \gtl_gconcat:NNN \g_@@_output_gtl
+      \g_@@_output_gtl \c_group_begin_gtl
+    \tl_use:N \l_@@_head_tl \c_group_begin_token
+    \gtl_clear:N \l_@@_after_group_gtl
+    \int_set:Nn \l_@@_choice_int { 1 }
+    \@@_print_action:x
+      { \tl_to_str:N \l_@@_head_tl \iow_char:N \{ }
   }
 %    \end{macrocode}
 %

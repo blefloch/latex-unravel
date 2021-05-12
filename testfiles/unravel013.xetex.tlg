@@ -575,15 +575,15 @@ TEST 10: discretionary
 |> 
 ### horizontal mode entered at line 110
 \hbox(0.0+0.0)x20.0
-\OT1/cmr/m/n/10 a
+\TU/lmr/m/n/10 a
 \discretionary
-.\OT1/cmr/m/n/10 -
-\OT1/cmr/m/n/10 b
+.\TU/lmr/m/n/10 -
+\TU/lmr/m/n/10 b
 \discretionary replacing 1
-.\OT1/cmr/m/n/10 X
-|\OT1/cmr/m/n/10 Y
-\OT1/cmr/m/n/10 Z
-\OT1/cmr/m/n/10 c
+.\TU/lmr/m/n/10 X
+|\TU/lmr/m/n/10 Y
+\TU/lmr/m/n/10 Z
+\TU/lmr/m/n/10 c
 spacefactor 1000
 ### internal vertical mode entered at line 110
 prevdepth ignored

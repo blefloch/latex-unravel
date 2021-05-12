@@ -518,3 +518,100 @@ l. ...  }
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 10: discretionary
+============================================================
+[===== Start =====]
+|| 
+|> a\tex_hyphen:D b\discretionary {X}{Y}{Z}c\showlists 
+[==========] a= the letter a : \everypar={}
+|| 
+|> a\tex_hyphen:D b\discretionary {X}{Y}{Z}c\showlists 
+[==========] a
+<| a
+|| 
+|> \tex_hyphen:D b\discretionary {X}{Y}{Z}c\showlists 
+[==========] \tex_hyphen:D = \explicitdiscretionary
+<| a\tex_hyphen:D 
+|| 
+|> b\discretionary {X}{Y}{Z}c\showlists 
+[==========] b
+<| a\tex_hyphen:D b
+|| 
+|> \discretionary {X}{Y}{Z}c\showlists 
+[==========] \discretionary = \discretionary
+<| a\tex_hyphen:D b
+|| \discretionary 
+|> {X}{Y}{Z}c\showlists 
+[==========] \discretionary {
+<| a\tex_hyphen:D b\discretionary {
+|| 
+|> X}{Y}{Z}c\showlists 
+[==========] X
+<| a\tex_hyphen:D b\discretionary {X
+|| 
+|> }{Y}{Z}c\showlists 
+[==========] \discretionary{...}{
+<| a\tex_hyphen:D b\discretionary {X}{
+|| 
+|> Y}{Z}c\showlists 
+[==========] Y
+<| a\tex_hyphen:D b\discretionary {X}{Y
+|| 
+|> }{Z}c\showlists 
+[==========] \discretionary{...}{...}{
+<| a\tex_hyphen:D b\discretionary {X}{Y}{
+|| 
+|> Z}c\showlists 
+[==========] Z
+<| a\tex_hyphen:D b\discretionary {X}{Y}{Z
+|| 
+|> }c\showlists 
+[==========] \discretionary{...}{...}{...}
+<| a\tex_hyphen:D b\discretionary {X}{Y}{Z}
+|| 
+|> c\showlists 
+[==========] c
+<| a\tex_hyphen:D b\discretionary {X}{Y}{Z}c
+|| 
+|> \showlists 
+[==========] \showlists = \showlists
+<| a\tex_hyphen:D b\discretionary {X}{Y}{Z}c
+|| \showlists 
+|> 
+### horizontal mode entered at line 110
+\localpar
+.\localinterlinepenalty=0
+.\localbrokenpenalty=0
+.\localleftbox=null
+.\localrightbox=null
+\hbox(0.0+0.0)x20.0, direction TLT
+\TU/lmr/m/n/10 a
+\discretionary (penalty 50)
+.< \TU/lmr/m/n/10 -
+\TU/lmr/m/n/10 b
+\discretionary (penalty 50)
+.< \TU/lmr/m/n/10 X
+.> \TU/lmr/m/n/10 Y
+.= \TU/lmr/m/n/10 Z
+\TU/lmr/m/n/10 c
+spacefactor 1000
+### internal vertical mode entered at line 110
+prevdepth ignored
+### vertical mode entered at line 0
+### current page:
+\write-{}
+\write-{}
+\write-{}
+\write-{}
+\write-{}
+\write-{}
+prevdepth 0.0, prevgraf 1 line
+! OK.
+\l__unravel_head_tl ->\showlists 
+l. ...  }
+[===== End =====]
+> \l_tmpa_tl=a\tex_hyphen:D b\discretionary {X}{Y}{Z}c.
+<recently read> }
+l. ...  }
+============================================================
