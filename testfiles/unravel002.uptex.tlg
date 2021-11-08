@@ -42,8 +42,8 @@ File: l3backend-dvips.def ....-..-.. L3 backend support: dvips
 \g__pdf_backend_link_sf_int=\count...
 ))
 (../xparse.sty
-(../xparse-....-..-...sty
-(../xparse-generic.tex)))
+Package: xparse ....-..-.. L3 Experimental document command parser
+)
 (../gtl.sty
 Package: gtl ....-..-.. v... Manipulate unbalanced lists of tokens
 )

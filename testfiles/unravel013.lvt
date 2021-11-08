@@ -13,8 +13,8 @@
 
 \START
 \ExplSyntaxOn
+\tex_everypar:D { }
 \hbox_set:Nn \l_tmpa_box { $ a $ }
-
 \TEST { math }
   { \unravel { $ a + \alpha $ } }
 

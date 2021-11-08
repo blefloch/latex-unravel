@@ -1,5 +1,5 @@
 %
-% Copyright (C) 2015,2018 Bruno Le Floch
+% Copyright (C) 2015, 2018, 2021 Bruno Le Floch
 %
 \documentclass{minimal}
 \input{regression-test}
@@ -40,7 +40,7 @@
 
 \TEST { \unravel ~ : ~ \csname ~ subtleties }
   {
-    \everypar { \use_none:n }
+    \tex_everypar:D { \use_none:n }
     \unravel
       {
         \let \* +

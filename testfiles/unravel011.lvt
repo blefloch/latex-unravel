@@ -18,6 +18,8 @@
 
 \leavevmode
 
+\tex_everypar:D { }
+
 \OMIT
 \cs_new:Npn \showvals { \the\currentiflevel, \the\currentiftype , \the\currentifbranch }
 \cs_new:Npn \test #1

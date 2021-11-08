@@ -1,5 +1,5 @@
 %
-% Copyright (C) 2015, 2018 Bruno Le Floch
+% Copyright (C) 2015, 2018, 2021 Bruno Le Floch
 %
 \documentclass{minimal}
 \input{regression-test}
@@ -43,6 +43,7 @@
     \unravel { \D \tenrm }
     \unravel { \S \C pt plus 1fil \relax }
     \unravel { \S \D plus 1fil \relax }
+    \mode_leave_vertical:
     \unravel { \S \S minus 1fil \relax }
     \unravel { \S \M minus 1fil \relax }
     \unravel { \S \T { } }

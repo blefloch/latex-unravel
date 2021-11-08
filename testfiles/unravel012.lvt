@@ -27,9 +27,9 @@
   {
     \unravel
       {
-        \shipout \vbox { \openout 15 = test.dat ~ }
+        \tex_shipout:D \vbox { \openout 15 = test.dat ~ }
         \immediate \write 15 { test }
-        \shipout \hbox to 3pt { \closeout 15 }
+        \tex_shipout:D \hbox to 3pt { \closeout 15 }
         \hbox_set:Nn \l_tmpa_box { \@@input { test.dat } x }
         \box_show:N \l_tmpa_box
       }

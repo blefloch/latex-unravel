@@ -1,5 +1,5 @@
 %
-% Copyright (C) 2019 Bruno Le Floch
+% Copyright (C) 2019, 2021 Bruno Le Floch
 %
 \documentclass{minimal}
 \input{regression-test}
@@ -103,6 +103,7 @@
     \unravel{\romannumeral-`a}
     \unravel{\iffalse}
     \unravel{\unexpanded\bgroup}
+    \tex_everypar:D { } % avoid luacall in luatex; avoid engine-specific tlg
     \unravel[mute]{\hrule width 0pt height 0pt dept }
     \unravel[mute]{\hrule width 0pt height 0pt depth }
     \unravel[mute]{\hrule width 0pt height 0pt depth0 }
@@ -112,6 +113,7 @@
 
 \TEST { Unit ~ optional ~ space ~ (github~issue~38)  }
   {
+    \mode_leave_vertical:
     \unravel_get:nnN { mute } { \token_to_str:N \BOOM } \l_tmpa_tl
     \TYPE { |\meaning \l_tmpa_tl | }
     \unravel_get:nnN { mute } { \afterassignment \token_to_str:N \l_tmpa_dim = 1 pt \c_space_tl \BOOM } \l_tmpb_tl

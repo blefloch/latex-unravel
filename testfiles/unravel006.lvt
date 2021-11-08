@@ -1,5 +1,5 @@
 %
-% Copyright (C) 2018 Bruno Le Floch
+% Copyright (C) 2018,2021 Bruno Le Floch
 %
 \documentclass{minimal}
 \input{regression-test}
@@ -20,6 +20,7 @@
   {
     \unravel { \space \noexpand \space }
     \unravel { \undefined \noexpand \undefined }
+    \tex_everypar:D { }
     \unravel { \noexpand \hfil }
     \unravel { \edef \foo { a \noexpand \space b } }
     \unravel { \edef \foo { \expandafter a \noexpand \space b } }

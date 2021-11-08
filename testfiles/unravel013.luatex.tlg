@@ -76,7 +76,7 @@ Defining \g__unravel_input_6_gtl on line ...
 <| $
 || \the 
 |> \everymath a+\alpha $
-[===== Step 13 =====] \everymath = \toks11
+[===== Step 13 =====] \everymath = \toks12
 <| $
 || \the 
 || \everymath 
@@ -199,7 +199,7 @@ l. ...  }
 TEST 5: radical and mathaccents
 ============================================================
 ### math mode entered at line 51
-\radical [ axis ]height=0.07973 depth=0.00227 "270370
+\radicaldepth=0.07703 class=3125 "270370
 .\fam1 !
 \Umathaccent\fam3 b
 .\fam1 "
@@ -230,16 +230,16 @@ TeX's advice is:
     nonnegative, or you can use `\delimiter <delimiter code>'.
 ### math mode entered at line 62
 \mathinner
-.\left [ axis ]height=0.07973 depth=0.00227 "28300
+.\leftdepth=0.02861 class=3125 "28300
 .\scriptscriptstyle
 .\mathord
 ..\fam1 x
-.\middle [ axis noaxis ]height=92.00177 depth=101.00183 class=6422625 "0
+.\middleheight=0.00058 depth=0.00003 class=145 "0
 .\mathord
 ..\fam2 j
 .\mathord
 ..\fam1 y
-.\rightheight=0.00058 depth=0.00003 class=145 "267309
+.\right [ noaxis ]height=0.07706 depth=0.03308 "267309
 ### restricted horizontal mode entered at line 62
 spacefactor 1000
 ### vertical mode entered at line 0

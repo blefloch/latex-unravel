@@ -49,24 +49,24 @@ Defining \g__unravel_input_4_gtl on line ...
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
 |> \int_eval:n {12}\cs_end: {}
-[==========] \int_eval:n = \long macro:#1->\int_value:w \__int_eval:w \__kernel_chk_expr:nNnN {#1}\__int_eval:w {}\int_eval:n \__int_eval_end: 
+[==========] \int_eval:n = \long macro:#1->\tex_the:D \__int_eval:w \__kernel_chk_expr:nNnN {#1}\__int_eval:w {}\int_eval:n \__int_eval_end: 
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
-|> \int_value:w \__int_eval:w \__kernel_chk_expr:nNnN {12}\__int_eval:w
+|> \tex_the:D \__int_eval:w \__kernel_chk_expr:nNnN {12}\__int_eval:w
 |> {}\int_eval:n \__int_eval_end: \cs_end: {}
-[==========] \int_value:w = \number
+[==========] \tex_the:D = \the
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
-|| \int_value:w 
+|| \tex_the:D 
 |> \__int_eval:w \__kernel_chk_expr:nNnN {12}\__int_eval:w {}\int_eval:n
 |> \__int_eval_end: \cs_end: {}
 [==========] \__int_eval:w = \numexpr
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
-|| \int_value:w 
+|| \tex_the:D 
 || \__int_eval:w 
 |> \__kernel_chk_expr:nNnN {12}\__int_eval:w {}\int_eval:n \__int_eval_end:
 |> \cs_end: {}
@@ -74,7 +74,7 @@ Defining \g__unravel_input_4_gtl on line ...
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
-|| \int_value:w 
+|| \tex_the:D 
 || \__int_eval:w 
 |> 12\__int_eval_end: \cs_end: {}
 Defining \g__unravel_input_5_gtl on line ...
@@ -82,23 +82,17 @@ Defining \g__unravel_input_5_gtl on line ...
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
-|| \int_value:w 
+|| \tex_the:D 
 || \__int_eval:w 1
 |> 2\__int_eval_end: \cs_end: {}
 [==========] 2
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 
-|| \int_value:w 
+|| \tex_the:D 
 || \__int_eval:w 12
 |> \__int_eval_end: \cs_end: {}
-[==========] \__int_eval:w 12 => 12
-|| \exp:w 
-|| \exp_after:wN \__prg_replicate_first:N 
-|| \int_value:w 
-|| \int_value:w 12
-|> \cs_end: {}
-[==========] \int_value:w 12=12
+[==========] \tex_the:D =>12
 || \exp:w 
 || \exp_after:wN \__prg_replicate_first:N 
 || \int_value:w 

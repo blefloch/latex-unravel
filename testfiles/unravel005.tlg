@@ -483,9 +483,6 @@ TeX's advice is:
 [==========] Set \S(\skip0)=0.0pt plus 1.0fil
 || 
 |> minus1fil\relax 
-[==========] m= the letter m : \everypar={}
-|| 
-|> minus1fil\relax 
 [==========] m
 <| m
 || 
