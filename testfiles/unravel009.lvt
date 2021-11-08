@@ -169,4 +169,10 @@
     \leavevmode \unravel { \moveright }
   }
 
+\TEST { until~token~(github~issue~52) }
+  {
+    \unravel[prompt-input={u\space,a}]{\empty\empty\empty}
+    \unravel[prompt-input={m}]{\empty\space}
+  }
+
 \END
