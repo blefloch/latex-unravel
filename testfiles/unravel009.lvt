@@ -175,4 +175,10 @@
     \unravel[prompt-input={m}]{\empty\space}
   }
 
+\TEST { unless~ifcsname~(github~issue~50) }
+  {
+    \unravel{\edef\x{\unless\ifcsname TEST\endcsname not~\fi defined}}
+    \unravel{\edef\x{\unless\ifcsname undefined\endcsname not~\fi defined}}
+  }
+
 \END

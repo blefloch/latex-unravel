@@ -693,3 +693,52 @@ m
 |> 
 [===== End =====]
 ============================================================
+============================================================
+TEST 14: unless ifcsname (github issue 50)
+============================================================
+[===== Start =====]
+|| 
+|> \edef \x {\unless \ifcsname TEST\endcsname not \fi defined}
+[==========] \unless = \unless
+|| \edef \x {
+|| \reverse_if:N \ifcsname 
+|> TEST\endcsname not \fi defined}
+[==========] \endcsname 
+|| \edef \x {
+|| \reverse_if:N \ifcsname TEST\endcsname 
+|> not \fi defined}
+[==========] \reverse_if:N \ifcsname TEST\endcsname =false => skip to \fi 
+|| \edef \x {
+|> defined}
+[==========] \edef \x {defined}
+|| \edef \x {defined}
+|> 
+[==========] Set \x=macro:->defined
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \edef \x {\unless \ifcsname undefined\endcsname not \fi defined}
+[==========] \unless = \unless
+|| \edef \x {
+|| \reverse_if:N \ifcsname 
+|> undefined\endcsname not \fi defined}
+[==========] \endcsname 
+|| \edef \x {
+|| \reverse_if:N \ifcsname undefined\endcsname 
+|> not \fi defined}
+[==========] \reverse_if:N \ifcsname undefined\endcsname =true
+|| \edef \x {
+|> not \fi defined}
+[==========] \fi = \fi
+|| \edef \x {not 
+|> defined}
+[==========] \edef \x {not defined}
+|| \edef \x {not defined}
+|> 
+[==========] Set \x=macro:->not defined
+|| 
+|> 
+[===== End =====]
+============================================================

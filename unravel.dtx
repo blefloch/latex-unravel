@@ -7606,9 +7606,11 @@
     \group_begin:
     \@@_prev_input_get:N \l_@@_head_tl
     \tl_gset:No \g_@@_lastnamedcs_tl
-      { \cs:w \exp_after:wN \use_none:n \l_@@_head_tl }
+      { \cs:w \exp_after:wN \@@_get_lastnamedcs_check:N \l_@@_head_tl }
     \group_end:
   }
+\cs_new:Npn \@@_get_lastnamedcs_check:N #1
+  { \if_meaning:w \reverse_if:N #1 \use_i:nn \fi: }
 %    \end{macrocode}
 % \end{macro}
 %
