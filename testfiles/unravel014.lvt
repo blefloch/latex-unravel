@@ -1,0 +1,30 @@
+%
+% Copyright (C) Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\edef\scantest{\noexpand\scantokens{:\string\__test:+}}
+
+\noindent % start a paragraph
+%
+\START
+%
+\ExplSyntaxOn
+\cs_new_eq:NN \__test: \scan_stop:
+\TEST { scantokens }
+  {
+    \unravel_get:nnN { mute } { \tl_set:Nx \l_tmpa_tl { \scantest } \scantest } \l_tmpb_tl
+    \exp_args:Noo \tl_if_eq:nnTF \l_tmpa_tl { : \__test: + } { \TRUE } { \ERROR }
+    \exp_args:Noo \tl_if_eq:nnTF \l_tmpb_tl { \token_to_str:N : + } { \TRUE } { \ERROR }
+  }
+\ExplSyntaxOff
+
+\END
