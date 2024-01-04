@@ -1,0 +1,29 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: Runaway macro
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \test {a}\par b
+Runaway argument?
+! Paragraph ended before \test was complete.
+<to be read again> 
+                   \par 
+l. ...  }
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+Defining \g__unravel_input_2_gtl on line ...
+[==========] \test = macro:#1#2#3->...
+|| 
+|> \par b
+[==========] \par = \show
+|| \par 
+|> b
+> the letter b.
+<argument> b
+l. ...  }
+[===== End =====]
+============================================================
