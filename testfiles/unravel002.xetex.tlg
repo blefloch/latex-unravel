@@ -25,7 +25,7 @@ l. ......l>1 \errmessage{unravel loaded in a group}
 TEST 3: RequirePackage with no group
 ============================================================
 ============================================================
-(unravel.sty (../expl3.sty
+(unravel.sty (../gtl.sty (../expl3.sty
 Package: expl3 ....-..-.. L3 programming layer (loader) 
 (../l3backend-xetex.def
 File: l3backend-xetex.def ....-..-.. L3 backend support: XeTeX
@@ -34,9 +34,7 @@ File: l3backend-xetex.def ....-..-.. L3 backend support: XeTeX
 \g__pdf_backend_object_int=\count...
 \g__pdf_backend_annotation_int=\count...
 \g__pdf_backend_link_int=\count...
-)) (../xparse.sty
-Package: xparse ....-..-.. L3 Experimental document command parser
-) (../gtl.sty
+))
 Package: gtl ....-..-.. v... Manipulate unbalanced lists of tokens
 )
 Package: unravel ....-..-.. v... Watching TeX digest tokens

@@ -1,5 +1,5 @@
 %
-% Copyright (C) 2019, 2021 Bruno Le Floch
+% Copyright (C) Bruno Le Floch
 %
 \documentclass{minimal}
 \input{regression-test}

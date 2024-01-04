@@ -25,15 +25,13 @@ l. ......l>1 \errmessage{unravel loaded in a group}
 TEST 3: RequirePackage with no group
 ============================================================
 ============================================================
-(unravel.sty (../expl3.sty
+(unravel.sty (../gtl.sty (../expl3.sty
 Package: expl3 ....-..-.. L3 programming layer (loader) 
 (../l3backend-pdftex.def
 File: l3backend-pdftex.def ....-..-.. L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count...
 \l__pdf_internal_box=\box...
-)) (../xparse.sty
-Package: xparse ....-..-.. L3 Experimental document command parser
-) (../gtl.sty
+))
 Package: gtl ....-..-.. v... Manipulate unbalanced lists of tokens
 )
 Package: unravel ....-..-.. v... Watching TeX digest tokens

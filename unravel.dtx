@@ -1,5 +1,5 @@
 % \iffalse
-%% File: unravel.dtx Copyright (C) 2013, 2015, 2018-2019, 2021 Bruno Le Floch
+%% File: unravel.dtx Copyright (C) 2013, 2015, 2018-2019, 2021, 2024 Bruno Le Floch
 %%
 %% It may be distributed and/or modified under the conditions of the
 %% LaTeX Project Public License (LPPL), either version 1.3c of this
@@ -23,9 +23,9 @@
 %
 % \title{The \textsf{unravel} package: \\
 %   watching TeX digest tokens\thanks{This
-%     file has version number 0.3a, last revised 2021/05/11.}}
+%     file has version number 0.3b, last revised 2024/01/04.}}
 % \author{Bruno Le Floch}
-% \date{2021/05/11}
+% \date{2024/01/04}
 %
 % \maketitle
 % \tableofcontents
@@ -530,14 +530,9 @@
 \expandafter \endgroup \@@_setup_latexe:
 %    \end{macrocode}
 %
-% Load a few dependencies: \pkg{expl3}, \pkg{xparse}, \pkg{gtl}.
-% Load \pkg{l3str} if \pkg{expl3} is too old and does not define
-% \cs{str_range:nnn}.  Otherwise loading \pkg{l3str} would give
-% an error.
+% Load the \pkg{gtl} dependency.
 %    \begin{macrocode}
-\RequirePackage{expl3,xparse}[2021/01/01]
-\RequirePackage{gtl}[2018/12/28]
-\csname cs_if_exist:cF\endcsname{str_range:nnn}{\RequirePackage{l3str}}
+\RequirePackage{gtl}[2024/01/04]
 %    \end{macrocode}
 %
 % Before loading \pkg{unravel}, restore catcodes, so that the implicit
@@ -554,7 +549,7 @@
   {%
     \csname @@_setup_restore:\endcsname
     \ProvidesExplPackage
-      {unravel} {2021/05/11} {0.3a} {Watching TeX digest tokens}%
+      {unravel} {2024/01/04} {0.3b} {Watching TeX digest tokens}%
     \csname @@_setup_unravel:\endcsname
   }%
 %    \end{macrocode}
@@ -7353,7 +7348,7 @@
 %   \tn{pdffiledump}, \tn{pdfmatch}, \tn{pdflastmatch},
 %   \tn{pdfuniformdeviate}, \tn{pdfnormaldeviate}, \tn{pdfinsertht},
 %   \tn{pdfximagebbox}, \tn{jobname}, \tn{expanded}, and in
-%   \LuaTeX{} \tn{directlua}, \tn{luaescapestring}, and in \XeTeX{} \tn{Ucharcat}.
+%   \LuaTeX{} \tn{directlua}, \tn{luaescapestring}, and in \XeTeX{}/(u)p\TeX{} \tn{Ucharcat}.
 % \item |the=111| for \tn{the}, \tn{unexpanded}, and \tn{detokenize}.
 % \item |top_bot_mark=112| \tn{topmark}, \tn{firstmark}, \tn{botmark},
 %   \tn{splitfirstmark}, \tn{splitbotmark}, \tn{topmarks},

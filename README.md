@@ -26,9 +26,6 @@ step by step.
 Some parts of TeX are not covered. In particular, category codes
 are fixed for the whole argument of `\unravel` when it is read.
 
-This package requires up-to-date versions of the `l3kernel`,
-`l3packages` and `l3experimental` bundles.
-
 The package is extracted by running `pdflatex unravel.ins`.
 For the documentation, run `pdflatex unravel.dtx` twice.
 
