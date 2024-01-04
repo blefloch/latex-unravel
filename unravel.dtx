@@ -7392,6 +7392,7 @@
   }
 \cs_new_protected:Npn \@@_unless:
   {
+    \gtl_set_eq:NN \l_@@_tmpb_gtl \l_@@_head_gtl
     \@@_get_token:
     \int_compare:nNnTF
       \l_@@_head_cmd_int = { \@@_tex_use:n { if_test } }
@@ -7399,8 +7400,8 @@
         \token_if_eq_meaning:NNTF \l_@@_head_token \tex_ifcase:D
           { \@@_unless_bad: }
           {
-            \tl_put_left:Nn \l_@@_head_tl { \reverse_if:N }
-            % \int_add:Nn \l_@@_head_char_int { 32 }
+            \tl_put_left:Ne \l_@@_head_tl
+              { \gtl_head_do:NN \l_@@_tmpb_gtl \exp_not:N }
             \@@_expand_nonmacro:
           }
       }
