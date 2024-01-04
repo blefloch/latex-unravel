@@ -4065,7 +4065,7 @@
           {
             \@@_prev_input:V \l_@@_head_tl
             \@@_get_x_next:
-            \@@_scan_int_explicit:Nn \c_false_bool { " }
+            \@@_scan_int_explicit:Nn \c_false_bool { " } % "
           }
       }
       { \@@_scan_int_explicit:Nn \c_false_bool { } }
@@ -4868,7 +4868,7 @@
   {
     \tex_mathchar:D #1 \scan_stop:
     \@@_tl_set:Ne \l_@@_tmpa_tl
-      { \exp_not:N \mathchar " \int_to_hex:n {#1} ~ }
+      { \exp_not:N \mathchar " \int_to_hex:n {#1} ~ } % "
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
   }
