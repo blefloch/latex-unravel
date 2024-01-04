@@ -3950,7 +3950,7 @@
 \cs_new_protected:Npn \@@_scan_expr_op:NN #1#2
   {
     \@@_get_x_non_blank:
-    \tl_case:NnF \l_@@_head_tl
+    \token_case_meaning:NnF \l_@@_head_tl
       {
         \c_@@_plus_tl
           {
@@ -4049,7 +4049,7 @@
   }
 \cs_new_protected:Npn \@@_scan_int_char:
   {
-    \tl_case:NnF \l_@@_head_tl
+    \token_case_meaning:NnF \l_@@_head_tl
       {
         \c_@@_lq_tl { \@@_scan_int_lq: }
         \c_@@_rq_tl
@@ -8435,7 +8435,7 @@
   {
     \tl_if_empty:nF {#1}
       {
-        \@@_print_message:nn { <| ~ }
+        \@@_print_message:nn { <| ~ } % |
           { \@@_str_truncate_left:nn {#1} { \g_@@_max_output_int } }
       }
   }
@@ -8447,7 +8447,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_prev:
   {
-    \seq_set_map_x:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
+    \seq_set_map_e:NNn \l_@@_tmpa_seq \g_@@_prev_input_seq
       { \@@_to_str:Nn ##1 }
     \seq_remove_all:Nn \l_@@_tmpa_seq { }
     \seq_if_empty:NTF \l_@@_tmpa_seq
@@ -8474,7 +8474,7 @@
   }
 \cs_new_protected:Npn \@@_print_state_input:n #1
   {
-    \@@_print_message:nn { |> ~ }
+    \@@_print_message:nn { |> ~ } % |
       { \@@_str_truncate_right:nn {#1} { \g_@@_max_input_int } }
   }
 %    \end{macrocode}

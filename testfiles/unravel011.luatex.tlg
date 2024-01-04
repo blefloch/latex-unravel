@@ -72,7 +72,8 @@ Package unravel Warning: Attempting to issue 1 dangling conditionals.
 TRUE
 ! Extra \or.
 <argument> \unravel {\iftrue }\TRUE \or 
-                             \TRUE \else \ERROR \fi \unravel {\iffalse \else }\l. ...  }
+                             \TRUE \else \ERROR \fi \unravel {\iffalse \else }\
+l. ...  }
 I'm ignoring this; it doesn't match any \if.
 TRUE
 Package unravel Warning: Attempting to issue 1 dangling conditionals.

@@ -25,79 +25,123 @@ Defining \g__unravel_input_4_gtl on line ...
 <| $
 || 
 |> a+\alpha $
-[===== Step 3 =====] \everymath=\check@mathfonts \the \everymath 
+[===== Step 3 =====] \everymath=\aftergroup \@ignorefalse \check@mat...
+<| $
+|| 
+|> \aftergroup \@ignorefalse \check@mathfonts \the \everymath a+\alpha $
+[===== Step 4 =====] Aftergroup: \aftergroup \@ignorefalse 
 <| $
 || 
 |> \check@mathfonts \the \everymath a+\alpha $
 Defining \g__unravel_input_5_gtl on line ...
-[===== Step 4 =====] \check@mathfonts = macro:->\ifx \glb@currsize \...
+[===== Step 5 =====] \check@mathfonts = macro:->\ifx \glb@currsize \...
 <| $
 || 
 |> \ifx \glb@currsize \f@size \else \glb@settings \init@restore@glb@settings
 |> \fi \let \curr@math@size \f@size \def \init@restore@glb@settings
-|> {\aftergroup \restglb@settings }\the \everymath a+\alpha $
-[===== Step 5 =====] \ifx = \ifx
+|> {\aftergroup \restglb@settings }\aftergroup \mv@normal@reset \aftergroup
+|> \mv@bold@reset \the \everymath a+\alpha $
+[===== Step 6 =====] \ifx = \ifx
 <| $
 || \ifx 
 |> \glb@currsize \f@size \else \glb@settings \init@restore@glb@settings \fi
 |> \let \curr@math@size \f@size \def \init@restore@glb@settings {\aftergroup
-|> \restglb@settings }\the \everymath a+\alpha $
-[===== Step 6 =====] Compare: \ifx \glb@currsize \f@size =true
+|> \restglb@settings }\aftergroup \mv@normal@reset \aftergroup \mv@bold@reset
+|> \the \everymath a+\alpha $
+[===== Step 7 =====] Compare: \ifx \glb@currsize \f@size =true
 <| $
 || 
 |> \else \glb@settings \init@restore@glb@settings \fi \let \curr@math@size
 |> \f@size \def \init@restore@glb@settings {\aftergroup \restglb@settings
-|> }\the \everymath a+\alpha $
-[===== Step 7 =====] \else = \else => skip to \fi 
+|> }\aftergroup \mv@normal@reset \aftergroup \mv@bold@reset \the \everymath
+|> a+\alpha $
+[===== Step 8 =====] \else = \else => skip to \fi 
 <| $
 || 
 |> \let \curr@math@size \f@size \def \init@restore@glb@settings {\aftergroup
-|> \restglb@settings }\the \everymath a+\alpha $
-[===== Step 8 =====] \let \curr@math@size 
+|> \restglb@settings }\aftergroup \mv@normal@reset \aftergroup \mv@bold@reset
+|> \the \everymath a+\alpha $
+[===== Step 9 =====] \let \curr@math@size 
 <| $
 || \let \curr@math@size 
 |> \f@size \def \init@restore@glb@settings {\aftergroup \restglb@settings
-|> }\the \everymath a+\alpha $
+|> }\aftergroup \mv@normal@reset \aftergroup \mv@bold@reset \the \everymath
+|> a+\alpha $
 Defining \g__unravel_input_6_gtl on line ...
-[===== Step 9 =====] Set \curr@math@size=macro:->10
+[===== Step 10 =====] Set \curr@math@size=macro:->10
 <| $
 || 
-|> \def \init@restore@glb@settings {\aftergroup \restglb@settings }\the
-|> \everymath a+\alpha $
-[===== Step 10 =====] \def \init@restore@glb@settings {\aftergroup \r...
+|> \def \init@restore@glb@settings {\aftergroup \restglb@settings }\aftergroup
+|> \mv@normal@reset \aftergroup \mv@bold@reset \the \everymath a+\alpha $
+[===== Step 11 =====] \def \init@restore@glb@settings {\aftergroup \r...
 <| $
 || \def \init@restore@glb@settings {\aftergroup \restglb@settings }
-|> \the \everymath a+\alpha $
-[===== Step 11 =====] Set \init@restore@glb@settings=macro:->\aftergr...
+|> \aftergroup \mv@normal@reset \aftergroup \mv@bold@reset \the \everymath
+|> a+\alpha $
+[===== Step 12 =====] Set \init@restore@glb@settings=macro:->\aftergr...
+<| $
+|| 
+|> \aftergroup \mv@normal@reset \aftergroup \mv@bold@reset \the \everymath
+|> a+\alpha $
+[===== Step 13 =====] Aftergroup: \aftergroup \mv@normal@reset 
+<| $
+|| 
+|> \aftergroup \mv@bold@reset \the \everymath a+\alpha $
+[===== Step 14 =====] Aftergroup: \aftergroup \mv@bold@reset 
 <| $
 || 
 |> \the \everymath a+\alpha $
-[===== Step 12 =====] \the = \the
+[===== Step 15 =====] \the = \the
 <| $
 || \the 
 |> \everymath a+\alpha $
-[===== Step 13 =====] \everymath = \toks12
+[===== Step 16 =====] \everymath = \toks13
 <| $
 || \the 
 || \everymath 
 |> a+\alpha $
-[===== Step 14 =====] \the =>
+[===== Step 17 =====] \the =>
 <| $
 || 
 |> a+\alpha $
-[===== Step 15 =====] a
+[===== Step 18 =====] a
 <| $a
 || 
 |> +\alpha $
-[===== Step 16 =====] +
+[===== Step 19 =====] +
 <| $a+
 || 
 |> \alpha $
-[===== Step 17 =====] \mathchar "10b 
+[===== Step 20 =====] \mathchar "10b 
 <| $a+\mathchar "10b 
 || 
 |> $
-[===== Step 18 =====] $= math shift character $
+[===== Step 21 =====] $= math shift character $
+<| $a+\mathchar "10b $
+|| 
+|> \@ignorefalse \mv@normal@reset \mv@bold@reset 
+[===== Step 22 =====] \@ignorefalse = macro:->\global \let \if@ignore...
+<| $a+\mathchar "10b $
+|| 
+|> \global \let \if@ignore \iffalse \mv@normal@reset \mv@bold@reset 
+[===== Step 23 =====] \global 
+<| $a+\mathchar "10b $
+|| \global 
+|> \let \if@ignore \iffalse \mv@normal@reset \mv@bold@reset 
+[===== Step 24 =====] \let \if@ignore 
+<| $a+\mathchar "10b $
+|| \global 
+|| \let \if@ignore 
+|> \iffalse \mv@normal@reset \mv@bold@reset 
+[===== Step 25 =====] Set \if@ignore=\iffalse
+<| $a+\mathchar "10b $
+|| 
+|> \mv@normal@reset \mv@bold@reset 
+[===== Step 26 =====] \mv@normal@reset = macro:->
+<| $a+\mathchar "10b $
+|| 
+|> \mv@bold@reset 
+[===== Step 27 =====] \mv@bold@reset = macro:->
 <| $a+\mathchar "10b $
 || 
 |> 
@@ -199,7 +243,7 @@ l. ...  }
 TEST 5: radical and mathaccents
 ============================================================
 ### math mode entered at line 51
-\radicaldepth=0.07703 class=3125 "270370
+\radicalheight=1.60144 depth=1.54987 "270370
 .\fam1 !
 \Umathaccent\fam3 b
 .\fam1 "
@@ -230,16 +274,16 @@ TeX's advice is:
     nonnegative, or you can use `\delimiter <delimiter code>'.
 ### math mode entered at line 62
 \mathinner
-.\leftdepth=0.02861 class=3125 "28300
+.\leftheight=1.60144 depth=1.54987 "28300
 .\scriptscriptstyle
 .\mathord
 ..\fam1 x
-.\middleheight=0.00058 depth=0.00003 class=145 "0
+.\middle [ axis noaxis ]height=92.00177 depth=101.00183 class=6422625 "0
 .\mathord
 ..\fam2 j
 .\mathord
 ..\fam1 y
-.\right [ noaxis ]height=0.07706 depth=0.03308 "267309
+.\right [ axis noaxis ]height=92.00177 depth=101.00183 class=6422625 "267309
 ### restricted horizontal mode entered at line 62
 spacefactor 1000
 ### vertical mode entered at line 0
@@ -382,28 +426,44 @@ TEST 8: display, eqno
 ============================================================
 [===== Start =====]
 || 
-|> $$a\eqno b$$
+|> $$a\eqno b$$\relax 
 [==========] $= math shift character $ : \everypar={}
 || 
-|> $$a\eqno b$$
+|> $$a\eqno b$$\relax 
 [==========] $= math shift character $
 <| $$
 || 
-|> a\eqno b$$
+|> a\eqno b$$\relax 
 [==========] a
 <| $$a
 || 
-|> \eqno b$$
-[==========] \eqno = \eqno
-<| $$a\eqno 
+|> \eqno b$$\relax 
+[==========] \eqno = \protected macro:->\@kernel@eqno \aftergroup \ignorespaces 
+<| $$a
 || 
-|> b$$
+|> \@kernel@eqno \aftergroup \ignorespaces b$$\relax 
+[==========] \@kernel@eqno = \eqno
+<| $$a\@kernel@eqno 
+|| 
+|> \aftergroup \ignorespaces b$$\relax 
+[==========] Aftergroup: \aftergroup \ignorespaces 
+<| $$a\@kernel@eqno 
+|| 
+|> b$$\relax 
 [==========] b
-<| $$a\eqno b
+<| $$a\@kernel@eqno b
 || 
-|> $$
+|> $$\relax 
 [==========] $= math shift character $
-<| $$a\eqno b$$
+<| $$a\@kernel@eqno b$$
+|| 
+|> \ignorespaces \relax 
+[==========] \ignorespaces = \ignorespaces
+<| $$a\@kernel@eqno b$$
+|| 
+|> \relax 
+[==========] \relax = \relax
+<| $$a\@kernel@eqno b$$
 || 
 |> 
 [===== End =====]

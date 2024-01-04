@@ -80,7 +80,7 @@
       {
         \tex_everydisplay:D { }
         \unravel [machine]
-          { $$ a \eqno b $$ }
+          { $$ a \eqno b $$ \relax }
       }
     \box_show:N \l_tmpa_box
   }

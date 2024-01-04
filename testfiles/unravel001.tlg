@@ -200,67 +200,73 @@ TEST 3: \unravel and glue sign
 [===== Start =====]
 || 
 |> \tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \tl_set:Nx = \protected\long macro:#1#2->\__kernel_tl_set:Nx #1{#2}
+[==========] \tl_set:Nx = \protected\long macro:->\exp_args:NNx \tl_set:Nn 
 || 
-|> \__kernel_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \__kernel_tl_set:Nx = \protected\long macro:#1#2->\__kernel_chk_var_local:N #1\__debug___kernel_tl_set:Nx #1{#2}
+|> \exp_args:NNx \tl_set:Nn \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+[==========] \exp_args:NNx = \protected\long macro:#1#2#3->\use:x {\exp_not:N #1\exp_not:N #2{#3}}
 || 
-|> \__kernel_chk_var_local:N \l_tmpa_tl \__debug___kernel_tl_set:Nx \l_tmpa_tl
-|> {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \__kernel_chk_var_local:N = \protected\long macro:#1->
+|> \use:x {\exp_not:N \tl_set:Nn \exp_not:N \l_tmpa_tl {\skip_eval:n
+|> {-\l_tmpa_skip }}}
+[==========] \use:x = \protected\long macro:#1->\cs_set_nopar:Npx \l__exp_internal_tl {#1}\l__exp_internal_tl 
 || 
-|> \__debug___kernel_tl_set:Nx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
-[==========] \__debug___kernel_tl_set:Nx = \protected\long macro:->\cs_set_nopar:Npx 
-|| 
-|> \cs_set_nopar:Npx \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}
+|> \cs_set_nopar:Npx \l__exp_internal_tl {\exp_not:N \tl_set:Nn \exp_not:N
+|> \l_tmpa_tl {\skip_eval:n {-\l_tmpa_skip }}}\l__exp_internal_tl 
 [==========] \skip_eval:n = \long macro:#1->\skip_use:N \tex_glueexpr:D \__kernel_chk_expr:nNnN {#1}\tex_glueexpr:D {}\skip_eval:n \scan_stop: 
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 |> \skip_use:N \tex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip
-|> }\tex_glueexpr:D {}\skip_eval:n \scan_stop: }
+|> }\tex_glueexpr:D {}\skip_eval:n \scan_stop: }}\l__exp_internal_tl 
 [==========] \skip_use:N = \the
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 || \skip_use:N 
 |> \tex_glueexpr:D \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\tex_glueexpr:D
-|> {}\skip_eval:n \scan_stop: }
+|> {}\skip_eval:n \scan_stop: }}\l__exp_internal_tl 
 [==========] \tex_glueexpr:D = \glueexpr
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 || \skip_use:N 
 || \tex_glueexpr:D 
 |> \__kernel_chk_expr:nNnN {-\l_tmpa_skip }\tex_glueexpr:D {}\skip_eval:n
-|> \scan_stop: }
+|> \scan_stop: }}\l__exp_internal_tl 
 Defining \g__unravel_input_6_gtl on line ...
 [==========] \__kernel_chk_expr:nNnN = \long macro:#1#2#3#4->#1
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 || \skip_use:N 
 || \tex_glueexpr:D 
-|> -\l_tmpa_skip \scan_stop: }
+|> -\l_tmpa_skip \scan_stop: }}\l__exp_internal_tl 
 Defining \g__unravel_input_7_gtl on line ...
 [==========] -
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 || \skip_use:N 
 || \tex_glueexpr:D 
 || -
-|> \l_tmpa_skip \scan_stop: }
+|> \l_tmpa_skip \scan_stop: }}\l__exp_internal_tl 
 [==========] \l_tmpa_skip = \skip16
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 || \skip_use:N 
 || \tex_glueexpr:D 
 || -
 || \l_tmpa_skip 
-|> \scan_stop: }
+|> \scan_stop: }}\l__exp_internal_tl 
 [==========] \l_tmpa_skip = \skip16 => 2.0pt plus 3.0pt minus 4.0pt
-|| \cs_set_nopar:Npx \l_tmpa_tl {
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {
 || \skip_use:N 
 || \tex_glueexpr:D 
 || -
 || 2.0pt plus 3.0pt minus 4.0pt
-|> \scan_stop: }
+|> \scan_stop: }}\l__exp_internal_tl 
 [==========] \skip_use:N =>-2.0pt plus -3.0pt minus -4.0pt
-|| \cs_set_nopar:Npx \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt
-|> }
-[==========] \cs_set_nopar:Npx \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
-|| \cs_set_nopar:Npx \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
-|> 
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {-2.0pt plus
+|| -3.0pt minus -4.0pt
+|> }}\l__exp_internal_tl 
+[==========] \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}}
+|| \cs_set_nopar:Npx \l__exp_internal_tl {\tl_set:Nn \l_tmpa_tl {-2.0pt plus
+|| -3.0pt minus -4.0pt}}
+|> \l__exp_internal_tl 
+[==========] Set \l__exp_internal_tl=macro:->\tl_set:Nn \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
+|| 
+|> \l__exp_internal_tl 
+[==========] \l__exp_internal_tl = macro:->\tl_set:Nn \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
+|| 
+|> \tl_set:Nn \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
 [==========] Set \l_tmpa_tl=macro:->-2.0pt plus -3.0pt minus -4.0pt
 || 
 |> 

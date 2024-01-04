@@ -6,7 +6,6 @@ TEST 1: Large unicode values
 Defining \g__unravel_input_1_gtl on line ...
 Defining \g__unravel_input_2_gtl on line ...
 TRUE
-Missing character: There is no 𐀁 (U+10001) in font [lmroman10-regular]:mapping=
-tex-text;!
+Missing character: There is no 𐀁 (U+10001) in font [lmroman10-regular]:mapping=tex-text;!
 TRUE
 ============================================================
