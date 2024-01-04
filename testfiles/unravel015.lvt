@@ -1,0 +1,30 @@
+%
+% Copyright (C) Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations, check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+
+\TEST{parshape}
+  {
+    \unravel[machine]{\global\parshape=-2\relax}
+    \unravel[machine]{\parshape=2 1pt 3pt -10pt -2pt\relax}
+    \unravel[machine]{\showthe\parshape \showthe\parshapedimen3\relax}
+  }
+
+\TEST{interlinepenalties}
+  {
+    \unravel[machine]{\interlinepenalties=-2\relax}
+    \unravel[machine]{\global\global\interlinepenalties=2 00100 -0\relax}
+    \unravel[machine]{\showthe\interlinepenalties2\relax}
+  }
+
+\END

@@ -1,0 +1,225 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: parshape
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> \global \parshape =-2\relax 
+[==========] \global 
+|| \global 
+|> \parshape =-2\relax 
+[==========] \parshape 
+|| \global \parshape 
+|> =-2\relax 
+[==========] =
+|| \global \parshape =
+|> -2\relax 
+[==========] -
+|| \global \parshape =
+|| -
+|> 2\relax 
+[==========] 2
+|| \global \parshape =
+|| -2
+|> \relax 
+Defining \g__unravel_input_2_gtl on line ...
+Defining \g__unravel_input_3_gtl on line ...
+[==========] Set \parshape(\parshape)=0
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \parshape =2 1pt 3pt -10pt -2pt\relax 
+[==========] \parshape 
+|| \parshape 
+|> =2 1pt 3pt -10pt -2pt\relax 
+[==========] =
+|| \parshape =
+|> 2 1pt 3pt -10pt -2pt\relax 
+[==========] 2
+|| \parshape =
+|| 2
+|>  1pt 3pt -10pt -2pt\relax 
+[==========] 1
+|| \parshape =2 
+|| 1
+|> pt 3pt -10pt -2pt\relax 
+Defining \g__unravel_input_4_gtl on line ...
+Defining \g__unravel_input_5_gtl on line ...
+Defining \g__unravel_input_6_gtl on line ...
+Defining \g__unravel_input_7_gtl on line ...
+[==========] pt
+|| \parshape =2 
+|| 1pt
+|>  3pt -10pt -2pt\relax 
+[==========] 3
+|| \parshape =2 1pt 
+|| 3
+|> pt -10pt -2pt\relax 
+[==========] pt
+|| \parshape =2 1pt 
+|| 3pt
+|>  -10pt -2pt\relax 
+[==========] -
+|| \parshape =2 1pt 3pt -
+|> 10pt -2pt\relax 
+[==========] 1
+|| \parshape =2 1pt 3pt -
+|| 1
+|> 0pt -2pt\relax 
+[==========] 0
+|| \parshape =2 1pt 3pt -
+|| 10
+|> pt -2pt\relax 
+[==========] pt
+|| \parshape =2 1pt 3pt -
+|| 10pt
+|>  -2pt\relax 
+[==========] -
+|| \parshape =2 1pt 3pt -10pt -
+|> 2pt\relax 
+[==========] 2
+|| \parshape =2 1pt 3pt -10pt -
+|| 2
+|> pt\relax 
+[==========] pt
+|| \parshape =2 1pt 3pt -10pt -
+|| 2pt
+|> \relax 
+[==========] Set \parshape(\parshape)=2 1.0pt 3.0pt -10.0pt -2.0pt
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \showthe \parshape \showthe \parshapedimen 3\relax 
+[==========] \showthe = \showthe
+|| \showthe 
+|> \parshape \showthe \parshapedimen 3\relax 
+> 2.
+<argument> \tex_showtokens:D {2}
+l. ...  }
+[==========] \showthe = \showthe
+|| \showthe 
+|> \parshapedimen 3\relax 
+[==========] \parshapedimen = \parshapedimen
+|| \showthe 
+|| \parshapedimen 
+|> 3\relax 
+[==========] 3
+|| \showthe 
+|| \parshapedimen 3
+|> \relax 
+> -10.0pt.
+<argument> \tex_showtokens:D {-10.0pt}
+l. ...  }
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+============================================================
+============================================================
+TEST 2: interlinepenalties
+============================================================
+[===== Start =====]
+|| 
+|> \interlinepenalties =-2\relax 
+[==========] \interlinepenalties 
+|| \interlinepenalties 
+|> =-2\relax 
+[==========] =
+|| \interlinepenalties =
+|> -2\relax 
+[==========] -
+|| \interlinepenalties =
+|| -
+|> 2\relax 
+[==========] 2
+|| \interlinepenalties =
+|| -2
+|> \relax 
+[==========] Set \interlinepenalties(\interlinepenalties)=0
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \global \global \interlinepenalties =2 00100 -0\relax 
+[==========] \global 
+|| \global 
+|> \global \interlinepenalties =2 00100 -0\relax 
+[==========] \global 
+|| \global \global 
+|> \interlinepenalties =2 00100 -0\relax 
+[==========] \interlinepenalties 
+|| \global \global \interlinepenalties 
+|> =2 00100 -0\relax 
+[==========] =
+|| \global \global \interlinepenalties =
+|> 2 00100 -0\relax 
+[==========] 2
+|| \global \global \interlinepenalties =
+|| 2
+|>  00100 -0\relax 
+[==========] 0
+|| \global \global \interlinepenalties =2 0
+|> 0100 -0\relax 
+[==========] 0
+|| \global \global \interlinepenalties =2 00
+|> 100 -0\relax 
+[==========] 1
+|| \global \global \interlinepenalties =2 001
+|> 00 -0\relax 
+[==========] 0
+|| \global \global \interlinepenalties =2 0010
+|> 0 -0\relax 
+[==========] 0
+|| \global \global \interlinepenalties =2 00100
+|>  -0\relax 
+[==========] -
+|| \global \global \interlinepenalties =2 00100 -
+|> 0\relax 
+[==========] 0
+|| \global \global \interlinepenalties =2 00100 -0
+|> \relax 
+[==========] Set \interlinepenalties(\interlinepenalties)=2 100 0
+|| 
+|> \relax 
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+[===== Start =====]
+|| 
+|> \showthe \interlinepenalties 2\relax 
+[==========] \showthe = \showthe
+|| \showthe 
+|> \interlinepenalties 2\relax 
+[==========] \interlinepenalties = \interlinepenalties
+|| \showthe 
+|| \interlinepenalties 
+|> 2\relax 
+[==========] 2
+|| \showthe 
+|| \interlinepenalties 2
+|> \relax 
+> 0.
+<argument> \tex_showtokens:D {0}
+l. ...  }
+[==========] \relax = \relax
+|| 
+|> 
+[===== End =====]
+============================================================
