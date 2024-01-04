@@ -2402,7 +2402,7 @@
 \@@_tex_primitive:nnn { expanded          } { convert } { 34 }
 \sys_if_engine_luatex:T
   { \@@_tex_primitive:nnn { luaescapestring } { convert } { 35 } }
-\sys_if_engine_xetex:T
+\bool_if:nT { \sys_if_engine_xetex_p: || \sys_if_engine_ptex_p: || \sys_if_engine_uptex_p: }
   {
     \@@_tex_primitive:nnn { Ucharcat        } { convert } { 40 }
   }
