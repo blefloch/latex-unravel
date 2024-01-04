@@ -267,6 +267,32 @@ Defining \g__unravel_input_7_gtl on line ...
 [==========] \l__exp_internal_tl = macro:->\tl_set:Nn \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
 || 
 |> \tl_set:Nn \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
+[==========] \tl_set:Nn = \protected\long macro:#1#2->\__kernel_tl_set:Ne #1{\__kernel_exp_not:w {#2}}
+|| 
+|> \__kernel_tl_set:Ne \l_tmpa_tl {\__kernel_exp_not:w {-2.0pt plus -3.0pt
+|> minus -4.0pt}}
+[==========] \__kernel_tl_set:Ne = \protected\long macro:#1#2->\__kernel_chk_var_local:N #1\__debug___kernel_tl_set:Ne #1{#2}
+|| 
+|> \__kernel_chk_var_local:N \l_tmpa_tl \__debug___kernel_tl_set:Ne \l_tmpa_tl
+|> {\__kernel_exp_not:w {-2.0pt plus -3.0pt minus -4.0pt}}
+[==========] \__kernel_chk_var_local:N = \protected\long macro:#1->
+|| 
+|> \__debug___kernel_tl_set:Ne \l_tmpa_tl {\__kernel_exp_not:w {-2.0pt plus
+|> -3.0pt minus -4.0pt}}
+[==========] \__debug___kernel_tl_set:Ne = \protected\long macro:->\cs_set_nopar:Npe 
+|| 
+|> \cs_set_nopar:Npe \l_tmpa_tl {\__kernel_exp_not:w {-2.0pt plus -3.0pt minus
+|> -4.0pt}}
+[==========] \__kernel_exp_not:w = \unexpanded
+|| \cs_set_nopar:Npe \l_tmpa_tl {
+|| \__kernel_exp_not:w 
+|> {-2.0pt plus -3.0pt minus -4.0pt}}
+[==========] \__kernel_exp_not:w {-2.0pt plus -3.0pt minus -4.0pt}
+|| \cs_set_nopar:Npe \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt
+|> }
+[==========] \cs_set_nopar:Npe \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
+|| \cs_set_nopar:Npe \l_tmpa_tl {-2.0pt plus -3.0pt minus -4.0pt}
+|> 
 [==========] Set \l_tmpa_tl=macro:->-2.0pt plus -3.0pt minus -4.0pt
 || 
 |> 

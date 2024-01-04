@@ -662,21 +662,24 @@
 % \end{macro}
 %
 % \begin{variable}{\l_@@_exp_tl}
-% \begin{macro}{\@@_exp_args:Nx, \@@_exp_args:NNx}
+% \begin{macro}{\@@_exp_args:Nx, \@@_exp_args:NNx, \@@_tl_set:Ne}
 %   Low-level because \cs{exp_args:Nx} redefines an internal
-%   \pkg{l3expan} variable which may be appearing in code that we debug.
+%   \pkg{l3expan} variable which may be appearing in code that we debug,
+%   and likewise \cs{tl_set:Nx} (which was used in previous versions)
+%   now relies on the same machinery.
 %    \begin{macrocode}
 \tl_new:N \l_@@_exp_tl
 \cs_new_protected:Npn \@@_exp_args:Nx #1#2
   {
-    \cs_set_nopar:Npx \l_@@_exp_tl { \exp_not:N #1 {#2} }
+    \cs_set_nopar:Npe \l_@@_exp_tl { \exp_not:N #1 {#2} }
     \l_@@_exp_tl
   }
 \cs_new_protected:Npn \@@_exp_args:NNx #1#2#3
   {
-    \cs_set_nopar:Npx \l_@@_exp_tl { \exp_not:N #1 \exp_not:N #2 {#3} }
+    \cs_set_nopar:Npe \l_@@_exp_tl { \exp_not:N #1 \exp_not:N #2 {#3} }
     \l_@@_exp_tl
   }
+\cs_new_eq:NN \@@_tl_set:Ne \tex_edef:D
 %    \end{macrocode}
 % \end{macro}
 % \end{variable}
@@ -706,7 +709,7 @@
     \cs_new_protected:Npn \@@_file_get_aux:wN ##1 #1 ##2
       {
         \group_end:
-        \tl_set:Nx ##2
+        \@@_tl_set:Ne ##2
           { \exp_not:o {##1} \exp_not:V \@@_everyeof:w }
       }
   }
@@ -771,7 +774,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_prompt_input:Nn #1#2
   {
-    \clist_gset:Nx #1
+    \clist_gset:Ne #1
       { \@@_prompt_input:w \prg_do_nothing: #2 , \q_@@_recursion_tail , }
   }
 \cs_new:Npn \@@_prompt_input:w #1 ,
@@ -941,7 +944,7 @@
   {
     \group_begin:
     \char_set_active_eq:nN {#1} \scan_stop:
-    \use:x
+    \use:e
       {
         \group_end:
         \exp_not:n {#2} { \char_generate:nn {#1} { 13 } }
@@ -1023,7 +1026,7 @@
     { TF }
     {
       \group_begin:
-        \@@_exp_args:Nx \char_set_lccode:nn
+        \exp_args:Ne \char_set_lccode:nn
           { ` \exp_args:No \str_head:n { \token_to_str:N #1 } }
           { ` Z }
         \tex_lowercase:D { \tl_if_eq:nnTF {#1} } { Z }
@@ -1055,7 +1058,7 @@
     {
       \group_begin:
         \@@_set_escapechar:n { 92 }
-        \tl_set:Nx \l_@@_tmpa_tl
+        \@@_tl_set:Ne \l_@@_tmpa_tl
           { \exp_args:No \str_tail:n { \token_to_str:N #1 } }
         \tl_if_empty:NTF \l_@@_tmpa_tl
           {
@@ -1141,7 +1144,7 @@
 \cs_new_protected:Npn \@@_prev_input_gpush_gtl:N
   { \@@_prev_input_gpush_aux:NN G }
 \cs_new_protected:Npn \@@_prev_input_gpush_aux:NN #1#2
-  { \seq_gput_right:Nx \g_@@_prev_input_seq { #1 { \exp_not:o {#2} } } }
+  { \seq_gput_right:Ne \g_@@_prev_input_seq { #1 { \exp_not:o {#2} } } }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1248,7 +1251,7 @@
   {
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
-    \tl_set:Nx #4 { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl #3 } }
+    \@@_tl_set:Ne #4 { #1 { \l_@@_tmpa_tl #2 \l_@@_head_tl #3 } }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -1531,8 +1534,8 @@
 %   Used to determine if a macro has simple parameters or not.
 %    \begin{macrocode}
 \group_begin:
-  \cs_set:Npx \@@_tmp:w #1 { \c_hash_str #1 }
-  \tl_const:Nx \c_@@_parameters_tl
+  \cs_set_nopar:Npe \@@_tmp:w #1 { \c_hash_str #1 }
+  \tl_const:Ne \c_@@_parameters_tl
     { ^ \tl_map_function:nN { 123456789 } \@@_tmp:w }
 \group_end:
 %    \end{macrocode}
@@ -1612,7 +1615,7 @@
 \tl_const:Nn \c_@@_over_tl { / }
 \tl_const:Nn \c_@@_lq_tl { ` }
 \tl_const:Nn \c_@@_rq_tl { ' }
-\tl_const:Nn \c_@@_dq_tl { " }
+\tl_const:Nn \c_@@_dq_tl { " } %"
 \tl_const:Nn \c_@@_lp_tl { ( }
 \tl_const:Nn \c_@@_rp_tl { ) }
 \tl_const:Nn \c_@@_eq_tl { = }
@@ -1686,7 +1689,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_primitive:nnn #1#2#3
   {
-    \tl_const:cx { c_@@_tex_#1_tl }
+    \tl_const:ce { c_@@_tex_#1_tl }
       { { \@@_tex_use:n {#2} } {#3} }
   }
 \cs_new_protected:Npn \@@_tex_primitive_pdf:nnn #1#2#3
@@ -2483,7 +2486,7 @@
     \gtl_head_do:NN \l_@@_head_gtl \@@_get_next_aux:w
     \gtl_if_tl:NTF \l_@@_head_gtl
       {
-        \tl_set:Nx \l_@@_head_tl
+        \@@_tl_set:Ne \l_@@_head_tl
           { \gtl_head:N \l_@@_head_gtl }
         \token_if_eq_meaning:NNT
           \l_@@_head_token \@@_special_relax:
@@ -2522,7 +2525,7 @@
         \tl_if_eq:onTF { \l_@@_head_tl } { \@@_unravel_marker: }
           { \@@_get_next_marker: }
           {
-            \@@_exp_args:NNx \use:nn \@@_notexpanded_test:w
+            \exp_args:NNe \use:nn \@@_notexpanded_test:w
               { \scan_stop: \exp_after:wN \cs_to_str:N \l_@@_head_tl Z }
               \q_mark \@@_notexpanded_expand:n
               #1 Z \q_mark \use_none:n
@@ -2533,12 +2536,12 @@
         ##1 #1 ##2 Z \q_mark ##3##4 \q_stop
       { ##3 {##2} }
   }
-\exp_args:Nx \@@_tmp:w { \scan_stop: \tl_to_str:n { notexpanded: } }
+\exp_args:Ne \@@_tmp:w { \scan_stop: \tl_to_str:n { notexpanded: } }
 \group_begin:
   \char_set_catcode_active:n { 0 }
   \cs_new_protected:Npn \@@_notexpanded_expand:n #1
     {
-      \@@_exp_args:Nx \tl_if_empty:nTF { \str_tail:n {#1} }
+      \exp_args:Ne \tl_if_empty:nTF { \str_tail:n {#1} }
         {
           \group_begin:
           \char_set_lccode:nn { 0 } { `#1 }
@@ -2578,7 +2581,7 @@
     \@@_input_gpop_item:NF \l_@@_argii_tl
       { \@@_error:nxxxx { internal } { marker~2 } { } { } { } }
     \exp_args:Nno \keys_set:nn { unravel } \l_@@_argi_tl
-    \@@_exp_args:Nx \@@_back_input:n
+    \exp_args:Ne \@@_back_input:n
       { \exp_not:N \exp_not:n { \exp_not:o \l_@@_argii_tl } }
     \@@_get_next:
   }
@@ -2641,22 +2644,22 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_set_cmd_aux_meaning:
   {
-    \tl_set:Nx \l_@@_head_meaning_tl
+    \@@_tl_set:Ne \l_@@_head_meaning_tl
       {
         \exp_after:wN \@@_strip_escape:w
         \token_to_meaning:N \l_@@_head_token
         \tl_to_str:n { : }
       }
-    \tl_set:Nx \l_@@_head_meaning_tl
+    \@@_tl_set:Ne \l_@@_head_meaning_tl
       {
         \exp_after:wN \@@_set_cmd_aux_meaning:w
           \l_@@_head_meaning_tl \q_stop
       }
   }
-\use:x
+\use:e
   {
     \cs_new:Npn \exp_not:N \@@_set_cmd_aux_meaning:w
-      ##1 \token_to_str:N : ##2 \exp_not:N \q_stop {##1}
+      #1 \token_to_str:N : #2 \exp_not:N \q_stop {#1}
   }
 %    \end{macrocode}
 % \end{macro}
@@ -2777,7 +2780,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_set_cmd_aux_numeric:
   {
-    \tl_set:Nx \l_@@_tmpa_tl
+    \@@_tl_set:Ne \l_@@_tmpa_tl
       {
         \exp_after:wN \@@_set_cmd_aux_numeric:N
           \l_@@_head_meaning_tl + 0
@@ -2831,13 +2834,13 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_set_cmd_aux_char:
   {
-    \tl_set:Nx \l_@@_head_meaning_tl
+    \@@_tl_set:Ne \l_@@_head_meaning_tl
       { \token_to_meaning:N \l_@@_head_token }
     \token_if_eq_catcode:NNT \l_@@_head_token \c_catcode_other_token
       { \tl_set:Nn \l_@@_head_meaning_tl { other~ } }
     \exp_after:wN \@@_set_cmd_aux_char:w
       \l_@@_head_meaning_tl \q_stop
-    \@@_exp_args:NNx \int_set:Nn \l_@@_head_char_int
+    \exp_args:NNe \int_set:Nn \l_@@_head_char_int
       { ` \@@_token_to_char:N \l_@@_head_token }
   }
 \cs_new_protected:Npn \@@_set_cmd_aux_char:w #1 ~ #2 \q_stop
@@ -2913,8 +2916,8 @@
       {
         \gtl_if_head_is_N_type:NT #1
           {
-            \tl_set:Nx \l_@@_input_tmpa_tl { \gtl_left_tl:N #1 }
-            \@@_exp_args:NNx \use:nn
+            \@@_tl_set:Ne \l_@@_input_tmpa_tl { \gtl_left_tl:N #1 }
+            \exp_args:NNe \use:nn
                 \@@_input_split_auxii:N
                 { \tl_head:N \l_@@_input_tmpa_tl }
           }
@@ -2987,7 +2990,7 @@
   {
     \int_compare:nNnF {#1} = 0
       {
-        \tl_set:Nx \l_@@_input_get_left_tl
+        \@@_tl_set:Ne \l_@@_input_get_left_tl
           { \gtl_left_tl:c { g_@@_input_#1_gtl } }
         \tl_concat:NNN #2 #2 \l_@@_input_get_left_tl
         \gtl_if_tl:cT { g_@@_input_#1_gtl }
@@ -3095,7 +3098,7 @@
   {
     \gtl_if_tl:NTF #1
       {
-        \tl_put_right:Nx #2 { \gtl_left_tl:N #1 }
+        \tl_put_right:Ne #2 { \gtl_left_tl:N #1 }
         \gtl_gclear:N #1
         \int_gdecr:N \g_@@_input_int
         \@@_input_gpop_tl_aux:N #2
@@ -3105,7 +3108,7 @@
           { \int_compare:nNnTF { \gtl_extra_end:N #1 } > 0 }
           { \use_i:nn }
           {
-            \tl_put_right:Nx #2 { \gtl_left_tl:N #1 }
+            \tl_put_right:Ne #2 { \gtl_left_tl:N #1 }
             \gtl_gpop_left_tl:N #1
           }
           {
@@ -3166,7 +3169,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_back_input_tl_o:
   {
-    \tl_set:Nx \l_@@_tmpa_tl
+    \@@_tl_set:Ne \l_@@_tmpa_tl
       { \exp_args:NV \exp_not:o \l_@@_head_tl }
     \@@_back_input:V \l_@@_tmpa_tl
     \@@_print_expansion:x
@@ -3228,7 +3231,7 @@
 %     \@@_macro_replacement:N
 %   }
 %    \begin{macrocode}
-\use:x
+\use:e
   {
     \exp_not:n { \cs_new:Npn \@@_macro_split_do:NN #1 }
       {
@@ -3270,7 +3273,7 @@
   {
     \bool_if:NTF \g_@@_speedup_macros_bool
       {
-        \tl_set:Nx \l_@@_tmpa_tl
+        \@@_tl_set:Ne \l_@@_tmpa_tl
           {^ \exp_after:wN \@@_macro_parameter:N \l_@@_head_tl }
         \@@_tl_if_in:ooTF \c_@@_parameters_tl \l_@@_tmpa_tl
           { \@@_macro_call_quick: } { \@@_macro_call_safe: }
@@ -3294,7 +3297,7 @@
     \use_none:n #2
     \@@_input_gpop_item:NF \l_@@_tmpa_tl
       { \@@_macro_call_quick_runaway:Nw #3 }
-    \tl_put_right:Nx \l_@@_head_tl
+    \tl_put_right:Ne \l_@@_head_tl
       { { \exp_not:V \l_@@_tmpa_tl } }
     \@@_macro_call_quick_loop:NNN
     #3
@@ -3337,7 +3340,7 @@
     \bool_if:NT \g_@@_internal_debug_bool
       {
         \@@_set_cmd:
-        \@@_exp_args:Nx \iow_term:n { Exp:~\int_to_arabic:n { \l_@@_head_cmd_int } }
+        \exp_args:Ne \iow_term:n { Exp:~\int_to_arabic:n { \l_@@_head_cmd_int } }
       }
     \token_if_macro:NTF \l_@@_head_token
       { \@@_macro_call: }
@@ -3773,7 +3776,7 @@
       }
     \int_compare:nNnTF {#3} < { 4 }
       { \@@_thing_use_get:nnNN {#1} {#3} \l_@@_head_tl \l_@@_tmpa_tl }
-      { \tl_set:Nx \l_@@_tmpa_tl { \@@_the:w \l_@@_head_tl } }
+      { \@@_tl_set:Ne \l_@@_tmpa_tl { \@@_the:w \l_@@_head_tl } }
     \@@_rescan_something_internal_auxii:Vn \l_@@_tmpa_tl {#1}
     \@@_break_point:
     \int_compare:nNnT {#3} < { 4 } { \@@_print_action: }
@@ -3910,7 +3913,7 @@
       {
         \int_compare:nNnT {#1} = { 3 }
           { \@@_tex_error:nV { incompatible-units } #3 }
-        \tl_set:Nx #4
+        \@@_tl_set:Ne #4
           {
             \int_case:nn { \int_min:nn {#1} {#2} }
               {
@@ -3924,12 +3927,12 @@
       {
         \int_case:nnF {#1}
           {
-            { 0 } { \tl_set:Nx #4 { \int_eval:n {#3} } }
-            { 3 } { \tl_set:Nx #4 { \muskip_eval:n {#3} } }
+            { 0 } { \@@_tl_set:Ne #4 { \int_eval:n {#3} } }
+            { 3 } { \@@_tl_set:Ne #4 { \muskip_eval:n {#3} } }
           }
           {
             \@@_tex_error:nV { incompatible-units } #3
-            \tl_set:Nx #4 { \muskip_eval:n { \tex_gluetomu:D #3 } }
+            \@@_tl_set:Ne #4 { \muskip_eval:n { \tex_gluetomu:D #3 } }
           }
       }
   }
@@ -4072,10 +4075,10 @@
     \@@_get_next:
     \@@_gtl_if_head_is_definable:NF \l_@@_head_gtl
       {
-        \tl_set:Nx \l_@@_head_tl
+        \@@_tl_set:Ne \l_@@_head_tl
           { \@@_token_to_char:N \l_@@_head_token }
       }
-    \tl_set:Nx \l_@@_tmpa_tl
+    \@@_tl_set:Ne \l_@@_tmpa_tl
       { \int_eval:n { \exp_after:wN ` \l_@@_head_tl } }
     \@@_prev_input_silent:V \l_@@_tmpa_tl
     \@@_print_action:x
@@ -4314,7 +4317,7 @@
     \@@_gtl_if_head_is_definable:NTF \l_@@_head_gtl
       { \@@_back_input: }
       {
-        \tl_set:Nx \l_@@_tmpa_tl
+        \@@_tl_set:Ne \l_@@_tmpa_tl
           { \@@_token_to_char:N \l_@@_head_token }
         \tl_if_eq:NNT \l_@@_tmpa_tl \c_@@_dq_tl
           {
@@ -4440,7 +4443,7 @@
         \@@_error:nnnnn { runaway-text } { } { } { } { }
         \@@_exit_hard:w
       }
-    \tl_set:Nx \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
+    \@@_tl_set:Ne \l_@@_head_tl { { \exp_not:V \l_@@_head_tl } }
     \bool_if:NT #1
       { \tl_put_right:NV \l_@@_defining_tl \l_@@_head_tl }
     \@@_prev_input_silent:V \l_@@_head_tl
@@ -4498,7 +4501,7 @@
       }
       {
         \@@_prev_input_silent:V \l_@@_head_tl
-        \tl_put_right:Nx \l_@@_defining_tl
+        \tl_put_right:Ne \l_@@_defining_tl
           { \exp_not:N \exp_not:N \exp_not:V \l_@@_head_tl }
         \@@_scan_group_xdef:n {#1}
       }
@@ -4755,7 +4758,7 @@
     \str_if_eq:eeF
       { \tl_head:N \l_@@_tmpa_tl } { \exp_not:N \@@_box_hook:w }
       {
-        \@@_exp_args:Nx #1
+        \exp_args:Ne #1
           {
             \exp_not:n { \@@_box_hook:w \prg_do_nothing: }
             \exp_not:V #1
@@ -4819,12 +4822,12 @@
     \tex_char:D #1 \scan_stop:
     \@@_charcode_if_safe:nTF {#1}
       {
-        \tl_set:Nx \l_@@_tmpa_tl { \char_generate:nn {#1} { 12 } }
+        \@@_tl_set:Ne \l_@@_tmpa_tl { \char_generate:nn {#1} { 12 } }
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
         \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
       }
       {
-        \tl_set:Nx \l_@@_tmpa_tl
+        \@@_tl_set:Ne \l_@@_tmpa_tl
           { \exp_not:N \char \int_eval:n {#1} ~ }
         \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
         \@@_print_action:x
@@ -4864,7 +4867,7 @@
 \cs_new_protected:Npn \@@_mathchar:n #1
   {
     \tex_mathchar:D #1 \scan_stop:
-    \tl_set:Nx \l_@@_tmpa_tl
+    \@@_tl_set:Ne \l_@@_tmpa_tl
       { \exp_not:N \mathchar " \int_to_hex:n {#1} ~ }
     \gtl_gput_right:NV \g_@@_output_gtl \l_@@_tmpa_tl
     \@@_print_action:x { \tl_to_str:N \l_@@_tmpa_tl }
@@ -5427,7 +5430,7 @@
   {
     \@@_mode_non_vertical:n
       {
-        \tl_set:Nx \l_@@_tmpa_tl
+        \@@_tl_set:Ne \l_@@_tmpa_tl
           { ` \@@_token_to_char:N \l_@@_head_token }
         \mode_if_math:TF
           { \@@_char_in_mmode:V \l_@@_tmpa_tl }
@@ -5578,7 +5581,7 @@
     \@@_prev_input_gpop:N \l_@@_head_tl
     \@@_print_action:x
       { \tl_to_str:N \l_@@_head_tl \tl_to_str:N \l_@@_tmpa_tl }
-    \tl_put_right:Nx \l_@@_head_tl
+    \tl_put_right:Ne \l_@@_head_tl
       { { \exp_not:N \exp_not:n \exp_not:V \l_@@_tmpa_tl } }
     \tl_use:N \l_@@_head_tl
   }
@@ -5616,7 +5619,7 @@
             \@@_get_x_next:
             \@@_rescan_something_internal:n { 5 }
             \@@_prev_input_gpop:N \l_@@_head_tl
-            \@@_exp_args:Nx \use:n
+            \exp_args:Ne \use:n % better display than \use:e
               { \tex_showtokens:D { \tl_tail:N \l_@@_head_tl } }
           }
       }
@@ -7048,7 +7051,7 @@
     \@@_prev_input_gpop:N \l_@@_tmpa_tl
     \tl_put_right:Nn \l_@@_tmpa_tl { = ~ \l_@@_head_token }
     \@@_prev_input_gpop:N \l_@@_head_tl
-    \@@_exp_args:Nx \use:n
+    \use:e
       {
         \exp_not:V \l_@@_head_tl
         \tex_let:D \tl_tail:N \l_@@_tmpa_tl
@@ -7061,7 +7064,7 @@
 \@@_prefixed_new:nn { shorthand_def }                       % 95
   {
     \@@_prev_input_silent:V \l_@@_head_tl
-    \tl_set:Nx \l_@@_prev_action_tl
+    \@@_tl_set:Ne \l_@@_prev_action_tl
       { \tl_to_str:N \l_@@_head_tl }
     \@@_scan_r_token:
     \@@_print_action:x
@@ -7555,7 +7558,7 @@
     \@@_prev_input_gpush:N \l_@@_head_tl
     \@@_scan_file_name:
     \@@_prev_input_gpop:N \l_@@_head_tl
-    \tl_set:Nx \l_@@_tmpa_tl { \tl_tail:N \l_@@_head_tl }
+    \@@_tl_set:Ne \l_@@_tmpa_tl { \tl_tail:N \l_@@_head_tl }
     \@@_file_get:nN \l_@@_tmpa_tl \l_@@_tmpa_tl
     \@@_back_input:V \l_@@_tmpa_tl
     \@@_print_expansion:x { \tl_to_str:N \l_@@_head_tl }
@@ -7684,7 +7687,7 @@
         \@@_prev_input_gpush_gtl:N \l_@@_tmpb_gtl
         \@@_print_action:x { \gtl_to_str:N \l_@@_tmpb_gtl }
         \@@_prev_input_gpop_gtl:N \l_@@_tmpb_gtl
-        \tl_set:Nx \l_@@_tmpa_tl { \gtl_head_do:NN \l_@@_head_gtl \tex_meaning:D }
+        \@@_tl_set:Ne \l_@@_tmpa_tl { \gtl_head_do:NN \l_@@_head_gtl \tex_meaning:D }
         \@@_back_input:V \l_@@_tmpa_tl
         \@@_print_expansion:x
           { \gtl_to_str:N \l_@@_tmpb_gtl = \tl_to_str:N \l_@@_tmpa_tl }
@@ -7767,7 +7770,7 @@
             \tl_head:N \l_@@_head_tl
             => \tl_tail:N \l_@@_head_tl
           }
-        \tl_set:Nx \l_@@_head_tl
+        \@@_tl_set:Ne \l_@@_head_tl
           { \exp_not:N \exp_not:n { \tl_tail:N \l_@@_head_tl } }
       }
     \cs_if_eq:NNTF #1 \@@_get_token_xdef:
@@ -7779,11 +7782,11 @@
       {
         \cs_if_eq:NNTF #1 \@@_get_token_x:
           {
-            \@@_exp_args:NNx \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
+            \exp_args:NNe \gtl_set:Nn \l_@@_tmpb_gtl { \l_@@_head_tl }
             \@@_prev_input_gtl:N \l_@@_tmpb_gtl
           }
           {
-            \tl_set:Nx \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
+            \@@_tl_set:Ne \l_@@_tmpa_tl { \exp_args:NV \exp_not:o \l_@@_head_tl }
             \@@_back_input:V \l_@@_tmpa_tl
           }
         \@@_print_expansion:
@@ -7896,7 +7899,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_cond_push:
   {
-    \tl_gput_left:Nx \g_@@_if_limit_tl
+    \tl_gput_left:Ne \g_@@_if_limit_tl
       { { \int_use:N \g_@@_if_limit_int } }
     \int_gincr:N \g_@@_if_depth_int
     \int_gzero:N \g_@@_if_limit_int
@@ -7906,7 +7909,7 @@
     \fi:
     \int_gset:Nn \g_@@_if_limit_int
       { \tl_head:N \g_@@_if_limit_tl }
-    \tl_gset:Nx \g_@@_if_limit_tl
+    \tl_gset:Ne \g_@@_if_limit_tl
       { \tl_tail:N \g_@@_if_limit_tl }
     \int_gdecr:N \g_@@_if_depth_int
   }
@@ -7923,12 +7926,12 @@
         \tl_clear:N \l_@@_tmpa_tl
         \prg_replicate:nn { \g_@@_if_depth_int - #2 - 1 }
           {
-            \tl_put_right:Nx \l_@@_tmpa_tl
+            \tl_put_right:Ne \l_@@_tmpa_tl
               { { \tl_head:N \g_@@_if_limit_tl } }
-            \tl_gset:Nx \g_@@_if_limit_tl
+            \tl_gset:Ne \g_@@_if_limit_tl
               { \tl_tail:N \g_@@_if_limit_tl }
           }
-        \tl_gset:Nx \g_@@_if_limit_tl
+        \tl_gset:Ne \g_@@_if_limit_tl
           { \l_@@_tmpa_tl {#1} \tl_tail:N \g_@@_if_limit_tl }
       }
   }
@@ -8100,7 +8103,7 @@
   }
 \cs_new_protected:Npn \@@_test_two_chars_gtl:N #1
   {
-    \tl_put_right:Nx \l_@@_head_tl
+    \tl_put_right:Ne \l_@@_head_tl
       {
         \gtl_if_head_is_group_begin:NTF #1 { \c_group_begin_token }
           {
@@ -8186,7 +8189,7 @@
     \bool_if:NT \g_@@_internal_debug_bool { \iow_term:n { {\ifcase level~#1} } }
     \@@_scan_int:
     \@@_prev_input_get:N \l_@@_head_tl
-    \tl_set:Nx \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
+    \@@_tl_set:Ne \l_@@_head_tl { \tl_tail:N \l_@@_head_tl }
     % ^^A does text_case_aux use prev_input_seq?
     \int_compare:nNnF { \l_@@_head_tl } = 0
       {
@@ -8328,7 +8331,7 @@
 \tl_new:N \l_@@_print_tl
 \sys_if_engine_luatex:TF
   {
-    \cs_new_protected:Npx \@@_print_normalize_null:
+    \cs_new_protected:Npe \@@_print_normalize_null:
       {
         \tl_replace_all:Nnn \exp_not:N \l_@@_print_tl
           { \char_generate:nn { 0 } { 12 } }
@@ -8428,7 +8431,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_output:
   {
-    \@@_exp_args:Nx \@@_print_state_output:n
+    \exp_args:Ne \@@_print_state_output:n
       { \gtl_to_str:N \g_@@_output_gtl }
   }
 \cs_new_protected:Npn \@@_print_state_output:n #1
@@ -8469,7 +8472,7 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_state_input:
   {
-    \@@_exp_args:Nx \@@_print_state_input:n
+    \exp_args:Ne \@@_print_state_input:n
       { \@@_input_to_str: }
   }
 \cs_new_protected:Npn \@@_print_state_input:n #1
@@ -8570,7 +8573,7 @@
 \cs_new_protected:Npn \@@_print_assigned_register:
   {
     \@@_after_assignment:
-    \@@_exp_args:Nx \@@_print_assignment:x
+    \exp_args:Ne \@@_print_assignment:x
       {
         \exp_not:n
           {
@@ -8674,7 +8677,7 @@
   {
     \tl_if_empty:nF {#1}
       {
-        \@@_exp_args:Nx \str_case:nnF { \tl_head:n {#1} }
+        \str_case:enF { \tl_head:n {#1} }
           {
             { m } { \@@_print_meaning: \@@_prompt_aux: }
             { q }
@@ -8698,7 +8701,7 @@
               { \int_gset:Nn \g_@@_online_int } }
             { C }
               {
-                \@@_exp_args:Nx \use:n
+                \use:e
                   {
                     \tl_gset_rescan:Nnn \exp_not:N \g_@@_tmpc_tl
                       { \exp_not:N \ExplSyntaxOn } { \tl_tail:n {#1} }
@@ -8708,7 +8711,8 @@
                 \group_insert_after:N \g_@@_tmpc_tl
                 \group_insert_after:N \@@_prompt:
               }
-            { | } { \@@_prompt_scan_int:nn {#1}
+            { | } % |
+              { \@@_prompt_scan_int:nn {#1}
               \@@_prompt_vert:n }
             { u } { \@@_prompt_until:n {#1} }
             { a } { \@@_prompt_all: }
@@ -8781,7 +8785,7 @@
   }
 \cs_new_protected:Npn \@@_prompt_all:
   {
-    \tl_gset:Nx \g_@@_tmpc_tl
+    \tl_gset:Ne \g_@@_tmpc_tl
       {
         \exp_not:n
           {
@@ -8810,12 +8814,12 @@
 \tl_new:N \g_@@_until_tl
 \cs_new_protected:Npn \@@_prompt_until:n #1
   {
-    \tl_gset:Nx \g_@@_until_tl { \tl_tail:n {#1} }
+    \tl_gset:Ne \g_@@_until_tl { \tl_tail:n {#1} }
     \int_gset:Nn \g_@@_online_int { -1 }
     \tl_gset:Nn \g_@@_before_print_state_tl
       {
         \@@_input_get_left:N \l_@@_tmpa_tl
-        \@@_exp_args:Nx \use:n
+        \use:e
           {
             \exp_not:N \tl_if_in:nnTF
               { \exp_not:N \@@:nn \tl_to_str:N \l_@@_tmpa_tl }
@@ -9042,7 +9046,7 @@
 \cs_new_protected:Npn \unravel_get:nnN #1#2#3
   {
     \unravel:nn {#1} {#2}
-    \tl_set:Nx #3 { \gtl_left_tl:N \g_@@_output_gtl }
+    \@@_tl_set:Ne #3 { \gtl_left_tl:N \g_@@_output_gtl }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -9129,7 +9133,7 @@
   {
     \@@_set_action_text:
     \bool_if:NT \g_@@_internal_debug_bool
-      { \@@_exp_args:Nx \iow_term:n { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
+      { \iow_term:e { Cmd:~\int_to_arabic:n { \l_@@_head_cmd_int } } }
     \cs_if_exist_use:cF
       { @@_cmd_ \int_use:N \l_@@_head_cmd_int : }
       { \@@_error:nxxxx { internal } { unknown-command } { } { } { } }
@@ -9165,12 +9169,12 @@
 \cs_new_protected:Npn \@@_final_conditionals:
   {
     \group_begin:
-    \msg_warning:nnx { unravel } { dangling-conditionals }
+    \msg_warning:nne { unravel } { dangling-conditionals }
       { \tl_count:N \g_@@_if_limit_tl }
     \group_end:
     \tl_greverse:N \g_@@_if_limit_tl
     \tl_gput_right:NV \g_@@_if_limit_tl \g_@@_if_limit_int
-    \tl_gset:Nx \g_@@_if_limit_tl { \tl_tail:N \g_@@_if_limit_tl } % remove the {0}
+    \tl_gset:Ne \g_@@_if_limit_tl { \tl_tail:N \g_@@_if_limit_tl } % remove the {0}
     \prg_replicate:nn { \tl_count:N \g_@@_if_limit_tl } { \fi: }
     \tl_map_function:NN \g_@@_if_limit_tl \@@_final_cond_aux:n
   }
