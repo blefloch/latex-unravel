@@ -1,0 +1,246 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: output-file
+============================================================
+Defining \g__unravel_input_1_gtl on line ...
+[===== Start =====]
+|| 
+|> {\count 999=0}
+[==========] 
+<| {
+|| 
+|> \count 999=0}
+[==========] \count = \count
+<| {
+|| \count 
+|> 999=0}
+[==========] 9
+<| {
+|| \count 9
+|> 99=0}
+[==========] 9
+<| {
+|| \count 99
+|> 9=0}
+[==========] 9
+<| {
+|| \count 999
+|> =0}
+Defining \g__unravel_input_2_gtl on line ...
+[==========] =
+<| {
+|| \count 999=
+|> 0}
+[==========] 0
+<| {
+|| \count 999=0
+|> }
+[==========] Set \count999=0
+<| {
+|| 
+|> }
+[==========] 
+<| {}
+|| 
+|> 
+[===== End =====]
+\g__unravel_iow=\write...
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> {\count 994=5}
+[===== Step 1 =====] 
+<| {
+|| 
+|> \count 994=5}
+[===== Step 2 =====] \count = \count
+<| {
+|| \count 
+|> 994=5}
+[===== Step 3 =====] 9
+<| {
+|| \count 9
+|> 94=5}
+[===== Step 4 =====] 9
+<| {
+|| \count 99
+|> 4=5}
+[===== Step 5 =====] 4
+<| {
+|| \count 994
+|> =5}
+[===== Step 6 =====] =
+<| {
+|| \count 994=
+|> 5}
+[===== Step 7 =====] 5
+<| {
+|| \count 994=5
+|> }
+[===== Step 8 =====] Set \count994=5
+<| {
+|| 
+|> }
+[===== Step 9 =====] 
+<| {}
+|| 
+|> 
+[===== End =====]
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+|| 
+|> {}
+[===== Step 1 =====] 
+<| {
+|| 
+|> }
+[===== Step 2 =====] 
+<| {}
+|| 
+|> 
+[===== End =====]
+============================================================
+Defining \g_test_ior on line ...
+============================================================
+TEST 2: result-of-output-file
+============================================================
+[===== Start =====]
+||
+|> {\count 998=1}
+[==========]
+<| {
+||
+|> \count 998=1}
+[==========] \count = \count
+<| {
+|| \count
+|> 998=1}
+[==========] 9
+<| {
+|| \count 9
+|> 98=1}
+[==========] 9
+<| {
+|| \count 99
+|> 8=1}
+[==========] 8
+<| {
+|| \count 998
+|> =1}
+[==========] =
+<| {
+|| \count 998=
+|> 1}
+[==========] 1
+<| {
+|| \count 998=1
+|> }
+[==========] Set \count998=1
+<| {
+||
+|> }
+[==========]
+<| {}
+||
+|>
+[===== End =====]
+[===== Start =====]
+||
+|> {\count 997=2}
+[===== End =====]
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+||
+|> {\count 995=4}
+[===== Step 1 =====]
+<| {
+||
+|> \count 995=4}
+[===== Step 2 =====] \count = \count
+<| {
+|| \count
+|> 995=4}
+[===== Step 3 =====] 9
+<| {
+|| \count 9
+|> 95=4}
+[===== Step 4 =====] 9
+<| {
+|| \count 99
+|> 5=4}
+[===== Step 5 =====] 5
+<| {
+|| \count 995
+|> =4}
+[===== Step 6 =====] =
+<| {
+|| \count 995=
+|> 4}
+[===== Step 7 =====] 4
+<| {
+|| \count 995=4
+|> }
+[===== Step 8 =====] Set \count995=4
+<| {
+||
+|> }
+[===== Step 9 =====]
+<| {}
+||
+|>
+[===== End =====]
+======== Welcome to the unravel package ========
+    "<|" denotes the output to TeX's stomach.
+    "||" denotes tokens waiting to be used.
+    "|>" denotes tokens that we will act on.
+    Press <enter> to continue; 'h' <enter> for help.
+||
+|> {\count 994=5}
+[===== Step 1 =====]
+<| {
+||
+|> \count 994=5}
+[===== Step 2 =====] \count = \count
+<| {
+|| \count
+|> 994=5}
+[===== Step 3 =====] 9
+<| {
+|| \count 9
+|> 94=5}
+[===== Step 4 =====] 9
+<| {
+|| \count 99
+|> 4=5}
+[===== Step 5 =====] 4
+<| {
+|| \count 994
+|> =5}
+[===== Step 6 =====] =
+<| {
+|| \count 994=
+|> 5}
+[===== Step 7 =====] 5
+<| {
+|| \count 994=5
+|> }
+[===== Step 8 =====] Set \count994=5
+<| {
+||
+|> }
+[===== Step 9 =====]
+<| {}
+||
+|>
+[===== End =====]
+============================================================

@@ -1,0 +1,36 @@
+%
+% Copyright (C) Bruno Le Floch
+%
+\documentclass{minimal}
+\input{regression-test}
+\RequirePackage[enable-debug]{expl3}
+\RequirePackage{unravel}
+\ExplSyntaxOn
+\debug_on:n { check-declarations, check-expressions , deprecation , log-functions }
+\ExplSyntaxOff
+
+\begin{document}
+
+\START
+
+\TEST{output-file}
+  {
+    \unravel[machine, online = 0]{{\count999=0}}
+    \unravel[machine, output-file = test.test]{{\count998=1}}
+    \unravel[mute, output-file = test.test]{{\count997=2}}
+    \unravel[output-file = test.test, online=-1]{{\count996=3}}
+    \unravel[output-file = test.test, online=0]{{\count995=4}}
+    \unravel[output-file = test.test, online=1]{{\count994=5}}
+    \unravel{{}}
+  }
+
+\ExplSyntaxOn
+\ior_new:N \g_test_ior
+\ior_open:Nn \g_test_ior { test.test }
+
+\TEST{result-of-output-file}
+  {
+    \ior_str_map_inline:Nn \g_test_ior { \iow_term:n {#1} }
+  }
+
+\END

@@ -208,9 +208,18 @@
 % \end{function}
 %
 % \begin{function}{online}
-%   Integer option determining where to write the output: terminal and
-%   log if the option is positive, log only if the option is zero,
-%   neither if the option is negative.
+%   Integer option (default~$1$) determining where to write the output:
+%   terminal and log if the option is positive, log only if the option
+%   is zero, neither if the option is negative.
+% \end{function}
+%
+% \begin{function}{output-file}
+%   Name of a file where the output is written instead of the log file.
+%   Setting this option also sets \texttt{online} to zero.  If
+%   \texttt{online} is further modified to be positive then the output
+%   is written to the terminal as well (hence inevitably to the log
+%   file), while if it is made negative then the output is written
+%   nowhere.
 % \end{function}
 %
 % \begin{function}{prompt-input}
@@ -1229,6 +1238,19 @@
 %
 % \subsubsection{User interaction}
 %
+% \begin{variable}{\g_@@_iow, \g_@@_current_output_file_tl}
+%   The stream is used to implement the \texttt{output-file} option.  At
+%   any given time it points to the file named
+%   \cs{g_@@_current_output_file_tl}, unless that is empty, in which
+%   case the stream is closed.  The idea is that we do not want to close
+%   the file in between different \cs{unravel} calls since file writing
+%   is not additive in \TeX{}.
+%    \begin{macrocode}
+\iow_new:N \g_@@_iow
+\tl_new:N \g_@@_current_output_file_tl
+%    \end{macrocode}
+% \end{variable}
+%
 % \begin{variable}{\g_@@_before_print_state_tl, \g_@@_before_prompt_tl}
 %   Code to run before printing the state or before the prompt.
 %    \begin{macrocode}
@@ -1250,12 +1272,21 @@
 %    \end{macrocode}
 % \end{variable}
 %
+% \begin{variable}{\g_@@_current_online_int}
+%   Temporary value replacing \cs{g_@@_online_int} and that can be set
+%   through the prompt.
+%    \begin{macrocode}
+\int_new:N \g_@@_current_online_int
+%    \end{macrocode}
+% \end{variable}
+%
 % \begin{variable}
 %   {
 %     \g_@@_default_explicit_prompt_bool , \g_@@_explicit_prompt_bool ,
 %     \g_@@_default_internal_debug_bool  , \g_@@_internal_debug_bool  ,
 %     \g_@@_default_number_steps_bool    , \g_@@_number_steps_bool    ,
 %     \g_@@_default_online_int           , \g_@@_online_int           ,
+%     \g_@@_default_output_file_tl       , \g_@@_output_file_tl       ,
 %     \g_@@_default_prompt_input_clist   , \g_@@_prompt_input_clist   ,
 %     \g_@@_default_trace_assigns_bool   , \g_@@_trace_assigns_bool   ,
 %     \g_@@_default_trace_expansion_bool , \g_@@_trace_expansion_bool ,
@@ -1272,6 +1303,7 @@
 \bool_new:N \g_@@_default_internal_debug_bool
 \bool_new:N \g_@@_default_number_steps_bool
 \int_new:N  \g_@@_default_online_int
+\tl_new:N   \g_@@_default_output_file_tl
 \clist_new:N \g_@@_default_prompt_input_clist
 \bool_new:N \g_@@_default_trace_assigns_bool
 \bool_new:N \g_@@_default_trace_expansion_bool
@@ -1287,6 +1319,7 @@
 \bool_new:N \g_@@_internal_debug_bool
 \bool_new:N \g_@@_number_steps_bool
 \int_new:N  \g_@@_online_int
+\tl_new:N   \g_@@_output_file_tl
 \clist_new:N \g_@@_prompt_input_clist
 \bool_new:N \g_@@_trace_assigns_bool
 \bool_new:N \g_@@_trace_expansion_bool
@@ -8363,13 +8396,33 @@
     \tl_set:Nn \l_@@_print_tl {#1}
     \@@_print_normalize_null:
     \iow_term:e { \l_@@_print_tl }
+    \tl_if_empty:NF \g_@@_output_file_tl
+      { \iow_now:Ne \g_@@_iow { \l_@@_print_tl } }
   }
 \cs_generate_variant:Nn \@@_print:n { e }
 \cs_new_protected:Npn \@@_log:n #1
   {
     \tl_set:Nn \l_@@_print_tl {#1}
     \@@_print_normalize_null:
-    \iow_log:e { \l_@@_print_tl }
+    \tl_if_empty:NTF \g_@@_output_file_tl
+      { \iow_log:e { \l_@@_print_tl } }
+      { \iow_now:Ne \g_@@_iow { \l_@@_print_tl } }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@@_print_step:n}
+%   Steps are printed or not according to the option value, unaffected
+%   by a prompt such as |s10|.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_print_step:n #1
+  {
+    \int_compare:nNnF \g_@@_online_int < 0
+      {
+        \int_compare:nNnTF \g_@@_online_int = 0
+          { \@@_log:n {#1} }
+          { \@@_print:n {#1} }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8378,13 +8431,14 @@
 %   The message to be printed should come already detokenized, as~|#2|.
 %   It will be wrapped to 80 characters per line, with~|#1| before each
 %   line.  The message is properly suppressed (or sent only to the log)
-%   according to \cs{g_@@_online_int}.
+%   according to \cs{g_@@_current_online_int} so as to be sensitive to
+%   the prompt.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_print_message:nn #1 #2
   {
-    \int_compare:nNnF \g_@@_online_int < 0
+    \int_compare:nNnF \g_@@_current_online_int < 0
       {
-        \int_compare:nNnTF \g_@@_online_int = 0
+        \int_compare:nNnTF \g_@@_current_online_int = 0
           { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_log:n }
           { \iow_wrap:nnnN { #1 #2 } { #1 } { } \@@_print:n }
       }
@@ -8425,7 +8479,7 @@
     \group_begin:
       \@@_set_escapechar:n { 92 }
       \tl_use:N \g_@@_before_print_state_tl
-      \int_compare:nNnT \g_@@_online_int > 0
+      \int_compare:nNnF \g_@@_current_online_int < 0
         {
           \@@_print_state_output:
           \@@_print_state_prev:
@@ -8544,7 +8598,7 @@
     \int_gincr:N \g_@@_step_int
     \bool_if:NT #1
       {
-        \@@_print:e
+        \exp_args:Ne \@@_print_step:n
           {
             [=====
             \bool_if:NT \g_@@_number_steps_bool
@@ -8724,7 +8778,7 @@
             { m } { \@@_print_meaning: \@@_prompt_aux: }
             { q }
               {
-                \int_gset:Nn \g_@@_online_int { -1 }
+                \int_gset:Nn \g_@@_current_online_int { -1 }
                 \int_gzero:N \g_@@_nonstop_int
               }
             { x }
@@ -8740,7 +8794,7 @@
             { s } { \@@_prompt_scan_int:nn {#1}
               \@@_prompt_silent_steps:n }
             { o } { \@@_prompt_scan_int:nn {#1}
-              { \int_gset:Nn \g_@@_online_int } }
+              { \int_gset:Nn \g_@@_current_online_int } }
             { C }
               {
                 \use:e
@@ -8792,10 +8846,10 @@
   {
     \int_compare:nNnF {#1} < 0
       {
-        \int_gset:Nn \g_@@_online_int { -1 }
+        \int_gset:Nn \g_@@_current_online_int { -1 }
         \tl_gset:Nn \g_@@_before_prompt_tl
           {
-            \int_gset:Nn \g_@@_online_int { 1 }
+            \int_gset_eq:NN \g_@@_current_online_int \g_@@_online_int
             \tl_gclear:N \g_@@_before_prompt_tl
           }
         \int_gset:Nn \g_@@_nonstop_int {#1}
@@ -8809,7 +8863,7 @@
   }
 \cs_new_protected:Npn \@@_prompt_vert:Nn #1#2
   {
-    \int_gset:Nn \g_@@_online_int { -1 }
+    \int_gset:Nn \g_@@_current_online_int { -1 }
     \tl_gset:Nf \g_@@_before_print_state_tl
       {
         \exp_args:NNf \exp_stop_f: \int_compare:nNnTF
@@ -8820,7 +8874,7 @@
               { \int_max:nn { \g_@@_nonstop_int } { 2 } }
           }
           {
-            \int_gset:Nn \g_@@_online_int { 1 }
+            \int_gset_eq:NN \g_@@_current_online_int \g_@@_online_int
             \tl_gclear:N \g_@@_before_print_state_tl
           }
       }
@@ -8857,7 +8911,7 @@
 \cs_new_protected:Npn \@@_prompt_until:n #1
   {
     \tl_gset:Ne \g_@@_until_tl { \tl_tail:n {#1} }
-    \int_gset:Nn \g_@@_online_int { -1 }
+    \int_gset:Nn \g_@@_current_online_int { -1 }
     \tl_gset:Nn \g_@@_before_print_state_tl
       {
         \@@_input_get_left:N \l_@@_tmpa_tl
@@ -8869,7 +8923,7 @@
           }
           {
             \int_gzero:N \g_@@_nonstop_int
-            \int_gset:Nn \g_@@_online_int { 1 }
+            \int_gset_eq:NN \g_@@_current_online_int \g_@@_online_int
             \tl_gclear:N \g_@@_before_print_state_tl
           }
           {
@@ -8973,6 +9027,10 @@
     max-input        .int_gset:N  = \g_@@_default_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_default_number_steps_bool ,
     online           .int_gset:N  = \g_@@_default_online_int ,
+    output-file      .code:n      = {
+      \int_gzero:N \g_@@_default_online_int
+      \tl_gset:Nn \g_@@_default_output_file_tl {#1}
+    } ,
     prompt-input     .code:n
       = \@@_prompt_input:Nn \g_@@_default_prompt_input_clist {#1} ,
     trace-assigns    .bool_gset:N = \g_@@_default_trace_assigns_bool ,
@@ -8989,6 +9047,10 @@
     max-input        .int_gset:N  = \g_@@_max_input_int ,
     number-steps     .bool_gset:N = \g_@@_number_steps_bool ,
     online           .int_gset:N  = \g_@@_online_int ,
+    output-file      .code:n      = {
+      \int_gzero:N \g_@@_online_int
+      \tl_gset:Nn \g_@@_output_file_tl {#1}
+    } ,
     prompt-input     .code:n
       = \@@_prompt_input:Nn \g_@@_prompt_input_clist {#1} ,
     trace-assigns    .bool_gset:N = \g_@@_trace_assigns_bool ,
@@ -9104,6 +9166,7 @@
     \bool_gset_eq:NN \g_@@_internal_debug_bool \g_@@_default_internal_debug_bool
     \bool_gset_eq:NN \g_@@_number_steps_bool \g_@@_default_number_steps_bool
     \int_gset_eq:NN  \g_@@_online_int \g_@@_default_online_int
+    \tl_gset_eq:NN \g_@@_output_file_tl \g_@@_default_output_file_tl
     \clist_gset_eq:NN \g_@@_prompt_input_clist \g_@@_default_prompt_input_clist
     \bool_gset_eq:NN \g_@@_trace_assigns_bool \g_@@_default_trace_assigns_bool
     \bool_gset_eq:NN \g_@@_trace_expansion_bool \g_@@_default_trace_expansion_bool
@@ -9126,6 +9189,13 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_init_vars:
   {
+    \int_gset_eq:NN \g_@@_current_online_int \g_@@_online_int
+    \tl_if_eq:NNF \g_@@_output_file_tl \g_@@_current_output_file_tl
+      {
+        \iow_close:N \g_@@_iow
+        \iow_open:Nn \g_@@_iow \g_@@_output_file_tl
+        \tl_gset_eq:NN \g_@@_current_output_file_tl \g_@@_output_file_tl
+      }
     \seq_gclear:N \g_@@_prev_input_seq
     \gtl_gclear:N \g_@@_output_gtl
     \int_gzero:N  \g_@@_step_int
