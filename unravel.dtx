@@ -1156,7 +1156,7 @@
   {
     \token_if_eq_meaning:NNTF #1#3
       { \tl_set:Nn }
-      { \msg_error:nnnnnn { unravel } { prev-input } {#1} {#3} }
+      { \@@_error:nnnnn { prev-input } {#1} {#3} }
     #2
   }
 %    \end{macrocode}
@@ -8982,12 +8982,11 @@
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_tex_error:nn #1#2
   {
-    \group_begin:
-    \msg_error:nneee { unravel } { tex-error }
+    \@@_error:neeee { tex-error }
       { \tl_to_str:n {#2} }
       { \use:c { @@_tex_msg_error_#1: } }
       { \use:c { @@_tex_msg_help_#1: } }
-    \group_end:
+      { }
   }
 \cs_generate_variant:Nn \@@_tex_error:nn { nV }
 %    \end{macrocode}
